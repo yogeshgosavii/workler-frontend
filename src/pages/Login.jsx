@@ -31,17 +31,10 @@ function Login({ userType = "candidate" }) {
       setLoader(true);
       const token = await authService.login(email, password);
       const userData = await authService.fetchUserDetails(token);
-<<<<<<< HEAD
       localStorage.removeItem('token')
       localStorage.setItem('token', token);
       console.log(userData);
       dispatch(loginSuccess(userData));
-=======
-      dispatch(loginSuccess(userData));
-      localStorage.setItem('token', token);
-      console.log(userData);
-    //   dispatch(fetchUserSuccess(userData));
->>>>>>> origin/main
       localStorage.setItem('user', JSON.stringify(userData));
       
       setLoader(false);

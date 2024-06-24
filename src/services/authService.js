@@ -1,17 +1,9 @@
-<<<<<<< HEAD
 const API_URL = 'http://localhost:5002/api/auth';
-=======
-const API_URL = 'http://localhost:5000/api/auth';
->>>>>>> origin/main
 
 const authService = {
   checkEmail: async (email) => {
     try {
-<<<<<<< HEAD
       const response = await fetch(`${API_URL}/check-email`, {
-=======
-      const response = await fetch(`${API_URL}/checkEmail`, {
->>>>>>> origin/main
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

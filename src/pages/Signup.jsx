@@ -61,11 +61,7 @@ function Signup() {
     
             try {
                 setemailChecking(true);
-<<<<<<< HEAD
                 const response = await fetch('https://workler-backend.vercel.app/api/auth/check-email', {
-=======
-                const response = await fetch('http://localhost:5000/api/auth/checkEmail', {
->>>>>>> origin/main
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -118,11 +114,7 @@ function Signup() {
         };
 
         try {
-<<<<<<< HEAD
             const response = await fetch('http://localhost:5002/api/auth/signup', {
-=======
-            const response = await fetch('http://localhost:5000/api/auth/signup', {
->>>>>>> origin/main
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

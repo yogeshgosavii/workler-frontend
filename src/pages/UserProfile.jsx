@@ -11,15 +11,12 @@ import EducationUpdateForm from "../components/Forms/EducationUpdateForm";
 import SkillUpdateForm from "../components/Forms/SkillUpdateForm";
 import WorkExperienceUpdateForm from "../components/Forms/WorkExperienceUpdateForm"; // Assuming you have this form
 import { format, formatDate } from "date-fns";
-<<<<<<< HEAD
 import useProfileApi from "../services/profileService"; // Adjust the import path
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
 
 // Register necessary components from Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
-=======
->>>>>>> origin/main
 
 const UserProfile = () => {
   const [formType, setFormType] = useState(null);
@@ -29,7 +26,6 @@ const UserProfile = () => {
   const [skillData, setSkillData] = useState([]);
   const [workExperienceData, setWorkExperienceData] = useState([]); // Added work experience data
   const [projectData, setprojectData] = useState([]);
-<<<<<<< HEAD
   const profileApi = useProfileApi();
 
   const data = {
@@ -65,54 +61,34 @@ const UserProfile = () => {
       },
     },
   };
-=======
->>>>>>> origin/main
   const [loading, setLoading] = useState({
     education: true,
     skills: true,
     workExperience: true,
-<<<<<<< HEAD
     project: true,
-=======
-    project:true
->>>>>>> origin/main
   }); // Added workExperience loading
   const [updateForm, setUpdateForm] = useState({
     education: false,
     skills: false,
     workExperience: false,
-<<<<<<< HEAD
     project: false,
-=======
-    project : false
->>>>>>> origin/main
   }); // Added workExperience update form
   const [updateData, setUpdateData] = useState({
     education: null,
     skills: null,
     workExperience: null,
-<<<<<<< HEAD
     project: null,
-=======
-    project : null
->>>>>>> origin/main
   }); // Added workExperience update data
 
   const fetchEducationData = useCallback(async () => {
     try {
-<<<<<<< HEAD
       const data = await profileApi.education.getAll();
-=======
-      const token = localStorage.getItem("token");
-      const data = await profileService.getEducation(token);
->>>>>>> origin/main
       setEducationData(data);
     } catch (error) {
       console.error("Error fetching education data:", error);
     } finally {
       setLoading((prev) => ({ ...prev, education: false }));
     }
-<<<<<<< HEAD
   }, [profileApi.education]);
 
   const fetchProjectData = useCallback(async () => {
@@ -129,32 +105,11 @@ const UserProfile = () => {
   const fetchPersonalData = useCallback(async () => {
     try {
       const data = await profileApi.personalDetails.getAll();
-=======
-  }, []);
-
-  const fetchProjectData = useCallback(async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const data = await profileService.getProjectDetails(token);
-      setprojectData(data);
-    } catch (error) {
-      console.error("Error fetching education data:", error);
-    } finally {
-      setLoading((prev) => ({ ...prev, project: false }));
-    }
-  }, []);
-
-  const fetchPersonalData = useCallback(async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const data = await profileService.getPersonalDetails(token);
->>>>>>> origin/main
       setPersonalData(data[0]);
       console.log(data[0]); // Logging the fetched data directly
     } catch (error) {
       console.error("Error fetching personal data:", error);
     } finally {
-<<<<<<< HEAD
       setLoading((prev) => ({ ...prev, personal: false }));
     }
   }, [profileApi.personalDetails]);
@@ -162,44 +117,23 @@ const UserProfile = () => {
   const fetchSkillData = useCallback(async () => {
     try {
       const data = await profileApi.skills.getAll();
-=======
-      setLoading((prev) => ({ ...prev, education: false })); // Corrected loading key
-    }
-  }, []);
-
-  const fetchSkillData = useCallback(async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const data = await profileService.getSkills(token);
->>>>>>> origin/main
       setSkillData(data);
     } catch (error) {
       console.error("Error fetching skill data:", error);
     } finally {
       setLoading((prev) => ({ ...prev, skills: false }));
     }
-<<<<<<< HEAD
   }, [profileApi.skills]);
 
   const fetchWorkExperienceData = useCallback(async () => {
     try {
       const data = await profileApi.workExperience.getAll();
-=======
-  }, []);
-
-  const fetchWorkExperienceData = useCallback(async () => {
-    // Added work experience data fetcher
-    try {
-      const token = localStorage.getItem("token");
-      const data = await profileService.getWorkExperience(token);
->>>>>>> origin/main
       setWorkExperienceData(data);
     } catch (error) {
       console.error("Error fetching work experience data:", error);
     } finally {
       setLoading((prev) => ({ ...prev, workExperience: false }));
     }
-<<<<<<< HEAD
   }, [profileApi.workExperience]);
 
   useEffect(() => {
@@ -209,23 +143,6 @@ const UserProfile = () => {
     fetchSkillData();
     fetchWorkExperienceData();
   }, []);
-=======
-  }, []);
-
-  useEffect(() => {
-    fetchSkillData();
-    fetchEducationData();
-    fetchWorkExperienceData(); // Fetch work experience data
-    fetchPersonalData();
-    fetchProjectData()
-  }, [
-    fetchSkillData,
-    fetchEducationData,
-    fetchWorkExperienceData,
-    fetchPersonalData,
-    fetchProjectData
-  ]);
->>>>>>> origin/main
 
   const closeForm = useCallback(() => setFormType(null), []);
 
@@ -284,10 +201,7 @@ const UserProfile = () => {
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-<<<<<<< HEAD
             onClick={() => setFormType(id)}
-=======
->>>>>>> origin/main
           >
             {" "}
             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
@@ -427,11 +341,7 @@ const UserProfile = () => {
             {/* Add more personal details as needed */}
           </div>
         ) : (
-<<<<<<< HEAD
           <p className="text-sm text-gray-400 mt-1">
-=======
-          <p className="text-sm text-gray-400 -mt-2">
->>>>>>> origin/main
             Add personal details so the recrutier can know more aboyt you
           </p>
         ),
@@ -442,11 +352,7 @@ const UserProfile = () => {
         title: "Education",
         content:
           educationData.length === 0 ? (
-<<<<<<< HEAD
             <p className="text-sm text-gray-400 mt-1">
-=======
-            <p className="text-sm text-gray-400 -mt-1">
->>>>>>> origin/main
               Adding the education or course type helps recruiters know your
               educational background
             </p>
@@ -557,7 +463,6 @@ const UserProfile = () => {
       {
         id: "projects",
         title: "Projects",
-<<<<<<< HEAD
         content:
           projectData.length === 0 ? ( // Check if work experience data is empty
             <p className="text-sm text-gray-400 mt-1 ">
@@ -601,52 +506,6 @@ const UserProfile = () => {
               })}
             </div>
           ),
-=======
-        content: projectData.length === 0 ? ( // Check if work experience data is empty
-          <p className="text-sm text-gray-400 mt-1 ">
-            Adding project helps recruiters understand your
-            work and know your potential
-          </p>
-        ) : (
-          <div>
-            {projectData.map((data, index) => {
-              const formattedJoiningDate = data.start_date
-                ? format(new Date(data.joiningDate), "MMMM yyyy")
-                : "";
-              const formattedLeavingDate = data.end_date
-                ? format(new Date(data.leavingDate), "MMMM yyyy")
-                : "Present";
-
-              return (
-                <div
-                  key={index}
-                  onClick={() => {
-                    setUpdateData({ project: data });
-                    console.log(data);
-                    setUpdateForm({ project: true });
-                  }}
-                  className={`py-4 ${
-                    index === projectData.length - 1
-                      ? null
-                      : "border-b"
-                  }`}
-                >
-                  <p className="text-xl font-semibold">
-                    {data.jobTitle}{" "}
-                    <span className="font-normal text-sm">
-                      ( {data.employmentType} )
-                    </span>
-                  </p>
-                  <p className="">{data.companyName}</p>
-                  <p className="text-sm text-gray-400">
-                    {formattedJoiningDate} - {formattedLeavingDate}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        ),
->>>>>>> origin/main
         loading: false,
       },
     ],
@@ -654,7 +513,6 @@ const UserProfile = () => {
   );
 
   return (
-<<<<<<< HEAD
     <div className="w-full flex flex-col md:flex-row justify-center gap-5 py-2 px-2 sm:py-5 sm:px-5 ">
       {formType && (
         <div
@@ -681,25 +539,6 @@ const UserProfile = () => {
           </div>
         </div>
       )}
-=======
-    <div className="w-full flex flex-col md:flex-row justify-center gap-5 py-4 px-2 sm:py-8 sm:px-5 ">
-      {formType && (
-  <div
-    className="fixed inset-0 z-10 flex justify-center items-center bg-black bg-opacity-50"
-    onClick={closeForm}
-  >
-    <div
-      className="fixed z-20 w-full border h-full sm:h-fit sm:max-w-md mx-auto"
-      onClick={(e) => e.stopPropagation()}
-    >
-      {React.createElement(FormComponents[formType], {
-        onClose: closeForm,
-        setData: formType === "Skill" ? setSkillData : formType === "Education" ? setEducationData : formType === "WorkExperience"?setWorkExperienceData : formType === "PersonalDetails"?setPersonalData   : null
-      })}
-    </div>
-  </div>
-)}
->>>>>>> origin/main
       {updateForm.education && (
         <div
           className="fixed inset-0 z-10 flex justify-center items-center bg-black bg-opacity-50"
@@ -751,7 +590,6 @@ const UserProfile = () => {
           </div>
         </div>
       )}
-<<<<<<< HEAD
       <div className="w-full ">
         <div className=" border md:flex px-5 gap-3  py-8">
           <div className="flex  justify-center flex-col w-full  ">
@@ -839,37 +677,6 @@ const UserProfile = () => {
           </div>
         </div>
        
-=======
-      <div className="w-full md:max-w-lg">
-        <div
-          className="flex border px-4 py-2 justify-between items-center"
-          id="profileHeader"
-        >
-          <div className="flex gap-4">
-            <img
-              className="aspect-square h-30 w-30"
-              src={profileImageDefault}
-              alt="Profile"
-            />
-            <div className="flex flex-col gap-0.5 justify-center">
-              <p className="font-semibold text-lg  sm:text-2xl">
-                {user.username}
-              </p>
-              
-              <p className="">
-                Software Engineer
-              </p>
-              <p className="text-gray-400 text-sm">
-                {user.email}
-              </p>
-            </div>
-          </div>
-          {/* <svg className="h-8 w-8 cursor-pointer text-gray-400" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-            <path stroke="none" d="M0 0h24v24H0z" />
-            <path d="M10 6l-6 6l6 6" />
-          </svg> */}
-        </div>
->>>>>>> origin/main
         {userDetailsList.map((item, index) => (
           <div
             key={index}
@@ -888,10 +695,7 @@ const UserProfile = () => {
           </div>
         ))}
       </div>
-<<<<<<< HEAD
      
-=======
->>>>>>> origin/main
       {/* <div className=''>
         <div className='border px-5 py-4 h-fit w-80'>
           <p className='text-xl font-medium mb-8'>Jobs Applied</p>
