@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Button from "../Button/Button";
-<<<<<<< HEAD
 import useProfileApi from "../../services/profileService";
-=======
-import profileService from "../../services/profileService";
->>>>>>> origin/main
 
 function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperienceData }) {
   const workTypeOptions = ["Full-time", "Internship"];
@@ -22,11 +18,8 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
     "3 Months",
     "More than 3 Months",
   ];
-<<<<<<< HEAD
   const profileApi = useProfileApi()
 
-=======
->>>>>>> origin/main
 
   const formatDate = (dateString) => {
     if (!dateString) return "";
@@ -341,11 +334,7 @@ const onDelete = async(e)=>{
 
     try {
       const token = localStorage.getItem("token");
-<<<<<<< HEAD
       const updatedData = await profileApi.workExperience.update(workExperienceData._id, updatedWorkExperienceData);
-=======
-      const updatedData = await profileService.updateWorkExperience(workExperienceData._id, updatedWorkExperienceData, token);
->>>>>>> origin/main
       // Update the work experience data in the parent component's state
       setWorkExperienceData(prevData => prevData.map(exp => exp._id === updatedData._id ? updatedData : exp));
       onClose();

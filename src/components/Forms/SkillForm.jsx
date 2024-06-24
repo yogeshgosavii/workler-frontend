@@ -1,19 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Button from "../Button/Button";
-<<<<<<< HEAD
 import useProfileApi from "../../services/profileService";
-=======
-import profileService from "../../services/profileService";
->>>>>>> origin/main
 
 function SkillForm({ onClose,setSkills }) {
   const [skill, setSkill] = useState("");
   const [level, setLevel] = useState("");
   const [addDisabled, setAddDisabled] = useState(true);
-<<<<<<< HEAD
   const profileApi = useProfileApi()
-=======
->>>>>>> origin/main
 
   useEffect(() => {
     // Check if both skill and level are not empty
@@ -30,11 +23,7 @@ function SkillForm({ onClose,setSkills }) {
     console.log("Level:", level);
     const token = localStorage.getItem("token");
     try {
-<<<<<<< HEAD
       await profileApi.skills.add({ name: skill, level }, token);
-=======
-      await profileService.addSkills({ name: skill, level }, token);
->>>>>>> origin/main
       console.log("Skill added successfully");
       onClose(); // Close the form after successfully adding the skill
     } catch (error) {

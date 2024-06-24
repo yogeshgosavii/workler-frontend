@@ -1,20 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Button from "../Button/Button";
-<<<<<<< HEAD
 import useProfileApi from "../../services/profileService";
-=======
-import profileService from "../../services/profileService";
->>>>>>> origin/main
 
 function SkillUpdateForm({ skillData, onClose, setSkillData }) {
   const [skill, setSkill] = useState(skillData.name);
   const [level, setLevel] = useState(skillData.level);
   const [updateDisabled, setUpdateDisabled] = useState(true);
-<<<<<<< HEAD
   const profileApi = useProfileApi()
 
-=======
->>>>>>> origin/main
 
   useEffect(() => {
     setUpdateDisabled(skill.trim() === "" || level === "");
@@ -24,11 +17,7 @@ function SkillUpdateForm({ skillData, onClose, setSkillData }) {
     e.preventDefault();
     const token = localStorage.getItem("token");
     try {
-<<<<<<< HEAD
       const updatedSkillData = await profileApi.skills.update(skillData._id, { name: skill, level });
-=======
-      const updatedSkillData = await profileService.updateSkills(skillData._id, { name: skill, level }, token);
->>>>>>> origin/main
       setSkillData((prevData) =>
         prevData.map((item) => (item._id === skillData._id ? updatedSkillData : item))
       );
