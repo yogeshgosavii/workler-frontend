@@ -54,8 +54,9 @@ const createApiMethods = (endpoint, userId) => ({
 
 const useProfileApi = () => {
   const user = useSelector((state) => state.auth.user);
+  console.log("user",user);
 
-  if (!user || !user.id) {
+  if (!user || !user._id) {
     throw new Error('User is not logged in or user ID is missing');
   }
 

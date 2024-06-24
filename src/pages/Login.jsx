@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import Button from '../components/Button/Button';
 import { loginSuccess, loginFailure } from '../features/auth/authSlice';
 import authService from '../services/authService';
+import { useSelector } from 'react-redux';
 
 function Login({ userType = "candidate" }) {
   const [email, setEmail] = useState('');
@@ -15,6 +16,8 @@ function Login({ userType = "candidate" }) {
   const [loader, setLoader] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+
 
   const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -36,7 +39,7 @@ function Login({ userType = "candidate" }) {
       console.log(userData);
       dispatch(loginSuccess(userData));
       localStorage.setItem('user', JSON.stringify(userData));
-      
+      console.log("user",user);
       setLoader(false);
       navigate('/jobs'); // Redirect to dashboard on successful login
     } catch (error) {
