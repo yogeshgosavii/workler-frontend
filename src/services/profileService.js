@@ -18,7 +18,7 @@ const makeApiRequest = async (url, options) => {
 
 const createApiMethods = (endpoint, userId) => ({
   add: async (data) => {
-    const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/${userId}`, {
+    const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/`, {
       method: 'POST',
       headers: setAuthHeaders(),
       body: JSON.stringify(data),
@@ -27,7 +27,7 @@ const createApiMethods = (endpoint, userId) => ({
   },
 
   getAll: async () => {
-    const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/${userId}`, {
+    const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/`, {
       method: 'GET',
       headers: setAuthHeaders(),
     });
@@ -35,7 +35,7 @@ const createApiMethods = (endpoint, userId) => ({
   },
 
   update: async (id, data) => {
-    const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/${userId}/${id}`, {
+    const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/${id}`, {
       method: 'PUT',
       headers: setAuthHeaders(),
       body: JSON.stringify(data),
@@ -44,7 +44,7 @@ const createApiMethods = (endpoint, userId) => ({
   },
 
   delete: async (id) => {
-    const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/${userId}/${id}`, {
+    const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/${id}`, {
       method: 'DELETE',
       headers: setAuthHeaders(),
     });

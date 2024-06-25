@@ -602,7 +602,7 @@ const UserProfile = () => {
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
                   <h1 className="text-3xl font-bold text-gray-900">
-                    {user?.username || "Yogesh Gosavi"}
+                    {user?.username || "Username"}
                   </h1>
                   <svg
                     className="h-5 w-5 text-blue-500"
@@ -619,7 +619,7 @@ const UserProfile = () => {
                 <p className="text-xl font-medium text-gray-700">
                   Software Engineer
                 </p>
-                <p className="text-gray-500">{user?.email}</p>
+                <p className="text-gray-500">{user?.email || "email"}</p>
               </div>
             </div>
             <div className="flex gap-4 justify-center sm:justify-start mt-4 items-center">
