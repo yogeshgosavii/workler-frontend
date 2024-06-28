@@ -1,4 +1,6 @@
-const API_URL = 'http://localhost:5002/api/auth';
+// const API_URL = 'https://workler-backend.vercel.app/api/auth';
+const API_URL = ' http://localhost:5002/api/auth';
+
 
 const authService = {
   checkEmail: async (email) => {
