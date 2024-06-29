@@ -18,6 +18,7 @@ const makeApiRequest = async (url, options) => {
     throw error;
   }
 };
+const token = localStorage.getItem('token');
 
 const createApiMethods = (endpoint, userId) => ({
   add: async (data) => {
@@ -32,7 +33,9 @@ const createApiMethods = (endpoint, userId) => ({
   getAll: async () => {
     const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/`, {
       method: 'GET',
-      headers: setAuthHeaders(),
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
     return response;
   },

@@ -79,7 +79,27 @@ const UserProfile = () => {
     workExperience: null,
     project: null,
   }); // Added workExperience update data
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = localStorage.getItem('token');
+      console.log("token", token);
+      fetch('https://workler-backend.vercel.app/api/auth/user',
+        {
+          headers : {
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      )
+      .then(response => response.text())  // Use text() to get the raw response
+      .then(data => {
+        console.log(data);  // Log the raw response
+        return JSON.parse(data);  // Attempt to parse the response
+      })
+      .catch(error => console.error('Error:', error));
+    }
 
+    fetchData();
+  }, []);
   const fetchEducationData = useCallback(async () => {
     try {
       const data = await profileApi.education.getAll();

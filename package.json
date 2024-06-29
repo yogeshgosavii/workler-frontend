@@ -1,6 +1,7 @@
 {
   "name": "workler",
   "private": true,
+  "proxy": "",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
