@@ -229,7 +229,7 @@ const UserProfile = () => {
         )}
       </div>
       {loading ? (
-        <div className="animate-pulse">
+        <div className="animate-pulse mt-2">
           <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
           <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
           <div className="h-2 bg-gray-200 w-1/4 rounded-md mb-2"></div>
