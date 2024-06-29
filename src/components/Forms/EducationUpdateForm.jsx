@@ -42,7 +42,7 @@ function EducationUpdateForm({ educationdata ,setEducationData, onClose ,index }
     e.preventDefault();
     const token = localStorage.getItem("token");
     try {
-      const updatedEducationData = await profileService.deleteEducation(formData._id, token);
+      const updatedEducationData = await profileApi.education.delete(formData._id, token);
       console.log('Updated education data:', updatedEducationData);
       onClose();
     } catch (error) {
