@@ -52,7 +52,10 @@ const createApiMethods = (endpoint, userId) => ({
   delete: async (id) => {
     const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/${id}`, {
       method: 'DELETE',
-      headers: setAuthHeaders(),
+      headers: {
+        Authorization: `Bearer ${token}`,
+
+      },
     });
     return response;
   },
