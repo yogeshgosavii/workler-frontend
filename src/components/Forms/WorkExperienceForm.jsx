@@ -29,7 +29,7 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
   );
   const [currentPage, setCurrentPage] = useState(0);
   const [noticePeriod, setNoticePeriod] = useState(
-    initialData?.noticePeriod 
+    noticePeriodOptions[0] 
   );
   const [formData, setFormData] = useState({
     years: "",
@@ -44,7 +44,7 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
     stipend: "",
     employmentType: workExperienceType,
     currentlyWorking: currentlyWorkingHere,
-    noticePeriod: noticePeriod,
+    "noticePeriod": noticePeriodOptions[0],
   });
 
   useEffect(() => {
@@ -81,15 +81,12 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
   };
 
   const onSave = async () => {
-    console.log(formData);
     try {
-      const token = localStorage.getItem("token");
 
       // Filter out the empty fields from formData
       const nonEmptyData = Object.fromEntries(
         Object.entries(formData).filter(([key, value]) => value !== "")
       );
-
         // Add new work experience
         const data = await profileApi.workExperience.add(nonEmptyData);
         console.log("data", data);
@@ -285,7 +282,7 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
               {noticePeriodOptions.map((notice_period) => (
                 <p
                   key={notice_period}
-                  onClick={() => setNoticePeriod(notice_period)}
+                  onClick={() =>  setFormData((prev) => ({ ...prev, ["noticePeriod"]: notice_period }))}
                   className={`px-4 border py-1 cursor-pointer text-sm w-fit text-nowrap rounded-md transition-all ease-in-out 0.3ms ${
                     notice_period === noticePeriod
                       ? "scale-110 bg-blue-50 border-blue-500 font-medium text-blue-500"
@@ -379,7 +376,7 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
           className="bg-blue-500 rounded-full text-white disabled:bg-blue-300 disabled:cursor-not-allowed"
           onClick={onSave}
         >
-          {initialData ? "Update" : "Add"}
+          { "Add"}
         </Button>
       </div>
       </div>

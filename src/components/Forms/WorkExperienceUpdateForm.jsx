@@ -41,6 +41,7 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
     department: workExperienceData.department,
     leavingDate: formatDate(workExperienceData.leavingDate),
     stipend: workExperienceData.stipend,
+    currentlyWorking: workExperienceData.currentlyWorking,
   });
   const [formData, setFormData] = useState({
     years: workExperienceData.years,
@@ -53,7 +54,10 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
     department: workExperienceData.department,
     leavingDate: formatDate(workExperienceData.leavingDate),
     stipend: workExperienceData.stipend,
+    currentlyWorking: workExperienceData.currentlyWorking,
+
   });
+  console.log(formData.currentlyWorking);
 
   useEffect(() => {
     setWorkExperienceType(workExperienceData.employmentType);
@@ -70,6 +74,7 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
       department: workExperienceData.department,
       leavingDate: formatDate(workExperienceData.leavingDate),
       stipend: workExperienceData.stipend,
+      currentlyWorking: workExperienceData.currentlyWorking,
     });
   }, [workExperienceData]);
 
@@ -142,9 +147,11 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
             {["Yes", "No"].map((type) => (
               <p
                 key={type}
-                onClick={() => setCurrentlyWorkingHere(type)}
+                onClick={() => {
+                  setFormData((prev) => ({ ...prev, ["currentlyWorking"]: type }));
+                }}
                 className={`${
-                  currentlyWorkingHere === type
+                  formData.currentlyWorking == type
                     ? "scale-110 bg-blue-50 text-blue-500 border-blue-500 font-semibold"
                     : "text-gray-500 border-gray-300"
                 } border transition-all ease-in-out 0.3ms px-4 h-fit py-1 text-sm cursor-pointer rounded-md`}
@@ -223,7 +230,7 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
             <p className="text-nowrap flex items-end py-1">Per year</p>
           </div>
         )}
-        <div className="flex flex-wrap gap-4 items-end">
+        <div className="flex  gap-4 items-end">
             <div className="flex flex-col w-full">
               <label htmlFor="joiningDate" className="font-medium ml-1">
                 Joining date<span className="text-red-500">*</span>
@@ -238,7 +245,7 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
                 required
               />
             </div>
-          {(!isCurrentlyWorking) ? (
+          {(formData.currentlyWorking=="No") ? (
             <div className="flex flex-col w-full">
               <label htmlFor="leavingDate" className="font-medium ml-1">
                 Leaving date<span className="text-red-500">*</span>
