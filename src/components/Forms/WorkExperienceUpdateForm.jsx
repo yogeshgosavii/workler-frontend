@@ -18,8 +18,7 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
     "3 Months",
     "More than 3 Months",
   ];
-  const profileApi = useProfileApi()
-
+  const profileApi = useProfileApi();
 
   const formatDate = (dateString) => {
     if (!dateString) return "";
@@ -31,6 +30,18 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
   const [workExperienceType, setWorkExperienceType] = useState(workExperienceData.employmentType);
   const [currentlyWorkingHere, setCurrentlyWorkingHere] = useState(workExperienceData.currentWorking);
   const [noticePeriod, setNoticePeriod] = useState(workExperienceData.noticePeriod);
+  const [previousFormData, setpreviousFormData] = useState({
+    years: workExperienceData.years,
+    months: workExperienceData.months,
+    companyName: workExperienceData.companyName,
+    jobTitle: workExperienceData.jobTitle,
+    joiningDate: formatDate(workExperienceData.joiningDate),
+    annualSalary: workExperienceData.annualSalary,
+    location: workExperienceData.location,
+    department: workExperienceData.department,
+    leavingDate: formatDate(workExperienceData.leavingDate),
+    stipend: workExperienceData.stipend,
+  });
   const [formData, setFormData] = useState({
     years: workExperienceData.years,
     months: workExperienceData.months,
@@ -67,40 +78,56 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const isFormValid = () => {
-    const {
-      years,
-      months,
-      companyName,
-      jobTitle,
-      joiningDate,
-      annualSalary,
-      location,
-      department,
-      leavingDate,
-      stipend,
-    } = formData;
-
-    if (!years || !months || !companyName || !jobTitle || !joiningDate) {
-      return false;
+  function deepEqual(obj1, obj2) {
+    if (obj1 === obj2) {
+        return true;
     }
 
-    if (workExperienceType === "Full-time") {
-      if (currentlyWorkingHere === "Yes" && !annualSalary) {
+    if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
         return false;
-      } else if (currentlyWorkingHere === "No" && !leavingDate) {
+    }
+
+    let keys1 = Object.keys(obj1);
+    let keys2 = Object.keys(obj2);
+
+    if (keys1.length !== keys2.length) {
         return false;
-      }
-    } else {
-      if (!location || !department || !stipend) {
-        return false;
-      }
-      if (currentlyWorkingHere === "No" && !leavingDate) {
-        return false;
-      }
+    }
+
+    for (let key of keys1) {
+        if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
+            return false;
+        }
     }
 
     return true;
+  }
+
+  const isFormValid = () => {
+    if (deepEqual(previousFormData, formData)) {
+        return false;
+    }
+    return true;
+
+    // Additional validation logic can be added here if needed
+    // if (!formData.years || !formData.months || !formData.companyName || !formData.jobTitle || !formData.joiningDate) {
+    //   return false;
+    // }
+
+    // if (workExperienceType === "Full-time") {
+    //   if (currentlyWorkingHere === "Yes" && !formData.annualSalary) {
+    //     return false;
+    //   } else if (currentlyWorkingHere === "No" && !formData.leavingDate) {
+    //     return false;
+    //   }
+    // } else {
+    //   if (!formData.location || !formData.department || !formData.stipend) {
+    //     return false;
+    //   }
+    //   if (currentlyWorkingHere === "No" && !formData.leavingDate) {
+    //     return false;
+    //   }
+    // }
   };
 
   const renderWorkForm = () => {
@@ -196,7 +223,7 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
             <p className="text-nowrap flex items-end py-1">Per year</p>
           </div>
         )}
-        <div className="flex gap-4 items-end">
+        <div className="flex flex-wrap gap-4 items-end">
             <div className="flex flex-col w-full">
               <label htmlFor="joiningDate" className="font-medium ml-1">
                 Joining date<span className="text-red-500">*</span>
@@ -299,19 +326,19 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
   };
    
 
-
-  
-const onDelete = async(e)=>{
-  e.preventDefault();
-  const token = localStorage.getItem("token");
-  try {
-    const updatedWorkExperience = await profileService.deleteWorkExperience(workExperienceData._id, token);
-    console.log('Updated education data:', updatedWorkExperience);
-    onClose();
-  } catch (error) {
-    console.error('Error updating education data:', error);
+  const onDelete = async(e)=>{
+    e.preventDefault();
+    const token = localStorage.getItem("token");
+    try {
+      const updatedWorkExperience = await profileApi.workExperience.delete(workExperienceData._id, token);
+      setWorkExperienceData(prevData => prevData.filter(exp => exp._id !== workExperienceData._id ));
+ 
+      console.log('Updated education data:', updatedWorkExperience);
+      onClose();
+    } catch (error) {
+      console.error('Error updating education data:', error);
+    }
   }
-}
 
   const handleUpdate = async (event) => {
     event.preventDefault();
@@ -343,38 +370,34 @@ const onDelete = async(e)=>{
     }
   };
 
-  
-
   return (
-    <form onSubmit={handleUpdate} className="relative bg-white p-6 px-4 sm:px-8 flex flex-col justify-between rounded-sm w-full h-full overflow-y-auto">
-      <div className="flex items-center w-full justify-between  bg-white pb-5 pt-2 z-20">
-        <h2 className="text-xl font-semibold">Work Experience</h2>
+    <form onSubmit={handleUpdate} className="relative bg-white p-6 px-4 sm:px-8 flex flex-col justify-between rounded-sm w-full h-full sm:h-full overflow-y-auto">
+      <div className="flex flex-col  w-full justify-between  bg-white pb-5 pt-2 z-20">
+        <h2 className="text-xl font-semibold px-2">Work Experience</h2>
+        <div className="mt-5 mb-10">{renderWorkForm()}</div>
       </div>
-      <div className="flex flex-col  w-full mb-12">
-        <div className="h-full">{renderWorkForm()}</div>
-      </div>
-      <div className="absolute -bottom-36 sm:bottom-0   right-0 left-0 flex items-center justify-between px-8 bg-white py-5 pt-2 z-20">
-      <svg onClick={onDelete} class="h-6 w-6 cursor-pointer text-red-500"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round">  <polyline points="3 6 5 6 21 6" />  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg>
-
+      <div className="static  bottom-0   right-0 left-0 flex items-center justify-between  bg-white py-2 px-3 z-20">
+        <svg onClick={onDelete} className="h-6 w-6 cursor-pointer text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="3 6 5 6 21 6" />
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+        </svg>
         <div>
-        <Button variant="secondary" className='text-blue-500' size="md" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button
-          variant="primary"
-          size="md"
-          className='bg-blue-500 text-white'
-          type="submit"
-          disabled={!isFormValid()}
-        >
-          Update
-        </Button>
+          <Button variant="secondary" className="text-blue-500" size="md" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            size="md"
+            className="bg-blue-500 disabled:bg-blue-400 text-white"
+            type="submit"
+            disabled={!isFormValid()}
+          >
+            Update
+          </Button>
         </div>
       </div>
     </form>
   );
-
 }
-
 
 export default WorkExperienceUpdateForm;

@@ -251,7 +251,7 @@ function EducationUpdateForm({ educationdata ,setEducationData, onClose ,index }
   };
 
   return (
-    <div className="fixed inset-0 z-10 flex justify-center items-center bg-black bg-opacity-50" onClick={onClose}>
+    <div className="fixed inset-0 z-10 flex  justify-center items-center bg-black bg-opacity-50" onClick={onClose}>
       <div className="fixed z-20 w-full max-w-md mx-auto bg-white p-8 rounded-sm" onClick={(e) => e.stopPropagation()}>
         <p className="text-xl font-medium mb-6">Education</p>
         {renderEducationUpdateForm()}
