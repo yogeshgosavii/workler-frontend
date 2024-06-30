@@ -239,7 +239,7 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
                 type="date"
                 name="joiningDate"
                 id="joiningDate"
-                className="border bg-white mt-2 px-3 py-[7px] rounded-sm duration-200 placeholder:text-gray-400 outline-none flex-1"
+                className="border bg-white mt-2 px-3 py-[7px] rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none flex-1"
                 value={formData.joiningDate}
                 onChange={handleInputChange}
                 required
