@@ -230,42 +230,42 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
             <p className="text-nowrap flex items-end py-1">Per year</p>
           </div>
         )}
-        <div className="flex  gap-4 items-end">
-            <div className="flex flex-col w-full">
-              <label htmlFor="joiningDate" className="font-medium ml-1">
-                Joining date<span className="text-red-500">*</span>
-              </label>
-              <input
-                type="date"
-                name="joiningDate"
-                id="joiningDate"
-                className="border bg-white mt-2 px-3 py-[7px] rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none flex-1"
-                value={formData.joiningDate}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-          {(formData.currentlyWorking=="No") ? (
-            <div className="flex flex-col w-full">
-              <label htmlFor="leavingDate" className="font-medium ml-1">
-                Leaving date<span className="text-red-500">*</span>
-              </label>
-              <input
-                type="date"
-                name="leavingDate"
-                id="leavingDate"
-                className="border bg-white mt-2 px-3 py-[7px] rounded-sm duration-200 placeholder:text-gray-400 outline-none flex-1"
-                value={formData.leavingDate}
-                onChange={handleInputChange}
-                required
-              />
-            </div>
-          ) : (
-            <p className="border px-4 py-[8px] flex items-center text-blue-500">
-              Present
-            </p>
-          )}
+        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-col w-full">
+          <label htmlFor="joiningDate" className="font-medium ml-1 text-sm sm:text-base">
+            Joining date<span className="text-red-500">*</span>
+          </label>
+          <input
+            type="date"
+            name="joiningDate"
+            id="joiningDate"
+            className="border bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
+            value={formData.joiningDate}
+            onChange={handleInputChange}
+            required
+          />
         </div>
+        {formData.currentlyWorking === "No" ? (
+          <div className="flex flex-col w-full">
+            <label htmlFor="leavingDate" className="font-medium ml-1 text-sm sm:text-base">
+              Leaving date<span className="text-red-500">*</span>
+            </label>
+            <input
+              type="date"
+              name="leavingDate"
+              id="leavingDate"
+              className="border bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
+              value={formData.leavingDate}
+              onChange={handleInputChange}
+              required
+            />
+          </div>
+        ) : (
+          <p className="border px-4 py-2 flex items-center text-blue-500 w-full text-sm sm:text-base">
+            Present
+          </p>
+        )}
+      </div>
 
         {isFullTime && (
           <div>
