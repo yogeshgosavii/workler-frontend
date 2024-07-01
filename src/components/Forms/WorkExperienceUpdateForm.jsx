@@ -133,10 +133,10 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
     const isCurrentlyWorking = currentlyWorkingHere === "Yes";
 
     return (
-      <div className="flex flex-col gap-5 py-2 px-2 h-full  sm:max-h-60 overflow-y-auto">
+      <div className="flex flex-col gap-5 py-2 h-full  sm:max-h-60 overflow-y-auto">
         <div>
           <p className="text-sm font-medium">Currently working here</p>
-          <div className="flex gap-3 text-nowrap flex-wrap mt-2">
+          <div className="flex gap-3 text-nowrap flex-wrap mt-2 px-1">
             {["Yes", "No"].map((type) => (
               <p
                 key={type}
@@ -374,8 +374,13 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
   return (
     <form onSubmit={handleUpdate} className="relative bg-white p-6 px-4 sm:px-8 flex flex-col justify-between rounded-sm w-full h-full sm:h-full overflow-y-auto">
       <div className="flex flex-col  w-full justify-between  bg-white pb-5 pt-2 z-20">
-        <h2 className="text-xl font-semibold px-2">Work Experience</h2>
-        <div className="mt-5 mb-10">{renderWorkForm()}</div>
+      <div className=" sticky z-10 -top-6 py-2 bg-white">
+        <h2 className="text-xl font-medium">Work experience</h2>
+         <p className="text-sm text-gray-400 mb-6 mt-1">
+          Update the details to what you wanted before
+        </p>
+      </div>
+        <div className=" mb-10">{renderWorkForm()}</div>
       </div>
       <div className="static  bottom-0   right-0 left-0 flex items-center justify-between  bg-white py-2 px-3 z-20">
         <svg onClick={onDelete} className="h-6 w-6 cursor-pointer text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
