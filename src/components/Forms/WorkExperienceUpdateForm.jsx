@@ -133,7 +133,7 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
     const isCurrentlyWorking = currentlyWorkingHere === "Yes";
 
     return (
-      <div className="flex flex-col gap-5 py-2 h-full  sm:max-h-60 overflow-y-auto">
+      <div className="flex flex-col gap-5 py-2 h-full mt-2  sm:max-h-60 overflow-y-auto">
         <div>
           <p className="text-sm font-medium">Currently working here</p>
           <div className="flex gap-3 text-nowrap flex-wrap mt-2 px-1">
@@ -372,11 +372,11 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
   };
 
   return (
-    <form onSubmit={handleUpdate} className="relative bg-white p-6 px-4 sm:px-8 flex flex-col justify-between rounded-sm w-full h-full sm:h-full overflow-y-auto">
+    <form onSubmit={handleUpdate} className="relative bg-white pt-2 pb-6 px-4 sm:px-8 flex flex-col justify-between rounded-sm w-full h-full sm:h-full overflow-y-auto">
       <div className="flex flex-col  w-full justify-between  bg-white pb-5 pt-2 z-20">
-      <div className=" sticky z-10 -top-6 py-2 bg-white">
+      <div className=" sticky z-10 -top-2.5 py-3   bg-white">
         <h2 className="text-xl font-medium">Work experience</h2>
-         <p className="text-sm text-gray-400 mb-6 mt-1">
+         <p className="text-sm text-gray-400  mt-1">
           Update the details to what you wanted before
         </p>
       </div>
