@@ -369,7 +369,7 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
             />
           </>
         )}
-         <div className="flex justify-end items-center mt-6 w-full">
+         <div className="flex    justify-end items-center mt-6 w-full">
         <Button className="text-blue-500 font-medium" onClick={handleBack}>
           Cancel
         </Button>
@@ -427,7 +427,7 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
               </div>
             </div>
           </div>
-          <div className="flex justify-end items-center mt-8">
+          <div className="flex  justify-end items-center mt-8">
             <button
               className="text-blue-500 font-medium px-4 py-2 0 rounded-md mr-2"
               onClick={handleCancel}
@@ -455,10 +455,10 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
   ];
 
   return (
-    <form className="bg-white p-6 px-4 sm:px-8 rounded-sm flex flex-col w-full h-full max-h-[100vh] overflow-y-auto">
-      <div className="">
+    <form className="bg-white p-6 px-4 sm:px-8 rounded-sm flex flex-col w-full h-full max-h-[80vh] overflow-y-auto">
+      <div className=" sticky -top-6 py-2 bg-white">
         <h2 className="text-xl font-medium">Work experience</h2>
-        <p className="text-sm text-gray-400 mb-8 mt-1">
+        <p className="text-sm text-gray-400 mb-6 mt-1">
           Details like job title, company name, etc help employers understand your
           work
         </p>
