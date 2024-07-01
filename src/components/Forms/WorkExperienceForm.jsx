@@ -166,7 +166,7 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
     const isCurrentlyWorking = currentlyWorkingHere === "Yes";
 
     return (
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-5 pb-6">
         <div>
           <p className="font-medium">
             Total experience<span className="text-red-500">*</span>
@@ -458,12 +458,14 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
     <form className="bg-white pt-2 pb-6 px-4 sm:px-8 rounded-sm flex flex-col w-full h-full md:max-h-[80vh] max-h-[100vh] overflow-y-auto">
       <div className=" sticky -top-2.5 py-4 bg-white">
         <h2 className="text-xl font-medium">Work experience</h2>
-        <p className="text-sm text-gray-400 mb-6 mt-1">
+        <p className="text-sm text-gray-400  mt-1">
           Details like job title, company name, etc help employers understand your
           work
         </p>
       </div>
+      <div className=" mt-2 h-full">
       {pages[currentPage].content}
+      </div>
      
     </form>
   );
