@@ -456,7 +456,7 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
 
   return (
     <form className="bg-white pt-2 pb-6 px-4 sm:px-8 rounded-sm flex flex-col w-full h-full md:max-h-[80vh] max-h-[100vh] overflow-y-auto">
-      <div className=" sticky -top-2.5 py-3 bg-white">
+      <div className=" sticky -top-2.5 py-4 bg-white">
         <h2 className="text-xl font-medium">Work experience</h2>
         <p className="text-sm text-gray-400 mb-6 mt-1">
           Details like job title, company name, etc help employers understand your
