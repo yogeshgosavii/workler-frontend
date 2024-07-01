@@ -41,6 +41,8 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
     leavingDate: formatDate(workExperienceData.leavingDate),
     stipend: workExperienceData.stipend,
     currentlyWorking: workExperienceData.currentlyWorking,
+    noticePeriod : workExperienceData.noticePeriod
+
   });
   const [formData, setFormData] = useState({
     years: workExperienceData.years,
@@ -58,12 +60,11 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
 
 
   });
-  console.log(formData.currentlyWorking);
+  console.log(formData);
 
   useEffect(() => {
     setWorkExperienceType(workExperienceData.employmentType);
     setCurrentlyWorkingHere(workExperienceData.currentWorking);
-    setNoticePeriod(workExperienceData.noticePeriod);
     setFormData({
       years: workExperienceData.years,
       months: workExperienceData.months,
@@ -87,29 +88,37 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
   };
 
   function deepEqual(obj1, obj2) {
+    // Check if both values are strictly equal
     if (obj1 === obj2) {
         return true;
     }
 
+    // Check if either value is not an object or is null
     if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
         return false;
     }
 
+    // Get the keys of both objects
     let keys1 = Object.keys(obj1);
     let keys2 = Object.keys(obj2);
+    console.log(keys1,keys2);
 
+    // Check if the number of keys is different
     if (keys1.length !== keys2.length) {
         return false;
     }
 
+    // Iterate over the keys of obj1
     for (let key of keys1) {
+        // Check if obj2 has the key and the values of the key are deeply equal
         if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
             return false;
         }
     }
 
+    // If all checks pass, the objects are deeply equal
     return true;
-  }
+}
 
   const isFormValid = () => {
     if (deepEqual(previousFormData, formData)) {
@@ -117,25 +126,6 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
     }
     return true;
 
-    // Additional validation logic can be added here if needed
-    // if (!formData.years || !formData.months || !formData.companyName || !formData.jobTitle || !formData.joiningDate) {
-    //   return false;
-    // }
-
-    // if (workExperienceType === "Full-time") {
-    //   if (currentlyWorkingHere === "Yes" && !formData.annualSalary) {
-    //     return false;
-    //   } else if (currentlyWorkingHere === "No" && !formData.leavingDate) {
-    //     return false;
-    //   }
-    // } else {
-    //   if (!formData.location || !formData.department || !formData.stipend) {
-    //     return false;
-    //   }
-    //   if (currentlyWorkingHere === "No" && !formData.leavingDate) {
-    //     return false;
-    //   }
-    // }
   };
 
   const renderWorkForm = () => {
@@ -399,7 +389,7 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
           <Button
             variant="primary"
             size="md"
-            className="bg-blue-500 disabled:bg-blue-400 text-white"
+            className="bg-blue-500 disabled:bg-blue-300 text-white"
             type="submit"
             disabled={!isFormValid()}
           >
