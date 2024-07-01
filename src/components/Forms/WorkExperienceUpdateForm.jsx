@@ -29,7 +29,6 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
   console.log(workExperienceData);
   const [workExperienceType, setWorkExperienceType] = useState(workExperienceData.employmentType);
   const [currentlyWorkingHere, setCurrentlyWorkingHere] = useState(workExperienceData.currentWorking);
-  const [noticePeriod, setNoticePeriod] = useState(workExperienceData.noticePeriod);
   const [previousFormData, setpreviousFormData] = useState({
     years: workExperienceData.years,
     months: workExperienceData.months,
@@ -55,6 +54,8 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
     leavingDate: formatDate(workExperienceData.leavingDate),
     stipend: workExperienceData.stipend,
     currentlyWorking: workExperienceData.currentlyWorking,
+    noticePeriod : workExperienceData.noticePeriod
+
 
   });
   console.log(formData.currentlyWorking);
@@ -75,6 +76,8 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
       leavingDate: formatDate(workExperienceData.leavingDate),
       stipend: workExperienceData.stipend,
       currentlyWorking: workExperienceData.currentlyWorking,
+      noticePeriod : workExperienceData.noticePeriod
+
     });
   }, [workExperienceData]);
 
@@ -274,9 +277,9 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
               {noticePeriodOptions.map((notice_period) => (
                 <p
                   key={notice_period}
-                  onClick={() => setNoticePeriod(notice_period)}
+                  onClick={() => setFormData((prev) => ({ ...prev, ["noticePeriod"]: notice_period }))}
                   className={`px-4 border py-1 cursor-pointer text-sm w-fit text-nowrap rounded-md transition-all ease-in-out 0.3ms ${
-                    notice_period === noticePeriod
+                    notice_period === formData.noticePeriod
                       ? "scale-110 bg-blue-50 border-blue-500 font-medium text-blue-500"
                       : "text-gray-500"
                   }`}
@@ -364,6 +367,7 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
       department: formData.department,
       leavingDate: formData.leavingDate,
       stipend: formData.stipend,
+      noticePeriod : formData.noticePeriod
     };
 
     try {
