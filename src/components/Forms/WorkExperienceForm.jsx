@@ -455,7 +455,7 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
   ];
 
   return (
-    <form className="bg-white p-6 px-4 sm:px-8 rounded-sm flex flex-col w-full h-full md:max-h-[80vh] max-h-[100dvh] overflow-y-auto">
+    <form className="bg-white p-6 px-4 sm:px-8 rounded-sm flex flex-col w-full h-full md:max-h-[80vh] max-h-[100vh] overflow-y-auto">
       <div className=" sticky -top-6 py-2 bg-white">
         <h2 className="text-xl font-medium">Work experience</h2>
         <p className="text-sm text-gray-400 mb-6 mt-1">
