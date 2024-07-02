@@ -82,9 +82,69 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
     });
   }, [workExperienceData]);
 
+  // Get today's date
+const today = new Date();
+
+// Calculate 20 years ago from today
+const minDate = new Date();
+minDate.setFullYear(today.getFullYear() - 20);
+
+// Format minDate to 'YYYY-MM-DD' for input[type="date"]
+const minDateFormatted = minDate.toISOString().split("T")[0];
+
+// Format today to 'YYYY-MM-DD' for input[type="date"]
+const todayFormatted = today.toISOString().split("T")[0];
+
+  const calculateExperience = () => {
+    let { joiningDate, leavingDate } = formData;
+    // console.log(joiningDate, leavingDate);
+    if (!joiningDate || !leavingDate) {
+      if(formData.currentlyWorking == "Yes"){
+        leavingDate = todayFormatted
+
+      }
+      else{
+        return "Please enter both joining and leaving dates.";
+
+      }
+    }
+
+
+    const joinDate = new Date(joiningDate);
+    const leaveDate = new Date(leavingDate);
+
+    if (leaveDate < joinDate) {
+      return "Leaving date cannot be before joining date.";
+    }
+
+    // Calculate the difference in years and months
+    const diffYears = leaveDate.getFullYear() - joinDate.getFullYear();
+    const diffMonths = leaveDate.getMonth() - joinDate.getMonth();
+
+    let totalExperience = "";
+
+    if (diffMonths < 0) {
+      diffYears--;
+      diffMonths += 12;
+    }
+
+    totalExperience = `${diffYears} ${
+      diffYears > 1 ? "years" : "year"
+    } ${diffMonths} ${diffMonths > 1 ? "months" : "month"}`;
+    console.log(totalExperience);
+    setFormData((prev) => ({ ...prev, ["years"]: diffYears }));
+    setFormData((prev) => ({ ...prev, ["months"]: diffMonths }));
+  };
+
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleDateChange = (e) => {
+    handleInputChange(e); // Update the form data
+    calculateExperience(); // Calculate experience on date change
   };
 
   function deepEqual(obj1, obj2) {
@@ -158,42 +218,34 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
           <p className="font-medium">
             Total experience<span className="text-red-500">*</span>
           </p>
-          <div className="flex gap-4 mt-2">
-            <select
-              name="years"
-              className="border p-2 w-full rounded-sm"
-              value={formData.years}
-              onChange={handleInputChange}
-              required
-            >
-              <option value="">Years</option>
-              {[...Array(50).keys()].map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-            <select
-              name="months"
-              className="border p-2 w-full rounded-sm"
-              value={formData.months}
-              onChange={handleInputChange}
-              required
-            >
-              <option value="">Months</option>
-              {[...Array(12).keys()].map((month) => (
-                <option key={month} value={month}>
-                  {month}
-                </option>
-              ))}
-            </select>
+          <div className="flex items-end gap-4 mt-2">
+            <div className="flex w-full gap-1 items-end">
+              <input
+                name="years"
+                className="border focus:border-blue-500 p-2 outline-none  text-center w-full rounded-sm"
+                value={formData.years}
+                readOnly
+                required
+              />
+              <p>years</p>
+            </div>
+            <div className="flex w-full items-end gap-1">
+              <input
+                name="months"
+                className="border focus:border-blue-500 p-2 outline-none  text-center w-full rounded-sm"
+                value={formData.months}
+                readOnly
+                required
+              />
+              <p>months</p>
+            </div>
           </div>
         </div>
         <input
           type="text"
           name="companyName"
           placeholder={`${currentlyWorkingHere === "Yes" ? "Current" : "Previous"} company name*`}
-          className="border p-2 w-full rounded-sm"
+          className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
           value={formData.companyName}
           onChange={handleInputChange}
           required
@@ -203,7 +255,7 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
             type="text"
             name="jobTitle"
             placeholder={`${currentlyWorkingHere === "Yes" ? "Current" : "Previous"} job title*`}
-            className="border h-fit p-2 w-full rounded-sm"
+            className="border outline-none focus:border-blue-500 h-fit p-2 w-full rounded-sm"
             value={formData.jobTitle}
             onChange={handleInputChange}
             required
@@ -214,7 +266,7 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
             <input
               type="number"
               name="annualSalary"
-              placeholder="Current annual salary per year*"
+              placeholder="Current outline-none focus:border-blue-500 annual salary per year*"
               className="border p-2 w-full rounded-sm"
               value={formData.annualSalary}
               onChange={handleInputChange}
@@ -223,51 +275,68 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
             <p className="text-nowrap flex items-end py-1">Per year</p>
           </div>
         )}
-        <div className="flex flex-wrap gap-4">
-        <div className="flex flex-col w-full">
-          <label htmlFor="joiningDate" className="font-medium ml-1 text-sm sm:text-base">
-            Joining date<span className="text-red-500">*</span>
-          </label>
-          <input
-            type="date"
-            name="joiningDate"
-            id="joiningDate"
-            className="border bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
-            value={formData.joiningDate}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        {formData.currentlyWorking === "No" ? (
-          <div className="flex flex-col w-full">
-            <label htmlFor="leavingDate" className="font-medium ml-1 text-sm sm:text-base">
-              Leaving date<span className="text-red-500">*</span>
-            </label>
-            <input
-              type="date"
-              name="leavingDate"
-              id="leavingDate"
-              className="border bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
-              value={formData.leavingDate}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-        ) : (
-          <p className="border px-4 py-2 flex items-center text-blue-500 w-full text-sm sm:text-base">
-            Present
-          </p>
-        )}
-      </div>
-
         {isFullTime && (
-          <div>
+          <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col w-full">
+              <label
+                htmlFor="joiningDate"
+                className="font-medium ml-1 outline-none focus:border-blue-500 text-sm sm:text-base"
+              >
+                Joining date<span className="text-red-500">*</span>
+              </label>
+              <input
+                type="date"
+                name="joiningDate"
+                id="joiningDate"
+                className="border bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
+                value={formData.joiningDate}
+                onChange={handleDateChange}
+                min={minDateFormatted}
+                max={todayFormatted}
+                required
+              />
+            </div>
+            {formData.currentlyWorking === "No" ? (
+              <div className="flex flex-col w-full">
+                <label
+                  htmlFor="leavingDate"
+                  className="font-medium ml-1 text-sm sm:text-base"
+                >
+                  Leaving date<span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="date"
+                  name="leavingDate"
+                  id="leavingDate"
+                  className="border  focus:border-blue-500 bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
+                  value={formData.leavingDate}
+                  onChange={handleDateChange}
+                  min={formData.joiningDate}
+                  max={todayFormatted}
+                  required
+                />
+              </div>
+            ) : (
+              <p className="border px-4 py-2 flex items-center text-blue-500 w-full text-sm sm:text-base">
+                Present
+              </p>
+            )}
+          </div>
+        )}
+
+        {isFullTime && formData.currentlyWorking == "Yes" && (
+          <div className="w-full z-40">
             <p className="font-medium">Notice period</p>
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="flex flex-wrap gap-2 px-2  mt-2">
               {noticePeriodOptions.map((notice_period) => (
                 <p
                   key={notice_period}
-                  onClick={() => setFormData((prev) => ({ ...prev, ["noticePeriod"]: notice_period }))}
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      ["noticePeriod"]: notice_period,
+                    }))
+                  }
                   className={`px-4 border py-1 cursor-pointer text-sm w-fit text-nowrap rounded-md transition-all ease-in-out 0.3ms ${
                     notice_period === formData.noticePeriod
                       ? "scale-110 bg-blue-50 border-blue-500 font-medium text-blue-500"

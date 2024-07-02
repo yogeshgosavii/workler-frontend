@@ -234,7 +234,7 @@ const todayFormatted = today.toISOString().split("T")[0];
             <div className="flex w-full gap-1 items-end">
               <input
                 name="years"
-                className="border focus:border-blue-500 p-2 outline-none  text-center w-full rounded-sm"
+                className="border  focus:border-blue-500 p-2 outline-none  text-center w-full rounded-sm"
                 value={formData.years}
                 readOnly
                 required
@@ -259,7 +259,7 @@ const todayFormatted = today.toISOString().split("T")[0];
           placeholder={`${
             currentlyWorkingHere === "Yes" ? "Current" : "Previous"
           } company name*`}
-          className="border p-2 w-full rounded-sm"
+          className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
           value={formData.companyName}
           onChange={handleInputChange}
           required
@@ -271,7 +271,7 @@ const todayFormatted = today.toISOString().split("T")[0];
             placeholder={`${
               currentlyWorkingHere === "Yes" ? "Current" : "Previous"
             } job title*`}
-            className="border h-fit p-2 w-full rounded-sm"
+            className="border outline-none focus:border-blue-500 h-fit p-2 w-full rounded-sm"
             value={formData.jobTitle}
             onChange={handleInputChange}
             required
@@ -283,7 +283,7 @@ const todayFormatted = today.toISOString().split("T")[0];
               type="number"
               name="annualSalary"
               placeholder="Current annual salary per year*"
-              className="border p-2 w-full rounded-sm"
+              className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
               value={formData.annualSalary}
               onChange={handleInputChange}
               required
@@ -297,7 +297,7 @@ const todayFormatted = today.toISOString().split("T")[0];
             <div className="flex flex-col w-full">
               <label
                 htmlFor="joiningDate"
-                className="font-medium ml-1 text-sm sm:text-base"
+                className="font-medium ml-1  text-sm sm:text-base"
               >
                 Joining date<span className="text-red-500">*</span>
               </label>
@@ -305,7 +305,7 @@ const todayFormatted = today.toISOString().split("T")[0];
                 type="date"
                 name="joiningDate"
                 id="joiningDate"
-                className="border bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
+                className="border  focus:border-blue-500 bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
                 value={formData.joiningDate}
                 onChange={handleDateChange}
                 min={minDateFormatted}
@@ -325,7 +325,7 @@ const todayFormatted = today.toISOString().split("T")[0];
                   type="date"
                   name="leavingDate"
                   id="leavingDate"
-                  className="border bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
+                  className="border focus:border-blue-500 bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
                   value={formData.leavingDate}
                   onChange={handleDateChange}
                   min={formData.joiningDate}
