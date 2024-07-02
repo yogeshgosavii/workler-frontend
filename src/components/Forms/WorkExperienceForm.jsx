@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Button from "../Button/Button";
 import useProfileApi from "../../services/profileService";
 
-function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
+function WorkExperienceForm({ onClose, initialData, setWorkExperience }) {
   const workTypeOptions = ["Full-time", "Internship"];
   const departmentOptions = [
     "Engineering",
@@ -18,8 +18,7 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
     "3 Months",
     "More than 3 Months",
   ];
-  const profileApi = useProfileApi()
-
+  const profileApi = useProfileApi();
 
   const [workExperienceType, setWorkExperienceType] = useState(
     initialData?.employmentType
@@ -28,9 +27,7 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
     initialData?.currentWorking
   );
   const [currentPage, setCurrentPage] = useState(0);
-  const [noticePeriod, setNoticePeriod] = useState(
-    noticePeriodOptions[0] 
-  );
+  const [noticePeriod, setNoticePeriod] = useState(noticePeriodOptions[0]);
   const [formData, setFormData] = useState({
     years: "",
     months: "",
@@ -44,7 +41,7 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
     stipend: "",
     employmentType: workExperienceType,
     currentlyWorking: currentlyWorkingHere,
-    "noticePeriod": noticePeriodOptions[0],
+    noticePeriod: noticePeriodOptions[0],
   });
 
   useEffect(() => {
@@ -67,8 +64,14 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
   }, [workExperienceType]);
 
   const handleNext = () => {
-    setFormData((prev) => ({ ...prev, ["currentlyWorking"]: currentlyWorkingHere }));
-    setFormData((prev) => ({ ...prev, ["employmentType"]: workExperienceType }));
+    setFormData((prev) => ({
+      ...prev,
+      ["currentlyWorking"]: currentlyWorkingHere,
+    }));
+    setFormData((prev) => ({
+      ...prev,
+      ["employmentType"]: workExperienceType,
+    }));
 
     if (currentPage < pages.length - 1) {
       setCurrentPage(currentPage + 1);
@@ -82,17 +85,15 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
 
   const onSave = async () => {
     try {
-
       // Filter out the empty fields from formData
       const nonEmptyData = Object.fromEntries(
         Object.entries(formData).filter(([key, value]) => value !== "")
       );
-        // Add new work experience
-        const data = await profileApi.workExperience.add(nonEmptyData);
-        console.log("data", data);
-        setWorkExperience(prev=>[...prev,data])
-        onClose()
-    
+      // Add new work experience
+      const data = await profileApi.workExperience.add(nonEmptyData);
+      console.log("data", data);
+      setWorkExperience((prev) => [...prev, data]);
+      onClose();
     } catch (error) {
       console.error("Error while saving work experience:", error);
       // Handle the error, e.g., display an error message to the user
@@ -107,14 +108,68 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
       onClose();
     }
   };
+// Get today's date
+const today = new Date();
+
+// Calculate 20 years ago from today
+const minDate = new Date();
+minDate.setFullYear(today.getFullYear() - 20);
+
+// Format minDate to 'YYYY-MM-DD' for input[type="date"]
+const minDateFormatted = minDate.toISOString().split("T")[0];
+
+// Format today to 'YYYY-MM-DD' for input[type="date"]
+const todayFormatted = today.toISOString().split("T")[0];
+
+  const calculateExperience = () => {
+    let { joiningDate, leavingDate } = formData;
+    // console.log(joiningDate, leavingDate);
+    if (!joiningDate || !leavingDate) {
+      if(formData.currentlyWorking == "Yes"){
+        leavingDate = todayFormatted
+
+      }
+      else{
+        return "Please enter both joining and leaving dates.";
+
+      }
+    }
 
 
+    const joinDate = new Date(joiningDate);
+    const leaveDate = new Date(leavingDate);
+
+    if (leaveDate < joinDate) {
+      return "Leaving date cannot be before joining date.";
+    }
+
+    // Calculate the difference in years and months
+    const diffYears = leaveDate.getFullYear() - joinDate.getFullYear();
+    const diffMonths = leaveDate.getMonth() - joinDate.getMonth();
+
+    let totalExperience = "";
+
+    if (diffMonths < 0) {
+      diffYears--;
+      diffMonths += 12;
+    }
+
+    totalExperience = `${diffYears} ${
+      diffYears > 1 ? "years" : "year"
+    } ${diffMonths} ${diffMonths > 1 ? "months" : "month"}`;
+    console.log(totalExperience);
+    setFormData((prev) => ({ ...prev, ["years"]: diffYears }));
+    setFormData((prev) => ({ ...prev, ["months"]: diffMonths }));
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
+  const handleDateChange = (e) => {
+    handleInputChange(e); // Update the form data
+    calculateExperience(); // Calculate experience on date change
+  };
   const handleWorkExperienceTypeChange = (type) => {
     console.log("Selected employment type:", type);
     setWorkExperienceType(type);
@@ -123,8 +178,6 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
 
   const isFormValid = () => {
     const {
-      years,
-      months,
       companyName,
       jobTitle,
       joiningDate,
@@ -134,8 +187,9 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
       leavingDate,
       stipend,
     } = formData;
+    console.log(formData);
 
-    if (!years || !months || !companyName || !jobTitle) {
+    if ( !companyName || !jobTitle) {
       return false;
     }
 
@@ -164,42 +218,39 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
   const renderWorkForm = () => {
     const isFullTime = workExperienceType === "Full-time";
     const isCurrentlyWorking = currentlyWorkingHere === "Yes";
+    
 
     return (
-      <div className="flex flex-col gap-5 pb-6">
+      <div className="flex flex-col gap-5 ">
         <div>
           <p className="font-medium">
-            Total experience<span className="text-red-500">*</span>
+            Total experience
+            <span className="text-sm text-gray-400 font-normal">
+              {" "}
+              (Auto Generated)
+            </span>
           </p>
-          <div className="flex gap-4 mt-2">
-            <select
-              name="years"
-              className="border p-2 w-full rounded-sm"
-              value={formData.years}
-              onChange={handleInputChange}
-              required
-            >
-              <option value="">Years</option>
-              {[...Array(50).keys()].map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-            <select
-              name="months"
-              className="border p-2 w-full rounded-sm"
-              value={formData.months}
-              onChange={handleInputChange}
-              required
-            >
-              <option value="">Months</option>
-              {[...Array(12).keys()].map((month) => (
-                <option key={month} value={month}>
-                  {month}
-                </option>
-              ))}
-            </select>
+          <div className="flex items-end gap-4 mt-2">
+            <div className="flex w-full gap-1 items-end">
+              <input
+                name="years"
+                className="border focus:border-blue-500 p-2 outline-none  text-center w-full rounded-sm"
+                value={formData.years}
+                readOnly
+                required
+              />
+              <p>years</p>
+            </div>
+            <div className="flex w-full items-end gap-1">
+              <input
+                name="months"
+                className="border focus:border-blue-500 p-2 outline-none  text-center w-full rounded-sm"
+                value={formData.months}
+                readOnly
+                required
+              />
+              <p>months</p>
+            </div>
           </div>
         </div>
         <input
@@ -240,43 +291,55 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
             <p className="text-nowrap flex items-end py-1">Per year</p>
           </div>
         )}
-        <div className="flex flex-wrap gap-4">
-        <div className="flex flex-col w-full">
-          <label htmlFor="joiningDate" className="font-medium ml-1 text-sm sm:text-base">
-            Joining date<span className="text-red-500">*</span>
-          </label>
-          <input
-            type="date"
-            name="joiningDate"
-            id="joiningDate"
-            className="border bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
-            value={formData.joiningDate}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
-        {formData.currentlyWorking === "No" ? (
-          <div className="flex flex-col w-full">
-            <label htmlFor="leavingDate" className="font-medium ml-1 text-sm sm:text-base">
-              Leaving date<span className="text-red-500">*</span>
-            </label>
-            <input
-              type="date"
-              name="leavingDate"
-              id="leavingDate"
-              className="border bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
-              value={formData.leavingDate}
-              onChange={handleInputChange}
-              required
-            />
-          </div>
-        ) : (
-          <p className="border px-4 py-2 flex items-center text-blue-500 w-full text-sm sm:text-base">
-            Present
-          </p>
-        )}
-      </div>
 
+        {isFullTime && (
+          <div className="flex flex-wrap gap-4">
+            <div className="flex flex-col w-full">
+              <label
+                htmlFor="joiningDate"
+                className="font-medium ml-1 text-sm sm:text-base"
+              >
+                Joining date<span className="text-red-500">*</span>
+              </label>
+              <input
+                type="date"
+                name="joiningDate"
+                id="joiningDate"
+                className="border bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
+                value={formData.joiningDate}
+                onChange={handleDateChange}
+                min={minDateFormatted}
+                max={todayFormatted}
+                required
+              />
+            </div>
+            {formData.currentlyWorking === "No" ? (
+              <div className="flex flex-col w-full">
+                <label
+                  htmlFor="leavingDate"
+                  className="font-medium ml-1 text-sm sm:text-base"
+                >
+                  Leaving date<span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="date"
+                  name="leavingDate"
+                  id="leavingDate"
+                  className="border bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
+                  value={formData.leavingDate}
+                  onChange={handleDateChange}
+                  min={formData.joiningDate}
+                  max={todayFormatted}
+                  required
+                />
+              </div>
+            ) : (
+              <p className="border px-4 py-2 flex items-center text-blue-500 w-full text-sm sm:text-base">
+                Present
+              </p>
+            )}
+          </div>
+        )}
         {isFullTime && (
           <div>
             <p className="font-medium">Notice period</p>
@@ -284,7 +347,12 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
               {noticePeriodOptions.map((notice_period) => (
                 <p
                   key={notice_period}
-                  onClick={() =>  setFormData((prev) => ({ ...prev, ["noticePeriod"]: notice_period }))}
+                  onClick={() =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      ["noticePeriod"]: notice_period,
+                    }))
+                  }
                   className={`px-4 border py-1 cursor-pointer text-sm w-fit text-nowrap rounded-md transition-all ease-in-out 0.3ms ${
                     notice_period === formData.noticePeriod
                       ? "scale-110 bg-blue-50 border-blue-500 font-medium text-blue-500"
@@ -324,10 +392,7 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
             </select>
             <div className="flex gap-4 items-end">
               <div className="flex flex-col w-full">
-                <label
-                  htmlFor="joiningDate"
-                  className="font-medium ml-1"
-                >
+                <label htmlFor="joiningDate" className="font-medium ml-1">
                   Internship duration<span className="text-red-500">*</span>
                 </label>
                 <div className="flex gap-4 mt-2">
@@ -337,7 +402,9 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
                     id="joiningDate"
                     className="border bg-white px-3 py-[7px] rounded-sm duration-200 placeholder:text-gray-400 outline-none no-spin-buttons flex-1"
                     value={formData.joiningDate}
-                    onChange={handleInputChange}
+                    onChange={handleDateChange}
+                    min={minDateFormatted}
+                    // max={todayFormatted}
                     required
                   />
                   {isCurrentlyWorking ? (
@@ -351,7 +418,9 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
                       id="leavingDate"
                       className="border bg-white px-3 py-[7px] rounded-sm duration-200 placeholder:text-gray-400 outline-none no-spin-buttons flex-1"
                       value={formData.leavingDate}
-                      onChange={handleInputChange}
+                      onChange={handleDateChange}
+                      min={formData.joiningDate}
+                      max={todayFormatted}
                       required
                     />
                   )}
@@ -369,18 +438,18 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
             />
           </>
         )}
-         <div className="flex    justify-end items-center mt-6 w-full">
-        <Button className="text-blue-500 font-medium" onClick={handleBack}>
-          Cancel
-        </Button>
-        <Button
-          disabled={!isFormValid()}
-          className="bg-blue-500 rounded-full text-white disabled:bg-blue-300 disabled:cursor-not-allowed"
-          onClick={onSave}
-        >
-          { "Add"}
-        </Button>
-      </div>
+        <div className="flex    justify-end items-center mt-6 w-full">
+          <Button className="text-blue-500 font-medium" onClick={handleBack}>
+            Cancel
+          </Button>
+          <Button
+            disabled={!isFormValid()}
+            className="bg-blue-500 rounded-full text-white disabled:bg-blue-300 disabled:cursor-not-allowed"
+            onClick={onSave}
+          >
+            {"Add"}
+          </Button>
+        </div>
       </div>
     );
   };
@@ -459,14 +528,11 @@ function WorkExperienceForm({ onClose, initialData ,setWorkExperience }) {
       <div className=" sticky -top-2.5 py-4 bg-white">
         <h2 className="text-xl font-medium">Work experience</h2>
         <p className="text-sm text-gray-400  mt-1">
-          Details like job title, company name, etc help employers understand your
-          work
+          Details like job title, company name, etc help employers understand
+          your work
         </p>
       </div>
-      <div className=" mt-2 h-full">
-      {pages[currentPage].content}
-      </div>
-     
+      <div className=" mt-2 h-full">{pages[currentPage].content}</div>
     </form>
   );
 }
