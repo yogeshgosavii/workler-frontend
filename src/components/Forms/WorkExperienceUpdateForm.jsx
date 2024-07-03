@@ -95,46 +95,31 @@ const minDateFormatted = minDate.toISOString().split("T")[0];
 // Format today to 'YYYY-MM-DD' for input[type="date"]
 const todayFormatted = today.toISOString().split("T")[0];
 
-  const calculateExperience = () => {
-    let { joiningDate, leavingDate } = formData;
-    // console.log(joiningDate, leavingDate);
-    if (!joiningDate || !leavingDate) {
-      if(formData.currentlyWorking == "Yes"){
-        leavingDate = todayFormatted
+const calculateExperience = (joinDate, leaveDate) => {
+  if (!joinDate) return;
+  if (!leaveDate && currentlyWorkingHere !== "Yes") return;
 
-      }
-      else{
-        return "Please enter both joining and leaving dates.";
+  if (!leaveDate && currentlyWorkingHere === "Yes") {
+    leaveDate = todayFormatted;
+  }
 
-      }
-    }
+  joinDate = new Date(joinDate);
+  leaveDate = new Date(leaveDate);
 
+  if (leaveDate < joinDate) {
+    return "Leaving date cannot be before joining date.";
+  }
 
-    const joinDate = new Date(joiningDate);
-    const leaveDate = new Date(leavingDate);
+  let diffYears = leaveDate.getFullYear() - joinDate.getFullYear();
+  let diffMonths = leaveDate.getMonth() - joinDate.getMonth();
 
-    if (leaveDate < joinDate) {
-      return "Leaving date cannot be before joining date.";
-    }
+  if (diffMonths < 0) {
+    diffYears--;
+    diffMonths += 12;
+  }
 
-    // Calculate the difference in years and months
-    const diffYears = leaveDate.getFullYear() - joinDate.getFullYear();
-    const diffMonths = leaveDate.getMonth() - joinDate.getMonth();
-
-    let totalExperience = "";
-
-    if (diffMonths < 0) {
-      diffYears--;
-      diffMonths += 12;
-    }
-
-    totalExperience = `${diffYears} ${
-      diffYears > 1 ? "years" : "year"
-    } ${diffMonths} ${diffMonths > 1 ? "months" : "month"}`;
-    console.log(totalExperience);
-    setFormData((prev) => ({ ...prev, ["years"]: diffYears }));
-    setFormData((prev) => ({ ...prev, ["months"]: diffMonths }));
-  };
+  setFormData((prev) => ({ ...prev, years: diffYears, months: diffMonths }));
+};
 
 
   const handleInputChange = (e) => {
@@ -143,8 +128,14 @@ const todayFormatted = today.toISOString().split("T")[0];
   };
 
   const handleDateChange = (e) => {
-    handleInputChange(e); // Update the form data
-    calculateExperience(); // Calculate experience on date change
+    const { name, value } = e.target;
+    const updatedFormData = { ...formData, [name]: value };
+  
+    setFormData(updatedFormData);
+  
+    const joinDate = name === "joiningDate" ? value : formData.joiningDate;
+    const leaveDate = name === "leavingDate" ? value : formData.leavingDate;
+    calculateExperience(joinDate, leaveDate);
   };
 
   function deepEqual(obj1, obj2) {
