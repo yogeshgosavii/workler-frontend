@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "../Button/Button";
 import useProfileApi from "../../services/profileService";
+import { set } from "date-fns/fp/set";
 
 function WorkExperienceForm({ onClose, initialData, setWorkExperience }) {
   const workTypeOptions = ["Full-time", "Internship"];
@@ -11,6 +12,8 @@ function WorkExperienceForm({ onClose, initialData, setWorkExperience }) {
     "Human Resources",
     "Sales",
   ];
+
+  console.log(workExperienceData);
   const noticePeriodOptions = [
     "15 days or less",
     "1 Month",
@@ -19,7 +22,7 @@ function WorkExperienceForm({ onClose, initialData, setWorkExperience }) {
     "More than 3 Months",
   ];
   const profileApi = useProfileApi();
-
+  
   const [workExperienceType, setWorkExperienceType] = useState(
     initialData?.employmentType
   );
@@ -85,18 +88,21 @@ function WorkExperienceForm({ onClose, initialData, setWorkExperience }) {
 
   const onSave = async () => {
     try {
-      // Filter out the empty fields from formData
+      if (formData.currentlyWorking == "No") {
+        setFormData((prev) => ({
+          ...prev,
+          ["noticePeriod"]: null,
+        }))
+      }
       const nonEmptyData = Object.fromEntries(
         Object.entries(formData).filter(([key, value]) => value !== "")
       );
-      // Add new work experience
       const data = await profileApi.workExperience.add(nonEmptyData);
       console.log("data", data);
       setWorkExperience((prev) => [...prev, data]);
       onClose();
     } catch (error) {
       console.error("Error while saving work experience:", error);
-      // Handle the error, e.g., display an error message to the user
     }
   };
 
@@ -213,7 +219,8 @@ const calculateExperience = (joinDate, leaveDate) => {
     
 
     return (
-      <div className="flex flex-col gap-5 ">
+      <div className="flex flex-col h-full gap-5 ">
+        <div className="flex-1 flex flex-col gap-5 ">
         <div>
           <p className="font-medium">
             Total experience
@@ -332,7 +339,7 @@ const calculateExperience = (joinDate, leaveDate) => {
             )}
           </div>
         )}
-        {isFullTime && (
+        {isFullTime && formData.currentlyWorking == "Yes" && (
           <div>
             <p className="font-medium">Notice period</p>
             <div className="flex flex-wrap gap-2 mt-2">
@@ -429,7 +436,7 @@ const calculateExperience = (joinDate, leaveDate) => {
               required
             />
           </>
-        )}
+        )}</div>
         <div className="flex    justify-end items-center mt-6 w-full">
           <Button className="text-blue-500 font-medium" onClick={handleBack}>
             Cancel

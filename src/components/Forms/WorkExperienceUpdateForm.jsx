@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Button from "../Button/Button";
 import useProfileApi from "../../services/profileService";
+import { de } from "date-fns/locale/de";
 
 function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperienceData }) {
   const workTypeOptions = ["Full-time", "Internship"];
@@ -406,7 +407,7 @@ const calculateExperience = (joinDate, leaveDate) => {
     const updatedWorkExperienceData = {
       _id: workExperienceData._id,  // Include the ID to update the correct entry
       employmentType: workExperienceType,
-      currentlyWorking: currentlyWorkingHere,
+      currentlyWorking: formData.currentlyWorking,
       years: formData.years,
       months: formData.months,
       companyName: formData.companyName,
@@ -415,15 +416,14 @@ const calculateExperience = (joinDate, leaveDate) => {
       annualSalary: formData.annualSalary,
       location: formData.location,
       department: formData.department,
-      leavingDate: formData.leavingDate,
+      leavingDate:  formData.currentlyWorking == "No"  ?  formData.leavingDate : null,
       stipend: formData.stipend,
-      noticePeriod : formData.noticePeriod
+      noticePeriod : formData.currentlyWorking == "Yes"  ? formData.noticePeriod : null
     };
+    
 
     try {
-      const token = localStorage.getItem("token");
       const updatedData = await profileApi.workExperience.update(workExperienceData._id, updatedWorkExperienceData);
-      // Update the work experience data in the parent component's state
       setWorkExperienceData(prevData => prevData.map(exp => exp._id === updatedData._id ? updatedData : exp));
       onClose();
     } catch (error) {
@@ -433,7 +433,7 @@ const calculateExperience = (joinDate, leaveDate) => {
 
   return (
     <form onSubmit={handleUpdate} className="relative bg-white pt-2 pb-6 px-4 sm:px-8 flex flex-col justify-between rounded-sm w-full h-full sm:h-full overflow-y-auto">
-      <div className="flex flex-col  w-full justify-between  bg-white pb-5 pt-2 z-20">
+      <div className="flex flex-col flex-1  w-full justify-between  bg-white pb-5 pt-2 z-20">
       <div className=" sticky z-10 -top-2.5 py-4   bg-white">
         <h2 className="text-xl font-medium">Work experience</h2>
          <p className="text-sm text-gray-400  mt-1">

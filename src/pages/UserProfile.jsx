@@ -495,7 +495,7 @@ const UserProfile = () => {
                 const formattedJoiningDate = data.start_date
                   ? format(new Date(data.joiningDate), "MMMM yyyy")
                   : "";
-                const formattedLeavingDate = data.end_date
+                const formattedLeavingDate = data.end_date 
                   ? format(new Date(data.leavingDate), "MMMM yyyy")
                   : "Present";
 
