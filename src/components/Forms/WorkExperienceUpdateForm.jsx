@@ -43,7 +43,8 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData,workExperienceFu
     leavingDate: formatDate(workExperienceData.leavingDate),
     stipend: workExperienceData.stipend,
     currentlyWorking: workExperienceData.currentlyWorking,
-    noticePeriod : workExperienceData.noticePeriod
+    noticePeriod : workExperienceData.noticePeriod,
+
 
   });
   const [formData, setFormData] = useState({
@@ -58,8 +59,7 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData,workExperienceFu
     leavingDate: formatDate(workExperienceData.leavingDate),
     stipend: workExperienceData.stipend,
     currentlyWorking: workExperienceData.currentlyWorking,
-    noticePeriod : workExperienceData.noticePeriod
-
+    noticePeriod : workExperienceData.noticePeriod,
 
   });
   console.log(formData);
@@ -164,17 +164,63 @@ const calculateExperience = (joinDate, leaveDate) => {
     // Iterate over the keys of obj1
     for (let key of keys1) {
         // Check if obj2 has the key and the values of the key are deeply equal
-        if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
-            return false;
-        }
+       if(formData.currentlyWorking == "Yes" && key == "leavingDate"){
+        continue
+       }
+       if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
+        return false;
+    }
     }
 
     // If all checks pass, the objects are deeply equal
     return true;
 }
+const isFormValidCheck = () => {
+  const {
+    companyName,
+    jobTitle,
+    joiningDate,
+    annualSalary,
+    location,
+    department,
+    leavingDate,
+    stipend,
+    currentlyWorking,
+    employmentType
+  } = formData;
+  console.log(workExperienceData.employmentType);
 
+  if ( !companyName || !jobTitle) {
+    return false;
+  }
+
+  console.log(currentlyWorking,employmentType);
+  if (workExperienceData.employmentType === "Full-time") {
+    if (currentlyWorking === "Yes" && !annualSalary) {
+    
+      return false;
+    } else if (currentlyWorking == "No" && (!leavingDate || leavingDate == "")) {
+      console.log("hello");
+      return false;
+    }
+  } else {
+    if (!location || !department || !stipend || !joiningDate) {
+      return false;
+    } else {
+      return true;
+    }
+    if (currentlyWorkingHere === "No" && !leavingDate) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  return true;
+};
   const isFormValid = () => {
-    if (deepEqual(previousFormData, formData)) {
+    console.log(isFormValidCheck());
+    if (isFormValidCheck() && !deepEqual(previousFormData, formData)) {
         return false;
     }
     return true;
@@ -194,7 +240,15 @@ const calculateExperience = (joinDate, leaveDate) => {
               <p
                 key={type}
                 onClick={() => {
-                 currentWorkingSomeWhere && workExperienceData.currentlyWorking == "Yes" ? setFormData((prev) => ({ ...prev, ["currentlyWorking"]: type })):null;
+                  if(currentWorkingSomeWhere){
+                    if( workExperienceData.currentlyWorking == "Yes"){
+                      setFormData((prev) => ({ ...prev, ["currentlyWorking"]: type }))
+                    }
+                  }
+                  else{
+                    setFormData((prev) => ({ ...prev, ["currentlyWorking"]: type }))
+                  }
+                 
                 }}
                 className={`${
                   formData.currentlyWorking == type
@@ -457,7 +511,7 @@ const calculateExperience = (joinDate, leaveDate) => {
             size="md"
             className="bg-blue-500 disabled:bg-blue-300 text-white"
             type="submit"
-            disabled={!isFormValid()}
+            disabled={isFormValid()}
           >
             Update
           </Button>
