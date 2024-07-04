@@ -3,7 +3,7 @@ import Button from "../Button/Button";
 import useProfileApi from "../../services/profileService";
 import { set } from "date-fns/fp/set";
 
-function WorkExperienceForm({ onClose, initialData, setWorkExperience }) {
+function WorkExperienceForm({ onClose, initialData, setData ,data }) {
   const workTypeOptions = ["Full-time", "Internship"];
   const departmentOptions = [
     "Engineering",
@@ -13,7 +13,9 @@ function WorkExperienceForm({ onClose, initialData, setWorkExperience }) {
     "Sales",
   ];
 
-  console.log(workExperienceData);
+  console.log(data);
+  const currentWorkingSomeWhere = data.some(experience =>experience.currentlyWorking == "Yes")
+  console.log(currentWorkingSomeWhere);
   const noticePeriodOptions = [
     "15 days or less",
     "1 Month",
@@ -23,14 +25,11 @@ function WorkExperienceForm({ onClose, initialData, setWorkExperience }) {
   ];
   const profileApi = useProfileApi();
   
-  const [workExperienceType, setWorkExperienceType] = useState(
-    initialData?.employmentType
-  );
-  const [currentlyWorkingHere, setCurrentlyWorkingHere] = useState(
-    initialData?.currentWorking
-  );
+  const [workExperienceType, setWorkExperienceType] = useState();
+  const [currentlyWorkingHere, setCurrentlyWorkingHere] = useState(currentWorkingSomeWhere?"No":null);
   const [currentPage, setCurrentPage] = useState(0);
   const [noticePeriod, setNoticePeriod] = useState(noticePeriodOptions[0]);
+  set
   const [formData, setFormData] = useState({
     years: "",
     months: "",
@@ -99,7 +98,7 @@ function WorkExperienceForm({ onClose, initialData, setWorkExperience }) {
       );
       const data = await profileApi.workExperience.add(nonEmptyData);
       console.log("data", data);
-      setWorkExperience((prev) => [...prev, data]);
+      setData((prev) => [...prev, data]);
       onClose();
     } catch (error) {
       console.error("Error while saving work experience:", error);
@@ -464,7 +463,7 @@ const calculateExperience = (joinDate, leaveDate) => {
                 {["Yes", "No"].map((type) => (
                   <p
                     key={type}
-                    onClick={() => setCurrentlyWorkingHere(type)}
+                    onClick={() => !currentWorkingSomeWhere?setCurrentlyWorkingHere(type):null}
                     className={`${
                       currentlyWorkingHere === type
                         ? "bg-blue-50 text-blue-500 border-blue-500 font-semibold"

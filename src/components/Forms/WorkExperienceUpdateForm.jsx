@@ -3,7 +3,7 @@ import Button from "../Button/Button";
 import useProfileApi from "../../services/profileService";
 import { de } from "date-fns/locale/de";
 
-function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperienceData }) {
+function WorkExperienceUpdateForm({ onClose, workExperienceData,workExperienceFullData, setWorkExperienceData }) {
   const workTypeOptions = ["Full-time", "Internship"];
   const departmentOptions = [
     "Engineering",
@@ -27,7 +27,8 @@ function WorkExperienceUpdateForm({ onClose, workExperienceData, setWorkExperien
     return date.toISOString().split('T')[0];
   };
 
-  console.log(workExperienceData);
+  const currentWorkingSomeWhere = workExperienceFullData.some(experience =>experience.currentlyWorking == "Yes")
+  console.log(currentWorkingSomeWhere);
   const [workExperienceType, setWorkExperienceType] = useState(workExperienceData.employmentType);
   const [currentlyWorkingHere, setCurrentlyWorkingHere] = useState(workExperienceData.currentWorking);
   const [previousFormData, setpreviousFormData] = useState({
@@ -193,7 +194,7 @@ const calculateExperience = (joinDate, leaveDate) => {
               <p
                 key={type}
                 onClick={() => {
-                  setFormData((prev) => ({ ...prev, ["currentlyWorking"]: type }));
+                 currentWorkingSomeWhere && workExperienceData.currentlyWorking == "Yes" ? setFormData((prev) => ({ ...prev, ["currentlyWorking"]: type })):null;
                 }}
                 className={`${
                   formData.currentlyWorking == type

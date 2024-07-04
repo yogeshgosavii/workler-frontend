@@ -543,18 +543,29 @@ const UserProfile = () => {
             className="fixed z-20 w-full border h-full sm:h-fit sm:max-w-md mx-auto"
             onClick={(e) => e.stopPropagation()}
           >
+            {console.log(formType)}
             {React.createElement(FormComponents[formType], {
               onClose: closeForm,
               setData:
-                formType === "Skill"
+                formType === "skills"
                   ? setSkillData
-                  : formType === "Education"
+                  : formType === "education"
                   ? setEducationData
-                  : formType === "WorkExperience"
+                  : formType === "work_experience"
                   ? setWorkExperienceData
-                  : formType === "PersonalDetails"
+                  : formType === "personalDetails"
                   ? setPersonalData
                   : null,
+              data:
+              formType == "skill"
+                ? skillData
+                : formType =="education"
+                ? educationData
+                : formType == "work_experience"
+                ? workExperienceData
+                : formType == "personalDetails"
+                ? personalData
+                : null,
             })}
           </div>
         </div>
@@ -605,6 +616,7 @@ const UserProfile = () => {
             <WorkExperienceUpdateForm
               onClose={() => setUpdateForm({ workExperience: false })}
               workExperienceData={updateData.workExperience}
+              workExperienceFullData = {workExperienceData}
               setWorkExperienceData={setWorkExperienceData}
             />
           </div>
