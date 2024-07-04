@@ -572,11 +572,11 @@ const UserProfile = () => {
       )}
       {updateForm.education && (
         <div
-          className="fixed inset-0 z-10 flex justify-center items-center bg-black bg-opacity-50"
+          className="fixed inset-0 z-10 flex justify-center border w-full h-full sm:h-fit items-center bg-black bg-opacity-50"
           onClick={() => setUpdateForm({ education: false })}
         >
           <div
-            className="fixed z-20 w-full max-w-md mx-auto"
+            className="fixed z-20 w-full h-full max-w-md mx-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <EducationUpdateForm

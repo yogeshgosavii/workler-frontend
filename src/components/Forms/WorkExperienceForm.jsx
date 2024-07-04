@@ -29,7 +29,6 @@ function WorkExperienceForm({ onClose, initialData, setData ,data }) {
   const [currentlyWorkingHere, setCurrentlyWorkingHere] = useState(currentWorkingSomeWhere?"No":null);
   const [currentPage, setCurrentPage] = useState(0);
   const [noticePeriod, setNoticePeriod] = useState(noticePeriodOptions[0]);
-  set
   const [formData, setFormData] = useState({
     years: "",
     months: "",

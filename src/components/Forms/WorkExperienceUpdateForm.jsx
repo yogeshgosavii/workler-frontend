@@ -497,7 +497,7 @@ const isFormValidCheck = () => {
       </div>
         <div className=" mb-10">{renderWorkForm()}</div>
       </div>
-      <div className="static  bottom-0   right-0 left-0 flex items-center justify-between  bg-white py-2 px-3 z-20">
+      <div className="static  bottom-0   right-0 left-0 flex items-center justify-between  bg-white px-3 z-20">
         <svg onClick={onDelete} className="h-6 w-6 cursor-pointer text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="3 6 5 6 21 6" />
           <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
