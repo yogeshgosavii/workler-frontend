@@ -382,6 +382,12 @@ const UserProfile = () => {
                 data.educationType == "Post Graduate" ||
                 data.educationType == "Graduate"
               ) {
+                const formattedStartMonth = data.start_month
+                  ? format(new Date(data.start_month), "MMMM yyyy")
+                  : "";
+                const formattedEndMonth = data.end_month
+                  ? format(new Date(data.end_month), "MMMM yyyy")
+                  : "Present";
                 return (
                   <div
                     key={index}
@@ -398,7 +404,7 @@ const UserProfile = () => {
                     </p>
                     <p className="">{data.university}</p>
                     <p className="text-sm text-gray-400">
-                      {data.start_year}-{data.end_year}
+                      {formattedStartMonth} - {formattedEndMonth}
                     </p>
                   </div>
                 );
@@ -421,7 +427,7 @@ const UserProfile = () => {
                     </p>
                     <p className="">{data.board}</p>
                     <p className="text-sm text-gray-400">
-                      {data.passing_out_year}
+                      {data.passing_out_month}
                     </p>
                   </div>
                 );

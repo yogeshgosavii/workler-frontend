@@ -4,39 +4,44 @@ import useProfileApi from "../../services/profileService";
 
 function EducationUpdateForm({
   educationdata,
-  setEducationData,
+  seteducationdata,
   onClose,
   index,
 }) {
   const [formData, setFormData] = useState(educationdata);
-  console.log("form", educationdata);
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
   const profileApi = useProfileApi();
 
+  const today = new Date();
+  const todayFormatted = today.toISOString().split("T")[0].slice(0, 7); // Format: YYYY-MM
+  const minDate = new Date(today.getFullYear() - 100, today.getMonth());
+  const minDateFormatted = minDate.toISOString().split("T")[0].slice(0, 7); // Format: YYYY-MM
+  const formatDate = (dateString) => {
+    return new Date(dateString).toISOString().split("T")[0].slice(0, 7);
+  };
+
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+    value = isNaN(Number(value)) ? value : Number(value);
+
     setFormData((prevState) => ({ ...prevState, [name]: value }));
-    console.log(formData);
   };
 
   const onSave = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
     try {
-      const updatedEducationData = await profileApi.education.update(
+      const updatededucationdata = await profileApi.education.update(
         formData._id,
         formData
       );
-      console.log("Updated education data:", updatedEducationData);
       onClose();
-      setEducationData((prevData) => {
+      seteducationdata((prevData) => {
         return prevData.map((item) => {
-          // If the item has the same ID as the new data, replace it with the new data
           if (item._id === formData._id) {
             return formData;
           }
-          // Otherwise, keep the item unchanged
           return item;
         });
       });
@@ -49,41 +54,86 @@ function EducationUpdateForm({
     e.preventDefault();
     const token = localStorage.getItem("token");
     try {
-      const updatedEducationData = await profileApi.education.delete(
-        formData._id,
-        token
-      );
-      console.log("Updated education data:", updatedEducationData);
+      await profileApi.education.delete(formData._id, token);
       onClose();
     } catch (error) {
       console.error("Error updating education data:", error);
     }
   };
-
-  const isSaveDisabled = () => {
+  const deepEqual = (obj1, obj2) => {
+    // Check if both values are strictly equal
+    if (obj1 === obj2) {
+      return true;
+    }
+  
+    // Check if either value is not an object or is null
+    if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
+      return false;
+    }
+  
+    // Get the keys of both objects
+    let keys1 = Object.keys(obj1);
+    let keys2 = Object.keys(obj2);
+  
+    // Check if the number of keys is different
+    if (keys1.length !== keys2.length) {
+      return false;
+    }
+  
+    // Iterate over the keys of obj1
+    for (let key of keys1) {
+      // Check if obj2 has the key and the values of the key are deeply equal
+      if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
+        // Handle special case for numeric values to consider them equal if numeric value is same
+        if (typeof obj1[key] === 'number' && typeof obj2[key] === 'number' && obj1[key] === obj2[key]) {
+          continue; // Continue checking other keys
+        }
+        return false;
+      }
+    }
+  
+    // If all checks pass, the objects are deeply equal
+    return true;
+  };
+  
+  console.log('formData:', formData);
+  console.log('educationdata:', educationdata);
+  console.log('Deep equal result:', deepEqual(formData, educationdata));
+    const isUpdateDisabled = () => {
     switch (educationdata.educationType) {
       case "Post Graduate":
       case "Graduate":
         return !(
           formData.university &&
           formData.course &&
+          formData.marking_system &&
+          (formData.marking_system === "Percentage"
+            ? formData.percentage
+            : formData.obtained_grades && formData.maximum_grades) &&
           formData.specialization &&
-          formData.start_year &&
-          formData.end_year
+          formData.start_month &&
+          formData.end_month &&
+          formData.educationMode &&
+          !deepEqual(formData,educationdata)
         );
       case "Class XII":
         return !(
           formData.board &&
           formData.school_name &&
           formData.passing_out_year &&
-          formData.marks
+          formData.percentage &&
+          formData.maths &&
+          formData.physics &&
+          formData.chemistry &&
+          !deepEqual(formData,educationdata)
         );
       case "Class X":
         return !(
           formData.board &&
           formData.school_name &&
           formData.passing_out_year &&
-          formData.marks
+          formData.percentage &&
+          !deepEqual(formData,educationdata)
         );
       default:
         return true;
@@ -100,7 +150,7 @@ function EducationUpdateForm({
               type="text"
               name="university"
               placeholder="University/Institute name*"
-              className="border p-2 w-full rounded-sm"
+              className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
               value={formData.university}
               onChange={handleInputChange}
             />
@@ -108,7 +158,7 @@ function EducationUpdateForm({
               type="text"
               name="course"
               placeholder="Course"
-              className="border p-2 w-full rounded-sm"
+              className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
               value={formData.course}
               onChange={handleInputChange}
             />
@@ -116,23 +166,83 @@ function EducationUpdateForm({
               type="text"
               name="specialization"
               placeholder="Specialization"
-              className="border p-2 w-full rounded-sm"
+              className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
               value={formData.specialization}
               onChange={handleInputChange}
             />
+            <div className="flex gap-2">
+              {["Percentage", "Grades"].map((marking) => (
+                <p
+                  key={marking}
+                  name="marking_system"
+                  onClick={() => {
+                    if (marking === "Percentage") {
+                      setFormData((prevState) => ({
+                        ...prevState,
+                        obtained_grades: "",
+                        maximum_grades: "",
+                      }));
+                    } else {
+                      setFormData((prevState) => ({
+                        ...prevState,
+                        percentage: "",
+                      }));
+                    }
+                    handleInputChange({
+                      target: { name: "marking_system", value: marking },
+                    });
+                  }}
+                  className={`${
+                    marking === formData.marking_system
+                      ? "bg-blue-50 border-blue-500 text-blue-500"
+                      : "border text-gray-500"
+                  } border cursor-pointer px-4 py-1 w-fit rounded-md`}
+                >
+                  {marking}
+                </p>
+              ))}
+            </div>
             <input
               type="number"
-              name="grades"
-              placeholder="Grade out of 10"
-              className="border p-2 w-full rounded-sm"
-              value={formData.grades}
+              name="percentage"
+              placeholder="Percentage"
+              className={`${
+                formData.marking_system === "Percentage" ? null : "hidden"
+              } border outline-none focus:border-blue-500 p-2 w-full rounded-sm`}
+              value={formData.percentage}
+              max="100"
               onChange={handleInputChange}
             />
+            <div
+              className={`flex gap-4 ${
+                formData.marking_system === "Grades" ? null : "hidden"
+              }`}
+            >
+              <input
+                type="number"
+                name="obtained_grades"
+                placeholder="Obtained grades"
+                className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
+                value={formData.obtained_grades}
+                max={formData.maximum_grades}
+                min="0"
+                onChange={handleInputChange}
+              />
+              <input
+                type="number"
+                name="maximum_grades"
+                placeholder="Maximum grades"
+                min="0"
+                className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
+                value={formData.maximum_grades}
+                onChange={handleInputChange}
+              />
+            </div>
             <div className="flex gap-2">
               {["Full time", "Part time"].map((mode) => (
                 <p
                   key={mode}
-                  name = "educationMode"
+                  name="educationMode"
                   onClick={() =>
                     handleInputChange({
                       target: { name: "educationMode", value: mode },
@@ -148,33 +258,27 @@ function EducationUpdateForm({
                 </p>
               ))}
             </div>
-            <div className="flex gap-4 w-full flex-wrap">
-              <select
-                name="start_year"
-                className="border p-2 w-fit rounded-sm max-w-40"
-                value={formData.start_year}
+            <div className="flex gap-4 w-full ">
+            <input
+                type="month"
+                name="start_month"
+                placeholder="Start Date*"
+                className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
+                value={formatDate(formData.start_month)}
                 onChange={handleInputChange}
-              >
-                <option value="">Start year</option>
-                {years.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-              <select
-                name="end_year"
-                className="border p-2 w-fit rounded-sm max-w-40"
-                value={formData.end_year}
+                min={minDateFormatted}
+                max={formData.end_month ? formatDate(formData.end_month) : todayFormatted}
+              />
+               <input
+                type="month"
+                name="end_month"
+                placeholder="End Date*"
+                className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
+                value={formatDate(formData.end_month)}
                 onChange={handleInputChange}
-              >
-                <option value="">End year</option>
-                {years.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
+                min={formData.start_month ? formatDate(formData.start_month) : minDateFormatted}
+                max={todayFormatted}
+              />
             </div>
           </div>
         );
@@ -185,7 +289,7 @@ function EducationUpdateForm({
               type="text"
               name="board"
               placeholder="Board*"
-              className="border p-2 rounded-sm w-full"
+              className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
               value={formData.board}
               onChange={handleInputChange}
             />
@@ -193,28 +297,23 @@ function EducationUpdateForm({
               type="text"
               name="school_name"
               placeholder="School Name*"
-              className="border rounded-sm p-2 w-full"
+              className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
               value={formData.school_name}
               onChange={handleInputChange}
             />
-            <select
+            <input
+              type="month"
               name="passing_out_year"
-              className="border p-2 w-full rounded-sm"
+              placeholder="End Date*"
+              className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
               value={formData.passing_out_year}
               onChange={handleInputChange}
-            >
-              <option value="">Passing out year*</option>
-              {years.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
+            />
             <input
               type="text"
               name="marks"
               placeholder="Marks in % out 100*"
-              className="border rounded-sm p-2 w-full"
+              className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
               value={formData.marks}
               onChange={handleInputChange}
             />
@@ -223,7 +322,7 @@ function EducationUpdateForm({
                 type="text"
                 name="maths"
                 placeholder="Maths"
-                className="border rounded-sm p-2 w-full"
+                className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
                 value={formData.maths}
                 onChange={handleInputChange}
               />
@@ -231,7 +330,7 @@ function EducationUpdateForm({
                 type="text"
                 name="physics"
                 placeholder="Physics"
-                className="border rounded-sm p-2 w-full"
+                className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
                 value={formData.physics}
                 onChange={handleInputChange}
               />
@@ -239,7 +338,7 @@ function EducationUpdateForm({
                 type="text"
                 name="chemistry"
                 placeholder="Chemistry"
-                className="border rounded-sm p-2 w-full"
+                className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
                 value={formData.chemistry}
                 onChange={handleInputChange}
               />
@@ -253,7 +352,7 @@ function EducationUpdateForm({
               type="text"
               name="board"
               placeholder="Board*"
-              className="border p-2 rounded-sm w-full"
+              className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
               value={formData.board}
               onChange={handleInputChange}
             />
@@ -261,28 +360,23 @@ function EducationUpdateForm({
               type="text"
               name="school_name"
               placeholder="School Name*"
-              className="border rounded-sm p-2 w-full"
+              className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
               value={formData.school_name}
               onChange={handleInputChange}
             />
-            <select
+            <input
+              type="month"
               name="passing_out_year"
-              className="border p-2 w-full rounded-sm"
+              placeholder="End Date*"
+              className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
               value={formData.passing_out_year}
               onChange={handleInputChange}
-            >
-              <option value="">Passing out year*</option>
-              {years.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
+            />
             <input
               type="text"
               name="marks"
               placeholder="Marks in % out 100*"
-              className="border rounded-sm p-2 w-full"
+              className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
               value={formData.marks}
               onChange={handleInputChange}
             />
@@ -303,24 +397,23 @@ function EducationUpdateForm({
         onClick={(e) => e.stopPropagation()}
       >
         <div className="py-4 ">
-        <h1 className="text-xl font-medium">Education</h1>
-        <p className='text-sm text-gray-400 mb-8'>Update the education details to what you originally wanted it to be</p>
+          <h1 className="text-xl font-medium">Education</h1>
+          <p className='text-sm text-gray-400 mb-8'>Update the education details to what you originally wanted it to be</p>
         </div>
-       
+
         <div className="flex-1 ">{renderEducationUpdateForm()}</div>
         <div className="flex justify-between items-center mt-12 w-full">
           <svg
             onClick={onDelete}
-            class="h-6 w-6 cursor-pointer text-red-500"
+            className="h-6 w-6 cursor-pointer text-red-500"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
-            {" "}
-            <polyline points="3 6 5 6 21 6" />{" "}
+            <polyline points="3 6 5 6 21 6" />
             <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
           </svg>
           <div>
@@ -328,7 +421,7 @@ function EducationUpdateForm({
               Cancel
             </Button>
             <Button
-              disabled={isSaveDisabled()}
+              disabled={isUpdateDisabled()  }
               className="bg-blue-500 rounded-full text-white disabled:bg-blue-300"
               onClick={onSave}
             >
