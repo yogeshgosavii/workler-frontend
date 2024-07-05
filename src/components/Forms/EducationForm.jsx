@@ -121,7 +121,9 @@ function EducationForm({ onClose, setData, data }) {
   };
 
 
-  const handleCancel = () => {
+  const handleCancel = (e) => {
+    e.preventDefault();
+
     if (currentPage > 0) {
       setCurrentPage(currentPage - 1);
     } else {
@@ -132,8 +134,20 @@ function EducationForm({ onClose, setData, data }) {
   const handleInputChange = (e) => {
     let { name, value } = e.target;
 
+    if (!isNaN(value)) {
+      const regex = /^\d*\.?\d{0,2}$/;
+      if (!regex.test(value)) {
+        return; // Do not update state if the value has more than 2 decimal places
+      }
+  
+      value = Number(value);
+    }
+
     if ((name === "percentage" || name === "obtained_grades" || name === "maximum_grades") && value > 100) {
       value = 100;
+    }
+    else if( name === "obtained_grades" && value > formData.maximum_grades){
+      value = formData.maximum_grades
     }
     else if(value<0){
       value = 0;
