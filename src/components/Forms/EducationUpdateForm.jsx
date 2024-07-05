@@ -25,6 +25,23 @@ function EducationUpdateForm({
     let { name, value } = e.target;
     value = isNaN(Number(value)) ? value : Number(value);
 
+    if (!isNaN(value)) {
+      const regex = /^\d*\.?\d{0,2}$/;
+      if (!regex.test(value)) {
+        return; // Do not update state if the value has more than 2 decimal places
+      }
+  
+      value = Number(value);
+    }
+    
+    if ((name === "percentage" || name === "obtained_grades" || name === "maximum_grades") && value > 100) {
+      value = 100;
+    }
+    
+    else if(value<0){
+      value = 0;
+    }
+
     setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
 
@@ -263,7 +280,7 @@ function EducationUpdateForm({
                 type="month"
                 name="start_month"
                 placeholder="Start Date*"
-                className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
+                className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
                 value={formatDate(formData.start_month)}
                 onChange={handleInputChange}
                 min={minDateFormatted}
@@ -273,7 +290,7 @@ function EducationUpdateForm({
                 type="month"
                 name="end_month"
                 placeholder="End Date*"
-                className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
+                className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
                 value={formatDate(formData.end_month)}
                 onChange={handleInputChange}
                 min={formData.start_month ? formatDate(formData.start_month) : minDateFormatted}
@@ -303,10 +320,10 @@ function EducationUpdateForm({
             />
             <input
               type="month"
-              name="passing_out_year"
+              name="passing_out_month"
               placeholder="End Date*"
-              className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
-              value={formData.passing_out_year}
+              className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
+              value={formatDate(formData.passing_out_month)}
               onChange={handleInputChange}
             />
             <input
@@ -366,10 +383,10 @@ function EducationUpdateForm({
             />
             <input
               type="month"
-              name="passing_out_year"
+              name="passing_out_month"
               placeholder="End Date*"
-              className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
-              value={formData.passing_out_year}
+              className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
+              value={formData(formData.passing_out_month)}
               onChange={handleInputChange}
             />
             <input

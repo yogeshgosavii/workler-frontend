@@ -279,7 +279,7 @@ function EducationForm({ onClose, setData, data }) {
                 type="month"
                 name="start_month"
                 placeholder="Start Date*"
-                className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
+                className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
                 value={formData.start_month}
                 onChange={handleInputChange}
                 min={minDateFormatted}
@@ -289,7 +289,7 @@ function EducationForm({ onClose, setData, data }) {
                 type="month"
                 name="end_month"
                 placeholder="End Date*"
-                className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
+                className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
                 value={formData.end_month}
                 onChange={handleInputChange}
                 min={formData.start_month}
@@ -313,7 +313,7 @@ function EducationForm({ onClose, setData, data }) {
               type="text"
               name="school_name"
               placeholder="School Name*"
-              className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
+              className="border bg-white outline-none focus:border-blue-500 rounded-sm p-2 w-full"
               value={formData.school_name}
               onChange={handleInputChange}
             />
@@ -321,7 +321,7 @@ function EducationForm({ onClose, setData, data }) {
                 type="month"
                 name="passing_out_year"
                 placeholder="End Date*"
-                className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
+                className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
                 value={formData.passing_out_year}
                 onChange={handleInputChange}
               />
@@ -384,7 +384,7 @@ function EducationForm({ onClose, setData, data }) {
                 type="month"
                 name="passing_out_year"
                 placeholder="End Date*"
-                className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
+                className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
                 value={formData.passing_out_year}
                 onChange={handleInputChange}
               />
