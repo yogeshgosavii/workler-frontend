@@ -34,10 +34,12 @@ function EducationUpdateForm({
       value = Number(value);
     }
     
-    if ((name === "percentage" || name === "obtained_grades" || name === "maximum_grades") && value > 100) {
+    if ((name === "percentage" || name === "maximum_grades") && value > 100) {
       value = 100;
     }
-    
+    else if( name === "obtained_grades" && value > formData.maximum_grades){
+      value = formData.maximum_grades
+    }
     else if(value<0){
       value = 0;
     }
