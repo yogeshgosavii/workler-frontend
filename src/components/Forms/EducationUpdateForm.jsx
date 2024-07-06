@@ -74,6 +74,9 @@ function EducationUpdateForm({
     const token = localStorage.getItem("token");
     try {
       await profileApi.education.delete(formData._id, token);
+      seteducationdata((prevData) =>
+        prevData.filter((item) => item._id !== educationdata._id)
+      );
       onClose();
     } catch (error) {
       console.error("Error updating education data:", error);

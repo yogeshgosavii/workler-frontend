@@ -14,6 +14,7 @@ import { format, formatDate } from "date-fns";
 import useProfileApi from "../services/profileService"; // Adjust the import path
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
+import ProjectUpdateForm from "../components/Forms/ProjectUpdateForm";
 
 // Register necessary components from Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
@@ -81,22 +82,20 @@ const UserProfile = () => {
   }); // Added workExperience update data
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       console.log("token", token);
-      fetch('https://workler-backend.vercel.app/api/auth/user',
-        {
-          headers : {
-            Authorization: `Bearer ${token}`,
-          }
-        }
-      )
-      .then(response => response.text())  // Use text() to get the raw response
-      .then(data => {
-        console.log(data);  // Log the raw response
-        return JSON.parse(data);  // Attempt to parse the response
+      fetch("https://workler-backend.vercel.app/api/auth/user", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .catch(error => console.error('Error:', error));
-    }
+        .then((response) => response.text()) // Use text() to get the raw response
+        .then((data) => {
+          console.log(data); // Log the raw response
+          return JSON.parse(data); // Attempt to parse the response
+        })
+        .catch((error) => console.error("Error:", error));
+    };
 
     fetchData();
   }, []);
@@ -112,14 +111,14 @@ const UserProfile = () => {
   }, [profileApi.education]);
 
   const fetchProjectData = useCallback(async () => {
-    // try {
-    //   const data = await profileApi.projectDetails.getAll();
-    //   set(data);
-    // } catch (error) {
-    //   console.error('Error fetching project data:', error);
-    // } finally {
-    //   setLoading((prev) => ({ ...prev, project: false }));
-    // }
+    try {
+      const data = await profileApi.projectDetails.getAll();
+      setprojectData(data);
+    } catch (error) {
+      console.error("Error fetching project data:", error);
+    } finally {
+      setLoading((prev) => ({ ...prev, project: false }));
+    }
   }, [profileApi.projectDetails]);
 
   const fetchPersonalData = useCallback(async () => {
@@ -490,7 +489,7 @@ const UserProfile = () => {
         id: "projects",
         title: "Projects",
         content:
-          projectData.length === 0 ? ( // Check if work experience data is empty
+          projectData.length === 0 ? (
             <p className="text-sm text-gray-400 mt-1 ">
               Adding project helps recruiters understand your work and know your
               potential
@@ -498,11 +497,11 @@ const UserProfile = () => {
           ) : (
             <div>
               {projectData.map((data, index) => {
-                const formattedJoiningDate = data.start_date
-                  ? format(new Date(data.joiningDate), "MMMM yyyy")
+                const formattedStartDate = data.start_date
+                  ? format(new Date(data.start_date), "MMMM yyyy")
                   : "";
-                const formattedLeavingDate = data.end_date 
-                  ? format(new Date(data.leavingDate), "MMMM yyyy")
+                const formattedEndDate = data.end_date
+                  ? format(new Date(data.end_date), "MMMM yyyy")
                   : "Present";
 
                 return (
@@ -517,25 +516,50 @@ const UserProfile = () => {
                       index === projectData.length - 1 ? null : "border-b"
                     }`}
                   >
-                    <p className="text-xl font-semibold">
-                      {data.jobTitle}{" "}
-                      <span className="font-normal text-sm">
-                        ( {data.employmentType} )
-                      </span>
-                    </p>
-                    <p className="">{data.companyName}</p>
+                    <a
+                      className="text-xl flex gap-4 items-center font-semibold"
+                      
+                      href={
+                        data.url.startsWith("http") ? data.url : `http://${data.url}`
+                      }
+                      // target={data.url.startsWith("http") ? "_blank" : "_self"}
+                      target={"_blank" }
+
+                      rel={
+                        data.url.startsWith("http") ? "noopener noreferrer" : ""
+                      }
+                    >
+                      {data.project_name}
+                      {data.url && (
+                        <svg
+                          className="h-6 w-6 text-blue-500"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                          />
+                        </svg>
+                      )}
+                    </a>
+
+                    <p className="text-gray-400">{data.project_description}</p>
                     <p className="text-sm text-gray-400">
-                      {formattedJoiningDate} - {formattedLeavingDate}
+                      {formattedStartDate} - {formattedEndDate}
                     </p>
                   </div>
                 );
               })}
             </div>
           ),
-        loading: false,
+        loading:  loading.project,
       },
     ],
-    [skillData, educationData, workExperienceData, loading, personalData]
+    [skillData, educationData, workExperienceData, projectData, personalData]
   );
 
   return (
@@ -563,15 +587,15 @@ const UserProfile = () => {
                   ? setPersonalData
                   : null,
               data:
-              formType == "skill"
-                ? skillData
-                : formType =="education"
-                ? educationData
-                : formType == "work_experience"
-                ? workExperienceData
-                : formType == "personalDetails"
-                ? personalData
-                : null,
+                formType == "skill"
+                  ? skillData
+                  : formType == "education"
+                  ? educationData
+                  : formType == "work_experience"
+                  ? workExperienceData
+                  : formType == "personalDetails"
+                  ? personalData
+                  : null,
             })}
           </div>
         </div>
@@ -622,8 +646,25 @@ const UserProfile = () => {
             <WorkExperienceUpdateForm
               onClose={() => setUpdateForm({ workExperience: false })}
               workExperienceData={updateData.workExperience}
-              workExperienceFullData = {workExperienceData}
+              workExperienceFullData={workExperienceData}
               setWorkExperienceData={setWorkExperienceData}
+            />
+          </div>
+        </div>
+      )}
+      {updateForm.project && (
+        <div
+          className="fixed inset-0 z-10 flex justify-center items-center bg-black bg-opacity-50"
+          onClick={() => setUpdateForm({ project: false })}
+        >
+          <div
+            className="fixed z-20 w-full bg-white h-full sm:h-fit sm:max-w-md mx-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ProjectUpdateForm
+              onClose={() => setUpdateForm({ project: false })}
+              projectData={updateData.project}
+              setProjectData={setprojectData}
             />
           </div>
         </div>
@@ -714,7 +755,7 @@ const UserProfile = () => {
             <Doughnut className="w-full h-fit" data={data} options={options} />
           </div>
         </div>
-       
+
         {userDetailsList.map((item, index) => (
           <div
             key={index}
@@ -733,7 +774,7 @@ const UserProfile = () => {
           </div>
         ))}
       </div>
-     
+
       {/* <div className=''>
         <div className='border px-5 py-4 h-fit w-80'>
           <p className='text-xl font-medium mb-8'>Jobs Applied</p>
