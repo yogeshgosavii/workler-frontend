@@ -130,7 +130,6 @@ function ProjectForm({ onClose }) {
             <label
               htmlFor="start_date"
               onClick={(e) => {
-                e.preventDefault();
                 document.getElementById("start_date").focus();
 
               }}
