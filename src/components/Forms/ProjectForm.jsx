@@ -131,7 +131,6 @@ function ProjectForm({ onClose }) {
               htmlFor="start_date"
               onClick={(e) => {
                 e.preventDefault();
-                e.target.previousSibling.focus();
                 document.getElementById("start_date").focus();
 
               }}
