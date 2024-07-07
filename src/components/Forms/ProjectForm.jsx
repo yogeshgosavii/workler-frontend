@@ -131,6 +131,7 @@ function ProjectForm({ onClose }) {
               htmlFor="start_date"
               onClick={(e) => {
                 document.getElementById("start_date").focus();
+                e.stopPropagation()
 
               }}
               
