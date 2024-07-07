@@ -157,8 +157,8 @@ function ProjectForm({ onClose }) {
             <label
               htmlFor="end_date"
               onClick={(e) => {
-                e.preventDefault();
-                e.target.previousSibling.focus();
+                document.getElementById("end_date").focus();
+                e.stopPropagation()
               }}
               className={`absolute duration-200 w-32  cursor-text px-2 text-gray-400 bg-white font-normal transform transition-all ${
                 formData.end_date
