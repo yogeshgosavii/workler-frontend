@@ -198,7 +198,7 @@ const UserProfile = () => {
   };
 
   const Section = ({ id, title, content, loading, onAdd }) => (
-    <div className="flex flex-col border px-6 py-6 mt-3">
+    <div className="flex flex-col border-y sm:border px-6 py-6 mt-3 ">
       <div className="flex justify-between  items-center">
         <p className="text-xl font-medium">{title}</p>
         {title != "Personal details" && content ? (
@@ -516,22 +516,26 @@ const UserProfile = () => {
                       index === projectData.length - 1 ? null : "border-b"
                     }`}
                   >
-                    <a
+                    <p
                       className="text-xl flex gap-4 items-center font-semibold"
                       
-                      href={
-                        data.url.startsWith("http") ? data.url : `http://${data.url}`
-                      }
-                      // target={data.url.startsWith("http") ? "_blank" : "_self"}
-                      target={"_blank" }
-
-                      rel={
-                        data.url.startsWith("http") ? "noopener noreferrer" : ""
-                      }
+                     
                     >
                       {data.project_name}
                       {data.url && (
-                        <svg
+                        <a
+                        href={
+                          data.url.startsWith("http") ? data.url : `http://${data.url}`
+                        }
+                        // target={data.url.startsWith("http") ? "_blank" : "_self"}
+                        target={"_blank" }
+                        onClick={(e)=>{e.stopPropagation()}}
+  
+                        rel={
+                          data.url.startsWith("http") ? "noopener noreferrer" : ""
+                        }
+                        >
+                           <svg
                           className="h-6 w-6 text-blue-500"
                           fill="none"
                           viewBox="0 0 24 24"
@@ -544,8 +548,10 @@ const UserProfile = () => {
                             d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
                           />
                         </svg>
+                        </a>
+                       
                       )}
-                    </a>
+                    </p>
 
                     <p className="text-gray-400">{data.project_description}</p>
                     <p className="text-sm text-gray-400">
@@ -563,7 +569,7 @@ const UserProfile = () => {
   );
 
   return (
-    <div className="w-full flex flex-col md:flex-row justify-center gap-5 py-2 px-2 sm:py-5 sm:px-5 ">
+    <div className="w-full flex flex-col md:flex-row justify-center gap-5 py-2 bg-gray-100  sm:py-5 sm:px-5 ">
       {formType && (
         <div
           className="fixed inset-0 z-10 flex justify-center items-center bg-black bg-opacity-50"
@@ -602,11 +608,11 @@ const UserProfile = () => {
       )}
       {updateForm.education && (
         <div
-          className="fixed inset-0 z-10 flex justify-center border w-full h-full sm:h-fit items-center bg-black bg-opacity-50"
+          className="fixed inset-0 z-10 flex h-full justify-center  items-center bg-black bg-opacity-50"
           onClick={() => setUpdateForm({ education: false })}
         >
           <div
-            className="fixed z-20 w-full h-full max-w-md mx-auto"
+            className="fixed z-20 w-full h-full flex items-center sm:max-w-md mx-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <EducationUpdateForm
@@ -670,7 +676,7 @@ const UserProfile = () => {
         </div>
       )}
       <div className="w-full ">
-        <div className=" border md:flex px-5 gap-3  py-8">
+        <div className=" border-y sm:border md:flex px-5 gap-3 bg-white  py-8">
           <div className="flex  justify-center flex-col w-full  ">
             <div className="flex flex-col text-center sm:text-start justify-center sm:justify-start sm:flex-row  w-full  items-center sm:gap-6">
               <img
@@ -759,7 +765,7 @@ const UserProfile = () => {
         {userDetailsList.map((item, index) => (
           <div
             key={index}
-            className="cursor-pointer"
+            className="cursor-pointer bg-white"
             draggable
             onDragStart={(e) => handleDragStart(e, item.id)}
             onDrop={(e) => handleDrop(e, item.id)}

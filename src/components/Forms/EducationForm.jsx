@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Button from "../Button/Button";
 import useProfileApi from "../../services/profileService";
+import TextInput from "../Input/TextInput";
+import NumberInput from "../Input/NumberInput";
+import DateInput from "../Input/DateInput";
 
 function EducationForm({ onClose, setData, data }) {
   const typesOfEducation = [
@@ -49,7 +52,7 @@ function EducationForm({ onClose, setData, data }) {
   const minDateFormatted = minDate.toISOString().split("T")[0];
   
   // Format today to 'YYYY-MM-DD' for input[type="date"]
-  const todayFormatted = today.toISOString().split("T")[0].slice(0, 7);;
+  const todayFormatted = today.toISOString().split("T")[0].slice(0, 7);
   useEffect(() => {
     setFormData((prevState) => ({ ...prevState, educationType }));
   }, [educationType]);
@@ -161,30 +164,29 @@ function EducationForm({ onClose, setData, data }) {
       case "Graduate":
         return (
           <div className="flex flex-col gap-4">
-            <input
-              type="text"
-              name="university"
-              placeholder="University/Institute name*"
-              className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
-              value={formData.university}
-              onChange={handleInputChange}
+            
+            <TextInput
+            name={"university"}
+            placeholder={"University/Institute name"}
+            isRequired={true}
+            value={formData.university}
+            onChange={handleInputChange}
             />
-            <input
-              type="text"
-              name="course"
-              placeholder="Course"
-              className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
+            <TextInput
+              name={"course"}
+              placeholder={"Course"}
+              isRequired={true}
               value={formData.course}
               onChange={handleInputChange}
             />
-            <input
-              type="text"
+            <TextInput
               name="specialization"
               placeholder="Specialization"
-              className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
+              isRequired={true}
               value={formData.specialization}
               onChange={handleInputChange}
             />
+          
              <div className="flex gap-2">
               {["Percentage", "Grades"].map((marking) => (
                 <p
@@ -215,32 +217,32 @@ function EducationForm({ onClose, setData, data }) {
                 </p>
               ))}
             </div>
-            <input
-                type="number"
+            <NumberInput
                 name="percentage"
-                placeholder="Percentage"
-                className={`${formData.marking_system == "Percentage"?null:"hidden"} border outline-none focus:border-blue-500 p-2 w-full rounded-sm`}
+                placeholder={"Percentage"}
+                className={`${formData.marking_system == "Percentage"?null:"hidden"}`}
                 value={formData.percentage}
+                isRequired={true}
                 max="100"
                 onChange={handleInputChange}
               />
             <div className={` flex gap-4 ${formData.marking_system == "Grades"?null:"hidden"}`}>
-              <input
-                type="number"
+              <NumberInput
                 name="obtained_grades"
                 placeholder="Obtained grades"
-                className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
                 value={formData.obtained_grades}
                 max={formData.maximum_grades}
                 min="0"
+                className={"w-full"}
+                isRequired={true}
                 onChange={handleInputChange}
               />
-               <input
-                  type="number"
+               <NumberInput
                   name="maximum_grades"
                   placeholder="Maximum grades"
+                  className={"w-full"}
                   min={0}
-                  className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
+                  isRequired={true}
                   value={formData.maximum_grades}
                   onChange={handleInputChange}
                 />
@@ -266,111 +268,93 @@ function EducationForm({ onClose, setData, data }) {
                 </p>
               ))}
             </div>
-            <div className="flex gap-4 w-full ">
-              {/* <select
-                name="start_month"
-                className="border p-2 w-fit rounded-sm max-w-40"
-                value={formData.start_month}
-                onChange={handleInputChange}
-              >
-                <option value="">Start year</option>
-                {years.map(year => (
-                  <option key={year} value={year}>{year}</option>
-                ))}
-              </select>
-              <select
-                name="end_month"
-                className="border p-2 w-fit rounded-sm max-w-40"
-                value={formData.end_month}
-                onChange={handleInputChange}
-              >
-                <option value="">End year</option>
-                {years.map(year => (
-                  <option key={year} value={year}>{year}</option>
-                ))}
-              </select> */}
-              <input
-                type="month"
-                name="start_month"
-                placeholder="Start Date*"
-                className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
-                value={formData.start_month}
-                onChange={handleInputChange}
-                min={minDateFormatted}
-                max={formData.end_month || todayFormatted}
-              />
-              <input
-                type="month"
-                name="end_month"
-                placeholder="End Date*"
-                className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
-                value={formData.end_month}
-                onChange={handleInputChange}
-                min={formData.start_month}
-                max={todayFormatted}
-              />
-            </div>
+            <div className="flex flex-wrap justify-stretch items-stretch gap-4 w-full ">
+  <DateInput
+    type="month"
+    name="start_month"
+    placeholder="Start Date"
+    isRequired={true}
+    value={formData.start_month}
+    onChange={handleInputChange}
+    className="flex-grow"
+    min={minDateFormatted}
+    max={formData.end_month || todayFormatted}
+  />
+  <DateInput
+    type="month"
+    name="end_month"
+    placeholder="End Date"
+    className="flex-grow"
+    isRequired={true}
+    value={formData.end_month}
+    onChange={handleInputChange}
+    min={formData.start_month}
+    max={todayFormatted}
+  />
+</div>
+
           </div>
         );
       case "Class XII":
         return (
           <div className="space-y-4">
-            <input
-              type="text"
+            <TextInput
               name="board"
-              placeholder="Board*"
+              placeholder="Board"
               className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
               value={formData.board}
               onChange={handleInputChange}
+              isRequired={true}
             />
-            <input
-              type="text"
+            <TextInput
               name="school_name"
-              placeholder="School Name*"
+              placeholder="College name"
               className="border bg-white outline-none focus:border-blue-500 rounded-sm p-2 w-full"
               value={formData.school_name}
               onChange={handleInputChange}
+              isRequired={true}
             />
-           <input
+           <DateInput
                 type="month"
                 name="passing_out_year"
-                placeholder="End Date*"
+                placeholder="End Date"
                 className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
                 value={formData.passing_out_year}
                 onChange={handleInputChange}
+                isRequired={true}
               />
-            <input
-              type="text"
+            <NumberInput
               name="percentage"
               placeholder="percentage in % out 100*"
               className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
               value={formData.percentage}
               onChange={handleInputChange}
+              isRequired={true}
             />
             <div className="flex gap-2">
-              <input
-                type="text"
+              <NumberInput
                 name="maths"
                 placeholder="Maths"
                 className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
                 value={formData.maths}
                 onChange={handleInputChange}
+                isRequired={true}
               />
-              <input
-                type="text"
+              <NumberInput
                 name="physics"
                 placeholder="Physics"
                 className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
                 value={formData.physics}
                 onChange={handleInputChange}
+                isRequired={true}
               />
-              <input
-                type="text"
+              <NumberInput
                 name="chemistry"
                 placeholder="Chemistry"
                 className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
                 value={formData.chemistry}
                 onChange={handleInputChange}
+                isRequired={true}
               />
             </div>
           </div>
@@ -378,37 +362,38 @@ function EducationForm({ onClose, setData, data }) {
       case "Class X":
         return (
           <div className="space-y-4">
-            <input
-              type="text"
+            <TextInput
               name="board"
               placeholder="Board*"
               className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
               value={formData.board}
               onChange={handleInputChange}
+              isRequired={true}
             />
-            <input
-              type="text"
+            <TextInput
               name="school_name"
-              placeholder="School Name*"
+              placeholder="School Name"
               className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
               value={formData.school_name}
               onChange={handleInputChange}
+              isRequired={true}
             />
-           <input
+           <DateInput
                 type="month"
                 name="passing_out_year"
-                placeholder="End Date*"
+                placeholder="End Date"
                 className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
                 value={formData.passing_out_year}
                 onChange={handleInputChange}
+                isRequired={true}
               />
-            <input
-              type="text"
+            <NumberInput
               name="percentage"
-              placeholder="percentage in % out 100*"
+              placeholder="Percentage"
               className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
               value={formData.percentage}
               onChange={handleInputChange}
+              isRequired={true}
             />
           </div>
         );
@@ -467,7 +452,7 @@ function EducationForm({ onClose, setData, data }) {
     {
       content: (
         <div className="flex flex-col h-full  gap-4">
-          <div className="flex-1">{renderEducationForm()}</div>
+          <div className="flex-1 overflow-auto">{renderEducationForm()}</div>
           <div className="flex justify-end items-center mt-10 w-full">
             <Button
               className="text-blue-500 font-medium"
@@ -489,16 +474,16 @@ function EducationForm({ onClose, setData, data }) {
   ];
 
   return (
-    <div className="relative flex flex-col gap-4 pt-2 pb-6 px-4 sm:px-8  w-full h-full sm:max-w-lg bg-white ">
-      <form onSubmit={onSave} className="flex flex-col h-full gap-4 w-full">
-        <div className="py-4 sticky z-10 -top-2.5">
+    <div className="relative flex flex-col gap-4 pt-2 pb-6 px-4 sm:px-8  w-full h-full sm:max-w-2xl bg-white ">
+      <form onSubmit={onSave} className="flex flex-col h-full gap-4 w-full overflow-auto">
+        <div className="py-4 sticky z-40 -top-2.5 bg-white">
           <h2 className="text-xl font-medium">Education</h2>
           <p className="text-sm text-gray-400">
             Adding the education or course type helps recruiters know your
             educational background
           </p>
         </div>
-       <div className="sm:max-h-60 overflow-auto sm:px-2 h-full"> {pages[currentPage].content}</div>
+       <div className="sm:max-h-60   h-full "> {pages[currentPage].content}</div>
       </form>
     </div>
   );

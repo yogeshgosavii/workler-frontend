@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import Button from "../Button/Button";
 import useProfileApi from "../../services/profileService";
 import { set } from "date-fns/fp/set";
+import TextInput from "../Input/TextInput";
+import DateInput from "../Input/DateInput";
+import NumberInput from "../Input/NumberInput";
 
 function WorkExperienceForm({ onClose, initialData, setData ,data }) {
   const workTypeOptions = ["Full-time", "Internship"];
@@ -222,7 +225,7 @@ const calculateExperience = (joinDate, leaveDate) => {
         <div>
           <p className="font-medium">
             Total experience
-            <span className="text-sm text-gray-400 font-normal">
+            <span className="text-sm text-gray-400 font-normal"><span className="text-red-500">*</span>
               {" "}
               (Auto Generated)
             </span>
@@ -250,40 +253,35 @@ const calculateExperience = (joinDate, leaveDate) => {
             </div>
           </div>
         </div>
-        <input
-          type="text"
+        <TextInput
           name="companyName"
           placeholder={`${
             currentlyWorkingHere === "Yes" ? "Current" : "Previous"
-          } company name*`}
-          className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
+          } company name`}
           value={formData.companyName}
           onChange={handleInputChange}
-          required
+          isRequired={true}
         />
         <div className="flex gap-4 items-end">
-          <input
+          <TextInput
             type="text"
             name="jobTitle"
             placeholder={`${
               currentlyWorkingHere === "Yes" ? "Current" : "Previous"
-            } job title*`}
-            className="border outline-none focus:border-blue-500 h-fit p-2 w-full rounded-sm"
+            } job title`}
             value={formData.jobTitle}
             onChange={handleInputChange}
-            required
+            isRequired={true}
           />
         </div>
         {isFullTime && isCurrentlyWorking && (
           <div className="flex gap-4 ">
-            <input
-              type="number"
+            <TextInput
               name="annualSalary"
-              placeholder="Current annual salary per year*"
-              className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
+              placeholder="Current annual salary"
               value={formData.annualSalary}
               onChange={handleInputChange}
-              required
+              isRequired={true}
             />
             <p className="text-nowrap flex items-end py-1">Per year</p>
           </div>
@@ -291,45 +289,30 @@ const calculateExperience = (joinDate, leaveDate) => {
 
         {isFullTime && (
           <div className="flex flex-wrap gap-4">
-            <div className="flex flex-col w-full">
-              <label
-                htmlFor="joiningDate"
-                className="font-medium ml-1  text-sm sm:text-base"
-              >
-                Joining date<span className="text-red-500">*</span>
-              </label>
-              <input
+              
+              <DateInput
                 type="date"
                 name="joiningDate"
                 id="joiningDate"
-                className="border  focus:border-blue-500 bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
+                placeholder="Joining date"
                 value={formData.joiningDate}
                 onChange={handleDateChange}
                 min={minDateFormatted}
                 max={todayFormatted}
-                required
+                isRequired={true}
               />
-            </div>
             {formData.currentlyWorking === "No" ? (
-              <div className="flex flex-col w-full">
-                <label
-                  htmlFor="leavingDate"
-                  className="font-medium ml-1 text-sm sm:text-base"
-                >
-                  Leaving date<span className="text-red-500">*</span>
-                </label>
-                <input
+             
+                <DateInput
                   type="date"
                   name="leavingDate"
                   id="leavingDate"
-                  className="border focus:border-blue-500 bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
                   value={formData.leavingDate}
                   onChange={handleDateChange}
                   min={formData.joiningDate}
                   max={todayFormatted}
-                  required
+                  isRequired={true}
                 />
-              </div>
             ) : (
               <p className="border px-4 py-2 flex items-center text-blue-500 w-full text-sm sm:text-base">
                 Present
@@ -364,14 +347,13 @@ const calculateExperience = (joinDate, leaveDate) => {
         )}
         {!isFullTime && (
           <>
-            <input
-              type="text"
+            <TextInput
               name="location"
               placeholder="Location*"
               className="border h-fit p-2 w-full rounded-sm"
               value={formData.location}
               onChange={handleInputChange}
-              required
+              isRequired={true}
             />
             <select
               name="department"
@@ -389,15 +371,13 @@ const calculateExperience = (joinDate, leaveDate) => {
             </select>
             <div className="flex gap-4 items-end">
               <div className="flex flex-col w-full">
-                <label htmlFor="joiningDate" className="font-medium ml-1">
-                  Internship duration<span className="text-red-500">*</span>
-                </label>
+               
                 <div className="flex gap-4 mt-2">
-                  <input
+                  <DateInput
                     type="date"
                     name="joiningDate"
                     id="joiningDate"
-                    className="border bg-white px-3 py-[7px] rounded-sm duration-200 placeholder:text-gray-400 outline-none no-spin-buttons flex-1"
+                    placeholder={"Joining date"}
                     value={formData.joiningDate}
                     onChange={handleDateChange}
                     min={minDateFormatted}
@@ -409,29 +389,26 @@ const calculateExperience = (joinDate, leaveDate) => {
                       Present
                     </p>
                   ) : (
-                    <input
+                    <DateInput
                       type="date"
                       name="leavingDate"
                       id="leavingDate"
-                      className="border bg-white px-3 py-[7px] rounded-sm duration-200 placeholder:text-gray-400 outline-none no-spin-buttons flex-1"
                       value={formData.leavingDate}
                       onChange={handleDateChange}
                       min={formData.joiningDate}
                       max={todayFormatted}
-                      required
+                      isRequired={true}
                     />
                   )}
                 </div>
               </div>
             </div>
-            <input
-              type="text"
+            <NumberInput
               name="stipend"
               placeholder="Stipend*"
-              className="border h-fit p-2 w-full rounded-sm"
               value={formData.stipend}
               onChange={handleInputChange}
-              required
+              isRequired={true}
             />
           </>
         )}</div>
@@ -527,7 +504,7 @@ const calculateExperience = (joinDate, leaveDate) => {
         <p className="text-sm text-gray-400  mt-1">
           Details like job title, company name, etc help employers understand
           your work
-        </p>
+        </p>s
       </div>
       <div className=" mt-2 h-full">{pages[currentPage].content}</div>
     </form>

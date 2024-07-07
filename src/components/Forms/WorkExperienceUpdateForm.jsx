@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import Button from "../Button/Button";
 import useProfileApi from "../../services/profileService";
 import { de } from "date-fns/locale/de";
+import TextInput from "../Input/TextInput";
+import NumberInput from "../Input/NumberInput";
+import DateInput from "../Input/DateInput";
 
 function WorkExperienceUpdateForm({ onClose, workExperienceData,workExperienceFullData, setWorkExperienceData }) {
   const workTypeOptions = ["Full-time", "Internship"];
@@ -232,7 +235,7 @@ const isFormValidCheck = () => {
     const isCurrentlyWorking = currentlyWorkingHere === "Yes";
 
     return (
-      <div className="flex flex-col gap-5 py-2 h-full mt-2  sm:max-h-60 overflow-y-auto">
+      <div className="flex flex-col gap-5 py-2 h-full mt-2  ">
         <div>
           <p className="text-sm font-medium">Currently working here</p>
           <div className="flex gap-3 text-nowrap flex-wrap mt-2 px-1">
@@ -264,6 +267,10 @@ const isFormValidCheck = () => {
         <div>
           <p className="font-medium">
             Total experience<span className="text-red-500">*</span>
+            <span className="text-sm text-gray-400 font-normal">
+              {" "}
+              (Auto Generated)
+            </span>
           </p>
           <div className="flex items-end gap-4 mt-2">
             <div className="flex w-full gap-1 items-end">
@@ -288,83 +295,65 @@ const isFormValidCheck = () => {
             </div>
           </div>
         </div>
-        <input
-          type="text"
+        <TextInput
           name="companyName"
-          placeholder={`${currentlyWorkingHere === "Yes" ? "Current" : "Previous"} company name*`}
-          className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
+          placeholder={`${currentlyWorkingHere === "Yes" ? "Current" : "Previous"} company name`}
           value={formData.companyName}
           onChange={handleInputChange}
-          required
+          isRequired={true}
         />
         <div className="flex gap-4 items-end">
-          <input
-            type="text"
+          <TextInput
             name="jobTitle"
-            placeholder={`${currentlyWorkingHere === "Yes" ? "Current" : "Previous"} job title*`}
-            className="border outline-none focus:border-blue-500 h-fit p-2 w-full rounded-sm"
+            placeholder={`${currentlyWorkingHere === "Yes" ? "Current" : "Previous"} job title`}
             value={formData.jobTitle}
+            className={'w-full'}
             onChange={handleInputChange}
-            required
+            isRequired={true}
           />
         </div>
         {isFullTime && isCurrentlyWorking && (
           <div className="flex gap-4 ">
-            <input
-              type="number"
+            <NumberInput
               name="annualSalary"
-              placeholder="Current outline-none focus:border-blue-500 annual salary per year*"
-              className="border p-2 w-full rounded-sm"
+              placeholder="Current annual salary"
               value={formData.annualSalary}
               onChange={handleInputChange}
-              required
+              isRequired={true}
             />
             <p className="text-nowrap flex items-end py-1">Per year</p>
           </div>
         )}
         {isFullTime && (
           <div className="flex flex-wrap gap-4">
-            <div className="flex flex-col w-full">
-              <label
-                htmlFor="joiningDate"
-                className="font-medium ml-1 outline-none focus:border-blue-500 text-sm sm:text-base"
-              >
-                Joining date<span className="text-red-500">*</span>
-              </label>
-              <input
+             
+              <DateInput
                 type="date"
                 name="joiningDate"
                 id="joiningDate"
-                className="border bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
+                placeholder={'Joining Date'}
                 value={formData.joiningDate}
                 onChange={handleDateChange}
                 min={minDateFormatted}
+                className={'flex-grow'}
                 max={todayFormatted}
-                required
+                isRequired={true}
               />
-            </div>
             {formData.currentlyWorking === "No" ? (
-              <div className="flex flex-col w-full">
-                <label
-                  htmlFor="leavingDate"
-                  className="font-medium ml-1 text-sm sm:text-base"
-                >
-                  Leaving date<span className="text-red-500">*</span>
-                </label>
-                <input
+              
+                <DateInput
                   type="date"
                   name="leavingDate"
                   id="leavingDate"
-                  className="border  focus:border-blue-500 bg-white mt-2 px-3 py-2 rounded-sm duration-200 placeholder:text-gray-400 w-full outline-none"
+                  className={'flex-grow'}
                   value={formData.leavingDate}
                   onChange={handleDateChange}
                   min={formData.joiningDate}
                   max={todayFormatted}
-                  required
+                  isRequired={true}
                 />
-              </div>
             ) : (
-              <p className="border px-4 py-2 flex items-center text-blue-500 w-full text-sm sm:text-base">
+              <p className="border px-4 py-2 flex items-center text-blue-500 w-fit text-sm sm:text-base">
                 Present
               </p>
             )}
@@ -398,20 +387,17 @@ const isFormValidCheck = () => {
         )}
         {!isFullTime && (
           <>
-            <input
-              type="text"
+            <TextInput
               name="location"
               placeholder="Office location*"
-              className="border p-2 w-full rounded-sm"
               value={formData.location}
               onChange={handleInputChange}
-              required
+              isRequired={true}
             />
             <div className="flex flex-col w-full">
               <p className="font-medium ml-1">Department</p>
               <select
                 name="department"
-                className="border bg-white mt-2 px-3 py-[7px] rounded-sm duration-200 placeholder:text-gray-400 outline-none flex-1"
                 value={formData.department}
                 onChange={handleInputChange}
                 required
@@ -426,14 +412,12 @@ const isFormValidCheck = () => {
                 ))}
               </select>
             </div>
-            <input
-              type="text"
+            <NumberInput
               name="stipend"
               placeholder="Stipend*"
-              className="border p-2 w-full rounded-sm"
               value={formData.stipend}
               onChange={handleInputChange}
-              required
+              isRequired={true}
             />
           </>
         )}
@@ -487,17 +471,17 @@ const isFormValidCheck = () => {
   };
 
   return (
-    <form onSubmit={handleUpdate} className="relative bg-white pt-2 pb-6 px-4 sm:px-8 flex flex-col justify-between rounded-sm w-full h-full sm:h-full overflow-y-auto">
+    <form onSubmit={handleUpdate} className=" bg-white pt-2 pb-6 px-4 sm:px-8 sm:max-h-96 flex flex-col justify-between rounded-sm w-full h-full sm:h-full overflow-y-auto">
       <div className="flex flex-col flex-1  w-full justify-between  bg-white pb-5 pt-2 z-20">
-      <div className=" sticky z-10 -top-2.5 py-4   bg-white">
+      <div className=" sticky z-20 -top-2.5 py-4   bg-white">
         <h2 className="text-xl font-medium">Work experience</h2>
          <p className="text-sm text-gray-400  mt-1">
           Update the details to what you wanted before
         </p>
       </div>
-        <div className=" mb-10">{renderWorkForm()}</div>
+      <div className=" flex-1">{renderWorkForm()}</div>
       </div>
-      <div className="static  bottom-0   right-0 left-0 flex items-center justify-between  bg-white px-3 z-20">
+      <div className=" static flex items-center justify-between  bg-white px-3 ">
         <svg onClick={onDelete} className="h-6 w-6 cursor-pointer text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <polyline points="3 6 5 6 21 6" />
           <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />

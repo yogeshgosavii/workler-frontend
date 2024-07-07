@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import Button from "../Button/Button";
 import useProfileApi from "../../services/profileService";
+import TextInput from "../Input/TextInput";
+import NumberInput from "../Input/NumberInput";
+import DateInput from "../Input/DateInput";
 
 function EducationUpdateForm({
   educationdata,
@@ -30,17 +33,15 @@ function EducationUpdateForm({
       if (!regex.test(value)) {
         return; // Do not update state if the value has more than 2 decimal places
       }
-  
+
       value = Number(value);
     }
-    
+
     if ((name === "percentage" || name === "maximum_grades") && value > 100) {
       value = 100;
-    }
-    else if( name === "obtained_grades" && value > formData.maximum_grades){
-      value = formData.maximum_grades
-    }
-    else if(value<0){
+    } else if (name === "obtained_grades" && value > formData.maximum_grades) {
+      value = formData.maximum_grades;
+    } else if (value < 0) {
       value = 0;
     }
 
@@ -87,41 +88,50 @@ function EducationUpdateForm({
     if (obj1 === obj2) {
       return true;
     }
-  
+
     // Check if either value is not an object or is null
-    if (typeof obj1 !== 'object' || obj1 === null || typeof obj2 !== 'object' || obj2 === null) {
+    if (
+      typeof obj1 !== "object" ||
+      obj1 === null ||
+      typeof obj2 !== "object" ||
+      obj2 === null
+    ) {
       return false;
     }
-  
+
     // Get the keys of both objects
     let keys1 = Object.keys(obj1);
     let keys2 = Object.keys(obj2);
-  
+
     // Check if the number of keys is different
     if (keys1.length !== keys2.length) {
       return false;
     }
-  
+
     // Iterate over the keys of obj1
     for (let key of keys1) {
       // Check if obj2 has the key and the values of the key are deeply equal
       if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
         // Handle special case for numeric values to consider them equal if numeric value is same
-        if (typeof obj1[key] === 'number' && typeof obj2[key] === 'number' && obj1[key] === obj2[key]) {
+        if (
+          typeof obj1[key] === "number" &&
+          typeof obj2[key] === "number" &&
+          obj1[key] === obj2[key]
+        ) {
           continue; // Continue checking other keys
         }
         return false;
       }
     }
-  
+
     // If all checks pass, the objects are deeply equal
     return true;
   };
-  
-  console.log('formData:', formData);
-  console.log('educationdata:', educationdata);
-  console.log('Deep equal result:', deepEqual(formData, educationdata));
-    const isUpdateDisabled = () => {
+
+  console.log("formData:", formData);
+  console.log("educationdata:", educationdata);
+  console.log("Deep equal result:", deepEqual(formData, educationdata));
+  const isUpdateDisabled = () => {
     switch (educationdata.educationType) {
       case "Post Graduate":
       case "Graduate":
@@ -136,7 +146,7 @@ function EducationUpdateForm({
           formData.start_month &&
           formData.end_month &&
           formData.educationMode &&
-          !deepEqual(formData,educationdata)
+          !deepEqual(formData, educationdata)
         );
       case "Class XII":
         return !(
@@ -147,7 +157,7 @@ function EducationUpdateForm({
           formData.maths &&
           formData.physics &&
           formData.chemistry &&
-          !deepEqual(formData,educationdata)
+          !deepEqual(formData, educationdata)
         );
       case "Class X":
         return !(
@@ -155,7 +165,7 @@ function EducationUpdateForm({
           formData.school_name &&
           formData.passing_out_year &&
           formData.percentage &&
-          !deepEqual(formData,educationdata)
+          !deepEqual(formData, educationdata)
         );
       default:
         return true;
@@ -167,30 +177,27 @@ function EducationUpdateForm({
       case "Post Graduate":
       case "Graduate":
         return (
-          <div className="flex flex-col gap-4">
-            <input
-              type="text"
+          <div className="flex flex-col gap-5">
+            <TextInput
               name="university"
-              placeholder="University/Institute name*"
-              className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
+              placeholder="University/Institute name"
               value={formData.university}
               onChange={handleInputChange}
+              isRequired={true}
             />
-            <input
-              type="text"
+            <TextInput
               name="course"
               placeholder="Course"
-              className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
               value={formData.course}
               onChange={handleInputChange}
+              isRequired={true}
             />
-            <input
-              type="text"
+            <TextInput
               name="specialization"
               placeholder="Specialization"
-              className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
               value={formData.specialization}
               onChange={handleInputChange}
+              isRequired={true}
             />
             <div className="flex gap-2">
               {["Percentage", "Grades"].map((marking) => (
@@ -224,41 +231,43 @@ function EducationUpdateForm({
                 </p>
               ))}
             </div>
-            <input
-              type="number"
+            <NumberInput
               name="percentage"
               placeholder="Percentage"
               className={`${
                 formData.marking_system === "Percentage" ? null : "hidden"
-              } border outline-none focus:border-blue-500 p-2 w-full rounded-sm`}
+              } `}
               value={formData.percentage}
               max="100"
               onChange={handleInputChange}
+              isRequired={true}
             />
             <div
-              className={`flex gap-4 ${
+              className={`flex flex-wrap  gap-4 w-full ${
                 formData.marking_system === "Grades" ? null : "hidden"
               }`}
             >
-              <input
-                type="number"
+              <NumberInput
                 name="obtained_grades"
                 placeholder="Obtained grades"
-                className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
                 value={formData.obtained_grades}
                 max={formData.maximum_grades}
                 min="0"
+                className={`flex-grow min-w-40`}
                 onChange={handleInputChange}
+                isRequired={true}
               />
-              <input
-                type="number"
+              <NumberInput
                 name="maximum_grades"
                 placeholder="Maximum grades"
-                min="0"
-                className="border outline-none focus:border-blue-500 p-2 w-full rounded-sm"
                 value={formData.maximum_grades}
+                max={100}
+                min="0"
+                className={`flex-grow min-w-40 `}
                 onChange={handleInputChange}
+                isRequired={true}
               />
+              
             </div>
             <div className="flex gap-2">
               {["Full time", "Part time"].map((mode) => (
@@ -280,89 +289,93 @@ function EducationUpdateForm({
                 </p>
               ))}
             </div>
-            <div className="flex gap-4 w-full ">
-            <input
+            <div className="flex gap-4 flex-wrap w-full ">
+              <DateInput
                 type="month"
                 name="start_month"
-                placeholder="Start Date*"
-                className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
+                placeholder="Start Date"
                 value={formatDate(formData.start_month)}
                 onChange={handleInputChange}
                 min={minDateFormatted}
-                max={formData.end_month ? formatDate(formData.end_month) : todayFormatted}
+                className={'flex-grow'}
+                max={
+                  formData.end_month
+                    ? formatDate(formData.end_month)
+                    : todayFormatted
+                }
+                isRequired={true}
               />
-               <input
+              <DateInput
                 type="month"
                 name="end_month"
-                placeholder="End Date*"
-                className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
+                placeholder="End Date"
                 value={formatDate(formData.end_month)}
                 onChange={handleInputChange}
-                min={formData.start_month ? formatDate(formData.start_month) : minDateFormatted}
+                className={'flex-grow'}
+                min={
+                  formData.start_month
+                    ? formatDate(formData.start_month)
+                    : minDateFormatted
+                }
                 max={todayFormatted}
+                isRequired={true}
               />
             </div>
           </div>
         );
       case "Class XII":
         return (
-          <div className="space-y-4">
-            <input
-              type="text"
+          <div className="flex flex-col gap-5">
+            <TextInput
               name="board"
-              placeholder="Board*"
-              className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
+              placeholder="Board"
               value={formData.board}
               onChange={handleInputChange}
+              isRequired={true}
             />
-            <input
-              type="text"
+            <TextInput
               name="school_name"
-              placeholder="School Name*"
-              className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
+              placeholder="College name"
               value={formData.school_name}
               onChange={handleInputChange}
+              isRequired={true}
             />
-            <input
+            <DateInput
               type="month"
-              name="passing_out_month"
-              placeholder="End Date*"
-              className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
-              value={formatDate(formData.passing_out_month)}
+              name="passing_out_year"
+              placeholder="End Date"
+              value={formData.passing_out_year}
               onChange={handleInputChange}
+              isRequired={true}
             />
-            <input
-              type="text"
-              name="marks"
-              placeholder="Marks in % out 100*"
-              className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
-              value={formData.marks}
+            <NumberInput
+              name="percentage"
+              placeholder="percentage in % out 100*"
+              value={formData.percentage}
               onChange={handleInputChange}
+              isRequired={true}
             />
-            <div className="flex gap-2">
-              <input
-                type="text"
+            <div className="flex flex-wrap gap-2">
+              <NumberInput
                 name="maths"
                 placeholder="Maths"
-                className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
                 value={formData.maths}
                 onChange={handleInputChange}
+                isRequired={true}
               />
-              <input
-                type="text"
+              <NumberInput
                 name="physics"
                 placeholder="Physics"
-                className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
                 value={formData.physics}
                 onChange={handleInputChange}
+                isRequired={true}
               />
-              <input
-                type="text"
+              <NumberInput
                 name="chemistry"
                 placeholder="Chemistry"
-                className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
                 value={formData.chemistry}
                 onChange={handleInputChange}
+                isRequired={true}
               />
             </div>
           </div>
@@ -370,37 +383,34 @@ function EducationUpdateForm({
       case "Class X":
         return (
           <div className="space-y-4">
-            <input
-              type="text"
+            <TextInput
               name="board"
               placeholder="Board*"
-              className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
               value={formData.board}
               onChange={handleInputChange}
+              isRequired={true}
             />
-            <input
-              type="text"
+            <TextInput
               name="school_name"
-              placeholder="School Name*"
-              className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
+              placeholder="School Name"
               value={formData.school_name}
               onChange={handleInputChange}
+              isRequired={true}
             />
-            <input
+            <DateInput
               type="month"
-              name="passing_out_month"
-              placeholder="End Date*"
-              className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
-              value={formData(formData.passing_out_month)}
+              name="passing_out_year"
+              placeholder="End Date"
+              value={formData.passing_out_year}
               onChange={handleInputChange}
+              isRequired={true}
             />
-            <input
-              type="text"
-              name="marks"
-              placeholder="Marks in % out 100*"
-              className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
-              value={formData.marks}
+            <NumberInput
+              name="percentage"
+              placeholder="Percentage"
+              value={formData.percentage}
               onChange={handleInputChange}
+              isRequired={true}
             />
           </div>
         );
@@ -410,49 +420,46 @@ function EducationUpdateForm({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-10 flex h-full w-full  border border-blue-500  justify-center items-center bg-black bg-opacity-50"
-      onClick={onClose}
+    <form
+      className=" z-20 flex flex-col w-full   sm:max-h-96 overflow-auto h-full  bg-white pt-2 pb-6 px-4 sm:px-8 rounded-sm"
+      onClick={(e) => e.stopPropagation()}
     >
-      <div
-        className="fixed z-20 flex flex-col w-full sm:max-w-md h-full sm:h-fit mx-auto bg-white pt-2 pb-6 px-4 sm:px-8 rounded-sm"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="py-4 ">
-          <h1 className="text-xl font-medium">Education</h1>
-          <p className='text-sm text-gray-400 mb-8'>Update the education details to what you originally wanted it to be</p>
-        </div>
+      <div className=" sticky z-20 -top-2.5 py-4  border border-white bg-white">
+        <h1 className="text-xl font-medium">Education</h1>
+        <p className="text-sm text-gray-400 mb-8">
+          Update the education details to what you originally wanted it to be
+        </p>
+      </div>
 
-        <div className="flex-1 ">{renderEducationUpdateForm()}</div>
-        <div className="flex justify-between items-center mt-12 w-full">
-          <svg
-            onClick={onDelete}
-            className="h-6 w-6 cursor-pointer text-red-500"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+      <div className="flex-1 pt-1.5">{renderEducationUpdateForm()}</div>
+      <div className="flex justify-between items-center mt-12 w-full">
+        <svg
+          onClick={onDelete}
+          className="h-6 w-6 cursor-pointer text-red-500"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <polyline points="3 6 5 6 21 6" />
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+        </svg>
+        <div>
+          <Button className="text-blue-500 font-medium" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button
+            disabled={isUpdateDisabled()}
+            className="bg-blue-500 rounded-full text-white disabled:bg-blue-300"
+            onClick={onSave}
           >
-            <polyline points="3 6 5 6 21 6" />
-            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-          </svg>
-          <div>
-            <Button className="text-blue-500 font-medium" onClick={onClose}>
-              Cancel
-            </Button>
-            <Button
-              disabled={isUpdateDisabled()  }
-              className="bg-blue-500 rounded-full text-white disabled:bg-blue-300"
-              onClick={onSave}
-            >
-              Update
-            </Button>
-          </div>
+            Update
+          </Button>
         </div>
       </div>
-    </div>
+    </form>
   );
 }
 
