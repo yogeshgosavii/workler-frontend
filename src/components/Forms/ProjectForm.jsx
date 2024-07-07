@@ -118,30 +118,33 @@ function ProjectForm({ onClose }) {
 
         <div className="grid grid-cols-2 gap-4 ">
           <div className="relative flex">
-  <input
-    type="date"
-    name="start_date"
-    id="start_date"
-    className={`block px-3 py-3 w-full font-normal bg-white rounded-sm border appearance-none focus:outline-none focus:ring-0 focus:border-blue-500 peer `}
-    placeholder=""
-    value={formData.start_date}
-    onChange={handleChange}
-  />
-  <label
-    htmlFor="start_date"
-    className={`absolute duration-200 w-32 cursor-text px-2 text-gray-400 bg-white font-normal transform transition-all ${
-      formData.start_date
-        ? "scale-90 max-w-fit -translate-y-5 top-2 text-blue-500"
-        : "-translate-y-1/2 scale-100 top-1/2"
-    } z-10`}
-    onClick={() => {
-      document.getElementById("start_date").focus();
-    }}
-  >
-    Start Date
-  </label>
-</div>
+            <input
+              type="date"
+              name="start_date"
+              id="start_date"
+              className={`block px-3 py-3 w-full font-normal bg-white rounded-sm border appearance-none focus:outline-none focus:ring-0 focus:border-blue-500 peer `}
+              placeholder=""
+              value={formData.start_date}
+              onChange={handleChange}
+            />
+            <label
+              htmlFor="start_date"
+              onClick={(e) => {
+                e.preventDefault();
+                e.target.previousSibling.focus();
+                document.getElementById("start_date").focus();
 
+              }}
+              
+              className={`absolute duration-200 w-32 cursor-text px-2 text-gray-400 bg-white font-normal transform transition-all  ${
+                formData.start_date
+                  ? "scale-90 max-w-fit  -translate-y-5 top-2 text-blue-500"
+                  : "-translate-y-1/2 scale-100 top-1/2"
+              } z-10 peer-focus:px-2 peer-focus:w-fit peer-focus:text-blue-500 peer-focus:scale-90 peer-focus:-translate-y-5 peer-focus:top-2 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}
+            >
+              Start Date
+            </label>
+          </div>
           <div className="relative flex">
             <input
               type="date"
