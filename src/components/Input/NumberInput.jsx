@@ -1,10 +1,10 @@
 import React from 'react'
 
-function NumberInput({ name, placeholder, value, onChange,isRequired ,className,max,min }) {
+function NumberInput({ type,name, placeholder, value, onChange,isRequired ,className,max,min }) {
   return (
     <div className={`relative flex peer ${className}`}>
       <input
-        type="number"
+        type={type?type:"number"}
         name={name}
         id={name}
         className={`block px-3 py-3 w-full font-normal bg-white rounded-sm border appearance-none focus:outline-none focus:ring-0 focus:border-blue-500 peer`}

@@ -8,7 +8,7 @@ function Button({
     }) {
 
   return (
-    <button className={`   py-2 px-7 rounded-md font-semibold  ${className}`} {...props}>
+    <button disabled={true} className={`   py-2 px-7 rounded-md font-semibold  ${className}`} {...props}>
       {children}
     </button>
   );

@@ -67,19 +67,21 @@ const UserProfile = () => {
     skills: true,
     workExperience: true,
     project: true,
-  }); // Added workExperience loading
+  });
   const [updateForm, setUpdateForm] = useState({
     education: false,
     skills: false,
     workExperience: false,
     project: false,
-  }); // Added workExperience update form
+    personalDetails: false,
+  });
   const [updateData, setUpdateData] = useState({
     education: null,
     skills: null,
     workExperience: null,
     project: null,
-  }); // Added workExperience update data
+    personalDetails: null,
+  });
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
@@ -125,7 +127,7 @@ const UserProfile = () => {
     try {
       const data = await profileApi.personalDetails.getAll();
       setPersonalData(data[0]);
-      console.log(data[0]); // Logging the fetched data directly
+      console.log(data); // Logging the fetched data directly
     } catch (error) {
       console.error("Error fetching personal data:", error);
     } finally {
@@ -220,7 +222,10 @@ const UserProfile = () => {
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
-            onClick={() => setFormType(id)}
+            onClick={() => {
+              setUpdateData({ personalDetails: personalData });
+              setUpdateForm({ personalDetails: true });
+            }}
           >
             {" "}
             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
@@ -275,96 +280,102 @@ const UserProfile = () => {
         title: "Personal details",
         content: personalData ? (
           <div className="mt-4 flex flex-col gap-5">
-            <p className=" flex gap-3 ">
-              <svg
-                class="h-6 w-6 text-gray-400"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                stroke-width="2"
-                stroke="currentColor"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                {" "}
-                <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                <circle cx="12" cy="7" r="4" />{" "}
-                <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
-              </svg>{" "}
-              <span>{personalData.fullname}</span>
-            </p>
-            <p className=" flex gap-3 ">
-              <svg
-                class="h-6 w-6 text-gray-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
+            {personalData.fullname && (
+              <p className=" flex gap-3 ">
+                <svg
+                  class="h-6 w-6 text-gray-400"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  fill="none"
                   stroke-linecap="round"
                   stroke-linejoin="round"
+                >
+                  {" "}
+                  <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                  <circle cx="12" cy="7" r="4" />{" "}
+                  <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                </svg>{" "}
+                <span>{personalData.fullname}</span>
+              </p>
+            )}
+            {personalData.address && (
+              <p className=" flex gap-3 ">
+                <svg
+                  class="h-6 w-6 text-gray-400"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                <span>{personalData.address}</span>
+              </p>
+            )}
+            {personalData.birthdate && (
+              <p className=" flex gap-3 ">
+                <svg
+                  class="h-6 w-6 text-gray-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
                   stroke-width="2"
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                />
-                <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
+                >
+                  {" "}
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />{" "}
+                  <line x1="16" y1="2" x2="16" y2="6" />{" "}
+                  <line x1="8" y1="2" x2="8" y2="6" />{" "}
+                  <line x1="3" y1="10" x2="21" y2="10" />
+                </svg>{" "}
+                {personalData.birthdate && (
+                  <p className="">
+                    {format(new Date(personalData.birthdate), "MMMM dd, yyyy")}
+                  </p>
+                )}
+              </p>
+            )}
+            {personalData.phone && (
+              <p className=" flex gap-3 ">
+                <svg
+                  class="h-6 w-6 text-gray-400"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
                   stroke-width="2"
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-              </svg>
-              <span>{personalData.address}</span>
-            </p>
-            <p className=" flex gap-3 ">
-              <svg
-                class="h-6 w-6 text-gray-400"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                {" "}
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />{" "}
-                <line x1="16" y1="2" x2="16" y2="6" />{" "}
-                <line x1="8" y1="2" x2="8" y2="6" />{" "}
-                <line x1="3" y1="10" x2="21" y2="10" />
-              </svg>{" "}
-              {personalData.birthdate && (
-                <p className="">
-                  {format(new Date(personalData.birthdate), "MMMM dd, yyyy")}
-                </p>
-              )}
-            </p>
-            <p className=" flex gap-3 ">
-              <svg
-                class="h-6 w-6 text-gray-400"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                stroke-width="2"
-                stroke="currentColor"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                {" "}
-                <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
-              </svg>{" "}
-              <span>{personalData.phone}</span>
-            </p>
-
-            {/* Add more personal details as needed */}
+                  stroke="currentColor"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  {" "}
+                  <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                  <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
+                </svg>{" "}
+                <span>{personalData.phone}</span>
+              </p>
+            )}
           </div>
         ) : (
           <p className="text-sm text-gray-400 mt-1">
             Add personal details so the recrutier can know more aboyt you
           </p>
         ),
-        loading: loading.education, // Corrected loading key to match `fetchPersonalData`
+        loading: loading.personalData,
       },
       {
         id: "education",
@@ -516,41 +527,41 @@ const UserProfile = () => {
                       index === projectData.length - 1 ? null : "border-b"
                     }`}
                   >
-                    <p
-                      className="text-xl flex gap-2 items-center font-semibold"
-                      
-                     
-                    >
+                    <p className="text-xl flex gap-2 items-center font-semibold">
                       {data.project_name}
                       {data.url && (
                         <a
-                        className="cursor-pointer"
-                        href={
-                          data.url.startsWith("http") ? data.url : `http://${data.url}`
-                        }
-                        // target={data.url.startsWith("http") ? "_blank" : "_self"}
-                        target={"_blank" }
-                        onClick={(e)=>{e.stopPropagation()}}
-  
-                        rel={
-                          data.url.startsWith("http") ? "noopener noreferrer" : ""
-                        }
+                          className="cursor-pointer"
+                          href={
+                            data.url.startsWith("http")
+                              ? data.url
+                              : `http://${data.url}`
+                          }
+                          // target={data.url.startsWith("http") ? "_blank" : "_self"}
+                          target={"_blank"}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                          }}
+                          rel={
+                            data.url.startsWith("http")
+                              ? "noopener noreferrer"
+                              : ""
+                          }
                         >
-                           <svg
-                          className="h-6 w-6  text-blue-500"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                          />
-                        </svg>
+                          <svg
+                            className="h-6 w-6  text-blue-500"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
                         </a>
-                       
                       )}
                     </p>
 
@@ -563,7 +574,7 @@ const UserProfile = () => {
               })}
             </div>
           ),
-        loading:  loading.project,
+        loading: loading.project,
       },
     ],
     [skillData, educationData, workExperienceData, projectData, personalData]
@@ -604,6 +615,23 @@ const UserProfile = () => {
                   ? personalData
                   : null,
             })}
+          </div>
+        </div>
+      )}
+      {updateForm.personalDetails && (
+        <div
+          className="fixed inset-0 z-10 flex h-full justify-center  items-center bg-black bg-opacity-50"
+          onClick={() => setUpdateForm({ personalDetails: false })}
+        >
+          <div
+            className="fixed z-20 w-full h-full flex items-center sm:max-w-md mx-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <PersonalDetailsForm
+              onClose={() => setUpdateForm({ personalDetails: false })}
+              personalDetailsData={updateData.personalDetails}
+              setPersonalDetailsData={setPersonalData}
+            />
           </div>
         </div>
       )}
@@ -677,20 +705,20 @@ const UserProfile = () => {
         </div>
       )}
       <div className="w-full ">
-        <div className=" border-y sm:border md:flex px-5 gap-3 bg-white  py-8">
-          <div className="flex  justify-center flex-col w-full  ">
-            <div className="flex flex-col text-center sm:text-start justify-center sm:justify-start sm:flex-row  w-full  items-center sm:gap-6">
+        <div className="  flex gap-4 flex-wrap ">
+          <div className="flex border-y py-8 flex-grow sm:border  px-5 gap-3 bg-white justify-center flex-col">
+            <div className="flex w-full gap-4  items-center">
               <img
                 className="object-cover h-32"
                 src={profileImageDefault}
                 alt="Profile"
               />
               <div className="flex flex-col">
-                <div className="flex items-center gap-2">
+                <div className="flex  gap-2">
                   <h1 className="text-3xl font-bold text-gray-900">
                     {user?.username || "Username"}
                   </h1>
-                  <svg
+                  {/* <svg
                     className="h-5 w-5 text-blue-500"
                     fill="none"
                     stroke="currentColor"
@@ -700,15 +728,15 @@ const UserProfile = () => {
                     viewBox="0 0 24 24"
                   >
                     <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-                  </svg>
+                  </svg> */}
                 </div>
-                <p className="text-xl font-medium text-gray-700">
-                  Software Engineer
+                <p className="text-xl font-medium mt-1 text-gray-700">
+                  {personalData.fullname}
                 </p>
                 <p className="text-gray-500">{user?.email || "email"}</p>
               </div>
             </div>
-            <div className="flex gap-4 justify-center sm:justify-start mt-4 items-center">
+            <div className="flex gap-6  mt-4 items-center">
               <p className="flex flex-col text-center">
                 <span className="font-medium">20</span>
                 <span className="text-sm">Followers</span>
@@ -717,7 +745,7 @@ const UserProfile = () => {
                 <span className="font-medium">20</span>
                 <span className="text-sm">Following</span>
               </p>
-              <p className="border-l border-gray-300 h-fit  px-4  py-1 flex items-center">
+              <p className="border-l border-gray-300 h-fit  px-4 pl-6  py-1 flex items-center">
                 <svg
                   class="h-8 w-8 text-gray-400 bg-gray-50 px-1 rounded-md border border-gray-400"
                   fill="none"
@@ -733,7 +761,7 @@ const UserProfile = () => {
                 </svg>
               </p>
             </div>
-            <div className="flex gap-2 mt-4 max-w-full flex-wrap justify-center sm:justify-start">
+            <div className="flex gap-2 mt-4 max-w-full flex-wrap ">
               <p className="flex border rounded-md w-fit px-2 py-1 font-medium bg-gray-50 text-nowrap">
                 Java Developer
               </p>
@@ -758,8 +786,16 @@ const UserProfile = () => {
             </div>
           </div>
 
-          <div className="md:w-fit border  bg-white p-5 h-fit flex justify-center mt-6 w-full md:mt-0 shadow-lg rounded-md">
-            <Doughnut className="w-full h-fit" data={data} options={options} />
+          <div className=" flex-grow border md:w-fit  bg-white px-4 sm:px-8 py-5 h-fit flex  mt-6 w-full md:mt-0 ">
+            <div className="">
+              <p className="text-xl font-medium">Profile Analytics</p>
+              <Doughnut
+                className="w-full h-fit mt-5 -ml-4 sm:-ml-0"
+                data={data}
+                options={options}
+                
+              />
+            </div>
           </div>
         </div>
 
