@@ -13,7 +13,7 @@ function Otp({text,setOtpInput,genertedOtp,className,setVerified,verified,...pro
     }
   },[verified])
   const checkOtp = (otp)=>{
-    if (otp.length < 6) {
+    if (otp.length <= 6) {
       setinputValue(otp)
     }
     if(inputValue.length == 6){
