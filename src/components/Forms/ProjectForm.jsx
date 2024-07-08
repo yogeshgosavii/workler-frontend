@@ -70,14 +70,14 @@ function ProjectForm({ onClose,setData }) {
 
 
   return (
-    <form className="bg-white p-6 px-4 sm:px-8 rounded-sm sm:max-h-96 overflow-y-auto w-full flex flex-col gap-5 h-full">
-      <div>
-        <h2 className="text-xl font-medium">Project</h2>
+    <form className="bg-white pt-2 pb-6 px-4 sm:px-8 rounded-sm sm:max-h-96 overflow-y-auto w-full flex flex-col gap-5 h-full">
+      <div className=" sticky -top-2.5 py-4 z-20 bg-white">
+      <h2 className="text-xl font-medium">Project</h2>
         <p className="text-sm text-gray-400 mb-6">
           Add the project you created or worked on
         </p>
       </div>
-      <div className="flex-1 flex flex-col gap-5">
+      <div className="flex-1 flex flex-col gap-6">
        
         <TextInput
           name={"project_name"}
@@ -93,16 +93,20 @@ function ProjectForm({ onClose,setData }) {
           value={formData.project_description}
           />
 
-        <div className="grid grid-cols-2 gap-4 ">
+        <div className="flex flex-wrap gap-4 ">
          
           <DateInput
+          type={"Date"}
           name={"start_date"}
           onChange={handleChange}
+          className={"flex-grow "}
           placeholder={"Start Date"}
           value={formData.start_date}
           maxDate={formData.end_date}
           />
           <DateInput
+          type={"Date"}
+          className={"flex-grow"}
           name={"end_date"}
           onChange={handleChange}
           placeholder={"End Date"}

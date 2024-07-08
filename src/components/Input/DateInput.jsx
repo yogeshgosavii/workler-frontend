@@ -22,9 +22,9 @@ const todayFormatted = today.toISOString().split("T")[0];
           document.getElementById(name).focus();
           e.stopPropagation();
         }}
-        className={`absolute flex duration-200 w-36  cursor-text px-2 text-gray-400 bg-white font-normal transform transition-all  ${
+        className={`absolute flex duration-200 min-w-28  cursor-text px-2 text-gray-400 bg-white font-normal transform transition-all  ${
           value
-            ? "scale-90 max-w-fit  -translate-y-5 top-2 text-blue-500"
+            ? "scale-90 min-w-fit max-w-fit  -translate-y-5 top-2 text-blue-500"
             : "-translate-y-1/2 scale-100 top-1/2"
         } z-10 peer-focus:px-2 peer-focus:w-fit peer-focus:text-blue-500 peer-focus:scale-90 peer-focus:-translate-y-5 peer-focus:top-2 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1`}
       >

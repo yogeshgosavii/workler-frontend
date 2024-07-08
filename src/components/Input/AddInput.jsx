@@ -31,16 +31,16 @@ function AddInput({name,placeholder,value,onChange,handleAdd,handleDelete,data,i
               Add
             </button>
           </div>
-          <div className={`flex flex-wrap mt-2 ${data.length<=0?"hidden":null}`}>
+          <div className={`flex flex-wrap gap-2 mt-2 ${data.length<=0?"hidden":null}`}>
             {data.map((tech, index) => (
               <div
                 key={index}
-                className="flex items-center gap-1 bg-blue-50  border border-blue-500 text-blue-500 rounded px-3 py-1 mr-2 "
+                className="flex items-center gap-2 bg-blue-50  border border-blue-500 text-blue-500 rounded px-3 py-1  "
               >
                 <span>{tech}</span>
                 <button
                   type="button"
-                  className="ml-2 focus:outline-none"
+                  className=" focus:outline-none"
                   onClick={(e) =>
                    handleDelete(tech)
                   }

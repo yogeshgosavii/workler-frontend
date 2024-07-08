@@ -235,7 +235,7 @@ const isFormValidCheck = () => {
     const isCurrentlyWorking = currentlyWorkingHere === "Yes";
 
     return (
-      <div className="flex flex-col gap-5 py-2 h-full mt-2  ">
+      <div className="flex flex-col gap-8 py-2 h-full mt-2  ">
         <div>
           <p className="text-sm font-medium">Currently working here</p>
           <div className="flex gap-3 text-nowrap flex-wrap mt-2 px-1">
@@ -302,7 +302,6 @@ const isFormValidCheck = () => {
           onChange={handleInputChange}
           isRequired={true}
         />
-        <div className="flex gap-4 items-end">
           <TextInput
             name="jobTitle"
             placeholder={`${currentlyWorkingHere === "Yes" ? "Current" : "Previous"} job title`}
@@ -311,7 +310,6 @@ const isFormValidCheck = () => {
             onChange={handleInputChange}
             isRequired={true}
           />
-        </div>
         {isFullTime && isCurrentlyWorking && (
           <div className="flex gap-4 ">
             <NumberInput
@@ -331,7 +329,7 @@ const isFormValidCheck = () => {
                 type="date"
                 name="joiningDate"
                 id="joiningDate"
-                placeholder={'Joining Date'}
+                placeholder={'Joining date'}
                 value={formData.joiningDate}
                 onChange={handleDateChange}
                 min={minDateFormatted}
@@ -345,6 +343,7 @@ const isFormValidCheck = () => {
                   type="date"
                   name="leavingDate"
                   id="leavingDate"
+                  placeholder={"Leaving date"}
                   className={'flex-grow'}
                   value={formData.leavingDate}
                   onChange={handleDateChange}

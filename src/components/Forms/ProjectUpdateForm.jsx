@@ -161,15 +161,15 @@ function ProjectUpdateForm({ projectData, setProjectData, onClose }) {
   };
 
   return (
-    <form className="bg-white p-6 px-4 sm:px-8 rounded-sm sm:max-h-96 overflow-y-auto w-full flex flex-col gap-5 h-full">
-      <div>
-        <h2 className="text-xl font-medium">Project</h2>
-        <p className="text-sm text-gray-400 mb-6">
+    <form className="bg-white px-4 pt-2 pb-6 sm:px-8 rounded-sm sm:max-h-96 overflow-y-auto w-full flex flex-col gap-5 h-full">
+      <div className=" sticky -top-2.5 py-4 z-20 bg-white">
+      <h2 className="text-xl font-medium">Project</h2>
+        <p className="text-sm text-gray-400 ">
           Update the project details to what you originally wanted it to be
         </p>
       </div>
 
-      <div className="flex-1 flex flex-col gap-5">
+      <div className="flex-1 flex flex-col gap-6">
        
        <TextInput
          name={"project_name"}
@@ -185,19 +185,23 @@ function ProjectUpdateForm({ projectData, setProjectData, onClose }) {
          value={formData.project_description}
          />
 
-       <div className="grid grid-cols-2 gap-4 ">
+       <div className="flex flex-wrap gap-4 ">
         
          <DateInput
+         type={"Date"}
          name={"start_date"}
          onChange={handleChange}
          placeholder={"Start Date"}
+         className={"flex-grow"}
          value={formatDate(formData.start_date)}
          maxDate={formatDate(formData.end_date)}
          />
          <DateInput
+          type={"Date"}
          name={"end_date"}
          onChange={handleChange}
          placeholder={"End Date"}
+         className={"flex-grow"}
          minDate={formatDate(formData.start_date)}
          value={formatDate(formData.end_date)}
          />

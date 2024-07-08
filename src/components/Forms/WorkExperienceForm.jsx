@@ -5,8 +5,9 @@ import { set } from "date-fns/fp/set";
 import TextInput from "../Input/TextInput";
 import DateInput from "../Input/DateInput";
 import NumberInput from "../Input/NumberInput";
+import OptionInput from "../Input/OptionInput";
 
-function WorkExperienceForm({ onClose, initialData, setData ,data }) {
+function WorkExperienceForm({ onClose, initialData, setData, data }) {
   const workTypeOptions = ["Full-time", "Internship"];
   const departmentOptions = [
     "Engineering",
@@ -17,7 +18,9 @@ function WorkExperienceForm({ onClose, initialData, setData ,data }) {
   ];
 
   console.log(data);
-  const currentWorkingSomeWhere = data.some(experience =>experience.currentlyWorking == "Yes")
+  const currentWorkingSomeWhere = data.some(
+    (experience) => experience.currentlyWorking == "Yes"
+  );
   console.log(currentWorkingSomeWhere);
   const noticePeriodOptions = [
     "15 days or less",
@@ -27,9 +30,11 @@ function WorkExperienceForm({ onClose, initialData, setData ,data }) {
     "More than 3 Months",
   ];
   const profileApi = useProfileApi();
-  
+
   const [workExperienceType, setWorkExperienceType] = useState();
-  const [currentlyWorkingHere, setCurrentlyWorkingHere] = useState(currentWorkingSomeWhere?"No":null);
+  const [currentlyWorkingHere, setCurrentlyWorkingHere] = useState(
+    currentWorkingSomeWhere ? "No" : null
+  );
   const [currentPage, setCurrentPage] = useState(0);
   const [noticePeriod, setNoticePeriod] = useState(noticePeriodOptions[0]);
   const [formData, setFormData] = useState({
@@ -93,7 +98,7 @@ function WorkExperienceForm({ onClose, initialData, setData ,data }) {
         setFormData((prev) => ({
           ...prev,
           ["noticePeriod"]: null,
-        }))
+        }));
       }
       const nonEmptyData = Object.fromEntries(
         Object.entries(formData).filter(([key, value]) => value !== "")
@@ -115,44 +120,44 @@ function WorkExperienceForm({ onClose, initialData, setData ,data }) {
       onClose();
     }
   };
-// Get today's date
-const today = new Date();
+  // Get today's date
+  const today = new Date();
 
-// Calculate 20 years ago from today
-const minDate = new Date();
-minDate.setFullYear(today.getFullYear() - 20);
+  // Calculate 20 years ago from today
+  const minDate = new Date();
+  minDate.setFullYear(today.getFullYear() - 20);
 
-// Format minDate to 'YYYY-MM-DD' for input[type="date"]
-const minDateFormatted = minDate.toISOString().split("T")[0];
+  // Format minDate to 'YYYY-MM-DD' for input[type="date"]
+  const minDateFormatted = minDate.toISOString().split("T")[0];
 
-// Format today to 'YYYY-MM-DD' for input[type="date"]
-const todayFormatted = today.toISOString().split("T")[0];
+  // Format today to 'YYYY-MM-DD' for input[type="date"]
+  const todayFormatted = today.toISOString().split("T")[0];
 
-const calculateExperience = (joinDate, leaveDate) => {
-  if (!joinDate) return;
-  if (!leaveDate && currentlyWorkingHere !== "Yes") return;
+  const calculateExperience = (joinDate, leaveDate) => {
+    if (!joinDate) return;
+    if (!leaveDate && currentlyWorkingHere !== "Yes") return;
 
-  if (!leaveDate && currentlyWorkingHere === "Yes") {
-    leaveDate = todayFormatted;
-  }
+    if (!leaveDate && currentlyWorkingHere === "Yes") {
+      leaveDate = todayFormatted;
+    }
 
-  joinDate = new Date(joinDate);
-  leaveDate = new Date(leaveDate);
+    joinDate = new Date(joinDate);
+    leaveDate = new Date(leaveDate);
 
-  if (leaveDate < joinDate) {
-    return "Leaving date cannot be before joining date.";
-  }
+    if (leaveDate < joinDate) {
+      return "Leaving date cannot be before joining date.";
+    }
 
-  let diffYears = leaveDate.getFullYear() - joinDate.getFullYear();
-  let diffMonths = leaveDate.getMonth() - joinDate.getMonth();
+    let diffYears = leaveDate.getFullYear() - joinDate.getFullYear();
+    let diffMonths = leaveDate.getMonth() - joinDate.getMonth();
 
-  if (diffMonths < 0) {
-    diffYears--;
-    diffMonths += 12;
-  }
+    if (diffMonths < 0) {
+      diffYears--;
+      diffMonths += 12;
+    }
 
-  setFormData((prev) => ({ ...prev, years: diffYears, months: diffMonths }));
-};
+    setFormData((prev) => ({ ...prev, years: diffYears, months: diffMonths }));
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -161,9 +166,9 @@ const calculateExperience = (joinDate, leaveDate) => {
   const handleDateChange = (e) => {
     const { name, value } = e.target;
     const updatedFormData = { ...formData, [name]: value };
-  
+
     setFormData(updatedFormData);
-  
+
     const joinDate = name === "joiningDate" ? value : formData.joiningDate;
     const leaveDate = name === "leavingDate" ? value : formData.leavingDate;
     calculateExperience(joinDate, leaveDate);
@@ -188,7 +193,7 @@ const calculateExperience = (joinDate, leaveDate) => {
     } = formData;
     console.log(formData);
 
-    if ( !companyName || !jobTitle) {
+    if (!companyName || !jobTitle) {
       return false;
     }
 
@@ -217,201 +222,199 @@ const calculateExperience = (joinDate, leaveDate) => {
   const renderWorkForm = () => {
     const isFullTime = workExperienceType === "Full-time";
     const isCurrentlyWorking = currentlyWorkingHere === "Yes";
-    
 
     return (
-      <div className="flex flex-col h-full gap-5 ">
-        <div className="flex-1 flex flex-col gap-5 ">
-        <div>
-          <p className="font-medium">
-            Total experience
-            <span className="text-sm text-gray-400 font-normal"><span className="text-red-500">*</span>
-              {" "}
-              (Auto Generated)
-            </span>
-          </p>
-          <div className="flex items-end gap-4 mt-2">
-            <div className="flex w-full gap-1 items-end">
-              <input
-                name="years"
-                className="border  focus:border-blue-500 p-2 outline-none  text-center w-full rounded-sm"
-                value={formData.years}
-                readOnly
-                required
-              />
-              <p>years</p>
-            </div>
-            <div className="flex w-full items-end gap-1">
-              <input
-                name="months"
-                className="border focus:border-blue-500 p-2 outline-none  text-center w-full rounded-sm"
-                value={formData.months}
-                readOnly
-                required
-              />
-              <p>months</p>
+      <div className="flex flex-col h-full gap-6 ">
+        <div className="flex-1 flex flex-col gap-6 ">
+          <div>
+            <p className="font-medium">
+              Total experience
+              <span className="text-sm text-gray-400 font-normal">
+                <span className="text-red-500">*</span> (Auto Generated)
+              </span>
+            </p>
+            <div className="flex items-end gap-4 mt-2">
+              <div className="flex w-full gap-1 items-end">
+                <input
+                  name="years"
+                  className="border  focus:border-blue-500 p-2 outline-none  text-center w-full rounded-sm"
+                  value={formData.years}
+                  readOnly
+                  required
+                />
+                <p>years</p>
+              </div>
+              <div className="flex w-full items-end gap-1">
+                <input
+                  name="months"
+                  className="border focus:border-blue-500 p-2 outline-none  text-center w-full rounded-sm"
+                  value={formData.months}
+                  readOnly
+                  required
+                />
+                <p>months</p>
+              </div>
             </div>
           </div>
-        </div>
-        <TextInput
-          name="companyName"
-          placeholder={`${
-            currentlyWorkingHere === "Yes" ? "Current" : "Previous"
-          } company name`}
-          value={formData.companyName}
-          onChange={handleInputChange}
-          isRequired={true}
-        />
-        <div className="flex gap-4 items-end">
           <TextInput
-            type="text"
-            name="jobTitle"
+            name="companyName"
             placeholder={`${
               currentlyWorkingHere === "Yes" ? "Current" : "Previous"
-            } job title`}
-            value={formData.jobTitle}
+            } company name`}
+            value={formData.companyName}
             onChange={handleInputChange}
             isRequired={true}
           />
-        </div>
-        {isFullTime && isCurrentlyWorking && (
-          <div className="flex gap-4 ">
+          <div className="flex gap-4 items-end">
             <TextInput
-              name="annualSalary"
-              placeholder="Current annual salary"
-              value={formData.annualSalary}
+              type="text"
+              name="jobTitle"
+              className={"w-full"}
+              placeholder={`${
+                currentlyWorkingHere === "Yes" ? "Current" : "Previous"
+              } job title`}
+              value={formData.jobTitle}
               onChange={handleInputChange}
               isRequired={true}
             />
-            <p className="text-nowrap flex items-end py-1">Per year</p>
           </div>
-        )}
+          {isFullTime && isCurrentlyWorking && (
+            <div className="flex gap-4 ">
+              <TextInput
+                name="annualSalary"
+                placeholder="Current annual salary"
+                value={formData.annualSalary}
+                onChange={handleInputChange}
+                isRequired={true}
+              />
+              <p className="text-nowrap flex items-end py-1">Per year</p>
+            </div>
+          )}
 
-        {isFullTime && (
-          <div className="flex flex-wrap gap-4">
-              
+          {isFullTime && (
+            <div className="flex flex-wrap gap-4">
               <DateInput
                 type="date"
                 name="joiningDate"
                 id="joiningDate"
                 placeholder="Joining date"
+                className={"flex-grow"}
                 value={formData.joiningDate}
                 onChange={handleDateChange}
                 min={minDateFormatted}
                 max={todayFormatted}
                 isRequired={true}
               />
-            {formData.currentlyWorking === "No" ? (
-             
+              {formData.currentlyWorking === "No" ? (
                 <DateInput
                   type="date"
                   name="leavingDate"
                   id="leavingDate"
+                  placeholder={"Leaving date"}
+                  className={"flex-grow"}
                   value={formData.leavingDate}
                   onChange={handleDateChange}
                   min={formData.joiningDate}
                   max={todayFormatted}
                   isRequired={true}
                 />
-            ) : (
-              <p className="border px-4 py-2 flex items-center text-blue-500 w-full text-sm sm:text-base">
-                Present
-              </p>
-            )}
-          </div>
-        )}
-        {isFullTime && formData.currentlyWorking == "Yes" && (
-          <div>
-            <p className="font-medium">Notice period</p>
-            <div className="flex flex-wrap gap-2 mt-2">
-              {noticePeriodOptions.map((notice_period) => (
-                <p
-                  key={notice_period}
-                  onClick={() =>
-                    setFormData((prev) => ({
-                      ...prev,
-                      ["noticePeriod"]: notice_period,
-                    }))
-                  }
-                  className={`px-4 border py-1 cursor-pointer text-sm w-fit text-nowrap rounded-md transition-all ease-in-out 0.3ms ${
-                    notice_period === formData.noticePeriod
-                      ? "scale-110 bg-blue-50 border-blue-500 font-medium text-blue-500"
-                      : "text-gray-500"
-                  }`}
-                >
-                  {notice_period}
+              ) : (
+                <p className="border px-4 py-2 flex items-center text-blue-500 w-full text-sm sm:text-base">
+                  Present
                 </p>
-              ))}
+              )}
             </div>
-          </div>
-        )}
-        {!isFullTime && (
-          <>
-            <TextInput
-              name="location"
-              placeholder="Location*"
-              className="border h-fit p-2 w-full rounded-sm"
-              value={formData.location}
-              onChange={handleInputChange}
-              isRequired={true}
-            />
-            <select
-              name="department"
-              className="border h-fit p-2 w-full rounded-sm"
-              value={formData.department}
-              onChange={handleInputChange}
-              required
-            >
-              <option value="">Select Department*</option>
-              {departmentOptions.map((dept) => (
-                <option key={dept} value={dept}>
-                  {dept}
-                </option>
-              ))}
-            </select>
-            <div className="flex gap-4 items-end">
-              <div className="flex flex-col w-full">
-               
-                <div className="flex gap-4 mt-2">
-                  <DateInput
-                    type="date"
-                    name="joiningDate"
-                    id="joiningDate"
-                    placeholder={"Joining date"}
-                    value={formData.joiningDate}
-                    onChange={handleDateChange}
-                    min={minDateFormatted}
-                    // max={todayFormatted}
-                    required
-                  />
-                  {isCurrentlyWorking ? (
-                    <p className="border px-4 py-1 flex items-center text-blue-500">
-                      Present
-                    </p>
-                  ) : (
-                    <DateInput
-                      type="date"
-                      name="leavingDate"
-                      id="leavingDate"
-                      value={formData.leavingDate}
-                      onChange={handleDateChange}
-                      min={formData.joiningDate}
-                      max={todayFormatted}
-                      isRequired={true}
-                    />
-                  )}
-                </div>
+          )}
+          {isFullTime && formData.currentlyWorking == "Yes" && (
+            <div>
+              <p className="font-medium">Notice period</p>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {noticePeriodOptions.map((notice_period) => (
+                  <p
+                    key={notice_period}
+                    onClick={() =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        ["noticePeriod"]: notice_period,
+                      }))
+                    }
+                    className={`px-4 border py-1 cursor-pointer text-sm w-fit text-nowrap rounded-md transition-all ease-in-out 0.3ms ${
+                      notice_period === formData.noticePeriod
+                        ? "scale-110 bg-blue-50 border-blue-500 font-medium text-blue-500"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    {notice_period}
+                  </p>
+                ))}
               </div>
             </div>
-            <NumberInput
-              name="stipend"
-              placeholder="Stipend*"
-              value={formData.stipend}
-              onChange={handleInputChange}
-              isRequired={true}
-            />
-          </>
-        )}</div>
+          )}
+          {!isFullTime && (
+            <>
+              <TextInput
+                name="location"
+                placeholder="Location"
+                value={formData.location}
+                onChange={handleInputChange}
+                isRequired={true}
+              />
+
+              <OptionInput
+                name={"department"}
+                value={formData.department}
+                onChange={handleInputChange}
+                optionList={departmentOptions}
+                isRequired={true}
+                placeholder={"Department"}
+              />
+              <div className="flex gap-4 items-end">
+                <div className="flex flex-col w-full">
+                  <div className="flex flex-wrap gap-4 mt-2">
+                    <DateInput
+                      type="date"
+                      name="joiningDate"
+                      id="joiningDate"
+                      placeholder={"Joining date"}
+                      value={formData.joiningDate}
+                      onChange={handleDateChange}
+                      min={minDateFormatted}
+                      className={"flex-grow"}
+                      isRequired={true}
+                      // max={todayFormatted}
+                      required
+                    />
+                    {isCurrentlyWorking ? (
+                      <p className="border px-4 py-1 flex items-center text-blue-500">
+                        Present
+                      </p>
+                    ) : (
+                      <DateInput
+                        type="date"
+                        name="leavingDate"
+                        id="leavingDate"
+                        placeholder={"Leaving date"}
+                        className={"flex-grow"}
+                        value={formData.leavingDate}
+                        onChange={handleDateChange}
+                        min={formData.joiningDate}
+                        max={todayFormatted}
+                        isRequired={true}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+              <NumberInput
+                name="stipend"
+                placeholder="Stipend"
+                value={formData.stipend}
+                onChange={handleInputChange}
+                isRequired={true}
+              />
+            </>
+          )}
+        </div>
         <div className="flex    justify-end items-center mt-6 w-full">
           <Button className="text-blue-500 font-medium" onClick={handleBack}>
             Cancel
@@ -439,7 +442,11 @@ const calculateExperience = (joinDate, leaveDate) => {
                 {["Yes", "No"].map((type) => (
                   <p
                     key={type}
-                    onClick={() => !currentWorkingSomeWhere?setCurrentlyWorkingHere(type):null}
+                    onClick={() =>
+                      !currentWorkingSomeWhere
+                        ? setCurrentlyWorkingHere(type)
+                        : null
+                    }
                     className={`${
                       currentlyWorkingHere === type
                         ? "bg-blue-50 text-blue-500 border-blue-500 font-semibold"
@@ -499,12 +506,12 @@ const calculateExperience = (joinDate, leaveDate) => {
 
   return (
     <form className="bg-white pt-2 pb-6 px-4 sm:px-8 rounded-sm flex flex-col w-full h-full md:max-h-[80vh] max-h-[100vh] overflow-y-auto">
-      <div className=" sticky -top-2.5 py-4 bg-white">
+      <div className=" sticky -top-2.5 py-4 z-20 bg-white">
         <h2 className="text-xl font-medium">Work experience</h2>
         <p className="text-sm text-gray-400  mt-1">
           Details like job title, company name, etc help employers understand
           your work
-        </p>s
+        </p>
       </div>
       <div className=" mt-2 h-full">{pages[currentPage].content}</div>
     </form>

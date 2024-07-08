@@ -167,6 +167,7 @@ function EducationForm({ onClose, setData, data }) {
             
             <TextInput
             name={"university"}
+            className={"mt-1.5"}
             placeholder={"University/Institute name"}
             isRequired={true}
             value={formData.university}
@@ -297,19 +298,17 @@ function EducationForm({ onClose, setData, data }) {
         );
       case "Class XII":
         return (
-          <div className="space-y-4">
+          <div className="flex flex-col gap-5 pt-1.5">
             <TextInput
               name="board"
               placeholder="Board"
-              className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
               value={formData.board}
               onChange={handleInputChange}
               isRequired={true}
             />
             <TextInput
               name="school_name"
-              placeholder="College name"
-              className="border bg-white outline-none focus:border-blue-500 rounded-sm p-2 w-full"
+              placeholder="College/School name"
               value={formData.school_name}
               onChange={handleInputChange}
               isRequired={true}
@@ -317,25 +316,24 @@ function EducationForm({ onClose, setData, data }) {
            <DateInput
                 type="month"
                 name="passing_out_year"
+                className={"w-full"}
                 placeholder="End Date"
-                className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
                 value={formData.passing_out_year}
                 onChange={handleInputChange}
                 isRequired={true}
               />
             <NumberInput
               name="percentage"
-              placeholder="percentage in % out 100*"
-              className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
+              placeholder="Percentage"
               value={formData.percentage}
               onChange={handleInputChange}
               isRequired={true}
             />
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <NumberInput
                 name="maths"
                 placeholder="Maths"
-                className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
+                className={"flex-grow"}
                 value={formData.maths}
                 onChange={handleInputChange}
                 isRequired={true}
@@ -343,7 +341,7 @@ function EducationForm({ onClose, setData, data }) {
               <NumberInput
                 name="physics"
                 placeholder="Physics"
-                className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
+                className={"flex-grow"}
                 value={formData.physics}
                 onChange={handleInputChange}
                 isRequired={true}
@@ -351,7 +349,7 @@ function EducationForm({ onClose, setData, data }) {
               <NumberInput
                 name="chemistry"
                 placeholder="Chemistry"
-                className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
+                className={"flex-grow"}
                 value={formData.chemistry}
                 onChange={handleInputChange}
                 isRequired={true}
@@ -361,11 +359,10 @@ function EducationForm({ onClose, setData, data }) {
         );
       case "Class X":
         return (
-          <div className="space-y-4">
+          <div className="flex flex-col gap-5 pt-1.5">
             <TextInput
               name="board"
-              placeholder="Board*"
-              className="border outline-none focus:border-blue-500 p-2 rounded-sm w-full"
+              placeholder="Board"
               value={formData.board}
               onChange={handleInputChange}
               isRequired={true}
@@ -373,7 +370,6 @@ function EducationForm({ onClose, setData, data }) {
             <TextInput
               name="school_name"
               placeholder="School Name"
-              className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
               value={formData.school_name}
               onChange={handleInputChange}
               isRequired={true}
@@ -382,7 +378,7 @@ function EducationForm({ onClose, setData, data }) {
                 type="month"
                 name="passing_out_year"
                 placeholder="End Date"
-                className="border bg-white outline-none focus:border-blue-500 p-2 rounded-sm w-full"
+                className={"w-full"}
                 value={formData.passing_out_year}
                 onChange={handleInputChange}
                 isRequired={true}
@@ -390,7 +386,6 @@ function EducationForm({ onClose, setData, data }) {
             <NumberInput
               name="percentage"
               placeholder="Percentage"
-              className="border outline-none focus:border-blue-500 rounded-sm p-2 w-full"
               value={formData.percentage}
               onChange={handleInputChange}
               isRequired={true}
@@ -406,11 +401,11 @@ function EducationForm({ onClose, setData, data }) {
     {
       content: (
         <div className="flex flex-col flex-wrap  justify-between gap-2 h-full">
-          <div>
+          <div className="flex-1  ">
             <p className="text-sm font-medium">
               Education<span className="text-red-500">*</span>
             </p>
-            <div className="flex gap-3 mt-2 text-nowrap flex-wrap px-2">
+            <div className="flex flex-1 gap-3 mt-2 text-nowrap flex-wrap px-2">
               {typesOfEducation.map((type) => (
                 <p
                   key={type}
@@ -474,8 +469,8 @@ function EducationForm({ onClose, setData, data }) {
   ];
 
   return (
-    <div className="relative flex flex-col gap-4 pt-2 pb-6 px-4 sm:px-8  w-full h-full sm:max-w-2xl bg-white ">
-      <form onSubmit={onSave} className="flex flex-col h-full gap-4 w-full overflow-auto">
+    <div className="relative flex flex-col gap-4 pt-2 pb-6 px-4 sm:px-8  w-full h-full sm:max-w-2xl overflow-auto bg-white ">
+      <form onSubmit={onSave} className="flex flex-col  gap-4 flex-grow  w-full">
         <div className="py-4 sticky z-40 -top-2.5 bg-white">
           <h2 className="text-xl font-medium">Education</h2>
           <p className="text-sm text-gray-400">
@@ -483,7 +478,7 @@ function EducationForm({ onClose, setData, data }) {
             educational background
           </p>
         </div>
-       <div className="sm:max-h-60   h-full "> {pages[currentPage].content}</div>
+       <div className="sm:max-h-60 h-full "> {pages[currentPage].content}</div>
       </form>
     </div>
   );

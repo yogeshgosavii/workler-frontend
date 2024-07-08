@@ -180,6 +180,7 @@ function EducationUpdateForm({
           <div className="flex flex-col gap-5">
             <TextInput
               name="university"
+              className={"mt-1.5"}
               placeholder="University/Institute name"
               value={formData.university}
               onChange={handleInputChange}
@@ -426,7 +427,7 @@ function EducationUpdateForm({
     >
       <div className=" sticky z-20 -top-2.5 py-4  border border-white bg-white">
         <h1 className="text-xl font-medium">Education</h1>
-        <p className="text-sm text-gray-400 mb-8">
+        <p className="text-sm text-gray-400 ">
           Update the education details to what you originally wanted it to be
         </p>
       </div>

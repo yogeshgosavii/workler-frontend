@@ -517,13 +517,14 @@ const UserProfile = () => {
                     }`}
                   >
                     <p
-                      className="text-xl flex gap-4 items-center font-semibold"
+                      className="text-xl flex gap-2 items-center font-semibold"
                       
                      
                     >
                       {data.project_name}
                       {data.url && (
                         <a
+                        className="cursor-pointer"
                         href={
                           data.url.startsWith("http") ? data.url : `http://${data.url}`
                         }
@@ -536,7 +537,7 @@ const UserProfile = () => {
                         }
                         >
                            <svg
-                          className="h-6 w-6 text-blue-500"
+                          className="h-6 w-6  text-blue-500"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
