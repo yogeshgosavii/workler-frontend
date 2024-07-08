@@ -141,7 +141,7 @@ function Signup() {
     return (
         <div className='flex flex-col h-svh  items-center w-full justify-center  text-gray-800'>
             <div className={` flex h-full flex-col justify-between items-center sm:justify-center  w-full   ${next ? 'hidden' : null}`}>
-                <div id='email-form' className={` w-full  sm:border p-10 max-w-sm flex  flex-col  `} >
+                <div id='email-form' className={` w-full  sm:border px-6 mt-10 sm:p-10 max-w-sm flex  flex-col  `} >
                     <div className=''>
                         <p className='text-2xl font-semibold text-gray-800 '>Hello User</p>
                         <p className='text-sm text-gray-400'>Enter you email address to get started</p>

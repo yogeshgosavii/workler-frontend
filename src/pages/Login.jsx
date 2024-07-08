@@ -54,7 +54,7 @@ function Login({ userType = "candidate" }) {
     <div className='h-svh flex flex-col text-gray-700 justify-between'>
       <div className='flex-1 flex flex-col w-full items-center sm:justify-center text-gray-800'>
         <div className='bg-white flex sm:max-w-sm w-full flex-row mt-0.5 sm:border'>
-          <div className='w-full p-10 duration-200'>
+          <div className='w-full px-6 pt-10 sm:p-10 duration-200'>
             {userType === "employeer" ? (
               <h2 className="text-2xl font-semibold leading-tight">Employeer Login</h2>
             ) : (
