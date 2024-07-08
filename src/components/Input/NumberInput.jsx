@@ -13,6 +13,10 @@ function NumberInput({ name, placeholder, value, onChange,isRequired ,className,
         max={max}
         min={min}
         onChange={onChange}
+        style={{
+          "-webkit-autofill": "number",
+          "-webkit-box-shadow": "0 0 0px 1000px white inset",
+      }}
       />
       <label
         htmlFor={name}

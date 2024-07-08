@@ -6,7 +6,7 @@ function OptionInput({ name, placeholder,value, optionList, onChange,isRequired 
           <select
             name={name}
             id={name}
-            className={`mt-1 border bg-white outline-none focus:border-blue-500 p-2 block w-full text-gray-900 py-3 rounded-sm peer ${
+            className={` border bg-white outline-none focus:border-blue-500 p-2 block w-full text-gray-900 py-3 rounded-sm peer ${
               value ? "text-black" : "text-gray-500"
             }`}
             value={value}
@@ -15,7 +15,7 @@ function OptionInput({ name, placeholder,value, optionList, onChange,isRequired 
           >
             <option value="">Select an option</option>
             {optionList.map((option) => (
-              <option  value={option}>
+              <option key={option}  value={option}>
                 {option}
               </option>
             ))}
@@ -26,7 +26,7 @@ function OptionInput({ name, placeholder,value, optionList, onChange,isRequired 
               document.getElementById(name).focus();
               e.stopPropagation()
             }}
-            className={`flex w-40 absolute duration-200 cursor-text px-2 text-gray-400 bg-white font-normal transform transition-all ${
+            className={`flex min-w-32 absolute duration-200 cursor-text px-2 text-gray-400 bg-white font-normal transform transition-all ${
               value
                 ? "-translate-y-4 scale-90 top-2 z-10 w-fit"
                 : "top-1/2 -translate-y-1/2"

@@ -15,6 +15,7 @@ const todayFormatted = today.toISOString().split("T")[0];
         min={minDate}
         max={maxDate?maxDate:todayFormatted}
         onChange={onChange}
+        
       />
       <label
         htmlFor={value}
