@@ -82,6 +82,9 @@ const UserProfile = () => {
     project: null,
     personalDetails: null,
   });
+  const [tags, settags] = useState([
+    "Java","Springboot","React",
+  ]);
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
@@ -716,80 +719,44 @@ const UserProfile = () => {
           <div className="flex border-y py-8 flex-grow sm:border  px-5 gap-3 bg-white justify-center flex-col">
             <div className="flex  w-full gap-4  items-center">
               <img
-                className="object-cover bg-gray-50 border rounded-full p-2"
+                className="object-cover h-20 sm:h-auto bg-gray-50 border rounded-full p-2"
                 src={profileImageDefault}
                 alt="Profile"
               />
               <div className="flex flex-col">
+                
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+              {personalData?.fullname}
+                </h1>
                 <div className="flex  gap-2">
-                  <h1 className="text-3xl font-bold text-gray-900">
+                <p className="text-lg sm:text-xl text-gray-600">
+
                     {user?.username || "Username"}
-                  </h1>
-                  {/* <svg
-                    className="h-5 w-5 text-blue-500"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-                  </svg> */}
+                  </p>
+                 
                 </div>
-                <p className="text-xl font-medium mt-1 text-gray-700">
-                  {personalData?.fullname}
-                </p>
-                <p className="text-gray-500">{user?.email || "email"}</p>
+                {/* <p className="text-gray-500">{user?.email || "email"}</p> */}
               </div>
             </div>
-            <div className="flex gap-6  mt-4 items-center">
-              <p className="flex flex-col text-center">
-                <span className="font-medium">20</span>
-                <span className="text-sm">Followers</span>
+            <div className="flex gap-2 text-sm font-medium   items-center">
+              <p className="flex items-center gap-2">
+                <span className="font-semibold">20</span>
+                <span className=" text-gray-500">followers</span>
               </p>
-              <p className="flex flex-col text-center">
-                <span className="font-medium">20</span>
-                <span className="text-sm">Following</span>
+              
+              <p className="flex items-center gap-2">
+                <span className="font-semibold">20</span>
+                <span className="text-gray-500">following</span>
               </p>
-              <p className="border-l border-gray-300 h-fit  px-4 pl-6  py-1 flex items-center">
-                <svg
-                  class="h-8 w-8 text-gray-400 bg-gray-50 px-1 rounded-md border border-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                  />
-                </svg>
-              </p>
+            
             </div>
             <div className="flex gap-2 mt-4 max-w-full flex-wrap ">
+          
+             {tags.map((tag)=>(
               <p className="flex border rounded-md w-fit px-2 py-1 font-medium bg-gray-50 text-nowrap">
-                Java Developer
+                {tag}
               </p>
-              <p className="flex border rounded-md w-fit px-2 py-1 font-medium bg-gray-50 text-nowrap">
-                ReactJs
-              </p>
-              <p className="flex border rounded-md w-fit px-2 py-1 font-medium bg-gray-50 text-nowrap">
-                Sprigboot
-              </p>
-              <p className="flex border rounded-md w-fit px-2 py-1 font-medium bg-gray-50 text-nowrap">
-                Backend
-              </p>
-              <p className="flex border rounded-md w-fit px-2 py-1 font-medium bg-gray-50 text-nowrap">
-                Forntend
-              </p>
-              <p className="flex border rounded-md w-fit px-2 py-1 font-medium bg-gray-50 text-nowrap">
-                Web Developer
-              </p>
-              <p className="flex border rounded-md w-fit px-2 py-1 font-medium bg-gray-50 text-nowrap">
-                Fullstack
-              </p>
+             ))}
             </div>
           </div>
 
