@@ -12,6 +12,8 @@ import WorkExperienceUpdateForm from "../components/Forms/WorkExperienceUpdateFo
 import { format, formatDate } from "date-fns";
 import useProfileApi from "../services/profileService"; // Adjust the import path
 import { Doughnut } from "react-chartjs-2";
+import { PieChart } from "@mui/x-charts/PieChart";
+
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
 import ProjectUpdateForm from "../components/Forms/ProjectUpdateForm";
 
@@ -82,9 +84,7 @@ const UserProfile = () => {
     project: null,
     personalDetails: null,
   });
-  const [tags, settags] = useState([
-    "Java","Springboot","React",
-  ]);
+  const [tags, settags] = useState(["Java", "Springboot", "React"]);
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
@@ -715,27 +715,52 @@ const UserProfile = () => {
         </div>
       )}
       <div className="w-full ">
-        <div className="  flex gap-4 flex-wrap ">
+        <div className="  flex gap-4 max-h-min flex-wrap ">
           <div className="flex border-y py-8 flex-grow sm:border  px-5 gap-3 bg-white justify-center flex-col">
             <div className="flex  w-full gap-4  items-center">
-              <img
-                className="object-cover h-20 sm:h-auto bg-gray-50 border rounded-full p-2"
-                src={profileImageDefault}
-                alt="Profile"
-              />
-              <div className="flex flex-col">
-                
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-              {personalData?.fullname}
+              <div className="bg-gray-50 aspect-square border rounded-full p-2 flex items-center justify-center">
+                <img
+                  className="object-cover sm:w-20 w-14 h-auto"
+                  src={profileImageDefault}
+                  alt="Profile"
+                />
+              </div>
+              <div className="flex w-full  justify-between items-center">
+                <div>
+                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+                  {personalData?.fullname}
                 </h1>
                 <div className="flex  gap-2">
-                <p className="text-lg sm:text-xl text-gray-600">
-
+                  <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
                     {user?.username || "Username"}
                   </p>
-                 
                 </div>
+                </div>
+                <svg class="h-8 w-8 text-gray-400"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />  <circle cx="12" cy="12" r="3" /></svg>
+
                 {/* <p className="text-gray-500">{user?.email || "email"}</p> */}
+              </div>
+            </div>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit omnis enim illo fugiat ipsum sapiente, nesciunt fuga et odio suscipit voluptatum molestias qui quisquam obcaecati quae iusto libero deserunt magni!</p>
+            <div className="mt-3">
+              <div className="flex gap-2 items-center">
+                <svg
+                  class="h-5 w-5 text-gray-400"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  {" "}
+                  <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                  <rect x="3" y="5" width="18" height="14" rx="2" />{" "}
+                  <polyline points="3 7 12 13 21 7" />
+                </svg>
+                <p className="-mt-0.5"> {user?.email}</p>
               </div>
             </div>
             <div className="flex gap-2 text-sm font-medium   items-center">
@@ -743,30 +768,49 @@ const UserProfile = () => {
                 <span className="font-semibold">20</span>
                 <span className=" text-gray-500">followers</span>
               </p>
-              
+
               <p className="flex items-center gap-2">
                 <span className="font-semibold">20</span>
                 <span className="text-gray-500">following</span>
               </p>
-            
             </div>
-            <div className="flex gap-2 mt-4 max-w-full flex-wrap ">
-          
-             {tags.map((tag)=>(
-              <p className="flex border rounded-md w-fit px-2 py-1 font-medium bg-gray-50 text-nowrap">
-                {tag}
-              </p>
-             ))}
+
+            <div className="flex gap-2 -mt-2 max-w-full flex-wrap ">
+              {tags.map((tag) => (
+                <p className="flex rounded-md w-fit text-blue-500 text-nowrap">
+                  #{tag}
+                </p>
+              ))}
             </div>
+
+            <button className="border  mt-2 py-1.5 font-medium text-gray-500 rounded-md w-full">
+              Edit profile
+            </button>
           </div>
 
-          <div className=" flex-grow border md:w-fit px-6  bg-white sm:px-8 py-5 h-fit flex w-full  ">
-            <div className="">
+          <div className="flex-grow border h-full md:w-fit px-6 bg-white sm:px-8 py-5 flex w-full">
+            <div className="h-full">
               <p className="text-xl font-medium">Profile Analytics</p>
-              <Doughnut
-                className="w-full h-fit mt-5 -ml-4  sm:-ml-0"
-                data={data}
-                options={options}
+              <PieChart
+                className=""
+                series={[
+                  {
+                    data: [
+                      { value: "Java", color: "orange" },
+                      { value: "Javascript", color: "red" },
+                      { value: "Springboot", color: "green" },
+                      { value: "React", color: "blue" },
+                    ],
+                    innerRadius: 65,
+                    outerRadius: 100,
+                    paddingAngle: 0,
+                    cornerRadius: 0,
+                    startAngle: -182,
+                    endAngle: 180,
+                    cx: 150,
+                    cy: 150,
+                  },
+                ]}
               />
             </div>
           </div>
