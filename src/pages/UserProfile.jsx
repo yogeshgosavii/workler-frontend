@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
-import profileImageDefault from "../assets/profileDefaultMale.png";
+import profileImageDefault from "../assets/user_male_icon.png";
 import EducationForm from "../components/Forms/EducationForm";
 import WorkExperienceForm from "../components/Forms/WorkExperienceForm";
 import ProjectForm from "../components/Forms/ProjectForm";
 import SkillForm from "../components/Forms/SkillForm";
 import PersonalDetailsForm from "../components/Forms/PersonalDetailsForm";
-import profileService from "../services/profileService";
 import EducationUpdateForm from "../components/Forms/EducationUpdateForm";
 import SkillUpdateForm from "../components/Forms/SkillUpdateForm";
 import WorkExperienceUpdateForm from "../components/Forms/WorkExperienceUpdateForm"; // Assuming you have this form
@@ -67,6 +66,7 @@ const UserProfile = () => {
     skills: true,
     workExperience: true,
     project: true,
+    personalDetails: true,
   });
   const [updateForm, setUpdateForm] = useState({
     education: false,
@@ -131,7 +131,7 @@ const UserProfile = () => {
     } catch (error) {
       console.error("Error fetching personal data:", error);
     } finally {
-      setLoading((prev) => ({ ...prev, personal: false }));
+      setLoading((prev) => ({ ...prev, personalDetails: false }));
     }
   }, [profileApi.personalDetails]);
 
@@ -233,11 +233,18 @@ const UserProfile = () => {
         )}
       </div>
       {loading ? (
-        <div className="animate-pulse mt-2">
-          <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
-          <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
-          <div className="h-2 bg-gray-200 w-1/4 rounded-md mb-2"></div>
-        </div>
+        loading.personalDetails ? (
+          <div className="animate-pulse mt-2">
+            <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
+            <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
+          </div>
+        ) : (
+          <div className="animate-pulse mt-2">
+            <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
+            <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
+            <div className="h-2 bg-gray-200 w-1/4 rounded-md mb-2"></div>
+          </div>
+        )
       ) : (
         content
       )}
@@ -298,7 +305,7 @@ const UserProfile = () => {
                   <circle cx="12" cy="7" r="4" />{" "}
                   <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
                 </svg>{" "}
-                <span>{personalData.fullname}</span>
+                <span className="font-semibold">{personalData.fullname}</span>
               </p>
             )}
             {personalData.address && (
@@ -322,7 +329,7 @@ const UserProfile = () => {
                     d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                 </svg>
-                <span>{personalData.address}</span>
+                <span className="font-semibold">{personalData.address}</span>
               </p>
             )}
             {personalData.birthdate && (
@@ -343,7 +350,7 @@ const UserProfile = () => {
                   <line x1="3" y1="10" x2="21" y2="10" />
                 </svg>{" "}
                 {personalData.birthdate && (
-                  <p className="">
+                  <p className="font-semibold">
                     {format(new Date(personalData.birthdate), "MMMM dd, yyyy")}
                   </p>
                 )}
@@ -366,7 +373,7 @@ const UserProfile = () => {
                   <path stroke="none" d="M0 0h24v24H0z" />{" "}
                   <path d="M5 4h4l2 5l-2.5 1.5a11 11 0 0 0 5 5l1.5 -2.5l5 2v4a2 2 0 0 1 -2 2a16 16 0 0 1 -15 -15a2 2 0 0 1 2 -2" />
                 </svg>{" "}
-                <span>{personalData.phone}</span>
+                <span className="font-semibold">{personalData.phone}</span>
               </p>
             )}
           </div>
@@ -375,7 +382,7 @@ const UserProfile = () => {
             Add personal details so the recrutier can know more aboyt you
           </p>
         ),
-        loading: loading.personalData,
+        loading: loading.personalDetails,
       },
       {
         id: "education",
@@ -707,9 +714,9 @@ const UserProfile = () => {
       <div className="w-full ">
         <div className="  flex gap-4 flex-wrap ">
           <div className="flex border-y py-8 flex-grow sm:border  px-5 gap-3 bg-white justify-center flex-col">
-            <div className="flex w-full gap-4  items-center">
+            <div className="flex  w-full gap-4  items-center">
               <img
-                className="object-cover h-32"
+                className="object-cover bg-gray-50 border rounded-full p-2"
                 src={profileImageDefault}
                 alt="Profile"
               />
@@ -731,7 +738,7 @@ const UserProfile = () => {
                   </svg> */}
                 </div>
                 <p className="text-xl font-medium mt-1 text-gray-700">
-                  {personalData.fullname}
+                  {personalData?.fullname}
                 </p>
                 <p className="text-gray-500">{user?.email || "email"}</p>
               </div>
@@ -786,14 +793,13 @@ const UserProfile = () => {
             </div>
           </div>
 
-          <div className=" flex-grow border md:w-fit  bg-white px-4 sm:px-8 py-5 h-fit flex  mt-6 w-full md:mt-0 ">
+          <div className=" flex-grow border md:w-fit px-6  bg-white sm:px-8 py-5 h-fit flex w-full  ">
             <div className="">
               <p className="text-xl font-medium">Profile Analytics</p>
               <Doughnut
-                className="w-full h-fit mt-5 -ml-4 sm:-ml-0"
+                className="w-full h-fit mt-5 -ml-4  sm:-ml-0"
                 data={data}
                 options={options}
-                
               />
             </div>
           </div>
@@ -817,28 +823,6 @@ const UserProfile = () => {
           </div>
         ))}
       </div>
-
-      {/* <div className=''>
-        <div className='border px-5 py-4 h-fit w-80'>
-          <p className='text-xl font-medium mb-8'>Jobs Applied</p>
-          <div className='flex flex-col gap-3'>
-            {[
-              { company: 'Google', role: 'SDE-1', status: 'Pending' },
-              { company: 'Microsoft', role: 'SDE-2', status: 'Shortlisted' },
-              { company: 'Meta', role: 'ML Engineer', status: 'Rejected' }
-            ].map((job, index) => (
-              <div key={index} className='flex gap-2'>
-                <img className='aspect-square h-10 w-10' src={defaultCompanyImage} alt="Company" />
-                <div className='flex flex-col'>
-                  <p className='font-medium'>{job.company}</p>
-                  <p className='text-gray-500'>{job.role}</p>
-                  <p className='text-sm text-gray-400'>{job.status}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 };
