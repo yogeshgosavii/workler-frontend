@@ -4,7 +4,7 @@ import BorderedButton from './components/Button/BorderButton';
 import Button from './components/Button/Button';
 import { Link ,useNavigate} from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import profileImageDefault from '../src/assets/profileDefaultMale.png';
+import profileImageDefault from '../src/assets/user_male_icon.png';
 
 function Header() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
