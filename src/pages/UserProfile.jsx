@@ -15,7 +15,6 @@ import { Doughnut } from "react-chartjs-2";
 import { PieChart } from "@mui/x-charts/PieChart";
 import githubLogo from "../assets/github-mark.svg";
 
-
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
 import ProjectUpdateForm from "../components/Forms/ProjectUpdateForm";
 
@@ -718,7 +717,42 @@ const UserProfile = () => {
       )}
       <div className="w-full ">
         <div className="  flex gap-4 max-h-min flex-wrap ">
+          {/* <div className="w-full bg-white px-4 flex justify-end py-4 border-y">
+          <svg
+                  class="h-8 w-8 text-gray-400"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  {" "}
+                  <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                  <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />{" "}
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+          </div> */}
+          <div className="w-full border-y bg-white flex py-4 px-4  justify-between ">
+              <p className="text-2xl font-semibold">Profile</p>
+              <svg
+                class="h-8 w-8 text-gray-800"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16m-7 6h7"
+                />
+              </svg>
+            </div>
           <div className="flex border-y py-8 flex-grow sm:border  px-4 gap-3 bg-white justify-center flex-col">
+            
             <div className="flex  w-full gap-4  items-center">
               <div className="bg-gray-50 aspect-square border rounded-full p-2 flex items-center justify-center">
                 <img
@@ -738,22 +772,6 @@ const UserProfile = () => {
                     </p>
                   </div>
                 </div>
-                <svg
-                  class="h-8 w-8 text-gray-400"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  stroke-width="2"
-                  stroke="currentColor"
-                  fill="none"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  {" "}
-                  <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                  <path d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />{" "}
-                  <circle cx="12" cy="12" r="3" />
-                </svg>
               </div>
             </div>
             <div className="order-2">
@@ -788,8 +806,8 @@ const UserProfile = () => {
             </div> */}
             <div className="mt-5 space-y-2 order-4 text-sm">
               <div className="flex items-center max-h-10 gap-2">
-              <img className="h-[16px] w-[16px]" src={githubLogo} />
-              <p>https://github.com/yogeshgosavii</p>
+                <img className="h-[16px] w-[16px]" src={githubLogo} />
+                <p>https://github.com/yogeshgosavii</p>
               </div>
               <div className="flex items-center gap-2">
                 <svg
@@ -863,12 +881,9 @@ const UserProfile = () => {
               ))}
             </div>
 
-            <button className="w-full flex md:order-2 order-last justify-between gap-2 font-medium text-sm mt-3.5">
-          <a href="https://github.com/yogeshgosavii" className="border text-center text-gray-700  bg-gray-100  hover:bg-gray-200 py-[5px] w-full rounded-md border-gray-400">
-            Go to github profile
-          </a>
-        
-        </button>
+            <button className="w-full flex cursor-pointer md:order-2 text-center order-last  gap-2 font-medium  mt-3.5 border justify-center text-gray-600   bg-gray-100  hover:bg-gray-200 py-1.5 rounded-md border-gray-400">
+              Edit details
+            </button>
           </div>
 
           <div className="flex-grow border h-full md:w-fit px-6 bg-white sm:px-8 py-5 flex w-full">
