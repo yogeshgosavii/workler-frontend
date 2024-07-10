@@ -735,7 +735,8 @@ const UserProfile = () => {
                   <circle cx="12" cy="12" r="3" />
                 </svg>
           </div> */}
-          <div className="w-full border-y bg-white flex py-4 px-4  justify-between ">
+          <div className="flex border-y py-8 flex-grow sm:border  px-4 gap-3 bg-white justify-center flex-col">
+            <div className="w-full mb-4 bg-white flex  justify-between ">
               <p className="text-2xl font-semibold">Profile</p>
               <svg
                 class="h-8 w-8 text-gray-800"
@@ -751,8 +752,6 @@ const UserProfile = () => {
                 />
               </svg>
             </div>
-          <div className="flex border-y py-8 flex-grow sm:border  px-4 gap-3 bg-white justify-center flex-col">
-            
             <div className="flex  w-full gap-4  items-center">
               <div className="bg-gray-50 aspect-square border rounded-full p-2 flex items-center justify-center">
                 <img
