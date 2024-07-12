@@ -17,6 +17,9 @@ import githubLogo from "../assets/github-mark.svg";
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
 import ProjectUpdateForm from "../components/Forms/ProjectUpdateForm";
+import UserDetailsForm from "../components/Forms/UserDetailsForm";
+import UserImageInput from "../components/Input/UserImageInput";
+import authService from "../services/authService";
 
 // Register necessary components from Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
@@ -29,6 +32,7 @@ const UserProfile = () => {
   const [skillData, setSkillData] = useState([]);
   const [workExperienceData, setWorkExperienceData] = useState([]); // Added work experience data
   const [projectData, setprojectData] = useState([]);
+  const [userDetails, setuserDetails] = useState([]);
   const profileApi = useProfileApi();
 
   const data = {
@@ -70,6 +74,7 @@ const UserProfile = () => {
     workExperience: true,
     project: true,
     personalDetails: true,
+    userDetails: true,
   });
   const [updateForm, setUpdateForm] = useState({
     education: false,
@@ -161,12 +166,24 @@ const UserProfile = () => {
     }
   }, [profileApi.workExperience]);
 
+  const fetchUserDetails = useCallback(async () => {
+    try {
+      const data = await authService.fetchUserDetails();
+      setuserDetails(data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setLoading((prev) => ({ ...prev, userDetails: false }));
+    }
+  }, []);
+
   useEffect(() => {
     fetchEducationData();
     fetchProjectData();
     fetchPersonalData();
     fetchSkillData();
     fetchWorkExperienceData();
+    fetchUserDetails();
   }, []);
 
   const closeForm = useCallback(() => setFormType(null), []);
@@ -178,6 +195,7 @@ const UserProfile = () => {
       work_experience: WorkExperienceForm,
       projects: ProjectForm,
       skills: SkillForm,
+      userDetails: UserDetailsForm,
     }),
     []
   );
@@ -753,13 +771,7 @@ const UserProfile = () => {
               </svg>
             </div>
             <div className="flex  w-full gap-4  items-center">
-              <div className="bg-gray-50 aspect-square border rounded-full p-2 flex items-center justify-center">
-                <img
-                  className="object-cover sm:w-20 w-14 h-auto"
-                  src={profileImageDefault}
-                  alt="Profile"
-                />
-              </div>
+              <UserImageInput imageHeight="60" />
               <div className="flex w-full  justify-between items-center">
                 <div>
                   <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
@@ -774,10 +786,7 @@ const UserProfile = () => {
               </div>
             </div>
             <div className="order-2">
-              <p className="mt-2 ">
-                MCA Student 👨🏻‍💻 Texh Enthusiast ⚡️ Building cool things on the
-                web 🚀 Sharing experience
-              </p>
+              <p className="mt-2 ">{userDetails.about}</p>
             </div>
             {/* <div className="flex items-end order-5 md:order-3 text-sm space-x-1 mt-3 font-bold">
               <svg
@@ -803,84 +812,91 @@ const UserProfile = () => {
                 <span className="text-[#848d97] font-normal">following</span>
               </p>
             </div> */}
-            <div className="mt-5 space-y-2 order-4 text-sm">
-              <div className="flex items-center max-h-10 gap-2">
-                <img className="h-[16px] w-[16px]" src={githubLogo} />
-                <p>https://github.com/yogeshgosavii</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <svg
-                  class="octicon octicon-mail"
-                  viewBox="0 0 16 16"
-                  version="1.1"
-                  fill="#848d97"
-                  width="16"
-                  height="16"
-                  aria-hidden="true"
-                >
-                  <path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2ZM1.5 12.251c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V5.809L8.38 9.397a.75.75 0 0 1-.76 0L1.5 5.809v6.442Zm13-8.181v-.32a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25v.32L8 7.88Z"></path>
-                </svg>
-                <p>yogeshgosavif8@gmail.com</p>
-              </div>
-              <div className="flex  gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="#848d97"
-                  viewBox="0 0 16 16"
-                  role="img"
-                  aria-labelledby="anoxoivoozzyddzns0wsn7xrxnzqxmx5"
-                  class="octicon mt-[2px]"
-                >
-                  <title id="anoxoivoozzyddzns0wsn7xrxnzqxmx5">LinkedIn</title>
-                  <g clip-path="url(#clip0_202_91845)">
-                    <path
-                      d="M14.5455 0H1.45455C0.650909 0 0 0.650909 0 1.45455V14.5455C0 15.3491 0.650909 16 1.45455 16H14.5455C15.3491 16 16 15.3491 16 14.5455V1.45455C16 0.650909 15.3491 0 14.5455 0ZM5.05746 13.0909H2.912V6.18764H5.05746V13.0909ZM3.96291 5.20073C3.27127 5.20073 2.712 4.64 2.712 3.94982C2.712 3.25964 3.272 2.69964 3.96291 2.69964C4.65236 2.69964 5.21309 3.26036 5.21309 3.94982C5.21309 4.64 4.65236 5.20073 3.96291 5.20073ZM13.0938 13.0909H10.9498V9.73382C10.9498 8.93309 10.9353 7.90327 9.83491 7.90327C8.71855 7.90327 8.54691 8.77527 8.54691 9.67564V13.0909H6.40291V6.18764H8.46109V7.13091H8.49018C8.77673 6.58836 9.47636 6.016 10.52 6.016C12.6924 6.016 13.0938 7.44582 13.0938 9.30473V13.0909V13.0909Z"
-                      fill="currentColor"
-                    ></path>
-                  </g>
-                </svg>
-                <a href="https://www.linkedin.com/in/yogesh-gosavi-202704256">
-                  https://www.linkedin.com/in/yogesh-gosavi-202704256
-                </a>
-              </div>
-              <div className=" items-center hidden gap-2">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="#848d97"
-                  role="img"
-                  aria-labelledby="ajlvjjvzlnr8jondgp2202qf4kw53d17"
-                  class="octicon"
-                >
-                  <title id="ajlvjjvzlnr8jondgp2202qf4kw53d17">X</title>
-                  <g clip-path="url(#clip0_1668_3024)">
-                    <path
-                      d="M9.52217 6.77143L15.4785 0H14.0671L8.89516 5.87954L4.76437 0H0L6.24656 8.8909L0 15.9918H1.41155L6.87321 9.78279L11.2356 15.9918H16L9.52183 6.77143H9.52217ZM7.58887 8.96923L6.95596 8.0839L1.92015 1.03921H4.0882L8.15216 6.7245L8.78507 7.60983L14.0677 14.9998H11.8997L7.58887 8.96957V8.96923Z"
-                      fill="currentColor"
-                    ></path>
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_1668_3024">
-                      <rect width="16" height="16" fill="white"></rect>
-                    </clipPath>
-                  </defs>
-                </svg>
-                <p>yogesh@twitterId</p>
+            <div className="order-4 flex flex-col gap-2">
+              {userDetails.email && (
+                <div className="flex order-4 mt-5 text-sm items-center gap-2">
+                  <svg
+                    class="octicon octicon-mail"
+                    viewBox="0 0 16 16"
+                    version="1.1"
+                    fill="#848d97"
+                    width="16"
+                    height="16"
+                    aria-hidden="true"
+                  >
+                    <path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2ZM1.5 12.251c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V5.809L8.38 9.397a.75.75 0 0 1-.76 0L1.5 5.809v6.442Zm13-8.181v-.32a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25v.32L8 7.88Z"></path>
+                  </svg>
+                  <p>{userDetails.email}</p>
+                </div>
+              )}
+              <div className=" space-y-2 order-4 text-sm">
+                {userDetails.githubLink && (
+                  <a href={userDetails.githubLink} className="flex items-center max-h-10 gap-2">
+                    <img className="h-[16px] w-[16px]" src={githubLogo} />
+                    <p>{userDetails.githubLink}</p>
+                  </a>
+                )}
+
+                {userDetails.linkedInLink && (
+                  <a className="flex  gap-2" href={userDetails.linkedInLink}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="#848d97"
+                      viewBox="0 0 16 16"
+                      role="img"
+                      aria-labelledby="anoxoivoozzyddzns0wsn7xrxnzqxmx5"
+                      class="octicon mt-[2px]"
+                    >
+                      <title id="anoxoivoozzyddzns0wsn7xrxnzqxmx5">
+                        LinkedIn
+                      </title>
+                      <g clip-path="url(#clip0_202_91845)">
+                        <path
+                          d="M14.5455 0H1.45455C0.650909 0 0 0.650909 0 1.45455V14.5455C0 15.3491 0.650909 16 1.45455 16H14.5455C15.3491 16 16 15.3491 16 14.5455V1.45455C16 0.650909 15.3491 0 14.5455 0ZM5.05746 13.0909H2.912V6.18764H5.05746V13.0909ZM3.96291 5.20073C3.27127 5.20073 2.712 4.64 2.712 3.94982C2.712 3.25964 3.272 2.69964 3.96291 2.69964C4.65236 2.69964 5.21309 3.26036 5.21309 3.94982C5.21309 4.64 4.65236 5.20073 3.96291 5.20073ZM13.0938 13.0909H10.9498V9.73382C10.9498 8.93309 10.9353 7.90327 9.83491 7.90327C8.71855 7.90327 8.54691 8.77527 8.54691 9.67564V13.0909H6.40291V6.18764H8.46109V7.13091H8.49018C8.77673 6.58836 9.47636 6.016 10.52 6.016C12.6924 6.016 13.0938 7.44582 13.0938 9.30473V13.0909V13.0909Z"
+                          fill="currentColor"
+                        ></path>
+                      </g>
+                    </svg>
+                    <p >
+                      {userDetails.linkedInLink}
+                    </p>
+                  </a>
+                )}
+                {userDetails.portfolioLink && (
+                  <a href={userDetails.portfolioLink} className="flex items-center gap-2">
+                    <svg
+                      class="h-4 w-4 text-blue-500"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      {" "}
+                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />{" "}
+                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                    </svg>
+                    <p>{userDetails.portfolioLink}</p>
+                  </a>
+                )}
+                
               </div>
             </div>
             <div className="flex gap-1 order-1 mt-2 max-w-full flex-wrap ">
-              {tags.map((tag) => (
+              {userDetails.tags?.map((tag) => (
                 <p className="flex rounded-md w-fit text-blue-500 text-nowrap">
                   #{tag}
                 </p>
               ))}
             </div>
 
-            <button className="w-full flex cursor-pointer md:order-2 text-center order-last  gap-2 font-medium  mt-3.5 border justify-center text-gray-600   bg-gray-100  hover:bg-gray-200 py-1.5 rounded-md border-gray-400">
+            <button
+              onClick={() => setFormType("userDetails")}
+              className="w-full flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5 border justify-center text-gray-600 bg-gray-100 sm:hover:bg-gray-200 py-1.5 rounded-md border-gray-400"
+            >
               Edit details
             </button>
           </div>
