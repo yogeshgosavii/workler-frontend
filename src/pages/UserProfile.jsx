@@ -170,6 +170,7 @@ const UserProfile = () => {
     try {
       const data = await authService.fetchUserDetails();
       setuserDetails(data);
+      console.log("userDetails",userDetails);
     } catch (error) {
       console.error("Error fetching user data:", error);
     } finally {
@@ -771,7 +772,7 @@ const UserProfile = () => {
               </svg>
             </div>
             <div className="flex  w-full gap-4  items-center">
-              <UserImageInput imageHeight="60" />
+              <UserImageInput image={userDetails.profileImage} imageHeight="60" />
               <div className="flex w-full  justify-between items-center">
                 <div>
                   <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">

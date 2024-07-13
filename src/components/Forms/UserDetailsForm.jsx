@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import TextInput from "../Input/TextInput";
 import AddInput from "../Input/AddInput";
 import authService from "../../services/authService";
+import imageService from "../../services/imageService";
 import TextAreaInput from "../Input/TextAreaInput";
 import Button from "../Button/Button";
 import UrlInput from "../Input/UrlInput";
 import UserImageInput from "../Input/UserImageInput";
+import imageCompression from 'browser-image-compression';
 
 function UserDetailsForm({ onClose }) {
   const [formData, setFormData] = useState({
@@ -15,55 +17,25 @@ function UserDetailsForm({ onClose }) {
     githubLink: "",
     linkedInLink: "",
     portfolioLink: "",
-    tags: [], // Ensure this is always an array
+    tags: [],
+    profileImage: null,
+    profileImagecompressed: null,
   });
   const [userDetails, setUserDetails] = useState({});
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true); // State to manage loading
+  const [loading, setLoading] = useState(true);
 
   const deepEqual = (obj1, obj2) => {
-    // Check if both values are strictly equal
-    if (obj1 === obj2) {
-      return true;
-    }
-
-    // Check if either value is not an object or is null
-    if (
-      typeof obj1 !== "object" ||
-      obj1 === null ||
-      typeof obj2 !== "object" ||
-      obj2 === null
-    ) {
+    if (obj1 === obj2) return true;
+    if (typeof obj1 !== "object" || obj1 === null || typeof obj2 !== "object" || obj2 === null)
       return false;
-    }
-
-    // Get the keys of both objects
     let keys1 = Object.keys(obj1);
     let keys2 = Object.keys(obj2);
-
-    // Check if the number of keys is different
-    if (keys1.length !== keys2.length) {
-      return false;
-    }
-
-    // Iterate over the keys of obj1
+    if (keys1.length !== keys2.length) return false;
     for (let key of keys1) {
-      // Check if obj2 has the key and the values of the key are deeply equal
-      if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
-        // Handle special case for numeric values to consider them equal if numeric value is same
-        if (
-          typeof obj1[key] === "number" &&
-          typeof obj2[key] === "number" &&
-          obj1[key] === obj2[key]
-        ) {
-          continue; // Continue checking other keys
-        }
-        return false;
-      }
+      if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) return false;
     }
-
-    // If all checks pass, the objects are deeply equal
     return true;
   };
 
@@ -75,15 +47,16 @@ function UserDetailsForm({ onClose }) {
     const fetchUserDetails = async () => {
       try {
         const userDetails = await authService.fetchUserDetails();
-        console.log(userDetails);
         setFormData({
           username: userDetails.username || "",
           email: userDetails.email || "",
           about: userDetails.about || "",
-          tags: userDetails.tags || [], // Ensure tags is always an array
+          tags: userDetails.tags || [],
           githubLink: userDetails.githubLink || "",
           linkedInLink: userDetails.linkedInLink || "",
           portfolioLink: userDetails.portfolioLink || "",
+          profileImage: userDetails.profileImage || null,
+          profileImagecompressed: userDetails.profileImagecompressed || null,
         });
         setUserDetails({
           username: userDetails.username || "",
@@ -93,12 +66,13 @@ function UserDetailsForm({ onClose }) {
           githubLink: userDetails.githubLink || "",
           linkedInLink: userDetails.linkedInLink || "",
           portfolioLink: userDetails.portfolioLink || "",
+          profileImage: userDetails.profileImage || null,
+          profileImagecompressed: userDetails.profileImagecompressed || null,
         });
       } catch (err) {
         setError("Failed to fetch user details");
-        console.error(err);
       } finally {
-        setLoading(false); // Set loading to false after fetching
+        setLoading(false);
       }
     };
 
@@ -110,19 +84,69 @@ function UserDetailsForm({ onClose }) {
     setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const handleUpdateUserDetails = async () => {
-    const filteredData = Object.entries(formData)
-    .filter(([key, value]) => value !== null && value !== "" && key !== "inputValue")
-    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+  const handleImageChange = async (newImage) => {
+    console.log("handleImageChange triggered with newImage:", newImage);
+  
+    const options = {
+      maxSizeMB: 1,
+      maxWidthOrHeight: 1920,
+      useWebWorker: true,
+    };
+  
     try {
-      console.log("Form Data:", filteredData); // Inspect formData for circular references
-      await authService.updateUserDetails(filteredData);
+      console.log("Starting image compression...");
+      const profileImagecompressed = await imageCompression(newImage, options);
+      console.log("Image compression successful:", profileImagecompressed);
+  
+      setFormData((prev) => ({
+        ...prev,
+        profileImage: newImage,
+        profileImagecompressed: profileImagecompressed,
+      }));
+    } catch (error) {
+      console.error("Failed to compress image", error);
+      setError("Failed to compress image");
+    }
+  };
+  
+  
+
+  const handleUpdateUserDetails = async () => {
+    try {
+      let profileImageUrl = '';
+      let profileImagecompressedUrl = '';
+  
+      if (formData.profileImage && formData.profileImagecompressed) {
+        const formDataToUpload = new FormData();
+        formDataToUpload.append('originalImage', formData.profileImage);
+        formDataToUpload.append('compressedImage', formData.profileImagecompressed);
+  
+        // Log FormData keys to verify contents
+        for (let pair of formDataToUpload.entries()) {
+          console.log(pair[0] + ', ' + pair[1]);
+        }
+  
+        const response = await imageService.uploadImages(formDataToUpload);
+        profileImageUrl = response.imageData.originalImageUrl;
+        profileImagecompressedUrl = response.imageData.compressedImageUrl;
+      }
+  
+      const updatedData = {
+        ...formData,
+        profileImage: profileImageUrl,
+        profileImagecompressed: profileImagecompressedUrl,
+      };
+  
+      console.log(updatedData);
+  
+      await authService.updateUserDetails(updatedData);
       onClose();
     } catch (error) {
       setError("Failed to update user details");
-      console.error("Update user details error:", error);
     }
   };
+  
+
   const handleAddTags = () => {
     if (formData.tags.length < 10) {
       if (inputValue.trim() && !formData.tags.includes(inputValue.trim())) {
@@ -139,11 +163,7 @@ function UserDetailsForm({ onClose }) {
   };
 
   if (loading) {
-    return <div className="h-full bg-white">Loading...</div>; // Show a loading indicator
-  }
-
-  if (error) {
-    return <div className="text-red-500">{error}</div>; // Show error message if any
+    return <div className="h-full bg-white">Loading...</div>;
   }
 
   return (
@@ -156,27 +176,22 @@ function UserDetailsForm({ onClose }) {
         <UserImageInput
           imageHeight={150}
           className={"flex justify-center w-full mb-6"}
-          image={formData.image} // Pass the current image if available
-          onImageChange={(newImage) => setFormData((prev) => ({ ...prev, image: newImage }))}
+          image={formData.profileImage} // Show compressed image
+          onImageChange={handleImageChange}
         />
         <TextInput
           name="username"
           value={formData.username}
           isRequired={true}
           placeholder="Username"
-          onChange={(e) => {
-            handleInputChange(e);
-            verifyUserName(e.target.value);
-          }}
+          onChange={handleInputChange}
         />
         <TextInput
           name="email"
           value={formData.email}
           isRequired={true}
           placeholder="Email"
-          onChange={(e) => {
-            handleInputChange(e);
-          }}
+          onChange={handleInputChange}
         />
         <TextAreaInput
           name="about"
@@ -186,7 +201,7 @@ function UserDetailsForm({ onClose }) {
         />
         <AddInput
           name="tags"
-          data={formData.tags} // Always an array
+          data={formData.tags}
           handleAdd={handleAddTags}
           onChange={(e) => setInputValue(e.target.value)}
           placeholder="Tags"

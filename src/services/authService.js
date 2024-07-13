@@ -1,4 +1,6 @@
-const API_URL = "https://workler-backend.vercel.app/api/auth";
+// const API_URL = "https://workler-backend.vercel.app/api/auth";
+const API_URL = "http://localhost:5002/api/auth";
+
 const token = localStorage.getItem("token");
 
 const authService = {
@@ -81,6 +83,8 @@ const authService = {
       throw error;
     }
   },
+
+ 
 };
 
 export default authService;

@@ -9,6 +9,7 @@ function UserImageInput({
   onImageChange, // callback to handle image change
 }) {
   const fileInputRef = useRef(null);
+  console.log(image)
   const [currentImage, setCurrentImage] = useState(image);
 
   const handleImageClick = () => {
@@ -23,11 +24,12 @@ function UserImageInput({
       const reader = new FileReader();
       reader.onloadend = () => {
         setCurrentImage(reader.result);
-        if (onImageChange) {
-          onImageChange(reader.result);
-        }
       };
       reader.readAsDataURL(file);
+
+      if (onImageChange) {
+        onImageChange(file); // Pass the File object to the callback
+      }
     }
   };
 
