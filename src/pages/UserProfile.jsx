@@ -26,6 +26,7 @@ ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
 const UserProfile = () => {
   const [formType, setFormType] = useState(null);
+  const [updateFormType, setupdateFormType] = useState(null);
   const user = useSelector((state) => state.auth.user);
   const [educationData, setEducationData] = useState([]);
   const [personalData, setPersonalData] = useState(null);
@@ -72,7 +73,7 @@ const UserProfile = () => {
     education: true,
     skills: true,
     workExperience: true,
-    project: true,
+    projects: true,
     personalDetails: true,
     userDetails: true,
   });
@@ -80,14 +81,14 @@ const UserProfile = () => {
     education: false,
     skills: false,
     workExperience: false,
-    project: false,
+    projects: false,
     personalDetails: false,
   });
   const [updateData, setUpdateData] = useState({
     education: null,
     skills: null,
     workExperience: null,
-    project: null,
+    projects: null,
     personalDetails: null,
   });
   const [tags, settags] = useState(["Java", "Springboot", "React"]);
@@ -200,6 +201,15 @@ const UserProfile = () => {
     }),
     []
   );
+  const UpdateFormComponents = useMemo(
+    () => ({
+      education: EducationUpdateForm,
+      workExperience: WorkExperienceUpdateForm,
+      projects: ProjectUpdateForm,
+      skills: SkillUpdateForm,
+    }),
+    []
+  );
 
   const handleDragStart = (e, id) => e.dataTransfer.setData("id", id);
 
@@ -275,31 +285,78 @@ const UserProfile = () => {
   );
 
   useEffect(() => {
-    if (formType) {
-      // Add form to history
-      window.history.pushState({ formType }, "", `/${formType}`);
-    }
-
-    // Handle popstate event to close the form when the back button is pressed
+    // Function to handle popstate event
     const handlePopState = (event) => {
       if (event.state && event.state.formType) {
+        setFormType(event.state.formType);
+      } else {
         setFormType(null);
       }
     };
 
+    // Add event listener for popstate
     window.addEventListener("popstate", handlePopState);
 
-    // Cleanup event listener on unmount
+    // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
-  }, [formType, setFormType]);
+  }, []);
 
   const handleClose = () => {
     setFormType(null);
-    // Remove form from history
-    window.history.back();
+    console.log("Hello");
+    window.history.back();  // Go back to the previous state in the history
   };
+
+  useEffect(() => {
+    if (formType) {
+      // Push new state into history with formType
+      window.history.pushState({ formType }, "", `profile/${formType}`);
+    } else {
+      // Replace state if no formType is present
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [formType]);
+
+  useEffect(() => {
+    // Function to handle popstate event
+    const handlePopState = (event) => {
+      if (event.state && event.state.updateFormType) {
+        setupdateFormType(event.state.updateFormType);
+      } else {
+        setupdateFormType(null);
+      }
+    };
+
+    // Add event listener for popstate
+    window.addEventListener("popstate", handlePopState);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
+  const handleUpdateFormClose = () => {
+    setUpdateForm(null);
+    // Replace the current history state to remove the formType
+    window.history.replaceState({}, document.title, window.location.pathname);
+  };
+
+  useEffect(() => {
+    if (updateFormType) {
+      // Push new state into history with formType
+      window.history.pushState(
+        { updateFormType },
+        "",
+        `profile/${updateFormType}`
+      );
+    } else {
+      // Replace state if no formType is present
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, [updateFormType]);
 
   const userDetailsList = useMemo(
     () => [
@@ -317,6 +374,7 @@ const UserProfile = () => {
                 <div
                   key={index}
                   onClick={() => {
+                    setupdateFormType("skills");
                     setUpdateData({ skills: data });
                     setUpdateForm({ skills: true });
                   }}
@@ -459,6 +517,8 @@ const UserProfile = () => {
                   <div
                     key={index}
                     onClick={() => {
+                      setupdateFormType("education");
+
                       setUpdateData({ education: data });
                       setUpdateForm({ education: true });
                     }}
@@ -526,6 +586,7 @@ const UserProfile = () => {
                   <div
                     key={index}
                     onClick={() => {
+                      setupdateFormType("workExperience");
                       setUpdateData({ workExperience: data });
                       setUpdateForm({ workExperience: true });
                     }}
@@ -575,6 +636,7 @@ const UserProfile = () => {
                   <div
                     key={index}
                     onClick={() => {
+                      setupdateFormType("projects");
                       setUpdateData({ project: data });
                       console.log(data);
                       setUpdateForm({ project: true });
@@ -659,26 +721,44 @@ const UserProfile = () => {
                   ? setWorkExperienceData
                   : formType === "personalDetails"
                   ? setPersonalData
-                  : formType == "userDetails"
+                  : formType === "userDetails"
                   ? setuserDetails
                   : null,
               data:
-                formType == "skill"
+                formType === "skills"
                   ? skillData
-                  : formType == "education"
+                  : formType === "education"
                   ? educationData
-                  : formType == "work_experience"
+                  : formType === "work_experience"
                   ? workExperienceData
-                  : formType == "personalDetails"
+                  : formType === "personalDetails"
                   ? personalData
-                  : formType == "userDetails"
+                  : formType === "userDetails"
                   ? userDetails
                   : null,
             })}
           </div>
         </div>
       )}
-      {updateForm.personalDetails && (
+
+      {updateFormType ? (
+        <div
+          className="fixed inset-0 z-10 flex justify-center items-center bg-black bg-opacity-50"
+          onClick={handleClose}
+        >
+          <div
+            className="fixed z-20 w-full border h-full sm:h-fit sm:max-w-md mx-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {React.createElement(UpdateFormComponents[updateFormType], {
+              onClose: handleUpdateFormClose,
+              data:updateData[updateFormType],
+              setData:setUpdateData[updateFormType]
+            })}
+          </div>
+        </div>
+      ) : null}
+      {/* {updateForm.personalDetails && (
         <div
           className="fixed inset-0 z-10 flex h-full justify-center  items-center bg-black bg-opacity-50"
           onClick={() => setUpdateForm({ personalDetails: false })}
@@ -763,7 +843,7 @@ const UserProfile = () => {
             />
           </div>
         </div>
-      )}
+      )} */}
       <div className="w-full ">
         <div className="  flex gap-4 max-h-min flex-wrap ">
           {/* <div className="w-full bg-white px-4 flex justify-end py-4 border-y">

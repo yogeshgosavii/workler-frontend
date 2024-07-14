@@ -34,19 +34,15 @@ const handleChange = (e) => {
         
       />
       <label
-        htmlFor={value}
-        onClick={(e) => {
-          document.getElementById(name).focus();
-          e.stopPropagation();
-        }}
-        className={`absolute flex duration-200 min-w-28  cursor-text px-2 text-gray-400 bg-white font-normal transform transition-all  ${
-          value
-            ? "scale-90 min-w-fit max-w-fit  -translate-y-5 top-2 text-blue-500"
-            : "-translate-y-1/2 scale-100 top-1/2"
-        } `}
-      >
-        {placeholder}{isRequired && <p className='text-red-500'>*</p>}
-      </label>
+          htmlFor={name}
+          onClick={(e) => {
+            e.preventDefault();
+            document.getElementById(name).focus();
+          }}
+          className="absolute flex duration-200 cursor-text px-2 text-gray-400 bg-white font-normal transform -translate-y-5 scale-90 top-2 z-10 peer-focus:px-2 peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-90 peer-focus:-translate-y-5 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+        >
+          {placeholder}{isRequired && <p className='text-red-500'>*</p>}
+        </label>
       {promptMessage && (
         <p
           className={`w-fit ml-1 mt-0.5 text-xs mb-1 rounded-sm ${
