@@ -777,8 +777,9 @@ const UserProfile = () => {
             </div>
             <div className="flex  w-full gap-4  items-center">
               <UserImageInput
+                isEditable = {false}
                 image={userDetails.profileImage}
-                imageHeight="60"
+                imageHeight="70"
               />
               <div className="flex w-full  justify-between items-center">
                 <div>
