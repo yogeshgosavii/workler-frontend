@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import profileImageDefault from "../../assets/user_male_icon.png";
 
 function UserImageInput({
@@ -11,6 +11,11 @@ function UserImageInput({
   const fileInputRef = useRef(null);
   console.log(image)
   const [currentImage, setCurrentImage] = useState(image);
+
+  useEffect(() => {
+    setCurrentImage(image)
+   
+  }, [image]);
 
   const handleImageClick = () => {
     if (isEditable) {

@@ -170,7 +170,7 @@ const UserProfile = () => {
     try {
       const data = await authService.fetchUserDetails();
       setuserDetails(data);
-      console.log("userDetails",userDetails);
+      console.log("userDetails", userDetails);
     } catch (error) {
       console.error("Error fetching user data:", error);
     } finally {
@@ -633,6 +633,8 @@ const UserProfile = () => {
                   ? setWorkExperienceData
                   : formType === "personalDetails"
                   ? setPersonalData
+                  : formType == "userDetails"
+                  ? setuserDetails
                   : null,
               data:
                 formType == "skill"
@@ -643,6 +645,8 @@ const UserProfile = () => {
                   ? workExperienceData
                   : formType == "personalDetails"
                   ? personalData
+                  : formType == "userDetails"
+                  ? userDetails
                   : null,
             })}
           </div>
@@ -772,7 +776,10 @@ const UserProfile = () => {
               </svg>
             </div>
             <div className="flex  w-full gap-4  items-center">
-              <UserImageInput image={userDetails.profileImage} imageHeight="60" />
+              <UserImageInput
+                image={userDetails.profileImage}
+                imageHeight="60"
+              />
               <div className="flex w-full  justify-between items-center">
                 <div>
                   <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
@@ -832,7 +839,10 @@ const UserProfile = () => {
               )}
               <div className=" space-y-2 order-4 text-sm">
                 {userDetails.githubLink && (
-                  <a href={userDetails.githubLink} className="flex items-center max-h-10 gap-2">
+                  <a
+                    href={userDetails.githubLink}
+                    className="flex items-center max-h-10 gap-2"
+                  >
                     <img className="h-[16px] w-[16px]" src={githubLogo} />
                     <p>{userDetails.githubLink}</p>
                   </a>
@@ -860,13 +870,14 @@ const UserProfile = () => {
                         ></path>
                       </g>
                     </svg>
-                    <p >
-                      {userDetails.linkedInLink}
-                    </p>
+                    <p>{userDetails.linkedInLink}</p>
                   </a>
                 )}
                 {userDetails.portfolioLink && (
-                  <a href={userDetails.portfolioLink} className="flex items-center gap-2">
+                  <a
+                    href={userDetails.portfolioLink}
+                    className="flex items-center gap-2"
+                  >
                     <svg
                       class="h-4 w-4 text-blue-500"
                       viewBox="0 0 24 24"
@@ -883,7 +894,6 @@ const UserProfile = () => {
                     <p>{userDetails.portfolioLink}</p>
                   </a>
                 )}
-                
               </div>
             </div>
             <div className="flex gap-1 order-1 mt-2 max-w-full flex-wrap ">
