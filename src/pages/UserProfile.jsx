@@ -274,6 +274,33 @@ const UserProfile = () => {
     </div>
   );
 
+  useEffect(() => {
+    if (formType) {
+      // Add form to history
+      window.history.pushState({ formType }, "", `/${formType}`);
+    }
+
+    // Handle popstate event to close the form when the back button is pressed
+    const handlePopState = (event) => {
+      if (event.state && event.state.formType) {
+        setFormType(null);
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    // Cleanup event listener on unmount
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [formType, setFormType]);
+
+  const handleClose = () => {
+    setFormType(null);
+    // Remove form from history
+    window.history.back();
+  };
+
   const userDetailsList = useMemo(
     () => [
       {
@@ -500,7 +527,6 @@ const UserProfile = () => {
                     key={index}
                     onClick={() => {
                       setUpdateData({ workExperience: data });
-                      console.log(data);
                       setUpdateForm({ workExperience: true });
                     }}
                     className={`py-4 ${
@@ -615,7 +641,7 @@ const UserProfile = () => {
       {formType && (
         <div
           className="fixed inset-0 z-10 flex justify-center items-center bg-black bg-opacity-50"
-          onClick={closeForm}
+          onClick={handleClose}
         >
           <div
             className="fixed z-20 w-full border h-full sm:h-fit sm:max-w-md mx-auto"
@@ -623,7 +649,7 @@ const UserProfile = () => {
           >
             {console.log(formType)}
             {React.createElement(FormComponents[formType], {
-              onClose: closeForm,
+              onClose: handleClose,
               setData:
                 formType === "skills"
                   ? setSkillData
@@ -777,7 +803,7 @@ const UserProfile = () => {
             </div>
             <div className="flex  w-full gap-4  items-center">
               <UserImageInput
-                isEditable = {false}
+                isEditable={false}
                 image={userDetails.profileImage}
                 imageHeight="70"
               />
@@ -841,8 +867,22 @@ const UserProfile = () => {
               <div className=" space-y-2 order-4 text-sm">
                 {userDetails.githubLink && (
                   <a
-                    href={userDetails.githubLink}
-                    className="flex items-center max-h-10 gap-2"
+                    className="flex  gap-2 cursor-pointer"
+                    href={
+                      userDetails.githubLink.startsWith("http")
+                        ? userDetails.githubLink
+                        : `http://${userDetails.githubLink}`
+                    }
+                    // target={data.url.startsWith("http") ? "_blank" : "_self"}
+                    target={"_blank"}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    rel={
+                      userDetails.githubLink.startsWith("http")
+                        ? "noopener noreferrer"
+                        : ""
+                    }
                   >
                     <img className="h-[16px] w-[16px]" src={githubLogo} />
                     <p>{userDetails.githubLink}</p>
@@ -850,7 +890,24 @@ const UserProfile = () => {
                 )}
 
                 {userDetails.linkedInLink && (
-                  <a className="flex  gap-2" href={userDetails.linkedInLink}>
+                  <a
+                    className="flex  gap-2 cursor-pointer"
+                    href={
+                      userDetails.linkedInLink.startsWith("http")
+                        ? userDetails.linkedInLink
+                        : `http://${userDetails.linkedInLink}`
+                    }
+                    // target={data.url.startsWith("http") ? "_blank" : "_self"}
+                    target={"_blank"}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    rel={
+                      userDetails.linkedInLink.startsWith("http")
+                        ? "noopener noreferrer"
+                        : ""
+                    }
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="16"
@@ -873,11 +930,57 @@ const UserProfile = () => {
                     </svg>
                     <p>{userDetails.linkedInLink}</p>
                   </a>
+                  //    <a
+                  //    className="cursor-pointer"
+                  //    href={
+                  //      data.url.startsWith("http")
+                  //        ? data.url
+                  //        : `http://${data.url}`
+                  //    }
+                  //    // target={data.url.startsWith("http") ? "_blank" : "_self"}
+                  //    target={"_blank"}
+                  //    onClick={(e) => {
+                  //      e.stopPropagation();
+                  //    }}
+                  //    rel={
+                  //      data.url.startsWith("http")
+                  //        ? "noopener noreferrer"
+                  //        : ""
+                  //    }
+                  //  >
+                  //    <svg
+                  //      className="h-6 w-6  text-blue-500"
+                  //      fill="none"
+                  //      viewBox="0 0 24 24"
+                  //      stroke="currentColor"
+                  //    >
+                  //      <path
+                  //        strokeLinecap="round"
+                  //        strokeLinejoin="round"
+                  //        strokeWidth="2"
+                  //        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  //      />
+                  //    </svg>
+                  //  </a>
                 )}
                 {userDetails.portfolioLink && (
                   <a
-                    href={userDetails.portfolioLink}
-                    className="flex items-center gap-2"
+                    className="flex  gap-2 cursor-pointer"
+                    href={
+                      userDetails.portfolioLink.startsWith("http")
+                        ? userDetails.portfolioLink
+                        : `http://${userDetails.portfolioLink}`
+                    }
+                    // target={data.url.startsWith("http") ? "_blank" : "_self"}
+                    target={"_blank"}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    rel={
+                      userDetails.portfolioLink.startsWith("http")
+                        ? "noopener noreferrer"
+                        : ""
+                    }
                   >
                     <svg
                       class="h-4 w-4 text-blue-500"

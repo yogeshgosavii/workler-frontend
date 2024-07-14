@@ -14,6 +14,16 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from './app/store.js';
 import UserProfile from './pages/UserProfile.jsx';
+import EducationForm from './components/Forms/EducationForm.jsx';
+import EducationUpdateForm from './components/Forms/EducationUpdateForm.jsx';
+import PersonalDetailsForm from './components/Forms/PersonalDetailsForm.jsx';
+import ProjectForm from './components/Forms/ProjectForm.jsx';
+import ProjectUpdateForm from './components/Forms/ProjectUpdateForm.jsx';
+import SkillForm from './components/Forms/SkillForm.jsx';
+import SkillUpdateForm from './components/Forms/SkillUpdateForm.jsx';
+import UserDetailsForm from './components/Forms/UserDetailsForm.jsx';
+import WorkExperienceForm from './components/Forms/WorkExperienceForm.jsx';
+import WorkExperienceUpdateForm from './components/Forms/WorkExperienceUpdateForm.jsx';
 
 const router = createBrowserRouter([
   {
@@ -29,7 +39,18 @@ const router = createBrowserRouter([
   },
   { path: '/profile', element: <UserProfile /> },
   { path: '/login', element: <Login /> },
+  { path: '/educationform', element: <EducationForm /> },
+  { path: '/educationform-update ', element: <EducationUpdateForm /> },
+  { path: '/personalDetailsform', element: <PersonalDetailsForm /> },
+  { path: '/projectform', element: <ProjectForm /> },
+  { path: '/projectform-update', element: <ProjectUpdateForm /> },
+  { path: '/skillform', element: <SkillForm /> },
+  { path: '/skillform-update', element: <SkillUpdateForm /> },
+  { path: '/userdetailsform', element: <UserDetailsForm /> },
+  { path: '/workexperienceform', element: <WorkExperienceForm /> },
+  { path: '/workexperienceform-update', element: <WorkExperienceUpdateForm /> },
   { path: '/signup', element: <Signup /> }
+
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
