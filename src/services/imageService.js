@@ -1,5 +1,5 @@
-const API_URL = "http://localhost:5002/api/files";
-// const API_URL = "https://workler-backend.vercel.app/api/files"; // Use this when deploying to production
+// const API_URL = "http://localhost:5002/api/files";
+const API_URL = "https://workler-backend.vercel.app/api/files"; 
 
 const token = localStorage.getItem("token");
 
