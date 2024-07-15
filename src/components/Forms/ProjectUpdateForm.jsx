@@ -183,6 +183,7 @@ function ProjectUpdateForm({ data, setData, onClose }) {
          onChange={handleChange}
          placeholder={"Project title"}
          value={formData.project_name}
+         isRequired={true}
        />
 
        <TextAreaInput
@@ -190,6 +191,8 @@ function ProjectUpdateForm({ data, setData, onClose }) {
          onChange={handleChange}
          placeholder={"Description"}
          value={formData.project_description}
+         isRequired={true}
+
          />
 
        <div className="flex flex-wrap gap-4 ">
@@ -202,6 +205,8 @@ function ProjectUpdateForm({ data, setData, onClose }) {
          className={"flex-grow"}
          value={formatDate(formData.start_date)}
          maxDate={formatDate(formData.end_date)}
+         isRequired={true}
+
          />
          <DateInput
           type={"Date"}
@@ -211,6 +216,8 @@ function ProjectUpdateForm({ data, setData, onClose }) {
          className={"flex-grow"}
          minDate={formatDate(formData.start_date)}
          value={formatDate(formData.end_date)}
+         isRequired={true}
+
          />
          
        </div>
@@ -223,6 +230,8 @@ function ProjectUpdateForm({ data, setData, onClose }) {
        placeholder={"Technologies"}
        value={inputValue}
        handleDelete={handleDeleteTechnology}
+       isRequired={true}
+
        />
       
        <UrlInput
