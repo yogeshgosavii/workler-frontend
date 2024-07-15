@@ -7,7 +7,7 @@ import DateInput from "../Input/DateInput";
 
 function EducationUpdateForm({
   data,
-  setdata,
+  setData,
   onClose,
   index,
 }) {
@@ -27,17 +27,15 @@ function EducationUpdateForm({
 
   const handleInputChange = (e) => {
     let { name, value } = e.target;
-    // value = isNaN(Number(value)) ? value : Number(value);
-
-    // if (!isNaN(value)) {
-    //   const regex = /^\d*\.?\d{0,2}$/;
-    //   if (!regex.test(value)) {
-    //     return; // Do not update state if the value has more than 2 decimal places
-    //   }
-
-    //   // value = Number(value);
-    // }
-
+    console.log(value);
+    // Utility function to determine and convert value type
+    const convertValue = (value) => {
+      if (!isNaN(value) && value !== "") {
+        return value.includes('.') ? parseFloat(value) : parseInt(value, 10);
+      }
+      return value;
+    };
+  
     if ((name === "percentage" || name === "maximum_grades") && value > 100) {
       value = 100;
     } else if (name === "obtained_grades" && value > formData.maximum_grades) {
@@ -47,7 +45,7 @@ function EducationUpdateForm({
       value = 0;
     }
 
-    setFormData((prevState) => ({ ...prevState, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: convertValue(value) }));
   };
 
   const onSave = async (e) => {
@@ -59,7 +57,7 @@ function EducationUpdateForm({
         formData
       );
       onClose();
-      setdata((prevData) => {
+      setData((prevData) => {
         return prevData.map((item) => {
           if (item._id === formData._id) {
             return formData;
@@ -80,7 +78,7 @@ function EducationUpdateForm({
     const token = localStorage.getItem("token");
     try {
       await profileApi.education.delete(formData._id, token);
-      setdata((prevData) =>
+      setData((prevData) =>
         prevData.filter((item) => item._id !== data._id)
       );
       onClose();

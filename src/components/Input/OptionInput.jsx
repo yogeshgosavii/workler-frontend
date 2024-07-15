@@ -61,7 +61,7 @@ function OptionInput({
           {isRequired && <p className="text-red-500">*</p>}
         </label>
       </div>
-      {promptMessage && (
+      {message && (
         <p
           className={`w-fit ml-1 mt-0.5 text-xs mb-1 rounded-sm ${
             message.type === "error"

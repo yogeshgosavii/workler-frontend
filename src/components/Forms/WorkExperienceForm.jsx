@@ -160,8 +160,18 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    console.log(value);
+    // Utility function to determine and convert value type
+    const convertValue = (value) => {
+      if (!isNaN(value) && value !== "") {
+        return value.includes('.') ? parseFloat(value) : parseInt(value, 10);
+      }
+      return value;
+    };
+  
+    setFormData((prev) => ({ ...prev, [name]: convertValue(value) }));
   };
+  
   const handleDateChange = (e) => {
     const { name, value } = e.target;
     const updatedFormData = { ...formData, [name]: value };
@@ -279,12 +289,11 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
           </div>
           {isFullTime && isCurrentlyWorking && (
             <div className="flex gap-4 ">
-              <TextInput
+              <NumberInput
                 name="annualSalary"
                 placeholder="Current annual salary"
                 value={formData.annualSalary}
                 onChange={handleInputChange}
-                isRequired={true}
               />
               <p className="text-nowrap flex items-end py-1">Per year</p>
             </div>
@@ -484,12 +493,12 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
             </div>
           </div>
           <div className="flex  justify-end items-center mt-8">
-            <button
+            {/* <button
               className="text-blue-500 font-medium px-4 py-2 0 rounded-md mr-2"
               onClick={handleCancel}
             >
               Cancel
-            </button>
+            </button> */}
             <button
               disabled={!workExperienceType || !currentlyWorkingHere}
               className={`${

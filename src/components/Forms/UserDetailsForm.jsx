@@ -154,6 +154,7 @@ function UserDetailsForm({ onClose, setData, data }) {
       console.log(updatedData);
 
       await authService.updateUserDetails(updatedData);
+      setData(updatedData);
       onClose();
     } catch (error) {
       setError("Failed to update user details");

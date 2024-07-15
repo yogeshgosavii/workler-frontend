@@ -129,7 +129,7 @@ const UserProfile = () => {
     } catch (error) {
       console.error("Error fetching project data:", error);
     } finally {
-      setLoading((prev) => ({ ...prev, project: false }));
+      setLoading((prev) => ({ ...prev, projects: false }));
     }
   }, [profileApi.projectDetails]);
 
@@ -188,8 +188,6 @@ const UserProfile = () => {
     fetchUserDetails();
   }, []);
 
-  const closeForm = useCallback(() => setFormType(null), []);
-
   const FormComponents = useMemo(
     () => ({
       education: EducationForm,
@@ -207,6 +205,7 @@ const UserProfile = () => {
       workExperience: WorkExperienceUpdateForm,
       projects: ProjectUpdateForm,
       skills: SkillUpdateForm,
+      personalDetails: PersonalDetailsForm,
     }),
     []
   );
@@ -256,6 +255,8 @@ const UserProfile = () => {
             stroke-linecap="round"
             stroke-linejoin="round"
             onClick={() => {
+              setupdateFormType("personalDetails");
+              console.log(personalData);
               setUpdateData({ personalDetails: personalData });
               setUpdateForm({ personalDetails: true });
             }}
@@ -306,7 +307,7 @@ const UserProfile = () => {
   const handleClose = () => {
     setFormType(null);
     console.log("Hello");
-    window.history.back();  // Go back to the previous state in the history
+    window.history.back(); // Go back to the previous state in the history
   };
 
   useEffect(() => {
@@ -339,7 +340,7 @@ const UserProfile = () => {
   }, []);
 
   const handleUpdateFormClose = () => {
-    setUpdateForm(null);
+    setupdateFormType(null);
     // Replace the current history state to remove the formType
     window.history.replaceState({}, document.title, window.location.pathname);
   };
@@ -636,10 +637,10 @@ const UserProfile = () => {
                   <div
                     key={index}
                     onClick={() => {
+                      setUpdateData({ projects: data });
+                      setUpdateForm({ projects: true });
                       setupdateFormType("projects");
-                      setUpdateData({ project: data });
-                      console.log(data);
-                      setUpdateForm({ project: true });
+                      console.log("project data", data);
                     }}
                     className={`py-4 ${
                       index === projectData.length - 1 ? null : "border-b"
@@ -692,7 +693,7 @@ const UserProfile = () => {
               })}
             </div>
           ),
-        loading: loading.project,
+        loading: loading.projects,
       },
     ],
     [skillData, educationData, workExperienceData, projectData, personalData]
@@ -752,8 +753,17 @@ const UserProfile = () => {
           >
             {React.createElement(UpdateFormComponents[updateFormType], {
               onClose: handleUpdateFormClose,
-              data:updateData[updateFormType],
-              setData:setUpdateData[updateFormType]
+              data: updateData[updateFormType],
+              setData:
+                updateFormType === "skills"
+                  ? setSkillData
+                  : updateFormType === "education"
+                  ? setEducationData
+                  : updateFormType === "workExperience"
+                  ? setWorkExperienceData
+                  : updateFormType === "projects"
+                  ? setprojectData
+                  : null,
             })}
           </div>
         </div>
@@ -881,29 +891,56 @@ const UserProfile = () => {
                 />
               </svg>
             </div>
-            <div className="flex  w-full gap-4  items-center">
-              <UserImageInput
-                isEditable={false}
-                image={userDetails.profileImage}
-                imageHeight="70"
-              />
-              <div className="flex w-full  justify-between items-center">
-                <div>
-                  <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-                    {personalData?.fullname}
-                  </h1>
-                  <div className="flex  gap-2">
-                    <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
-                      {user?.username || "Username"}
-                    </p>
+            {loading.userDetails ? (
+              <div className="animate-pulse mt-2">
+                <div className="flex  items-center">
+                  <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
+                  <div className=" w-32 ml-2">
+                    <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
                   </div>
                 </div>
+                <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
+                <div className="h-3 bg-gray-200 rounded-md mt-1"></div>
+                <div className="flex  items-center mt-4">
+                  <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
+                  <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
+                </div>
+                <div className="flex  items-center mt-1">
+                  <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
+                  <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
+                </div>
+
+                <div className="flex mt-4">
+                  <div className="h-3 w-20 bg-gray-200 rounded-md "></div>
+                  <div className="h-3 w-20 bg-gray-200 rounded-md ml-2"></div>
+                </div>
               </div>
-            </div>
-            <div className="order-2">
-              <p className="mt-2 ">{userDetails.about}</p>
-            </div>
-            {/* <div className="flex items-end order-5 md:order-3 text-sm space-x-1 mt-3 font-bold">
+            ) : (
+              <div>
+                <div className="flex  w-full gap-4  items-center">
+                  <UserImageInput
+                    isEditable={false}
+                    image={userDetails.profileImage}
+                    imageHeight="70"
+                  />
+                  <div className="flex w-full  justify-between items-center">
+                    <div>
+                      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+                        {personalData?.fullname}
+                      </h1>
+                      <div className="flex  gap-2">
+                        <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
+                          {user?.username || "Username"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="order-2">
+                  <p className="mt-2 ">{userDetails.about}</p>
+                </div>
+                {/* <div className="flex items-end order-5 md:order-3 text-sm space-x-1 mt-3 font-bold">
               <svg
                 text="muted"
                 aria-hidden="true"
@@ -927,166 +964,168 @@ const UserProfile = () => {
                 <span className="text-[#848d97] font-normal">following</span>
               </p>
             </div> */}
-            <div className="order-4 flex flex-col gap-2">
-              {userDetails.email && (
-                <div className="flex order-4 mt-5 text-sm items-center gap-2">
-                  <svg
-                    class="octicon octicon-mail"
-                    viewBox="0 0 16 16"
-                    version="1.1"
-                    fill="#848d97"
-                    width="16"
-                    height="16"
-                    aria-hidden="true"
-                  >
-                    <path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2ZM1.5 12.251c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V5.809L8.38 9.397a.75.75 0 0 1-.76 0L1.5 5.809v6.442Zm13-8.181v-.32a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25v.32L8 7.88Z"></path>
-                  </svg>
-                  <p>{userDetails.email}</p>
-                </div>
-              )}
-              <div className=" space-y-2 order-4 text-sm">
-                {userDetails.githubLink && (
-                  <a
-                    className="flex  gap-2 cursor-pointer"
-                    href={
-                      userDetails.githubLink.startsWith("http")
-                        ? userDetails.githubLink
-                        : `http://${userDetails.githubLink}`
-                    }
-                    // target={data.url.startsWith("http") ? "_blank" : "_self"}
-                    target={"_blank"}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    rel={
-                      userDetails.githubLink.startsWith("http")
-                        ? "noopener noreferrer"
-                        : ""
-                    }
-                  >
-                    <img className="h-[16px] w-[16px]" src={githubLogo} />
-                    <p>{userDetails.githubLink}</p>
-                  </a>
-                )}
+                <div className="order-4 flex flex-col gap-2">
+                  {userDetails.email && (
+                    <div className="flex order-4 mt-5 text-sm items-center gap-2">
+                      <svg
+                        class="octicon octicon-mail"
+                        viewBox="0 0 16 16"
+                        version="1.1"
+                        fill="#848d97"
+                        width="16"
+                        height="16"
+                        aria-hidden="true"
+                      >
+                        <path d="M1.75 2h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 14H1.75A1.75 1.75 0 0 1 0 12.25v-8.5C0 2.784.784 2 1.75 2ZM1.5 12.251c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V5.809L8.38 9.397a.75.75 0 0 1-.76 0L1.5 5.809v6.442Zm13-8.181v-.32a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25v.32L8 7.88Z"></path>
+                      </svg>
+                      <p>{userDetails.email}</p>
+                    </div>
+                  )}
+                  <div className=" space-y-2 order-4 text-sm">
+                    {userDetails.githubLink && (
+                      <a
+                        className="flex  gap-2 cursor-pointer"
+                        href={
+                          userDetails.githubLink.startsWith("http")
+                            ? userDetails.githubLink
+                            : `http://${userDetails.githubLink}`
+                        }
+                        // target={data.url.startsWith("http") ? "_blank" : "_self"}
+                        target={"_blank"}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                        rel={
+                          userDetails.githubLink.startsWith("http")
+                            ? "noopener noreferrer"
+                            : ""
+                        }
+                      >
+                        <img className="h-[16px] w-[16px]" src={githubLogo} />
+                        <p>{userDetails.githubLink}</p>
+                      </a>
+                    )}
 
-                {userDetails.linkedInLink && (
-                  <a
-                    className="flex  gap-2 cursor-pointer"
-                    href={
-                      userDetails.linkedInLink.startsWith("http")
-                        ? userDetails.linkedInLink
-                        : `http://${userDetails.linkedInLink}`
-                    }
-                    // target={data.url.startsWith("http") ? "_blank" : "_self"}
-                    target={"_blank"}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    rel={
-                      userDetails.linkedInLink.startsWith("http")
-                        ? "noopener noreferrer"
-                        : ""
-                    }
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      fill="#848d97"
-                      viewBox="0 0 16 16"
-                      role="img"
-                      aria-labelledby="anoxoivoozzyddzns0wsn7xrxnzqxmx5"
-                      class="octicon mt-[2px]"
-                    >
-                      <title id="anoxoivoozzyddzns0wsn7xrxnzqxmx5">
-                        LinkedIn
-                      </title>
-                      <g clip-path="url(#clip0_202_91845)">
-                        <path
-                          d="M14.5455 0H1.45455C0.650909 0 0 0.650909 0 1.45455V14.5455C0 15.3491 0.650909 16 1.45455 16H14.5455C15.3491 16 16 15.3491 16 14.5455V1.45455C16 0.650909 15.3491 0 14.5455 0ZM5.05746 13.0909H2.912V6.18764H5.05746V13.0909ZM3.96291 5.20073C3.27127 5.20073 2.712 4.64 2.712 3.94982C2.712 3.25964 3.272 2.69964 3.96291 2.69964C4.65236 2.69964 5.21309 3.26036 5.21309 3.94982C5.21309 4.64 4.65236 5.20073 3.96291 5.20073ZM13.0938 13.0909H10.9498V9.73382C10.9498 8.93309 10.9353 7.90327 9.83491 7.90327C8.71855 7.90327 8.54691 8.77527 8.54691 9.67564V13.0909H6.40291V6.18764H8.46109V7.13091H8.49018C8.77673 6.58836 9.47636 6.016 10.52 6.016C12.6924 6.016 13.0938 7.44582 13.0938 9.30473V13.0909V13.0909Z"
-                          fill="currentColor"
-                        ></path>
-                      </g>
-                    </svg>
-                    <p>{userDetails.linkedInLink}</p>
-                  </a>
-                  //    <a
-                  //    className="cursor-pointer"
-                  //    href={
-                  //      data.url.startsWith("http")
-                  //        ? data.url
-                  //        : `http://${data.url}`
-                  //    }
-                  //    // target={data.url.startsWith("http") ? "_blank" : "_self"}
-                  //    target={"_blank"}
-                  //    onClick={(e) => {
-                  //      e.stopPropagation();
-                  //    }}
-                  //    rel={
-                  //      data.url.startsWith("http")
-                  //        ? "noopener noreferrer"
-                  //        : ""
-                  //    }
-                  //  >
-                  //    <svg
-                  //      className="h-6 w-6  text-blue-500"
-                  //      fill="none"
-                  //      viewBox="0 0 24 24"
-                  //      stroke="currentColor"
-                  //    >
-                  //      <path
-                  //        strokeLinecap="round"
-                  //        strokeLinejoin="round"
-                  //        strokeWidth="2"
-                  //        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  //      />
-                  //    </svg>
-                  //  </a>
-                )}
-                {userDetails.portfolioLink && (
-                  <a
-                    className="flex  gap-2 cursor-pointer"
-                    href={
-                      userDetails.portfolioLink.startsWith("http")
-                        ? userDetails.portfolioLink
-                        : `http://${userDetails.portfolioLink}`
-                    }
-                    // target={data.url.startsWith("http") ? "_blank" : "_self"}
-                    target={"_blank"}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                    rel={
-                      userDetails.portfolioLink.startsWith("http")
-                        ? "noopener noreferrer"
-                        : ""
-                    }
-                  >
-                    <svg
-                      class="h-4 w-4 text-blue-500"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      {" "}
-                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />{" "}
-                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-                    </svg>
-                    <p>{userDetails.portfolioLink}</p>
-                  </a>
-                )}
+                    {userDetails.linkedInLink && (
+                      <a
+                        className="flex  gap-2 cursor-pointer"
+                        href={
+                          userDetails.linkedInLink.startsWith("http")
+                            ? userDetails.linkedInLink
+                            : `http://${userDetails.linkedInLink}`
+                        }
+                        // target={data.url.startsWith("http") ? "_blank" : "_self"}
+                        target={"_blank"}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                        rel={
+                          userDetails.linkedInLink.startsWith("http")
+                            ? "noopener noreferrer"
+                            : ""
+                        }
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="#848d97"
+                          viewBox="0 0 16 16"
+                          role="img"
+                          aria-labelledby="anoxoivoozzyddzns0wsn7xrxnzqxmx5"
+                          class="octicon mt-[2px]"
+                        >
+                          <title id="anoxoivoozzyddzns0wsn7xrxnzqxmx5">
+                            LinkedIn
+                          </title>
+                          <g clip-path="url(#clip0_202_91845)">
+                            <path
+                              d="M14.5455 0H1.45455C0.650909 0 0 0.650909 0 1.45455V14.5455C0 15.3491 0.650909 16 1.45455 16H14.5455C15.3491 16 16 15.3491 16 14.5455V1.45455C16 0.650909 15.3491 0 14.5455 0ZM5.05746 13.0909H2.912V6.18764H5.05746V13.0909ZM3.96291 5.20073C3.27127 5.20073 2.712 4.64 2.712 3.94982C2.712 3.25964 3.272 2.69964 3.96291 2.69964C4.65236 2.69964 5.21309 3.26036 5.21309 3.94982C5.21309 4.64 4.65236 5.20073 3.96291 5.20073ZM13.0938 13.0909H10.9498V9.73382C10.9498 8.93309 10.9353 7.90327 9.83491 7.90327C8.71855 7.90327 8.54691 8.77527 8.54691 9.67564V13.0909H6.40291V6.18764H8.46109V7.13091H8.49018C8.77673 6.58836 9.47636 6.016 10.52 6.016C12.6924 6.016 13.0938 7.44582 13.0938 9.30473V13.0909V13.0909Z"
+                              fill="currentColor"
+                            ></path>
+                          </g>
+                        </svg>
+                        <p>{userDetails.linkedInLink}</p>
+                      </a>
+                      //    <a
+                      //    className="cursor-pointer"
+                      //    href={
+                      //      data.url.startsWith("http")
+                      //        ? data.url
+                      //        : `http://${data.url}`
+                      //    }
+                      //    // target={data.url.startsWith("http") ? "_blank" : "_self"}
+                      //    target={"_blank"}
+                      //    onClick={(e) => {
+                      //      e.stopPropagation();
+                      //    }}
+                      //    rel={
+                      //      data.url.startsWith("http")
+                      //        ? "noopener noreferrer"
+                      //        : ""
+                      //    }
+                      //  >
+                      //    <svg
+                      //      className="h-6 w-6  text-blue-500"
+                      //      fill="none"
+                      //      viewBox="0 0 24 24"
+                      //      stroke="currentColor"
+                      //    >
+                      //      <path
+                      //        strokeLinecap="round"
+                      //        strokeLinejoin="round"
+                      //        strokeWidth="2"
+                      //        d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                      //      />
+                      //    </svg>
+                      //  </a>
+                    )}
+                    {userDetails.portfolioLink && (
+                      <a
+                        className="flex  gap-2 cursor-pointer"
+                        href={
+                          userDetails.portfolioLink.startsWith("http")
+                            ? userDetails.portfolioLink
+                            : `http://${userDetails.portfolioLink}`
+                        }
+                        // target={data.url.startsWith("http") ? "_blank" : "_self"}
+                        target={"_blank"}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                        rel={
+                          userDetails.portfolioLink.startsWith("http")
+                            ? "noopener noreferrer"
+                            : ""
+                        }
+                      >
+                        <svg
+                          class="h-4 w-4 text-blue-500"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          {" "}
+                          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />{" "}
+                          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                        </svg>
+                        <p>{userDetails.portfolioLink}</p>
+                      </a>
+                    )}
+                  </div>
+                </div>
+                <div className="flex gap-1 order-1 mt-2 max-w-full flex-wrap ">
+                  {userDetails.tags?.map((tag) => (
+                    <p className="flex rounded-md w-fit text-blue-500 text-nowrap">
+                      #{tag}
+                    </p>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div className="flex gap-1 order-1 mt-2 max-w-full flex-wrap ">
-              {userDetails.tags?.map((tag) => (
-                <p className="flex rounded-md w-fit text-blue-500 text-nowrap">
-                  #{tag}
-                </p>
-              ))}
-            </div>
+            )}
 
             <button
               onClick={() => setFormType("userDetails")}

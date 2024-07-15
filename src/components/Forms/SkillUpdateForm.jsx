@@ -4,7 +4,7 @@ import useProfileApi from "../../services/profileService";
 import TextInput from "../Input/TextInput";
 import OptionInput from "../Input/OptionInput";
 
-function SkillUpdateForm({ data, onClose, setdata }) {
+function SkillUpdateForm({ data, onClose, setData }) {
   const [skill, setSkill] = useState(data.name);
   const [level, setLevel] = useState(data.level);
   const [updateDisabled, setUpdateDisabled] = useState(true);
@@ -23,7 +23,7 @@ function SkillUpdateForm({ data, onClose, setdata }) {
         name: skill,
         level,
       });
-      setdata((prevData) =>
+      setData((prevData) =>
         prevData.map((item) => (item._id === data._id ? updateddata : item))
       );
       console.log("Updated skill", updateddata);
@@ -40,7 +40,7 @@ function SkillUpdateForm({ data, onClose, setdata }) {
     try {
       await profileApi.skills.delete(data._id);
       // Filter out the deleted skill from data state
-      setdata((prevData) => prevData.filter((item) => item._id !== data._id));
+      setData((prevData) => prevData.filter((item) => item._id !== data._id));
       onClose();
     } catch (error) {
       console.error("Error deleting skill:", error);

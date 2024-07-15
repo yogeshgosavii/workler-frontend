@@ -40,7 +40,7 @@ function TextAreaInput({name,placeholder,value,onChange,isRequired ,className,pr
       >
         {placeholder}{isRequired && <p className='text-red-500'>*</p>}
       </label>
-      {promptMessage && (
+      {message && (
         <p
           className={`w-fit ml-1 mt-0.5 text-xs mb-1 rounded-sm ${
             message.type === "error"

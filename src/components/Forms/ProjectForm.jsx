@@ -89,6 +89,7 @@ function ProjectForm({ onClose,setData }) {
           onChange={handleChange}
           placeholder={"Project title"}
           value={formData.project_name}
+          isRequired={true}
         />
 
         <TextAreaInput
@@ -96,6 +97,8 @@ function ProjectForm({ onClose,setData }) {
           onChange={handleChange}
           placeholder={"Description"}
           value={formData.project_description}
+          isRequired={true}
+
           />
 
         <div className="flex flex-wrap gap-4 ">
@@ -108,6 +111,8 @@ function ProjectForm({ onClose,setData }) {
           placeholder={"Start Date"}
           value={formData.start_date}
           maxDate={formData.end_date}
+          isRequired={true}
+
           />
           <DateInput
           type={"Date"}
@@ -117,6 +122,8 @@ function ProjectForm({ onClose,setData }) {
           placeholder={"End Date"}
           minDate={formData.start_date}
           value={formData.end_date}
+          isRequired={true}
+
           />
           
         </div>
@@ -129,6 +136,8 @@ function ProjectForm({ onClose,setData }) {
         placeholder={"Technologies"}
         value={inputValue}
         handleDelete={handleDeleteTechnology}
+        isRequired={true}
+
         />
        
         <UrlInput

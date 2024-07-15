@@ -7,7 +7,8 @@ import DateInput from "../Input/DateInput";
 import TextAreaInput from "../Input/TextAreaInput";
 import TextInput from "../Input/TextInput";
 
-function ProjectUpdateForm({ data, setdata, onClose }) {
+function ProjectUpdateForm({ data, setData, onClose }) {
+  console.log(onClose);
   const [loading, setloading] = useState(false);
   const [previousData, setpreviousData] = useState({
     project_name: data.project_name || "",
@@ -33,7 +34,7 @@ function ProjectUpdateForm({ data, setdata, onClose }) {
     e.preventDefault();
     try {
       await profileApi.projectDetails.delete(data._id);
-      setdata((prevData) =>
+      setData((prevData) =>
         prevData.filter((item) => item._id !== data._id)
       );
       onClose();
@@ -148,12 +149,13 @@ function ProjectUpdateForm({ data, setdata, onClose }) {
 
         await profileApi.projectDetails.update(data._id, filteredData);
         console.log();
-        setdata((prevData) =>
+        setData((prevData) =>
             prevData.map((item) =>
               item._id === data._id ? { ...filteredData, _id: data._id } : item
             )
           );
         onClose();
+        
       } catch (error) {
         console.error("Error in updating project:", error);
       }

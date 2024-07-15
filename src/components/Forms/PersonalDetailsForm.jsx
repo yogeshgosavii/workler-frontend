@@ -6,9 +6,9 @@ import TextAreaInput from "../Input/TextAreaInput";
 import DateInput from "../Input/DateInput";
 import useProfileApi from "../../services/profileService";
 
-function PersonalDetailsForm({ onClose, personalDetailsData, setPersonalDetailsData }) {
+function PersonalDetailsForm({ onClose, data, setdata }) {
   const [loading, setloading] = useState(false);
-  const [formData, setFormData] = useState(personalDetailsData || {});
+  const [formData, setFormData] = useState(data || {});
   const profileApi = useProfileApi();
 
   const formatDate = (dateString) => {

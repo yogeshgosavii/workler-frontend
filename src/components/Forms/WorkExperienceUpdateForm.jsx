@@ -5,7 +5,7 @@ import TextInput from "../Input/TextInput";
 import NumberInput from "../Input/NumberInput";
 import DateInput from "../Input/DateInput";
 
-function WorkExperienceUpdateForm({ onClose, data, setdata }) {
+function WorkExperienceUpdateForm({ onClose, data, setData }) {
   const [loading, setloading] = useState(false);
   const [workExperienceFullData, setWorkExperienceFullData] = useState([]);
   const [workExperienceType, setWorkExperienceType] = useState(data.employmentType);
@@ -29,6 +29,7 @@ function WorkExperienceUpdateForm({ onClose, data, setdata }) {
     stipend: data.stipend,
     currentlyWorking: data.currentlyWorking,
     noticePeriod: data.noticePeriod,
+    employmentType : data.employmentType
   });
   const [formData, setFormData] = useState({
     years: data.years,
@@ -43,6 +44,7 @@ function WorkExperienceUpdateForm({ onClose, data, setdata }) {
     stipend: data.stipend,
     currentlyWorking: data.currentlyWorking,
     noticePeriod: data.noticePeriod,
+    employmentType : data.employmentType
   });
   
   const workTypeOptions = ["Full-time", "Internship"];
@@ -75,28 +77,11 @@ function WorkExperienceUpdateForm({ onClose, data, setdata }) {
     };
 
     fetchWorkExperienceData();
-  }, [profileApi]);
+  }, []);
 
   const currentWorkingSomeWhere = (workExperienceFullData || []).some(experience => experience.currentlyWorking === "Yes");
 
-  useEffect(() => {
-    setWorkExperienceType(data.employmentType);
-    setCurrentlyWorkingHere(data.currentWorking);
-    setFormData({
-      years: data.years,
-      months: data.months,
-      companyName: data.companyName,
-      jobTitle: data.jobTitle,
-      joiningDate: formatDate(data.joiningDate),
-      annualSalary: data.annualSalary,
-      location: data.location,
-      department: data.department,
-      leavingDate: formatDate(data.leavingDate),
-      stipend: data.stipend,
-      currentlyWorking: data.currentlyWorking,
-      noticePeriod: data.noticePeriod,
-    });
-  }, [data]);
+
 
   // Get today's date
   const today = new Date();
@@ -136,7 +121,16 @@ function WorkExperienceUpdateForm({ onClose, data, setdata }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    console.log(value);
+    // Utility function to determine and convert value type
+    const convertValue = (value) => {
+      if (!isNaN(value) && value !== "") {
+        return value.includes('.') ? parseFloat(value) : parseInt(value, 10);
+      }
+      return value;
+    };
+  
+    setFormData((prev) => ({ ...prev, [name]: convertValue(value) }));
   };
 
   const handleDateChange = (e) => {
@@ -201,11 +195,12 @@ function WorkExperienceUpdateForm({ onClose, data, setdata }) {
       employmentType
     } = formData;
 
+    console.log(formData);
     if (!companyName || !jobTitle) {
       return false;
     }
 
-    if (employmentType === "Full-time") {
+    if (employmentType == "Full-time") {
       if (currentlyWorking === "Yes" && !annualSalary) {
         return false;
       } else if (currentlyWorking === "No" && (!leavingDate || leavingDate === "")) {
@@ -223,7 +218,7 @@ function WorkExperienceUpdateForm({ onClose, data, setdata }) {
   };
 
   const isFormValid = () => {
-    return !isFormValidCheck() || deepEqual(previousFormData, formData);
+    return (!isFormValidCheck() || deepEqual(previousFormData ,formData) );
   };
 
   const handleUpdate = async (event) => {
@@ -232,7 +227,7 @@ function WorkExperienceUpdateForm({ onClose, data, setdata }) {
 
     const updateddata = {
       _id: data._id,  // Include the ID to update the correct entry
-      employmentType: workExperienceType,
+      employmentType: formData.employmentType,
       currentlyWorking: formData.currentlyWorking,
       years: formData.years,
       months: formData.months,
@@ -250,8 +245,9 @@ function WorkExperienceUpdateForm({ onClose, data, setdata }) {
 
     try {
       const updatedData = await profileApi.workExperience.update(data._id, updateddata);
-      setdata(prevData => prevData.map(exp => exp._id === updatedData._id ? updatedData : exp));
+      setData(prevData => prevData.map(exp => exp._id === updatedData._id ? updatedData : exp));
       onClose();
+      window.history.back()
     } catch (error) {
       console.error("Error updating work experience:", error);
     }
@@ -265,7 +261,7 @@ function WorkExperienceUpdateForm({ onClose, data, setdata }) {
     const token = localStorage.getItem("token");
     try {
       const updatedWorkExperience = await profileApi.workExperience.delete(data._id, token);
-      setdata(prevData => prevData.filter(exp => exp._id !== data._id ));
+      setData(prevData => prevData.filter(exp => exp._id !== data._id ));
  
       console.log('Updated education data:', updatedWorkExperience);
       onClose();
@@ -342,7 +338,7 @@ function WorkExperienceUpdateForm({ onClose, data, setdata }) {
           placeholder="Company Name"
           onChange={handleInputChange}
           value={formData.companyName}
-          label="Company Name"
+          isRequired={true}
         />
         <TextInput
           name="jobTitle"
@@ -350,11 +346,14 @@ function WorkExperienceUpdateForm({ onClose, data, setdata }) {
           onChange={handleInputChange}
           value={formData.jobTitle}
           label="Job Title"
+          isRequired={true}
         />
         <DateInput
+        className={"flex-grow"}
           name="joiningDate"
           value={formData.joiningDate}
-          label="Joining Date"
+          placeholder="Joining Date"
+          isRequired={true}
           min={minDateFormatted}
           max={todayFormatted}
           onChange={handleDateChange}
@@ -367,16 +366,21 @@ function WorkExperienceUpdateForm({ onClose, data, setdata }) {
               placeholder="Annual Salary"
               onChange={handleInputChange}
               value={formData.annualSalary}
+              isRequired = {true}
             />
-            <DateInput
+          { !formData.currentlyWorking &&
+              <DateInput
+              className={"flex-grow"}
               name="leavingDate"
               value={formData.leavingDate}
-              label="Leaving Date"
+              placeholder="Leaving Date"
               min={formData.joiningDate}
               max={todayFormatted}
               onChange={handleDateChange}
               disabled={isCurrentlyWorking}
+              isRequired={true}
             />
+          }
           </>
         )}
         {!isFullTime && (
@@ -403,9 +407,11 @@ function WorkExperienceUpdateForm({ onClose, data, setdata }) {
               value={formData.stipend}
             />
             <DateInput
+                    className={"flex-grow"}
+
               name="leavingDate"
               value={formData.leavingDate}
-              label="Leaving Date"
+              label={"Leaving Date"}
               min={formData.joiningDate}
               max={todayFormatted}
               onChange={handleDateChange}
@@ -446,7 +452,7 @@ function WorkExperienceUpdateForm({ onClose, data, setdata }) {
     </div>
     <div className=" flex-1">{renderWorkForm()}</div>
     </div>
-    <div className=" static flex items-center justify-between  bg-white px-3 ">
+    <div className=" static flex items-center justify-between  bg-white ">
       <svg onClick={onDelete} className="h-6 w-6 cursor-pointer text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="3 6 5 6 21 6" />
         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />

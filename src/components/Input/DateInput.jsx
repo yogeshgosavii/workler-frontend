@@ -15,7 +15,7 @@ const handleChange = (e) => {
   }
 };
   return (
-    <div className={`relative flex w-fit ${className}`}>
+    <div className={`relative flex   ${className}`}>
       <input
         type={type}
         name={name}
@@ -43,7 +43,7 @@ const handleChange = (e) => {
         >
           {placeholder}{isRequired && <p className='text-red-500'>*</p>}
         </label>
-      {promptMessage && (
+      {message && (
         <p
           className={`w-fit ml-1 mt-0.5 text-xs mb-1 rounded-sm ${
             message.type === "error"

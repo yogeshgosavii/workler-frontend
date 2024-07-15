@@ -6,14 +6,13 @@ function NumberInput({
   placeholder,
   value,
   onChange,
-  isRequired = true,
+  isRequired = false,
   className,
   max,
   min,
-  promtMessage
+  promtMessage,
 }) {
   const [message, setMessage] = useState(promtMessage);
-
 
   const handleChange = (e) => {
     onChange(e);
@@ -35,7 +34,7 @@ function NumberInput({
           } appearance-none focus:outline-none focus:ring-0 focus:${
             isRequired && !value ? "border-red-500" : "border-blue-500"
           } peer`}
-                     placeholder=""
+          placeholder=""
           value={value}
           max={max}
           min={min}

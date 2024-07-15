@@ -429,12 +429,12 @@ function EducationForm({ onClose, setData, data }) {
             </div>
           </div>
           <div className="flex justify-end items-center w-full">
-            <Button
+            {/* <Button
               className="text-blue-500 font-medium"
               onClick={handleCancel}
             >
               Cancel
-            </Button>
+            </Button> */}
             <Button
               disabled={!educationType}
               className="bg-blue-500 rounded-full text-white disabled:bg-blue-300"
