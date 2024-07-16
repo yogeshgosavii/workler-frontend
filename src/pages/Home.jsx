@@ -122,8 +122,8 @@ function Home() {
     <div className='w-full'>
     <div className='mt-24'>
         <p className='text-blue-500 font-bold text-xl'>#BEST HELP</p>
-        <p className='text-5xl text-black font-bold mt-5 leading-[55px]'>Search your dream job here</p>
-        <p className='text-xl text-gray-400 font-semibold mt-2'>Lets get your career started right away</p>
+        <p className=' text-4xl md:text-5xl text-black font-bold mt-5 leading-[50px] md:leading-[55px]'>Search your dream job here</p>
+        <p className='text-xl text-gray-400 font-normal md:font-semibold mt-2'>Lets get your career started right away</p>
         <SearchInput inputClassName={"placeholder:text-xl"} className={"mt-8 max-w-screen-md shadow-xl caret-blue-500"} placeholder={"Enter the job title or domain"}/>
     </div>
    <div className='mt-32'>
