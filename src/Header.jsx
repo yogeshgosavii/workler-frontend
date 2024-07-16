@@ -1,16 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Logo from './assets/Logo';
 import BorderedButton from './components/Button/BorderButton';
 import Button from './components/Button/Button';
 import { Link ,useNavigate} from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import profileImageDefault from '../src/assets/user_male_icon.png';
+import authService from "./services/authService";
+
 
 function Header() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const [userDetails, setUserDetails] = useState(null);
 
   console.log("userData:", user);
   console.log("login status:", isAuthenticated);
+
+  
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      try {
+        const response = await authService.fetchUserDetails();
+        setUserDetails(response);
+        console.log(response);
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    };
+
+    fetchUserDetails();
+  }, []);
 
   const navigate = useNavigate();
 
@@ -30,8 +48,8 @@ function Header() {
           </div>
         </div>
         {isAuthenticated ? (
-          <div onClick={()=>navigate("/profile")} className='flex items-center cursor-pointer gap-3 sm:border sm:px-4 sm:pr-5  sm:py-1 rounded-md '>
-            <img className='h-10 w-10 ' src={user?.profileImage || profileImageDefault} alt='Profile' />
+          <div onClick={()=>navigate("/profile")} className='flex items-center cursor-pointer gap-3 sm:border sm:px-2 sm:pr-5  sm:py-1 rounded-md '>
+            <img className='h-10 w-10 object-cover border rounded-full ' src={userDetails?.profileImage || profileImageDefault} alt='Profile' />
             <div className='hidden sm:inline'>
               <p className=' font-medium'>{user?.username || "User"}</p>
               {/* <p className='text-red-500'>Logout</p> */}

@@ -1,5 +1,4 @@
-const token = localStorage.getItem('token');
-export const setAuthHeaders = (id) => ({
-  Authorization: `Bearer ${token}`,
+export const setAuthHeaders = (userToken) => ({
+  Authorization: `Bearer ${userToken}`,
   'Content-Type': 'application/json',
 });

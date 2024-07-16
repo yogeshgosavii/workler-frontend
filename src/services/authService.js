@@ -24,6 +24,26 @@ const authService = {
     }
   },
 
+  checkUsername : async (username)=>{
+    try {
+      const response = await fetch(`${API_URL}/check-username`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username }),
+      });
+      if (!response.ok) {
+        throw new Error("Username check failed");
+      }
+      const data = await response.json();
+      return data; // Return any additional data from the API response if needed
+    } catch (error) {
+      console.error("Error in checkUsername:", error);
+      throw error; // Throw the error to handle it in the component
+    }
+  },
+
   login: async (email, password) => {
     try {
       const response = await fetch(`${API_URL}/login`, {
@@ -46,10 +66,10 @@ const authService = {
     }
   },
 
-  fetchUserDetails: async () => {
+  fetchUserDetails: async (userToken = token) => {
     try {
       const response = await fetch(`${API_URL}/user`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${userToken}` },
       });
       if (!response.ok) {
         throw new Error("Failed to fetch user details");

@@ -16,7 +16,7 @@ function PasswordInput({
         type={showPassword ? "text" : "password"}
         name={name}
         id={name}
-        className="block px-3 py-3 w-full font-normal bg-white rounded-sm border appearance-none focus:outline-none focus:ring-0 focus:border-blue-500 peer"
+        className="block px-3 py-3 pr-[75px] w-full font-normal bg-white rounded-sm border appearance-none focus:outline-none focus:ring-0 focus:border-blue-500 peer"
         placeholder=""
         value={value}
         onChange={onChange}
@@ -38,7 +38,7 @@ function PasswordInput({
       </label>
       <div
         onClick={() => setShowPassword(!showPassword)}
-        className="text-gray-300 absolute w-14 flex items-center justify-center border-l h-9 cursor-pointer my-1 right-2 pl-1.5"
+        className="text-gray-300 z-10 absolute w-14 flex items-center justify-center border-l h-9 cursor-pointer my-1 right-2 pl-1.5"
       >
         {showPassword ? (
           <svg

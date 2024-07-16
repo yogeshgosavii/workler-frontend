@@ -22,8 +22,8 @@ function OptionInput({
   };
 
   return (
-    <div className={` relative flex ${className}`}>
-      <div>
+    <div className={`${className}`}>
+      <div className=" relative flex h-full">
         <select
           name={name}
           id={name}

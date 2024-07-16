@@ -39,16 +39,6 @@ const router = createBrowserRouter([
   },
   { path: '/profile', element: <UserProfile /> },
   { path: '/login', element: <Login /> },
-  { path: '/educationform', element: <EducationForm /> },
-  { path: '/educationform-update ', element: <EducationUpdateForm /> },
-  { path: '/personalDetailsform', element: <PersonalDetailsForm /> },
-  { path: '/projectform', element: <ProjectForm /> },
-  { path: '/projectform-update', element: <ProjectUpdateForm /> },
-  { path: '/skillform', element: <SkillForm /> },
-  { path: '/skillform-update', element: <SkillUpdateForm /> },
-  { path: '/userdetailsform', element: <UserDetailsForm /> },
-  { path: '/workexperienceform', element: <WorkExperienceForm /> },
-  { path: '/workexperienceform-update', element: <WorkExperienceUpdateForm /> },
   { path: '/signup', element: <Signup /> }
 
 ]);

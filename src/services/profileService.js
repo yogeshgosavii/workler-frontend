@@ -22,39 +22,39 @@ const makeApiRequest = async (url, options) => {
 const token = localStorage.getItem('token');
 
 const createApiMethods = (endpoint, userId) => ({
-  add: async (data) => {
+  add: async (data,userToken = token) => {
     const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/`, {
       method: 'POST',
-      headers: setAuthHeaders(),
+      headers: setAuthHeaders(userToken),
       body: JSON.stringify(data),
     });
     return response;
   },
 
-  getAll: async () => {
+  getAll: async (userToken = token) => {
     const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/`, {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userToken}`,
       },
     });
     return response;
   },
 
-  update: async (id, data) => {
+  update: async (id, data,userToken = token) => {
     const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/${id}`, {
       method: 'PUT',
-      headers: setAuthHeaders(),
+      headers: setAuthHeaders(userToken),
       body: JSON.stringify(data),
     });
     return response;
   },
 
-  delete: async (id) => {
+  delete: async (id,userToken = token) => {
     const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/${id}`, {
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${userToken}`,
 
       },
     });

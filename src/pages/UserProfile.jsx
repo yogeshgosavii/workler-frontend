@@ -137,7 +137,7 @@ const UserProfile = () => {
     try {
       const data = await profileApi.personalDetails.getAll();
       setPersonalData(data[0]);
-      console.log(data); // Logging the fetched data directly
+      console.log("personalData",data); // Logging the fetched data directly
     } catch (error) {
       console.error("Error fetching personal data:", error);
     } finally {
