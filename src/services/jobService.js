@@ -2,7 +2,7 @@ import { setAuthHeaders } from '../../utility';
 import { useSelector } from 'react-redux';
 
 // const apiBaseUrl = 'http://localhost:5002/api/profile';
-const apiBaseUrl = 'https://workler-backend.vercel.app/api/profile';
+const apiBaseUrl = 'https://workler-backend.vercel.app/api/jobs';
 
 
 
@@ -62,8 +62,9 @@ const createApiMethods = (endpoint, userId) => ({
   },
 });
 
-const useProfileApi = () => {
+const useJobApi = () => {
   const user = useSelector((state) => state.auth.user);
+  console.log("user",user);
 
   if (!user || !user._id) {
     throw new Error('User is not logged in or user ID is missing');
@@ -72,15 +73,9 @@ const useProfileApi = () => {
   const userId = user.id;
 
   return {
-    skills: createApiMethods('skills', userId),
-    education: createApiMethods('education', userId),
-    personalDetails: createApiMethods('personalDetails', userId),
-    projectDetails: createApiMethods('projectDetails', userId),
-    workExperience: createApiMethods('workExperience', userId),
-    description: createApiMethods('description', userId),
     job: createApiMethods('job', userId),
-
+  
   };
 };
 
-export default useProfileApi;
+export default useJobApi;

@@ -122,7 +122,7 @@ function MiddleContainer() {
         <div className='w-full px-5 sm:px-10 py-5'>
             <div className='mt-40'>
                 <p className='text-blue-500 font-bold text-xl'>#BEST HELP</p>
-                <p className=''>Search your dream job here</p>
+                <p className=' text-xl sm:text-3xl md:text-5xl text-black font-bold mt-5 leading-[55px]'>Search your dream job here</p>
                 <p className='text-xl text-gray-400 font-semibold mt-2'>Lets get your career started right away</p>
                 <SearchInput inputClassName={"placeholder:text-xl"} className={"mt-8 max-w-screen-md shadow-xl caret-blue-500"} placeholder={"Enter the job title or domain"}/>
             </div>

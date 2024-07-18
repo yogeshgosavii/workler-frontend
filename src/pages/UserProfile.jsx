@@ -6,11 +6,15 @@ import WorkExperienceForm from "../components/Forms/WorkExperienceForm";
 import ProjectForm from "../components/Forms/ProjectForm";
 import SkillForm from "../components/Forms/SkillForm";
 import PersonalDetailsForm from "../components/Forms/PersonalDetailsForm";
+import JobForm from "../components/Forms/JobForm";
 import EducationUpdateForm from "../components/Forms/EducationUpdateForm";
 import SkillUpdateForm from "../components/Forms/SkillUpdateForm";
 import WorkExperienceUpdateForm from "../components/Forms/WorkExperienceUpdateForm"; // Assuming you have this form
 import { format, formatDate } from "date-fns";
 import useProfileApi from "../services/profileService"; // Adjust the import path
+import useJobApi from "../services/jobService"; // Adjust the import path
+import { formatDistanceToNow } from "date-fns";
+
 import { Doughnut } from "react-chartjs-2";
 import { PieChart } from "@mui/x-charts/PieChart";
 import githubLogo from "../assets/github-mark.svg";
@@ -34,8 +38,40 @@ const UserProfile = () => {
   const [workExperienceData, setWorkExperienceData] = useState([]); // Added work experience data
   const [projectData, setprojectData] = useState([]);
   const [userDetails, setuserDetails] = useState([]);
+  const [jobData, setjobData] = useState();
   const profileApi = useProfileApi();
+  const jobApi = useJobApi();
 
+  const [scrollDirection, setScrollDirection] = useState("up");
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [atTop, setAtTop] = useState(true);
+
+  const handleScroll = () => {
+    const currentScrollY = window.scrollY;
+
+    if (currentScrollY > lastScrollY) {
+      setScrollDirection("down");
+    } else if (currentScrollY < lastScrollY) {
+      setScrollDirection("up");
+    }
+
+    if (currentScrollY <= 500) {
+      setAtTop(true);
+    } else {
+      setAtTop(false);
+    }
+
+    setLastScrollY(currentScrollY);
+  };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [lastScrollY]);
+
+  const [currentTab, setcurrentTab] = useState("Profile");
   const data = {
     labels: ["ReactJs", "Frontend", "Java developer", "Spring boot"],
     datasets: [
@@ -91,7 +127,6 @@ const UserProfile = () => {
     projects: null,
     personalDetails: null,
   });
-  const [tags, settags] = useState(["Java", "Springboot", "React"]);
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
@@ -111,6 +146,15 @@ const UserProfile = () => {
 
     fetchData();
   }, []);
+  const fetchJobData = useCallback(async () => {
+    try {
+      const data = await jobApi.job.getAll();
+      setjobData(data);
+    } catch (error) {
+      console.error("Error fetching education data:", error);
+    } finally {
+    }
+  }, [jobApi.job]);
   const fetchEducationData = useCallback(async () => {
     try {
       const data = await profileApi.education.getAll();
@@ -137,7 +181,7 @@ const UserProfile = () => {
     try {
       const data = await profileApi.personalDetails.getAll();
       setPersonalData(data[0]);
-      console.log("personalData",data); // Logging the fetched data directly
+      console.log("personalData", data); // Logging the fetched data directly
     } catch (error) {
       console.error("Error fetching personal data:", error);
     } finally {
@@ -186,6 +230,7 @@ const UserProfile = () => {
     fetchSkillData();
     fetchWorkExperienceData();
     fetchUserDetails();
+    fetchJobData();
   }, []);
 
   const FormComponents = useMemo(
@@ -196,6 +241,7 @@ const UserProfile = () => {
       projects: ProjectForm,
       skills: SkillForm,
       userDetails: UserDetailsForm,
+      job: JobForm,
     }),
     []
   );
@@ -206,6 +252,7 @@ const UserProfile = () => {
       projects: ProjectUpdateForm,
       skills: SkillUpdateForm,
       personalDetails: PersonalDetailsForm,
+      job: JobForm,
     }),
     []
   );
@@ -700,7 +747,11 @@ const UserProfile = () => {
   );
 
   return (
-    <div className="w-full flex flex-col md:flex-row justify-center gap-5 py-2 bg-gray-100  sm:py-5 sm:px-5 ">
+    <div
+      className={`w-full ${
+        (formType || updateFormType) && "fixed"
+      } flex flex-col md:flex-row justify-center gap-5  bg-gray-100  sm:py-5 sm:px-5 `}
+    >
       {formType && (
         <div
           className="fixed inset-0 z-10 flex justify-center items-center bg-black bg-opacity-50"
@@ -724,6 +775,8 @@ const UserProfile = () => {
                   ? setPersonalData
                   : formType === "userDetails"
                   ? setuserDetails
+                  : formType === "jobForm"
+                  ? setjobData
                   : null,
               data:
                 formType === "skills"
@@ -736,6 +789,8 @@ const UserProfile = () => {
                   ? personalData
                   : formType === "userDetails"
                   ? userDetails
+                  : formType == "jobForm"
+                  ? jobData
                   : null,
             })}
           </div>
@@ -854,7 +909,7 @@ const UserProfile = () => {
           </div>
         </div>
       )} */}
-      <div className="w-full ">
+      <div className="w-full md:min-w-[60%] h-full">
         <div className="  flex gap-4 max-h-min flex-wrap ">
           {/* <div className="w-full bg-white px-4 flex justify-end py-4 border-y">
           <svg
@@ -874,7 +929,7 @@ const UserProfile = () => {
                   <circle cx="12" cy="12" r="3" />
                 </svg>
           </div> */}
-          <div className="flex border-y py-8 flex-grow sm:border  px-4 gap-3 bg-white justify-center flex-col">
+          <div className="flex border-t pt-8 pb-6 flex-grow sm:border-t sm:border-x  px-4 md:px-6 gap-3 bg-white justify-center flex-col">
             <div className="w-full mb-4 bg-white flex  justify-between ">
               <p className="text-2xl font-semibold">Profile</p>
               <svg
@@ -1135,51 +1190,140 @@ const UserProfile = () => {
             </button>
           </div>
 
-          <div className="flex-grow border h-full md:w-fit px-6 bg-white sm:px-8 py-5 flex w-full">
-            <div className="h-full">
-              <p className="text-xl font-medium">Profile Analytics</p>
-              <PieChart
-                className=" bg-blue-100"
-                series={[
-                  {
-                    data: [
-                      { value: "Java", color: "orange" },
-                      { value: "Javascript", color: "red" },
-                      { value: "Springboot", color: "green" },
-                      { value: "React", color: "blue" },
-                    ],
-                    innerRadius: 65,
-                    outerRadius: 100,
-                    paddingAngle: 0,
-                    cornerRadius: 0,
-                    startAngle: -182,
-                    endAngle: 180,
-                    cx: 150,
-                    cy: 150,
-                  },
-                ]}
-              />
-            </div>
-          </div>
+          {/* <div className="flex-grow gap-3 bg-white py-4  border font-medium  h-full md:w-fit px-6 flex w-full">
+            <p className=" px-4 w-full text-center bg-blue-50 border rounded-lg border-blue-500 py-1">
+              Profile
+            </p>
+            <p className=" px-4 w-full text-center py-1">
+              Posts
+            </p>
+          </div> */}
         </div>
+        <div className="flex-grow border-b sm:border-x w-full -mt-px sticky  sm:top-4 gap-3  mb-4   order-last bg-white   font-medium  h-full  flex">
+          {/* <p className=" px-4 w-full text-center bg-blue-50 border-b-2 border-blue-500 py-3">
+              Profile
+            </p>
+            <p className=" px-4 w-full text-center py-3">
+              Posts
+            </p> */}
+          {["Profile", "Posts", "Jobs"].map((tab) => (
+            <p
+              onClick={() => {
+                setcurrentTab(tab);
+              }}
+              className={`px-4 font-semibold cursor-pointer ${
+                tab == currentTab
+                  ? "  border-b-2 -mb-px text-blue-500 border-blue-500"
+                  : null
+              }  ${
+                user.accountType == "Candidate" && tab == "Jobs"
+                  ? "hidden"
+                  : null
+              } w-full text-center py-2`}
+            >
+              {tab}
+            </p>
+          ))}
+        </div>
+        {currentTab == "Profile" && (
+          <div>
+            <div className="flex-grow border  h-full md:w-fit px-6 bg-white sm:px-8 py-5 flex w-full">
+              <div className="h-full">
+                <p className="text-xl font-medium">Profile Analytics</p>
+                <PieChart
+                  className=" bg-blue-100"
+                  series={[
+                    {
+                      data: [
+                        { value: "Java", color: "orange" },
+                        { value: "Javascript", color: "red" },
+                        { value: "Springboot", color: "green" },
+                        { value: "React", color: "blue" },
+                      ],
+                      innerRadius: 65,
+                      outerRadius: 100,
+                      paddingAngle: 0,
+                      cornerRadius: 0,
+                      startAngle: -182,
+                      endAngle: 180,
+                      cx: 150,
+                      cy: 150,
+                    },
+                  ]}
+                />
+              </div>
+            </div>
+            {userDetailsList.map((item, index) => (
+              <div
+                key={index}
+                className="cursor-pointer bg-white"
+                draggable
+                onDragStart={(e) => handleDragStart(e, item.id)}
+                onDrop={(e) => handleDrop(e, item.id)}
+                onDragOver={(e) => e.preventDefault()}
+              >
+                <Section
+                  id={item.id}
+                  title={item.title}
+                  content={item.content}
+                  loading={item.loading}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+        {currentTab == "Posts" && (
+          <div className="bg-white w-full h-full">Hello</div>
+        )}
 
-        {userDetailsList.map((item, index) => (
-          <div
-            key={index}
-            className="cursor-pointer bg-white"
-            draggable
-            onDragStart={(e) => handleDragStart(e, item.id)}
-            onDrop={(e) => handleDrop(e, item.id)}
-            onDragOver={(e) => e.preventDefault()}
-          >
-            <Section
-              id={item.id}
-              title={item.title}
-              content={item.content}
-              loading={item.loading}
-            />
+        {currentTab == "Jobs" && (jobData ? (
+          <div className="bg-white border-x h-full px-4 py-4 md:border -mt-4 md:-mt-0 w-full flex-1">
+            <p className="text-sm">Recently posted jobs</p>
+
+            {jobData.map((job,index) => (
+              <div className={` ${index <jobData.length-1?"border-b":""} py-4`} key={job.id}>
+                <p className="text-lg font-medium">{job.job_role}</p>
+                <p className="text-xs text-gray-400">
+                  {formatDistanceToNow(new Date(job.job_post_date), {
+                    addSuffix: true,
+                  })}
+                </p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-white border-x border-b text-center py-10 md:border -mt-4 md:-mt-0 items-center  w-full flex-1">
+            <p className="font-bold text-2xl">No jobs posted </p>
+            <p
+              onClick={() => {
+                setFormType("job");
+              }}
+              className=" font-semibold text-blue-500 mt-1"
+            >
+              Post a job
+            </p>
           </div>
         ))}
+      </div>
+      <div className="w-full hidden md:flex flex-col gap-4">
+        <div
+          className={`border  h-fit px-6 sticky ${
+            atTop ? "-mt-8" : null
+          } -top-3 bg-white sm:px-8 py-5 flex w-full transition-transform duration-300   ${
+            scrollDirection === "down" ? "-translate-y-full" : "translate-y-8"
+          }`}
+        >
+          <p className="text-xl font-medium">Recomendations</p>
+        </div>
+        <div
+          className={`border transition-all ${
+            atTop ? "-mt-40" : null
+          }  ease-in-out h-fit px-6 sticky top-4 
+          ${scrollDirection === "down" ? "translate-y-0" : "translate-y-[85px]"}
+           bg-white sm:px-8 py-5  flex w-full `}
+        >
+          <p className="text-xl font-medium">Candidates</p>
+        </div>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function OptionInput({
   name,
@@ -11,10 +11,18 @@ function OptionInput({
   promptMessage,
 }) {
   const [message, setMessage] = useState(promptMessage);
+  const [currentValue, setCurrentValue] = useState(value);
+
+  useEffect(() => {
+    setCurrentValue(value);
+  }, [value]);
 
   const handleChange = (e) => {
+    const selectedValue = e.target.value;
+    setCurrentValue(selectedValue);
     onChange(e);
-    if (isRequired && !e.target.value) {
+
+    if (isRequired && !selectedValue) {
       setMessage({ type: "error", text: "This is a required field" });
     } else {
       setMessage(null);
@@ -23,22 +31,21 @@ function OptionInput({
 
   return (
     <div className={`${className}`}>
-      <div className=" relative flex h-full">
+      <div className="relative flex h-full">
         <select
           name={name}
           id={name}
-          className={` block px-3 py-3 w-full font-normal bg-white rounded-sm border ${
-            isRequired && !value ? "border-red-500" : ""
+          className={`block px-3 py-3 w-full font-normal bg-white rounded-sm border ${
+            isRequired && !currentValue ? "border-red-500" : ""
           } appearance-none focus:outline-none focus:ring-0 focus:${
-            isRequired && !value ? "border-red-500" : "border-blue-500"
-          } peer ${value ? "text-black" : "text-gray-500"}`}
-          value={value}
-          onClick={(e) => {
-            e.preventDefault();
-          }}
+            isRequired && !currentValue ? "border-red-500" : "border-blue-500"
+          } peer ${currentValue ? "text-black" : "text-gray-500"}`}
+          value={currentValue || ""}
           onChange={handleChange}
         >
-          <option value="">Select an option</option>
+          <option value="" disabled={!currentValue}>
+            Select an option
+          </option>
           {optionList.map((option) => (
             <option key={option} value={option}>
               {option}
@@ -52,7 +59,7 @@ function OptionInput({
             e.stopPropagation();
           }}
           className={`flex min-w-32 absolute duration-200 cursor-text px-2 text-gray-400 bg-white font-normal transform transition-all ${
-            value
+            currentValue
               ? "-translate-y-4 scale-90 top-2 z-10 w-fit"
               : "top-1/2 -translate-y-1/2"
           } peer-focus:-translate-y-4 peer-focus:w-fit peer-focus:scale-90 peer-focus:top-2 peer-focus:text-blue-600 start-1`}

@@ -24,6 +24,7 @@ import SkillUpdateForm from './components/Forms/SkillUpdateForm.jsx';
 import UserDetailsForm from './components/Forms/UserDetailsForm.jsx';
 import WorkExperienceForm from './components/Forms/WorkExperienceForm.jsx';
 import WorkExperienceUpdateForm from './components/Forms/WorkExperienceUpdateForm.jsx';
+import JobForm from './components/Forms/JobForm.jsx';
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,7 @@ const router = createBrowserRouter([
     ]
   },
   { path: '/profile', element: <UserProfile /> },
+  { path: '/create-job', element: <JobForm /> },
   { path: '/login', element: <Login /> },
   { path: '/signup', element: <Signup /> }
 
