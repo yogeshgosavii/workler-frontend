@@ -20,12 +20,9 @@ const handleChange = (e) => {
         type={type}
         name={name}
         id={name}
-        className={`block px-3 py-3 w-full font-normal bg-white rounded-sm border appearance-none focus:outline-none focus:ring-0 focus:border-blue-500 peer
-          ${
-          isRequired && !value ? "border-red-500" : ""
-        } appearance-none focus:outline-none focus:ring-0 focus:${
-          isRequired && !value ? "border-red-500" : "border-blue-500"
-        } peer `}
+        className={`block px-3 py-3 w-full font-normal bg-white rounded-sm border  focus:border-blue-500 peer
+        appearance-none focus:outline-none focus:ring-0 focus:border-blue-500"
+         peer `}
         placeholder=""
         value={value}
         min={minDate}

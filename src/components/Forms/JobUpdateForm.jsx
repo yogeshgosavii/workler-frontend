@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
 import Button from "../Button/Button";
 import useProfileApi from "../../services/profileService";
 import useJobApi from "../../services/jobService";
+
 import TextInput from "../Input/TextInput";
 import TextAreaInput from "../Input/TextAreaInput";
 import UrlInput from "../Input/UrlInput";
@@ -11,198 +11,192 @@ import ToggleInput from "../Input/ToggleInput";
 import NumberInput from "../Input/NumberInput";
 import LocationInput from "../Input/LocationInput";
 
-function JobForm({ onClose, setData }) {
+function JobForm({ onClose,data , setData }) {
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    job_role: "",
-    min_salary: null,
-    max_salary: null,
-    source: "",
-    description: "",
-    company_name: "",
-    location: {},
-    job_type: "Current portal",
-    skills_required: [],
-    experience_type: null,
-    min_experience: null,
-    max_experience: null,
-    company_logo: "",
-    job_url: "",
-    job_post_date: "",
-  });
-  const [inputValue, setInputValue] = useState("");
+  const [user, setUser] = useState();
   const profileApi = useProfileApi();
   const jobApi = useJobApi();
-  const userData = useSelector((state) => state.auth.user);
+
+  const [previousData, setpreviousData] = useState(data);
 
   useEffect(() => {
+    const currentDate = new Date();
     const fetchData = async () => {
-      try {
-        const data = await profileApi.personalDetails.getAll();
-        if (data) {
-          setFormData((prev) => ({
-            ...prev,
-            company_logo: userData.profileImage,
-            job_post_date: new Date().toISOString().split('T')[0], // Format date if necessary
-            company_name: data[0].fullname,
-          }));
-        }
-      } catch (error) {
-        console.error("Error fetching personal details:", error);
+      const data = await profileApi.personalDetails.getAll();
+      console.log(data);
+      if (data) {
+        setUser(data[0]);
+        setFormData((prev) => ({
+          ...prev,
+          company_logo: data[0].profileImage,
+          job_post_date: currentDate,
+          company_name: data[0].fullname,
+        }));
       }
     };
 
     fetchData();
-  }, []); // Ensure dependencies are correct
+  }, []);
 
-  const handleChange = useCallback((e) => {
+  const [formData, setFormData] = useState(data);
+  const [inputValue, setInputValue] = useState("");
+
+  const handleChange = (e) => {
     const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: type === "number" ? parseFloat(value) : value,
     }));
-  }, []);
+    console.log(formData);
+  };
 
-  const handleLocationChange = useCallback((location) => {
-    setFormData((prev) => ({
-      ...prev,
-      location,
-    }));
-  }, []);
-
-  const handleAddSkills = useCallback(() => {
+  const handleAddSkills = () => {
     if (formData.skills_required.length < 10) {
-      const trimmedValue = inputValue.trim();
-      if (trimmedValue && !formData.skills_required.includes(trimmedValue)) {
-        setFormData((prev) => ({
-          ...prev,
-          skills_required: [...prev.skills_required, trimmedValue],
-        }));
+      if (
+        inputValue.trim() &&
+        !formData.skills_required.includes(inputValue.trim())
+      ) {
+        const updatedSkills = [...formData.skills_required, inputValue.trim()];
+        setFormData((prev) => ({ ...prev, skills_required: updatedSkills }));
         setInputValue("");
       }
     }
-  }, [formData.skills_required, inputValue]);
+  };
 
-  const handleDeleteSkills = useCallback((tech) => {
-    setFormData((prev) => ({
-      ...prev,
-      skills_required: prev.skills_required.filter((t) => t !== tech),
-    }));
-  }, []);
+  const handleDeleteSkills = (tech) => {
+    const updatedSkills = formData.skills_required.filter((t) => t !== tech);
+    setFormData((prev) => ({ ...prev, skills_required: updatedSkills }));
+  };
 
-  const isFormValid = useMemo(() => {
-    const {
-      job_role,
-      description,
-      company_name,
-      skills_required,
-      min_salary,
-      max_salary,
-      location,
-      job_type,
-      experience_type,
-      min_experience,
-      max_experience,
-      company_logo,
-      job_url,
-    } = formData;
+  const deepEqual = (obj1, obj2) => {
+    // Check if both values are strictly equal
+    if (obj1 === obj2) {
+      return true;
+    }
 
-    if (!job_role || !description || !company_name || !location || !company_logo || skills_required == 0) {
+    // Check if either value is not an object or is null
+    if (
+      typeof obj1 !== "object" ||
+      obj1 === null ||
+      typeof obj2 !== "object" ||
+      obj2 === null
+    ) {
       return false;
     }
 
-    if (experience_type === "Experienced") {
-      if (max_experience >= 1 && max_experience > min_experience) {
-        if (job_type === "Another portal") {
-          return !!job_url;
+    // Get the keys of both objects
+    let keys1 = Object.keys(obj1);
+    let keys2 = Object.keys(obj2);
+
+    // Check if the number of keys is different
+    if (keys1.length !== keys2.length) {
+      return false;
+    }
+
+    // Iterate over the keys of obj1
+    for (let key of keys1) {
+      // Check if obj2 has the key and the values of the key are deeply equal
+      if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
+        // Handle special case for numeric values to consider them equal if numeric value is same
+        if (
+          typeof obj1[key] === "number" &&
+          typeof obj2[key] === "number" &&
+          obj1[key] === obj2[key]
+        ) {
+          continue; // Continue checking other keys
         }
-        if (max_experience == min_experience) {
-          if (max_experience == 0) {
-            setFormData((prev) => ({
-              ...prev,
-              min_experience: null,
-              max_experience: null,
-              experience_type: "Fresher",
-            }));
-          } else {
-            setFormData((prev) => ({
-              ...prev,
-              max_experience: null,
-            }));
-          }
-        } 
-        return true;
-      } else {
         return false;
       }
     }
 
+    // If all checks pass, the objects are deeply equal
     return true;
-  }, [formData]);
+  };
+
+  const isFormValid = () => {
+    const { job_role, description, company_name, skills_required } = formData;
+    return (
+      job_role && description && company_name && skills_required.length > 0
+    );
+  };
 
   const handleCreateJob = async (e) => {
     e.preventDefault();
     setLoading(true);
-    if (isFormValid) {
+    if (isFormValid()) {
       try {
         const filteredData = Object.entries(formData)
-          .filter(([key, value]) => value !== null && value !== "" && key !== "inputValue")
+          .filter(
+            ([key, value]) =>
+              value !== null && value !== "" && key !== "inputValue"
+          )
           .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 
         const jobData = await jobApi.job.add(filteredData);
         setData((prev) => [...prev, jobData]);
         onClose();
       } catch (error) {
-        console.error("Error adding job:", error);
-        alert("There was an error creating the job. Please try again later.");
+        console.error("Error in adding job:", error);
       } finally {
         setLoading(false);
       }
     } else {
-      alert("Please fill in all the required fields correctly.");
-      setLoading(false);
+      alert("Please fill in all the fields.");
     }
   };
 
   return (
     <form className="bg-white pt-2 pb-6 px-4 sm:px-8 rounded-sm sm:max-h-96 overflow-y-auto w-full flex flex-col gap-5 h-full">
-      <div className="sticky -top-2.5 border border-white py-3 z-20 bg-white">
+      <div className="sticky -top-2.5 py-4 z-20 bg-white">
         <h2 className="text-xl font-medium">Job post</h2>
-        <p className="text-sm text-gray-400 mb-6">Create a job for candidates to apply</p>
+        <p className="text-sm text-gray-400 mb-6">
+          Create a job for candidates to apply
+        </p>
       </div>
       <div className="flex-1 flex flex-col gap-6">
         <TextInput
-          name="job_role"
+          name={"job_role"}
           onChange={handleChange}
-          placeholder="Job role"
+          placeholder={"Job role"}
           value={formData.job_role}
           isRequired={true}
         />
+
         <TextAreaInput
-          name="description"
+          name={"description"}
           onChange={handleChange}
-          placeholder="Description"
+          placeholder={"Description"}
           value={formData.description}
           isRequired={true}
         />
-        <LocationInput
-          name="location"
-          onChange={handleLocationChange}
-          placeholder="Location"
+
+        {/* <TextAreaInput
+          name={"location"}
+          onChange={handleChange}
+          placeholder={"Location"}
           value={formData.location}
           isRequired={true}
+        /> */}
+        <LocationInput
+         name={"location"}
+         onChange={handleChange}
+         placeholder={"Location"}
+         value={formData.location}
+         isRequired={true}
         />
+
         <AddInput
-          name="Skills required"
+          name={"Skills required"}
           data={formData.skills_required}
           handleAdd={handleAddSkills}
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Skills required"
+          placeholder={"Skills required"}
           value={inputValue}
           handleDelete={handleDeleteSkills}
           isRequired={true}
           max={10}
         />
+
         <div className="flex gap-2">
           {["Experienced", "Fresher"].map((type) => (
             <p
@@ -223,68 +217,68 @@ function JobForm({ onClose, setData }) {
           ))}
         </div>
         {formData.experience_type === "Experienced" && (
-          <div className="flex flex-wrap gap-4 w-full">
+          <div className={`flex flex-wrap gap-4 w-full`}>
             <NumberInput
               name="min_experience"
               placeholder="Minimum experience"
               value={formData.min_experience}
               min="0"
-              max={20}
-              className="flex-grow min-w-48"
+              className={`flex-grow min-w-48`}
               onChange={handleChange}
+              isRequired={true}
             />
             <NumberInput
               name="max_experience"
               placeholder="Maximum experience"
               value={formData.max_experience}
-              max={20}
+              max={100}
               min="0"
-              className="flex-grow min-w-48"
+              className={`flex-grow min-w-48`}
               onChange={handleChange}
             />
           </div>
         )}
-        <div className="flex flex-wrap gap-4 w-full">
+        <div className={`flex flex-wrap gap-4 w-full`}>
           <NumberInput
             name="min_salary"
             placeholder="Minimum salary"
             value={formData.min_salary}
             min="0"
-            max={1000000000}
-            className="flex-grow min-w-48"
+            className={`flex-grow min-w-48`}
             onChange={handleChange}
           />
           <NumberInput
             name="max_salary"
             placeholder="Maximum salary"
             value={formData.max_salary}
-            max={1000000000}
+            max={100}
             min="0"
-            className="flex-grow min-w-48"
+            className={`flex-grow min-w-48`}
             onChange={handleChange}
           />
         </div>
         <ToggleInput
-          name="job_type"
+          name={"job_type"}
           onChange={handleChange}
           value={formData.job_type}
           toggleList={["Current portal", "Another portal"]}
-          placeholder="Job Portal"
+          placeholder={"Job Portal"}
         />
         {formData.job_type !== "Current portal" && (
           <UrlInput
-            name="job_url"
+            name={"job_url"}
             onChange={handleChange}
             value={formData.job_url}
-            placeholder="Job Url"
+            placeholder={"Job Url"}
           />
         )}
       </div>
+
       <div className="mt-10 flex w-full justify-end">
         <Button
-          className="bg-blue-500 w-full text-white disabled:bg-blue-300"
+          className={`bg-blue-500 w-full text-white disabled:bg-blue-300`}
           onClick={handleCreateJob}
-          disabled={!isFormValid || loading}
+          disabled={!isFormValid() || loading}
         >
           {loading ? (
             <svg

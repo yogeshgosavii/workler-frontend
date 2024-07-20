@@ -35,11 +35,8 @@ function OptionInput({
         <select
           name={name}
           id={name}
-          className={`block px-3 py-3 w-full font-normal bg-white rounded-sm border ${
-            isRequired && !currentValue ? "border-red-500" : ""
-          } appearance-none focus:outline-none focus:ring-0 focus:${
-            isRequired && !currentValue ? "border-red-500" : "border-blue-500"
-          } peer ${currentValue ? "text-black" : "text-gray-500"}`}
+          className={`block px-3 py-3 w-full font-normal bg-white rounded-sm border appearance-none focus:outline-none focus:ring-0 focus:border-blue-500"
+           peer ${currentValue ? "text-black" : "text-gray-500"}`}
           value={currentValue || ""}
           onChange={handleChange}
         >
