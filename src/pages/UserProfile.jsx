@@ -774,7 +774,7 @@ const UserProfile = () => {
                   ? setPersonalData
                   : formType === "userDetails"
                   ? setuserDetails
-                  : formType === "jobForm"
+                  : formType === "job"
                   ? setjobData
                   : null,
               data:
@@ -788,7 +788,7 @@ const UserProfile = () => {
                   ? personalData
                   : formType === "userDetails"
                   ? userDetails
-                  : formType == "jobForm"
+                  : formType == "job"
                   ? jobData
                   : null,
             })}
@@ -1172,7 +1172,7 @@ const UserProfile = () => {
        </div>
         {currentTab == "Profile" && (
           <div>
-            <div className="flex-grow border  h-full md:w-fit px-6 bg-white sm:px-8 py-5 flex w-full">
+            {/* <div className="flex-grow border  h-full md:w-fit px-6 bg-white sm:px-8 py-5 flex w-full">
               <div className="h-full">
                 <p className="text-xl font-medium">Profile Analytics</p>
                 <PieChart
@@ -1197,7 +1197,7 @@ const UserProfile = () => {
                   ]}
                 />
               </div>
-            </div>
+            </div> */}
             {userDetailsList.map((item, index) => (
               <div
                 key={index}
@@ -1222,7 +1222,7 @@ const UserProfile = () => {
         )}
 
         {currentTab == "Jobs" &&
-          (jobData ? (
+          (jobData.length >0 ? (
             <div className="bg-white border-x h-full px-4 py-4 md:border -mt-4 md:-mt-0 w-full flex-1">
               <div className="flex justify-between mb-3 items-center">
                 <p className="font-medium">Recently posted jobs</p>
@@ -1250,8 +1250,8 @@ const UserProfile = () => {
                   
                 >
                   <div>
-                  <p className="text-lg font-medium">{job.job_role}</p>
-                  <p className="">{job.location}</p>
+                  <p className="text-xl font-medium">{job.job_role}</p>
+                  <p className="">{job.location.address}</p>
                   <p className="text-xs text-gray-400">
                     {formatDistanceToNow(new Date(job.job_post_date), {
                       addSuffix: true,
@@ -1263,7 +1263,7 @@ const UserProfile = () => {
               ))}
             </div>
           ) : (
-            <div className="bg-white border-x border-b text-center py-10 md:border -mt-4 md:-mt-0 items-center  w-full flex-1">
+            <div className="bg-white border-x  text-center pt-10 md:border -mt-4 md:-mt-0 items-center  w-full flex-1">
               <p className="font-bold text-2xl">No jobs posted </p>
               <p
                 onClick={() => {

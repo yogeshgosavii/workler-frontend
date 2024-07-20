@@ -34,7 +34,7 @@ function TextInput({
           onChange={handleChange}
           onFocus={onFocus}
           onBlur={onBlur}
-          className={`block px-3 py-3 w-full font-normal bg-white rounded-sm border border-blue-500"
+          className={`block px-3 py-3 w-full font-normal bg-white rounded-sm border focus:border-blue-500
            appearance-none focus:outline-none peer`}
           placeholder=""
           ref={inputRef}
