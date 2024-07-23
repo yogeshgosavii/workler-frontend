@@ -4,7 +4,7 @@ function OptionInput({
   name,
   placeholder,
   value,
-  optionList,
+  options,
   onChange,
   isRequired,
   className,
@@ -43,23 +43,24 @@ function OptionInput({
           <option value="" disabled={!currentValue}>
             Select an option
           </option>
-          {optionList.map((option) => (
-            <option key={option} value={option}>
-              {option}
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.title}
             </option>
           ))}
         </select>
         <label
           htmlFor={name}
           onClick={(e) => {
+            console.log("Hello");
             document.getElementById(name).focus();
             e.stopPropagation();
           }}
-          className={`flex min-w-32 absolute duration-200 cursor-text px-2 text-gray-400 bg-white font-normal transform transition-all ${
+          className={`flex ml-px min-w-32 absolute duration-200 cursor-text px-2 text-gray-400 bg-white font-normal transform transition-all ${
             currentValue
-              ? "-translate-y-4 scale-90 top-2 z-10 w-fit"
+              ? "-translate-y-5 scale-90 top-2 z-10 min-w-fit"
               : "top-1/2 -translate-y-1/2"
-          } peer-focus:-translate-y-4 peer-focus:w-fit peer-focus:scale-90 peer-focus:top-2 peer-focus:text-blue-600 start-1`}
+          } peer-focus:-translate-y-5 peer-focus:min-w-fit peer-focus:scale-90 peer-focus:top-2 peer-focus:text-blue-600 start-1`}
         >
           {placeholder}
           {isRequired && <p className="text-red-500">*</p>}

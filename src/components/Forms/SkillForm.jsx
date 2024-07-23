@@ -74,13 +74,13 @@ function SkillForm({ onClose, setSkills }) {
         />
        </div>
       </div>
-      <div className="mt-6 flex justify-end">
+      <div className="mt-6 w-full flex justify-end">
         {/* <Button className="mr-2 text-blue-500" onClick={onClose}>
           Cancel
         </Button> */}
         <Button
           disabled={addDisabled || loading}
-          className="bg-blue-500 text-white disabled:bg-blue-300"
+          className="bg-blue-500 flex items-center justify-center text-lg w-full text-white disabled:bg-blue-300"
           type="submit"
         >
           {

@@ -7,6 +7,7 @@ function Otp({
   className,
   setVerified,
   verified,
+  setPurpose,
   ...props
 }) {
   const [checking, setChecking] = useState(false);
@@ -31,7 +32,8 @@ function Otp({
           setCorrect(true);
           setVerified(true);
           setOtpInput(false);
-        }, 2000);
+          setPurpose(true)
+        }, 0);
       } else {
         setChecking(false);
         setChecked(true);

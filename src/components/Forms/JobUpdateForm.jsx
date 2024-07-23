@@ -15,30 +15,16 @@ function JobUpdateForm({ onClose,data, setData }) {
   console.log("data",data);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({...data});
+
+  console.log("data",data);
+  console.log("formdata",formData);
+
   const [inputValue, setInputValue] = useState("");
   const profileApi = useProfileApi();
   const jobApi = useJobApi();
   const userData = useSelector((state) => state.auth.user);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await profileApi.personalDetails.getAll();
-        if (data) {
-          setFormData((prev) => ({
-            ...prev,
-            company_logo: userData.profileImage,
-            job_post_date: new Date().toISOString().split("T")[0], // Format date if necessary
-            company_name: data[0].fullname,
-          }));
-        }
-      } catch (error) {
-        console.error("Error fetching personal details:", error);
-      }
-    };
-
-    fetchData();
-  }, []); // Ensure dependencies are correct
+  // Ensure dependencies are correct
 
   // useEffect(() => {
   //   console.log(formData);
@@ -187,7 +173,10 @@ function JobUpdateForm({ onClose,data, setData }) {
           )
           .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 
-        const jobData = await jobApi.job.update(data._id,filteredData);
+          const jobData = await jobApi.job.update(data._id, {
+            ...filteredData,
+            job_update_date: new Date().toISOString(),
+          });
         setData((prevData) =>
           prevData.map((item) =>
             item._id === data._id ? { ...jobData, _id: data._id } : item

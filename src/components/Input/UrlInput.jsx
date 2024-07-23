@@ -27,8 +27,8 @@ function UrlInput({
           name={name}
           id={name}
           className={`block px-3 py-3 w-full font-normal bg-white rounded-sm border appearance-none focus:outline-none focus:ring-0 focus:border-blue-500
-          }peer`}
-                     placeholder=""
+          peer`}
+          placeholder=""
           value={value}
           onChange={handleChange}
           style={{

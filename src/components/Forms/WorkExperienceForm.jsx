@@ -115,10 +115,7 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
     }
   };
 
-  const handleBack = () => {
-      onClose();
-    
-  };
+
   // Get today's date
   const today = new Date();
 
@@ -397,7 +394,7 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
                         Present
                       </p>
                     ) : (
-                      <DateInput
+                      <DateInput8
                         type="date"
                         name="leavingDate"
                         id="leavingDate"
@@ -423,13 +420,13 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
             </>
           )}
         </div>
-        <div className="flex py-5 justify-end items-center mt-6 w-full">
+        <div className="flexs py-5 justify-end items-center mt-6 w-full">
           {/* <Button className="text-blue-500 font-medium" onClick={handleBack}>
             Cancel
           </Button> */}
           <Button
             disabled={!isFormValid() || loading}
-            className="bg-blue-500 rounded-full text-white disabled:bg-blue-300 disabled:cursor-not-allowed"
+            className="bg-blue-500 w-full text-lg flex justify-center items-center rounded-full text-white disabled:bg-blue-300 disabled:cursor-not-allowed"
             onClick={onSave}
           >
             {
@@ -503,12 +500,25 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
               disabled={!workExperienceType || !currentlyWorkingHere}
               className={`${
                 !workExperienceType || !currentlyWorkingHere
-                  ? "bg-blue-300 text-white cursor-not-allowed"
-                  : "bg-blue-500 text-white hover:bg-blue-600"
-              } px-4 py-2 rounded-md font-medium`}
+                  ? "text-blue-300  cursor-not-allowed"
+                  : "text-blue-500 "
+              } px-4 flex items-center text-lg font-bold py-2 rounded-md `}
               onClick={handleNext}
             >
-              Next
+               <span>Next</span>
+              <svg
+                class="h-8 w-8 "
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
             </button>
           </div>
         </div>

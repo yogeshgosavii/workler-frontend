@@ -153,7 +153,7 @@ function ProjectForm({ onClose,setData }) {
           Cancel
         </Button> */}
         <Button
-          className={`bg-blue-500 text-white disabled:bg-blue-300`}
+          className={`bg-blue-500 w-full text-lg flex justify-center items-center text-white disabled:bg-blue-300`}
           onClick={handleAddProject}
           disabled={!isFormValid() || loading}
         >

@@ -90,7 +90,7 @@ const LocationInput = ({
     onChange({
       target: {
         name: name,
-        value: selectedLocation
+        value: location
       }
     });
   };
@@ -100,7 +100,7 @@ const LocationInput = ({
   }, [inputLocation, selectedLocation]);
 
   return (
-    <div className="relative">
+    <div className={`relative ${className}`}>
       <div className="relative flex items-center">
         <input
           type="text"
@@ -123,7 +123,6 @@ const LocationInput = ({
             WebkitAutofill: "number",
             WebkitBoxShadow: "0 0 0px 1000px white inset",
           }}
-          title="Username can only contain letters, numbers, and underscores"
         />
         <label
           htmlFor={name}
@@ -150,6 +149,7 @@ const LocationInput = ({
           ( locations.map((location) => (
             <li
               key={location.id}
+              onClick = {(e)=>{e.stopPropagation()}}
               onMouseDown={() => handleLocationSelect(location)}
               className="p-3 hover:bg-gray-100 cursor-pointer"
             >

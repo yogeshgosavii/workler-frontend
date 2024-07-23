@@ -32,20 +32,18 @@ function JobForm({ onClose, data, setData }) {
     job_post_date: "",
   });
   const [inputValue, setInputValue] = useState("");
-  const profileApi = useProfileApi();
   const jobApi = useJobApi();
   const userData = useSelector((state) => state.auth.user);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData =  () => {
       try {
-        const data = await profileApi.personalDetails.getAll();
-        if (data) {
+        if (userData) {
           setFormData((prev) => ({
             ...prev,
             company_logo: userData.profileImage,
-            job_post_date: new Date().toISOString().split("T")[0], // Format date if necessary
-            company_name: data[0].fullname,
+            job_post_date: new Date().toISOString(), // Format date if necessary
+            company_name: userData.company_details.company_name,
           }));
         }
       } catch (error) {
@@ -120,7 +118,6 @@ function JobForm({ onClose, data, setData }) {
       !description ||
       !company_name ||
       !location ||
-      !company_logo ||
       skills_required == 0 
     ) {
       return false;
@@ -194,7 +191,7 @@ function JobForm({ onClose, data, setData }) {
           </p>
         </div>
         <svg
-          class="h-7 w-7 text-gray-500"
+          class="h-7 w-7 text-gray-400"
           width="24"
           height="24"
           viewBox="0 0 24 24"
@@ -349,9 +346,9 @@ function JobForm({ onClose, data, setData }) {
 
         {
           <Button
-            className="bg-blue-500 w-full text-white disabled:bg-blue-300"
+            className="bg-blue-500 justify-center flex items-center text-lg w-full text-white disabled:bg-blue-300"
             onClick={handleUpdateJob}
-            disabled={!isFormValid || loading || data?.candidates_applied > 0}
+            disabled={!isFormValid || loading }
           >
             {loading ? (
               <svg

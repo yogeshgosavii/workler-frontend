@@ -8,6 +8,9 @@ import Button from "../Button/Button";
 import UrlInput from "../Input/UrlInput";
 import UserImageInput from "../Input/UserImageInput";
 import imageCompression from "browser-image-compression";
+import { useSelector } from "react-redux";
+import LocationInput from "../Input/LocationInput";
+import DateInput from "../Input/DateInput";
 
 function UserDetailsForm({ onClose, setData, data }) {
   const [loading, setloading] = useState(false);
@@ -15,6 +18,7 @@ function UserDetailsForm({ onClose, setData, data }) {
   const [userDetails, setUserDetails] = useState(data);
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState(null);
+  const userData = useSelector((state) => state.auth.user);
 
   const deepEqual = (obj1, obj2) => {
     if (obj1 === obj2) return true;
@@ -202,19 +206,55 @@ function UserDetailsForm({ onClose, setData, data }) {
           </Button>
         )}
         <TextInput
-          name="username"
-          value={formData.username}
+          name="company_name"
+          value={formData.company_details.company_name}
           isRequired={true}
-          placeholder="Username"
+          placeholder="Conpany name"
           onChange={handleInputChange}
         />
-        <TextInput
+        {userData.account_type == "Candidate" && (
+          <>
+            <TextInput
+              name="firstname"
+              value={formData.firstname}
+              isRequired={true}
+              placeholder="Firstname"
+              onChange={handleInputChange}
+            />
+            <TextInput
+              name="lastname"
+              value={formData.lastname}
+              placeholder="Lastname"
+              onChange={handleInputChange}
+            />
+          </>
+        )}
+        {/* <TextInput
           name="email"
           value={formData.email}
           isRequired={true}
           placeholder="Email"
           onChange={handleInputChange}
-        />
+        /> */}
+        {userData.account_type == "Employeer" && (
+         <>
+          <DateInput
+          name="found_in_date"
+          type={"date"}
+          value={formData.company_details.found_in_date.split("T")[0]}
+          onChange={handleInputChange}
+          placeholder="Found in"
+          isRequired={true}
+          />
+          <LocationInput
+            name="location"
+            value={formData.company_details.location}
+            onChange={handleInputChange}
+            placeholder="Location"
+            isRequired={true}
+          />
+         </>
+        )}
         <TextAreaInput
           name="about"
           value={formData.about}
@@ -242,19 +282,21 @@ function UserDetailsForm({ onClose, setData, data }) {
           onChange={handleInputChange}
           placeholder="LinkedIn"
         />
-        <UrlInput
-          name="portfolioLink"
-          value={formData.portfolioLink}
-          onChange={handleInputChange}
-          placeholder="Portfolio"
-        />
+        {userData.account_type == "Candidate" && (
+          <UrlInput
+            name="portfolioLink"
+            value={formData.portfolioLink}
+            onChange={handleInputChange}
+            placeholder="Portfolio"
+          />
+        )}
       </div>
       <div className="mt-10 flex justify-end">
         {/* <Button className="mr-2 text-blue-500" onClick={onClose}>
           Cancel
         </Button> */}
         <Button
-          className={`bg-blue-500 text-white disabled:bg-blue-300`}
+          className={`bg-blue-500 text-white w-full disabled:bg-blue-300`}
           onClick={handleUpdateUserDetails}
           disabled={!isFormValid() || loading}
         >

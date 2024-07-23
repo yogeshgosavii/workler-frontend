@@ -33,7 +33,7 @@ function EducationForm({ onClose, setData, data }) {
     physics: "",
     chemistry: "",
     educationMode: "",
-    marking_system : ""
+    marking_system: "",
   });
   const profileApi = useProfileApi();
 
@@ -48,10 +48,10 @@ function EducationForm({ onClose, setData, data }) {
   // Calculate 20 years ago from today
   const minDate = new Date();
   minDate.setFullYear(today.getFullYear() - 20);
-  
+
   // Format minDate to 'YYYY-MM-DD' for input[type="date"]
   const minDateFormatted = minDate.toISOString().split("T")[0];
-  
+
   // Format today to 'YYYY-MM-DD' for input[type="date"]
   const todayFormatted = today.toISOString().split("T")[0].slice(0, 7);
   useEffect(() => {
@@ -60,7 +60,7 @@ function EducationForm({ onClose, setData, data }) {
 
   const onSave = async (e) => {
     e.preventDefault();
-    setloading(true)
+    setloading(true);
     const token = localStorage.getItem("token");
     try {
       const filteredData = Object.entries(formData)
@@ -72,19 +72,19 @@ function EducationForm({ onClose, setData, data }) {
       onClose();
     } catch (error) {
       console.error("Error in addEducation:", error);
-    }
-    finally{
-      setloading(false)
+    } finally {
+      setloading(false);
     }
   };
-
 
   const isPostGraduateOrGraduateFilled = () => {
     return (
       formData.university &&
       formData.course &&
       formData.marking_system &&
-      (formData.marking_system == "Percentage"? formData.percentage:formData.obtained_grades && formData.maximum_grades)&&
+      (formData.marking_system == "Percentage"
+        ? formData.percentage
+        : formData.obtained_grades && formData.maximum_grades) &&
       formData.specialization &&
       formData.start_month &&
       formData.end_month &&
@@ -128,12 +128,10 @@ function EducationForm({ onClose, setData, data }) {
     }
   };
 
-
   const handleCancel = (e) => {
     e.preventDefault();
 
-   
-      onClose();
+    onClose();
   };
 
   const handleInputChange = (e) => {
@@ -144,17 +142,20 @@ function EducationForm({ onClose, setData, data }) {
       if (!regex.test(value)) {
         return; // Do not update state if the value has more than 2 decimal places
       }
-  
+
       value = Number(value);
     }
 
-    if ((name === "percentage" || name === "obtained_grades" || name === "maximum_grades") && value > 100) {
+    if (
+      (name === "percentage" ||
+        name === "obtained_grades" ||
+        name === "maximum_grades") &&
+      value > 100
+    ) {
       value = 100;
-    }
-    else if( name === "obtained_grades" && value > formData.maximum_grades){
-      value = formData.maximum_grades
-    }
-    else if(value<0){
+    } else if (name === "obtained_grades" && value > formData.maximum_grades) {
+      value = formData.maximum_grades;
+    } else if (value < 0) {
       value = 0;
     }
     setFormData((prevState) => ({ ...prevState, [name]: value }));
@@ -166,14 +167,13 @@ function EducationForm({ onClose, setData, data }) {
       case "Graduate":
         return (
           <div className="flex flex-col gap-4">
-            
             <TextInput
-            name={"university"}
-            className={"mt-1.5"}
-            placeholder={"University/Institute name"}
-            isRequired={true}
-            value={formData.university}
-            onChange={handleInputChange}
+              name={"university"}
+              className={"mt-1.5"}
+              placeholder={"University/Institute name"}
+              isRequired={true}
+              value={formData.university}
+              onChange={handleInputChange}
             />
             <TextInput
               name={"course"}
@@ -189,27 +189,32 @@ function EducationForm({ onClose, setData, data }) {
               value={formData.specialization}
               onChange={handleInputChange}
             />
-          
-             <div className="flex gap-2">
+
+            <div className="flex gap-2">
               {["Percentage", "Grades"].map((marking) => (
                 <p
                   key={marking}
                   name="marking_system"
-                  onClick={() =>
-                  {
-                    if(marking === "Percentage"){
-                      setFormData((prevState) => ({ ...prevState, ["obtained_grades"]: "" }));
-                      setFormData((prevState) => ({ ...prevState, ["maximum_grades"]: "" }));
-
-                    }
-                    else{
-                      setFormData((prevState) => ({ ...prevState, ["percentage"]: "" }));
+                  onClick={() => {
+                    if (marking === "Percentage") {
+                      setFormData((prevState) => ({
+                        ...prevState,
+                        ["obtained_grades"]: "",
+                      }));
+                      setFormData((prevState) => ({
+                        ...prevState,
+                        ["maximum_grades"]: "",
+                      }));
+                    } else {
+                      setFormData((prevState) => ({
+                        ...prevState,
+                        ["percentage"]: "",
+                      }));
                     }
                     handleInputChange({
                       target: { name: "marking_system", value: marking },
-                    })
-                  }
-                  }
+                    });
+                  }}
                   className={`${
                     marking === formData.marking_system
                       ? "bg-blue-50 border-blue-500 text-blue-500"
@@ -221,15 +226,21 @@ function EducationForm({ onClose, setData, data }) {
               ))}
             </div>
             <NumberInput
-                name="percentage"
-                placeholder={"Percentage"}
-                className={`${formData.marking_system == "Percentage"?null:"hidden"}`}
-                value={formData.percentage}
-                isRequired={true}
-                max="100"
-                onChange={handleInputChange}
-              />
-            <div className={` flex gap-4 ${formData.marking_system == "Grades"?null:"hidden"}`}>
+              name="percentage"
+              placeholder={"Percentage"}
+              className={`${
+                formData.marking_system == "Percentage" ? null : "hidden"
+              }`}
+              value={formData.percentage}
+              isRequired={true}
+              max="100"
+              onChange={handleInputChange}
+            />
+            <div
+              className={` flex gap-4 ${
+                formData.marking_system == "Grades" ? null : "hidden"
+              }`}
+            >
               <NumberInput
                 name="obtained_grades"
                 placeholder="Obtained grades"
@@ -240,17 +251,17 @@ function EducationForm({ onClose, setData, data }) {
                 isRequired={true}
                 onChange={handleInputChange}
               />
-               <NumberInput
-                  name="maximum_grades"
-                  placeholder="Maximum grades"
-                  className={"w-full"}
-                  min={0}
-                  isRequired={true}
-                  value={formData.maximum_grades}
-                  onChange={handleInputChange}
-                />
+              <NumberInput
+                name="maximum_grades"
+                placeholder="Maximum grades"
+                className={"w-full"}
+                min={0}
+                isRequired={true}
+                value={formData.maximum_grades}
+                onChange={handleInputChange}
+              />
             </div>
-           
+
             <div className="flex gap-2">
               {["Full time", "Part time"].map((mode) => (
                 <p
@@ -272,30 +283,29 @@ function EducationForm({ onClose, setData, data }) {
               ))}
             </div>
             <div className="flex flex-wrap justify-stretch items-stretch gap-4 w-full ">
-  <DateInput
-    type="month"
-    name="start_month"
-    placeholder="Start Date"
-    isRequired={true}
-    value={formData.start_month}
-    onChange={handleInputChange}
-    className="flex-grow"
-    min={minDateFormatted}
-    max={formData.end_month || todayFormatted}
-  />
-  <DateInput
-    type="month"
-    name="end_month"
-    placeholder="End Date"
-    className="flex-grow"
-    isRequired={true}
-    value={formData.end_month}
-    onChange={handleInputChange}
-    min={formData.start_month}
-    max={todayFormatted}
-  />
-</div>
-
+              <DateInput
+                type="month"
+                name="start_month"
+                placeholder="Start Date"
+                isRequired={true}
+                value={formData.start_month}
+                onChange={handleInputChange}
+                className="flex-grow"
+                min={minDateFormatted}
+                max={formData.end_month || todayFormatted}
+              />
+              <DateInput
+                type="month"
+                name="end_month"
+                placeholder="End Date"
+                className="flex-grow"
+                isRequired={true}
+                value={formData.end_month}
+                onChange={handleInputChange}
+                min={formData.start_month}
+                max={todayFormatted}
+              />
+            </div>
           </div>
         );
       case "Class XII":
@@ -315,15 +325,15 @@ function EducationForm({ onClose, setData, data }) {
               onChange={handleInputChange}
               isRequired={true}
             />
-           <DateInput
-                type="month"
-                name="passing_out_year"
-                className={"w-full"}
-                placeholder="End Date"
-                value={formData.passing_out_year}
-                onChange={handleInputChange}
-                isRequired={true}
-              />
+            <DateInput
+              type="month"
+              name="passing_out_year"
+              className={"w-full"}
+              placeholder="End Date"
+              value={formData.passing_out_year}
+              onChange={handleInputChange}
+              isRequired={true}
+            />
             <NumberInput
               name="percentage"
               placeholder="Percentage"
@@ -376,15 +386,15 @@ function EducationForm({ onClose, setData, data }) {
               onChange={handleInputChange}
               isRequired={true}
             />
-           <DateInput
-                type="month"
-                name="passing_out_year"
-                placeholder="End Date"
-                className={"w-full"}
-                value={formData.passing_out_year}
-                onChange={handleInputChange}
-                isRequired={true}
-              />
+            <DateInput
+              type="month"
+              name="passing_out_year"
+              placeholder="End Date"
+              className={"w-full"}
+              value={formData.passing_out_year}
+              onChange={handleInputChange}
+              isRequired={true}
+            />
             <NumberInput
               name="percentage"
               placeholder="Percentage"
@@ -435,13 +445,26 @@ function EducationForm({ onClose, setData, data }) {
             >
               Cancel
             </Button> */}
-            <Button
+            <button
               disabled={!educationType}
-              className="bg-blue-500 rounded-full text-white disabled:bg-blue-300"
+              className="text-blue-500 items-center  flex gap-2 text-lg font-bold rounded-full  disabled:text-blue-300"
               onClick={() => setCurrentPage(currentPage + 1)}
             >
-              Next
-            </Button>
+              <span>Next</span>
+              <svg
+                class="h-8 w-8 "
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
           </div>
         </div>
       ),
@@ -459,17 +482,28 @@ function EducationForm({ onClose, setData, data }) {
             </Button> */}
             <Button
               disabled={isSaveDisabled() || loading}
-              className="bg-blue-500 rounded-full text-white disabled:bg-blue-300"
+              className="bg-blue-500 flex justify-center items-center text-lg w-full rounded-full text-white disabled:bg-blue-300"
               onClick={onSave}
             >
-               {
-              loading? (
-                 <svg className="inline w-7 h-7 text-transparent animate-spin fill-white" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
-                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
-                  </svg>
-              ) :"Save"
-            }
+              {loading ? (
+                <svg
+                  className="inline w-7 h-7 text-transparent animate-spin fill-white"
+                  viewBox="0 0 100 101"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                    fill="currentFill"
+                  />
+                </svg>
+              ) : (
+                "Save"
+              )}
             </Button>
           </div>
         </div>
@@ -479,7 +513,10 @@ function EducationForm({ onClose, setData, data }) {
 
   return (
     <div className="relative flex flex-col gap-4 pt-2 pb-6 px-4 sm:px-8  w-full h-full sm:max-w-2xl overflow-auto bg-white ">
-      <form onSubmit={onSave} className="flex flex-col  gap-4 flex-grow  w-full">
+      <form
+        onSubmit={onSave}
+        className="flex flex-col  gap-4 flex-grow  w-full"
+      >
         <div className="py-4 sticky z-40 -top-2.5 bg-white">
           <h2 className="text-xl font-medium">Education</h2>
           <p className="text-sm text-gray-400">
@@ -487,7 +524,7 @@ function EducationForm({ onClose, setData, data }) {
             educational background
           </p>
         </div>
-       <div className="sm:max-h-60 h-full "> {pages[currentPage].content}</div>
+        <div className="sm:max-h-60 h-full "> {pages[currentPage].content}</div>
       </form>
     </div>
   );

@@ -56,8 +56,7 @@ const UserProfile = () => {
       setScrollDirection("up");
     }
 
-    setAtTop(currentScrollY)
-    
+    setAtTop(currentScrollY);
 
     setLastScrollY(currentScrollY);
   };
@@ -91,18 +90,7 @@ const UserProfile = () => {
     ],
   };
 
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "bottom",
-      },
-      title: {
-        display: false,
-        text: "",
-      },
-    },
-  };
+
   const [loading, setLoading] = useState({
     education: true,
     skills: true,
@@ -124,7 +112,7 @@ const UserProfile = () => {
     workExperience: null,
     projects: null,
     personalDetails: null,
-    job : null
+    job: null,
   });
   useEffect(() => {
     const fetchData = async () => {
@@ -314,12 +302,12 @@ const UserProfile = () => {
       </div>
       {loading ? (
         loading.personalDetails ? (
-          <div className="animate-pulse mt-2">
+          <div className="animate-pulse z-10 mt-2">
             <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
             <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
           </div>
         ) : (
-          <div className="animate-pulse mt-2">
+          <div className="animate-pulse z-10 mt-2">
             <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
             <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
             <div className="h-2 bg-gray-200 w-1/4 rounded-md mb-2"></div>
@@ -753,7 +741,7 @@ const UserProfile = () => {
     >
       {formType && (
         <div
-          className="fixed inset-0 z-10 flex justify-center items-center bg-black bg-opacity-50"
+          className="fixed inset-0 z-30 flex justify-center items-center bg-black bg-opacity-50"
           onClick={handleClose}
         >
           <div
@@ -798,7 +786,7 @@ const UserProfile = () => {
 
       {updateFormType ? (
         <div
-          className="fixed inset-0 z-10 flex justify-center items-center bg-black bg-opacity-50"
+          className="fixed inset-0 z-30 flex justify-center items-center bg-black bg-opacity-50"
           onClick={handleClose}
         >
           <div
@@ -824,7 +812,7 @@ const UserProfile = () => {
           </div>
         </div>
       ) : null}
-     
+
       <div className="w-full md:min-w-[60%] h-full">
         <div className="  flex gap-4 max-h-min flex-wrap ">
           {/* <div className="w-full bg-white px-4 flex justify-end py-4 border-y">
@@ -845,18 +833,28 @@ const UserProfile = () => {
                   <circle cx="12" cy="12" r="3" />
                 </svg>
           </div> */}
-          <div className={`w-full md:hidden ${formType ||updateFormType ?"hidden" :null} fixed md:w-[57.6%] border-x md:mt-5  z-20 top-0  mb-4 px-4 py-4 bg-white flex  justify-between `}>
-            <div className="flex gap-4">
-              {atTop>=100 && (
+          <div
+            className={`w-full md:hidden ${
+              formType || updateFormType ? "hidden" : null
+            } fixed md:w-[57.6%] border-x md:mt-5  z-20 top-0  mb-4 px-4 py-4 bg-white flex  justify-between `}
+          >
+            <div className="flex items-center gap-4">
+              {atTop >= 100 && (
                 <UserImageInput
                   isEditable={false}
                   image={userDetails.profileImage}
                   imageHeight="40"
                 />
               )}
-              <p className="text-2xl font-semibold">
-                {atTop>=100 ? user.username : "Profile"}
-              </p>
+              <div className="  flex flex-col justify-center ">
+                <p className="text-xl font-semibold">
+                  {atTop >= 100 ? user.username : "Profile"}
+                </p>
+                <div className="flex gap-1 items-center">
+                  <span className="h-2 w-2 rounded-full border bg-green-500"></span>
+                  <p className="text-xs text-gray-400">Currently active</p>
+                </div>
+              </div>
             </div>
             <svg
               class="h-8 w-8 text-gray-800"
@@ -915,7 +913,7 @@ const UserProfile = () => {
                 </div>
               </div>
             ) : (
-              <div>
+              <div className="mt-2">
                 <div className="flex  w-full gap-4  items-center">
                   <UserImageInput
                     isEditable={false}
@@ -925,7 +923,7 @@ const UserProfile = () => {
                   <div className="flex w-full  justify-between items-center">
                     <div>
                       <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-                        {personalData?.fullname}
+                        {user.account_type == "Employeer"?user.company_details.company_name:user.personal_details?.firstname+" "+user.personal_details?.lastname}
                       </h1>
                       <div className="flex  gap-2">
                         <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
@@ -963,7 +961,7 @@ const UserProfile = () => {
               </p>
             </div> */}
                 <div className="order-4 flex flex-col gap-2">
-                  {userDetails.email && (
+                  {userDetails.email &&  user.account_type === "Candidate" &&(
                     <div className="flex order-4 mt-5 text-sm items-center gap-2">
                       <svg
                         class="octicon octicon-mail"
@@ -1142,37 +1140,51 @@ const UserProfile = () => {
             </p>
           </div> */}
         </div>
-        <div className={` sticky top-16 transition-all ease-in-out sm:top-0 md:${atTop<340?"pt-0":"pt-5"} bg-gray-100`}>
-        <div className={`flex-grow border-b sm:border-x  ${atTop>340?"border-t":null} w-full -mt-px sticky top-16 sm:top-0  gap-3  mb-4   order-last bg-white   font-medium  h-full  flex`}>
-          {/* <p className=" px-4 w-full text-center bg-blue-50 border-b-2 border-blue-500 py-3">
+        <div
+          className={` sticky top-16 z-20 transition-all ease-in-out sm:top-0 md:${
+            atTop < 340 ? "pt-0" : "pt-5"
+          } bg-gray-100`}
+        >
+          <div
+            style={{
+              overflowX: "auto",
+              scrollbarWidth: "none" /* Firefox */,
+            }}
+            className={`flex-grow z-20  max-w-full overflow-x-auto border-b sm:border-x  ${
+              atTop > 340 ? " md:border-t" : null
+            } w-full -mt-px sticky top-16 sm:top-0  gap-3  mb-4   order-last bg-white   font-medium  h-full  flex`}
+          >
+            {/* <p className=" px-4 w-full text-center bg-blue-50 border-b-2 border-blue-500 py-3">
               Profile
             </p>
             <p className=" px-4 w-full text-center py-3">
               Posts
             </p> */}
-          {["Profile", "Posts", "Jobs"].map((tab) => (
-            <p
-              onClick={() => {
-                setcurrentTab(tab);
-              }}
-              className={`px-4 font-semibold cursor-pointer ${
-                tab == currentTab
-                  ? "  border-b-2 -mb-px text-blue-500 border-blue-500"
-                  : null
-              }  ${
-                user.accountType == "Candidate" && tab == "Jobs"
-                  ? "hidden"
-                  : null
-              } w-full text-center py-2`}
-            >
-              {tab}
-            </p>
-          ))}
+            {[
+              "Home",
+              ...(userDetails.account_type == "Employeer"
+                ? ["About", "Posts", "Jobs", "People"]
+                : ["Posts", "Qualification"]),
+            ].map((tab) => (
+              <p
+                onClick={() => {
+                  setcurrentTab(tab);
+                }}
+                className={`px-4 text-base md:text-lg font-medium md:font-semibold cursor-pointer ${
+                  tab == currentTab
+                    ? "  border-b-2 text-blue-500 border-blue-500"
+                    : null
+                } w-full text-center py-2`}
+              >
+                {tab}
+              </p>
+            ))}
+          </div>
         </div>
-       </div>
-        {currentTab == "Profile" && (
-          <div>
-            {/* <div className="flex-grow border  h-full md:w-fit px-6 bg-white sm:px-8 py-5 flex w-full">
+        <div className="">
+          {currentTab == "Qualification" && (
+            <div>
+              {/* <div className="flex-grow border  h-full md:w-fit px-6 bg-white sm:px-8 py-5 flex w-full">
               <div className="h-full">
                 <p className="text-xl font-medium">Profile Analytics</p>
                 <PieChart
@@ -1198,88 +1210,118 @@ const UserProfile = () => {
                 />
               </div>
             </div> */}
-            {userDetailsList.map((item, index) => (
-              <div
-                key={index}
-                className="cursor-pointer bg-white"
-                draggable
-                onDragStart={(e) => handleDragStart(e, item.id)}
-                onDrop={(e) => handleDrop(e, item.id)}
-                onDragOver={(e) => e.preventDefault()}
-              >
-                <Section
-                  id={item.id}
-                  title={item.title}
-                  content={item.content}
-                  loading={item.loading}
-                />
-              </div>
-            ))}
-          </div>
-        )}
-        {currentTab == "Posts" && (
-          <div className="bg-white w-full h-full">Hello</div>
-        )}
+              {userDetailsList.map((item, index) => (
+                <div
+                  key={index}
+                  className="cursor-pointer bg-white"
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, item.id)}
+                  onDrop={(e) => handleDrop(e, item.id)}
+                  onDragOver={(e) => e.preventDefault()}
+                >
+                  <Section
+                    id={item.id}
+                    title={item.title}
+                    content={item.content}
+                    loading={item.loading}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+          {currentTab == "Posts" && (
+            <div className="bg-white w-full h-full">Hello</div>
+          )}
 
-        {currentTab == "Jobs" &&
-          (jobData.length >0 ? (
-            <div className="bg-white border-x h-full px-4 py-4 md:border -mt-4 md:-mt-0 w-full flex-1">
-              <div className="flex justify-between mb-3 items-center">
-                <p className="font-medium">Recently posted jobs</p>
+          {currentTab == "Jobs" &&
+            (jobData.length > 0 ? (
+              <div className="bg-white border-x h-full px-4 py-4 md:border -mt-4 md:-mt-0 w-full flex-1">
+                <div className="flex justify-between mb-3 items-center">
+                  <p className="font-medium">Recently posted jobs</p>
+                  <p
+                    onClick={() => {
+                      setFormType("job");
+                    }}
+                    className="bg-blue-50 cursor-pointer text-xs text-blue-500 rounded-full border border-blue-500 font-medium py-1 px-4"
+                  >
+                    Create job
+                  </p>
+                </div>
+
+                {jobData.map((job, index) => (
+                  <div
+                    onClick={() => {
+                      console.log(job);
+                      setUpdateData({ job: job });
+                      setupdateFormType("job");
+                    }}
+                    className={`flex items-start gap-4 justify-between ${
+                      index < jobData.length - 1
+                        ? "border-b cursor-pointer"
+                        : ""
+                    } py-4`}
+                    key={job.id}
+                  >
+                    <div>
+                      <p className="text-xl font-medium">{job.job_role}</p>
+                      <p className="text-xs text-gray-800">
+                        {job.location.address}
+                      </p>
+                      {job.job_update_date ? (
+                        <p className="text-xs mt-0.5 text-gray-400">
+                          Updated{" "}
+                          {formatDistanceToNow(new Date(job.job_update_date), {
+                            addSuffix: true,
+                          })}
+                        </p>
+                      ) : (
+                        <p className="text-xs mt-0.5 text-gray-400">
+                          Posted{" "}
+                          {formatDistanceToNow(new Date(job.job_post_date), {
+                            addSuffix: true,
+                          })}
+                        </p>
+                      )}
+                    </div>
+                    <svg
+                      class="h-7 w-7 text-gray-500"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      stroke-width="2"
+                      stroke="currentColor"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      {" "}
+                      <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                      <circle cx="12" cy="12" r="1" />{" "}
+                      <circle cx="12" cy="19" r="1" />{" "}
+                      <circle cx="12" cy="5" r="1" />
+                    </svg>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white border-x  text-center pt-10 md:border -mt-4 md:-mt-0 items-center  w-full flex-1">
+                <p className="font-bold text-2xl">No jobs posted </p>
                 <p
                   onClick={() => {
                     setFormType("job");
                   }}
-                  className="bg-blue-50 cursor-pointer text-xs text-blue-500 rounded-full border border-blue-500 font-medium py-1 px-4"
+                  className=" font-semibold text-blue-500 mt-1"
                 >
-                  Create job
+                  Post a job
                 </p>
               </div>
-
-              {jobData.map((job, index) => (
-                <div
-                onClick={() => {
-                  console.log(job);
-                  setUpdateData({ job: job });
-                  setupdateFormType("job");
-                }}
-                  className={`flex items-center justify-between ${
-                    index < jobData.length - 1 ? "border-b cursor-pointer" : ""
-                  } py-4`}
-                  key={job.id}
-                  
-                >
-                  <div>
-                  <p className="text-xl font-medium">{job.job_role}</p>
-                  <p className="">{job.location.address}</p>
-                  <p className="text-xs text-gray-400">
-                    {formatDistanceToNow(new Date(job.job_post_date), {
-                      addSuffix: true,
-                    })}
-                  </p>
-                    </div>
-                  <svg class="h-7 w-7 text-gray-500"  width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">  <path stroke="none" d="M0 0h24v24H0z"/>  <circle cx="12" cy="12" r="1" />  <circle cx="12" cy="19" r="1" />  <circle cx="12" cy="5" r="1" /></svg>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="bg-white border-x  text-center pt-10 md:border -mt-4 md:-mt-0 items-center  w-full flex-1">
-              <p className="font-bold text-2xl">No jobs posted </p>
-              <p
-                onClick={() => {
-                  setFormType("job");
-                }}
-                className=" font-semibold text-blue-500 mt-1"
-              >
-                Post a job
-              </p>
-            </div>
-          ))}
+            ))}
+        </div>
       </div>
       <div className="w-full hidden md:flex flex-col gap-4">
         <div
           className={`border  h-fit px-6 sticky ${
-            atTop<=500 ? "-mt-8" : null
+            atTop <= 500 ? "-mt-8" : null
           } -top-3 bg-white sm:px-8 py-5 flex w-full transition-transform duration-300   ${
             scrollDirection === "down" ? "-translate-y-full" : "translate-y-8"
           }`}
@@ -1288,7 +1330,7 @@ const UserProfile = () => {
         </div>
         <div
           className={`border transition-all ${
-            atTop<=500 ? "-mt-40" : null
+            atTop <= 500 ? "-mt-40" : null
           }  ease-in-out h-fit px-6 sticky top-4 
           ${scrollDirection === "down" ? "translate-y-0" : "translate-y-[85px]"}
            bg-white sm:px-8 py-5  flex w-full `}

@@ -11,9 +11,10 @@ import TextInput from "../components/Input/TextInput";
 import OptionInput from "../components/Input/OptionInput";
 import useProfileApi from "../services/profileService";
 import authService from "../services/authService";
-import { useDispatch } from 'react-redux';
-import { loginSuccess, loginFailure } from '../features/auth/authSlice';
-
+import { useDispatch } from "react-redux";
+import { loginSuccess, loginFailure } from "../features/auth/authSlice";
+import UrlInput from "../components/Input/UrlInput";
+import LocationInput from "../components/Input/LocationInput";
 
 function Signup() {
   const [otpInput, setotpInput] = useState(false);
@@ -23,6 +24,7 @@ function Signup() {
   const [otpValue, setotpValue] = useState("");
   const [verified, setverified] = useState(false);
   const [next, setNext] = useState(false);
+  const [purpose, setpurpose] = useState(false);
   const [loader, setloader] = useState(false);
   const [usernameChecking, setusernameChecking] = useState(false);
   const [usernameChecked, setusernameChecked] = useState(false);
@@ -33,8 +35,6 @@ function Signup() {
   const usernameTimeout = useRef(null);
   const [usernameError, setusernameError] = useState();
   const dispatch = useDispatch();
-
-
 
   const navigate = useNavigate();
   const profileApi = useProfileApi();
@@ -59,19 +59,13 @@ function Signup() {
       });
     }
   }, []);
-  const [userData, setuserData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    accountType: "",
-  });
+  const [userData, setuserData] = useState({});
 
-  const [personalDetails, setpersonalDetails] = useState({
-    birthdate: "",
-    fullname: "",
-  });
+  const [personal_details, setpersonal_details] = useState({});
+  const [company_details, setcompany_details] = useState({});
 
   const handleInputChange = (e) => {
+    console.log(userData, personal_details);
     let { name, value } = e.target;
     if (name === "username") {
       if (value !== "") {
@@ -82,7 +76,7 @@ function Signup() {
         usernameTimeout.current = setTimeout(() => {
           setusernameChecking(true);
           verifyUserName(value);
-        }, 1000);
+        }, 500);
       } else {
         setuserNameAvailable(false);
       }
@@ -90,32 +84,88 @@ function Signup() {
     setuserData((prevState) => ({ ...prevState, [name]: value }));
   };
   const isFormValid = () => {
+    console.log(userData, personal_details, company_details);
     if (
       userData.username &&
+      userNameAvailable &&
       userData.email &&
       userData.password &&
-      userData.accountType &&
-      personalDetails.birthdate &&
-      personalDetails.fullname
+      userData.account_type
     ) {
-      return true;
+      if (userData.account_type === "Candidate") {
+        if (personal_details.birthdate || personal_details.firstname) {
+          console.log("form valid");
+        }
+        return personal_details.birthdate && personal_details.firstname;
+      } else {
+        if (
+          company_details.company_name &&
+          company_details.location &&
+          company_details.found_in_date
+        ) {
+          console.log("form valid");
+        }
+        return (
+          company_details.company_name &&
+          company_details.location &&
+          company_details.found_in_date
+        );
+      }
     }
-    false;
+    console.log("Form not valid");
+    return false;
   };
   const verifyUserName = async (username) => {
     setusernameChecking(true);
     setusernameChecked(false);
     try {
-      const response = await authService.checkUsername(username);
-      if (response.exists) {
+      if (username.length <= 30) {
+        const response = await authService.checkUsername(username);
+        if (response.exists) {
+          setuserNameAvailable(false);
+          setuserData((prev) => ({
+            ...prev,
+            password: "",
+          }));
+          setpersonal_details((prev) => ({
+            ...prev,
+            firstname: "",
+            lastname: "",
+            birthdate: "",
+          }));
+          setcompany_details((prev) => ({
+            ...prev,
+            company_name: "",
+            found_in_date: "",
+            location: "",
+          }));
+
+          setusernameError("Username already exists");
+        } else {
+          setusernameError("");
+
+          setuserNameAvailable(true);
+        }
+      } else {
         setuserNameAvailable(false);
-        setusernameError("Username already exists")
+        setuserData((prev) => ({
+          ...prev,
+          password: "",
+        }));
+        setpersonal_details((prev) => ({
+          ...prev,
+          firstname: "",
+          lastname: "",
+          birthdate: "",
+        }));
+        setcompany_details((prev) => ({
+          ...prev,
+          company_name: "",
+          found_in_date: "",
+          location: "",
+        }));
 
-      } 
-      else {
-        setusernameError("")
-
-        setuserNameAvailable(true);
+        setusernameError("Username can have only 30 characters ");
       }
     } catch (error) {
       console.error("Error checking username:", error);
@@ -183,41 +233,50 @@ function Signup() {
     setloader(true);
 
     try {
-  
-      const response = await fetch("https://workler-backend.vercel.app/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
+      let response;
+    if(userData.account_type  === "Employeer"){
+       response = await fetch(
+        "http://localhost:5002/api/auth/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ...userData, company_details }),
+        }
+      );
+    }else{
+       response = await fetch(
+        "http://localhost:5002/api/auth/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ...userData, personal_details }),
+        }
+      );
+    }
 
       const token = await authService.login(userData.email, userData.password);
       const user = await authService.fetchUserDetails(token);
-      localStorage.removeItem('token')
-      localStorage.setItem('token', token);
+      localStorage.removeItem("token");
+      localStorage.setItem("token", token);
       console.log(user);
       dispatch(loginSuccess(user));
       setloader(false);
 
-      
-      if(response.ok) {
-         const personal = profileApi.personalDetails.add(
-          personalDetails,token
-        );
+      if (response.ok) {
+        // const personal = profileApi.personal_details.add(personal_details, token);
 
-        if (personal.ok) {
-          navigate("/jobs")
-        }
-      }
-      else{
+        navigate("/jobs");
+      } else {
         const errorText = await response.text();
         throw new Error(errorText); // This will be caught by the catch block
       }
 
       setSuccessMessage("User created successfully");
       setAccountErrorMessage("");
-     
     } catch (error) {
       setAccountErrorMessage("Signup failed");
       setSuccessMessage("");
@@ -316,10 +375,26 @@ function Signup() {
               </div>
             </div>
           </div>
+          {purpose && (
+            <OptionInput
+              placeholder={"Purpose"}
+              options={[
+                { value: "Candidate", title: "Search and apply for jobs" },
+                {
+                  value: "Employeer",
+                  title: " Post job openings and find candidate",
+                },
+              ]}
+              className={"mt-5"}
+              onChange={handleInputChange}
+              name={"account_type"}
+            />
+          )}
           <Otp
             verified={verified}
             setVerified={setverified}
             genertedOtp={otpValue}
+            setPurpose={setpurpose}
             setOtpInput={setotpInput}
             text={email}
             className={`mt-5  ${!otpInput ? "hidden" : null}`}
@@ -330,7 +405,7 @@ function Signup() {
             onClick={() => {
               setNext(true);
             }}
-            disabled={!verified}
+            disabled={!verified || !userData.account_type}
             className="w-full flex justify-center mt-8 duration-200 font-semibold text-lg  text-white bg-blue-500 disabled:bg-blue-300"
           >
             {loader ? (
@@ -367,17 +442,17 @@ function Signup() {
       </div>
 
       <form
-        action=""
-        method="post"
         onSubmit={(e) => {
+          e.preventDefault(); // Prevent default form submission to handle via JavaScript
+          console.log("create");
           create(e);
         }}
-        className={`sm:border w-full flex-1 sm:flex-none flex flex-col h-fit   sm:w-full sm:max-w-[650px] px-4 my-10 sm:mt-24   sm:p-10 ${
+        className={`sm:border w-full flex-1 sm:flex-none flex overflow-y-auto flex-col h-fit sm:w-full sm:max-w-fit px-4 md:mt-32 md:mb-10 py-10 sm:p-10 ${
           next ? null : "hidden"
-        } `}
+        }`}
       >
-        <div className="">
-          <p className="text-2xl font-semibold text-gray-800 ">
+        <div>
+          <p className="text-2xl font-semibold text-gray-800">
             Let's setup your account
           </p>
           <p className="text-sm text-gray-400">
@@ -386,152 +461,295 @@ function Signup() {
         </div>
         <p
           id="errorAccount"
-          className="text-red-500 px-2 mt-1  w-fit rounded-sm text-sm bg-red-50 "
+          className="text-red-500 px-2 mt-1 w-fit rounded-sm text-sm bg-red-50"
         >
           {accountErrorMessage}
         </p>
         <p
           id="successAccount"
-          className="text-green-500 px-2 mt-1 w-fit rounded-sm text-sm bg-green-50 "
+          className="text-green-500 px-2 mt-1 w-fit rounded-sm text-sm bg-green-50"
         >
           {successMessage}
         </p>
 
         <div className="flex flex-col gap-6 mt-10">
-          <div className="flex gap-4 justify-start flex-wrap items-start">
-          <div className="flex-grow">
-            <div class="relative flex   items-center">
-              <input
-                type="text"
-                name="username"
-                id="username"
-                placeholder=""
-                value={userData.username}
-                onChange={(e) => {
-                  handleInputChange(e);
-                }}
-                class="flex-1 block px-3 py-3 font-normal pr-[75px] bg-white rounded-sm border appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                style={{
-                  "-webkit-autofill": "number",
-                  "-webkit-box-shadow": "0 0 0px 1000px white inset",
-                }}
-                title="Username can only contain letters, numbers, and underscores"
-              />
-              <label
-                htmlFor="username"
-                className="absolute duration-200 cursor-text px-2 text-gray-400 bg-white font-normal transform -translate-y-5 scale-90 top-2 z-10 peer-focus:px-2 peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-90 peer-focus:-translate-y-5 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-              >
-                User name
-              </label>
+          <div className="flex gap-6 justify-start flex-wrap items-start">
+            <div className="flex-grow">
+              <div className="relative flex items-center">
+                <input
+                  type="text"
+                  name="username"
+                  id="username"
+                  placeholder=""
+                  value={userData.username}
+                  onChange={(e) => {
+                    handleInputChange(e);
+                  }}
+                  className="flex-1 flex-grow block px-3 py-3 font-normal pr-[75px] bg-white rounded-sm border appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  style={{
+                    WebkitAutofill: "number",
+                    WebkitBoxShadow: "0 0 0px 1000px white inset",
+                  }}
+                  title="Username can only contain letters, numbers, and underscores"
+                />
+                <label
+                  htmlFor="username"
+                  className="absolute duration-200 cursor-text px-2 text-gray-400 bg-white font-normal transform -translate-y-5 scale-90 top-2 z-10 peer-focus:px-2 peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-90 peer-focus:-translate-y-5 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                >
+                  User name
+                </label>
 
-              <div className=" text-gray-300 border-l absolute w-14 flex items-center justify-center h-9 cursor-pointer my-1  right-2 pl-1.5 ">
-                {usernameChecking || usernameChecked ? (
-                  usernameChecked ? (
-                    userNameAvailable ? (
-                      <svg
-                        class="h-8 w-8 text-green-500"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
+                <div className="text-gray-300 absolute bg-white px-3.5 flex items-center justify-center h-10 cursor-pointer right-px">
+                  {usernameChecking || usernameChecked ? (
+                    usernameChecked ? (
+                      userNameAvailable ? (
+                        <svg
+                          className="h-8 w-8 text-green-500"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                      ) : (
+                        <svg
+                          className="h-8 w-8 text-red-500"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                      )
                     ) : (
                       <svg
-                        class="h-8 w-8 text-red-500"
+                        aria-hidden="true"
+                        className="inline w-6 h-6 text-transparent animate-spin fill-blue-500"
+                        viewBox="0 0 100 101"
                         fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                          fill="currentColor"
+                        />
+                        <path
+                          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                          fill="currentFill"
                         />
                       </svg>
                     )
-                  ) : (
-                    <svg
-                      aria-hidden="true"
-                      class="inline w-6 h-6  text-transparent animate-spin  fill-blue-500 "
-                      viewBox="0 0 100 101"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                        fill="currentColor"
-                      />
-                      <path
-                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                        fill="currentFill"
-                      />
-                    </svg>
-                  )
-                ) : null}
+                  ) : null}
+                </div>
               </div>
+              <p className="text-xs text-red-500 ml-1">{usernameError}</p>
             </div>
-            <p className="text-xs text-red-500 ml-1">{usernameError}</p>
-          </div>
-          <PasswordInput
-            name={"password"}
-            className={"flex-grow"}
-            onChange={handleInputChange}
-            placeholder={"Password"}
-            value={userData.password}
-          />
-          </div>
-          <TextInput
-            name={"fullname"}
-            onChange={(e) => {
-              setpersonalDetails((prev) => ({
-                ...prev,
-                fullname: e.target.value,
-              }));
-            }}
-            placeholder={"Full name"}
-          />
-          <div className="flex gap-4 flex-wrap ">
-            <DateInput
-              name={"birthdate"}
-              type={"date"}
-              placeholder={"Birthdate"}
-              className={"flex-grow"}
-              onChange={(e) => {
-                setpersonalDetails((prev) => ({
-                  ...prev,
-                  birthdate: e.target.value,
-                }));
-              }}
-              value={personalDetails.birthdate}
-            />
 
-            <OptionInput
-              name={"accountType"}
-              className={"flex-grow "}
+            <PasswordInput
+              name={"password"}
+              className={`transition-transform flex-grow duration-300 ease-in-out ${
+                userNameAvailable
+                  ? "md:flex opacity-100 translate-y-0"
+                  : "md:hidden opacity-0 -translate-y-5"
+              }`}
               onChange={handleInputChange}
-              optionList={["Candidate", "Employeer"]}
-              placeholder={"Account type"}
-              value={userData.accountType}
+              placeholder={"Password"}
+              value={userData.password}
             />
           </div>
-        </div>
+          {userData.account_type == "Candidate" && (
+            <div
+              className={`transition-transform flex flex-col gap-6 duration-300 ease-in-out ${
+                userNameAvailable
+                  ? "md:flex opacity-100 translate-y-0"
+                  : "md:hidden opacity-0 -translate-y-5"
+              }`}
+            >
+              <div className="flex flex-wrap gap-6 w-full">
+                <TextInput
+                  name={"firstname"}
+                  className={"flex-grow"}
+                  value={personal_details.firstname}
+                  onChange={(e) => {
+                    setpersonal_details((prev) => ({
+                      ...prev,
+                      firstname: e.target.value,
+                    }));
+                  }}
+                  placeholder={"First name"}
+                />
+                <TextInput
+                  name={"lastname"}
+                  value={personal_details.lastname}
+                  className={"flex-grow"}
+                  onChange={(e) => {
+                    setpersonal_details((prev) => ({
+                      ...prev,
+                      lastname: e.target.value,
+                    }));
+                  }}
+                  placeholder={"Last Name"}
+                />
+              </div>
+              <div className="flex flex-wrap gap-6 w-full">
+                <DateInput
+                  className={"flex-grow"}
+                  name={"date_of_birth"}
+                  onChange={(e) => {
+                    setpersonal_details((prev) => ({
+                      ...prev,
+                      date_of_birth: e.target.value,
+                    }));
+                  }}
+                  placeholder={"Date of Birth"}
+                  value={personal_details.date_of_birth}
+                />
+                <LocationInput
+                  value={personal_details.location}
+                  onChange={(value) => {
+                    setpersonal_details((prev) => ({
+                      ...prev,
+                      location: value,
+                    }));
+                  }}
+                />
+              </div>
+              <div className="flex gap-6 w-full">
+                <TextInput
+                  name={"phone"}
+                  className={"flex-grow"}
+                  value={personal_details.phone}
+                  onChange={(e) => {
+                    setpersonal_details((prev) => ({
+                      ...prev,
+                      phone: e.target.value,
+                    }));
+                  }}
+                  placeholder={"Phone Number"}
+                />
+                <OptionInput
+                  className={"flex-grow"}
+                  name={"gender"}
+                  options={[
+                    {
+                      name: "Male",
+                      value: "Male",
+                    },
+                    {
+                      name: "Female",
+                      value: "Female",
+                    },
+                    {
+                      name: "Non-binary",
+                      value: "Non-binary",
+                    },
+                    {
+                      name: "Others",
+                      value: "Others",
+                    },
+                  ]}
+                  placeholder={"Select Gender"}
+                  onChange={(value) => {
+                    setpersonal_details((prev) => ({
+                      ...prev,
+                      gender: value,
+                    }));
+                  }}
+                />
+              </div>
+              <TextInput
+                name={"email"}
+                className={"flex-grow"}
+                value={userData.email}
+                onChange={(e) => {
+                  handleInputChange(e);
+                }}
+                placeholder={"Email Address"}
+              />
+            </div>
+          )}
+          {userData.account_type == "Employeer" && (
+            <div
+              className={`transition-transform  flex flex-col gap-6 duration-300 ease-in-out ${
+                userNameAvailable
+                  ? "md:flex opacity-100 translate-y-0"
+                  : "md:hidden opacity-0 -translate-y-5"
+              }`}
+            >
+              <div className="flex gap-6 flex-wrap">
+                <TextInput
+                  name={"company_name"}
+                  className={"flex-grow"}
+                  value={company_details.company_name}
+                  onChange={(e) => {
+                    setcompany_details((prev) => ({
+                      ...prev,
+                      company_name: e.target.value,
+                    }));
+                  }}
+                  placeholder={"Company name"}
+                />
 
+                <LocationInput
+                  name={"location"}
+                  className={"flex-grow"}
+                  placeholder={"Company location"}
+                  onChange={(e) => {
+                    setcompany_details((prev) => ({
+                      ...prev,
+                      location: e.target.value,
+                    }));
+                  }}
+                  value={company_details.location?.address}
+                />
+              </div>
+              <DateInput
+                name={"found_in_date"}
+                type={"date"}
+                placeholder={"Found in"}
+                className={"flex-grow"}
+                onChange={(e) => {
+                  setcompany_details((prev) => ({
+                    ...prev,
+                    found_in_date: e.target.value,
+                  }));
+                }}
+                value={company_details.found_in_date}
+              />
+              {/* <UrlInput
+               name={"website"}
+               placeholder={"Website"}
+               className={"flex-grow"}
+               onChange={(e) => {
+                 setcompany_details((prev) => ({
+                   ...prev,
+                   website: e.target.value ,
+                 }));
+               }}
+               value={company_details.website}
+              /> */}
+            </div>
+          )}
+        </div>
         <Button
           type="submit"
-          disabled={!isFormValid()}
-          className="w-full mt-8  flex items-center justify-center bg-blue-500 text-white disabled:bg-blue-300 font-semibold text-lg"
+          className={`flex items-center text-xl justify-center bg-blue-500 text-white py-2  rounded disabled:opacity-50 mt-6 `}
+          disabled={!isFormValid() || loader} // Ensure the form validation is active
         >
           {loader ? (
             <svg
               aria-hidden="true"
-              class="inline w-7 h-7    text-transparent animate-spin fill-white "
+              className="inline w-7 h-7 text-transparent animate-spin fill-white"
               viewBox="0 0 100 101"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -549,7 +767,7 @@ function Signup() {
             "Create"
           )}
         </Button>
-        <p className="mt-8 hidden sm:block w-full text-center ">
+        <p className="mt-10 hidden sm:block w-full text-center">
           Already have an account?{" "}
           <Link
             to={"/login"}
