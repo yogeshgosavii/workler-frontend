@@ -236,7 +236,7 @@ function Signup() {
       let response;
     if(userData.account_type  === "Employeer"){
        response = await fetch(
-        "http://localhost:5002/api/auth/signup",
+        "https://workler-backend.vercel.app/api/auth/signup",
         {
           method: "POST",
           headers: {
@@ -247,7 +247,7 @@ function Signup() {
       );
     }else{
        response = await fetch(
-        "http://localhost:5002/api/auth/signup",
+        "https://workler-backend.vercel.app/api/auth/signup",
         {
           method: "POST",
           headers: {
