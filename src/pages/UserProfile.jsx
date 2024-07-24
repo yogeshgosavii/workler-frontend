@@ -322,6 +322,9 @@ const UserProfile = () => {
   useEffect(() => {
     // Function to handle popstate event
     const handlePopState = (event) => {
+      console.log("Back button pressed. Event:", event);
+
+      setsettings(false)
       if (event.state && event.state.formType) {
         setFormType(event.state.formType);
       } else {
@@ -357,21 +360,27 @@ const UserProfile = () => {
   useEffect(() => {
     // Function to handle popstate event
     const handlePopState = (event) => {
-      if (event.state && event.state.updateFormType) {
-        setupdateFormType(event.state.updateFormType);
+      console.log("Hello");
+      if (!settings) {
+        if (event.state && event.state.updateFormType) {
+          setupdateFormType(event.state.updateFormType);
+        } else {
+          setupdateFormType(null);
+        }
       } else {
-        setupdateFormType(null);
+        setsettings(false);
       }
     };
-
+  
     // Add event listener for popstate
     window.addEventListener("popstate", handlePopState);
-
+  
     // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
-  }, []);
+  }, [settings]); // Add settings to the dependency array
+  
 
   const handleUpdateFormClose = () => {
     setupdateFormType(null);
@@ -735,13 +744,15 @@ const UserProfile = () => {
 
   return (
     <div
-      className={`w-full ${
+      className={`w-full  ${
         settings ? "-ml-[60%]" : "-ml-0"
       } ${
         (formType || updateFormType) && "fixed"
       }  flex flex-col md:flex-row transition-all duration-300  justify-center gap-5  bg-gray-100  sm:py-5 md:px-5 `}
     >
-      <div className={``}>
+      <div className={` ${
+        settings ? "pointer-events-none" : "pointer-events-auto"
+      }`}>
         {formType && (
           <div
             className="fixed inset-0 z-30 flex justify-center items-center bg-black bg-opacity-50"
@@ -862,11 +873,15 @@ const UserProfile = () => {
                 </div>
               </div>
               <svg
-                className="h-8 w-8 text-gray-800"
+                className="h-8 w-8 text-gray-800 pointer-events-auto"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                onClick={() => setsettings(!settings)}
+                onClick={() => {
+                  setsettings(!settings)
+                  // setFormType(null)
+                  // setupdateFormType(null)
+                }}
               >
                 <path
                   strokeLinecap="round"
