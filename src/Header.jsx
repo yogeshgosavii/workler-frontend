@@ -53,7 +53,13 @@ function Header() {
             <div className='hidden sm:inline'>
               <p className=' font-medium'>{user?.username || "User"}</p>
               {/* <p className='text-red-500'>Logout</p> */}
+              <div className="flex gap-1 items-center">
+                  <p className="text-xs text-gray-400">Currently active</p>
+                  <span className="h-2 w-2 rounded-full border bg-green-500"></span>
+
+                </div>
             </div>
+            
           </div>
         ) : (
           <div className='flex gap-5'>
