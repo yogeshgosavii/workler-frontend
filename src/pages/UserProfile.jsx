@@ -939,7 +939,6 @@ const UserProfile = () => {
                   </div>
                 </div>
 
-               
                 <div className="order-3 flex flex-col gap-2">
                   {/* {userDetails.email &&  user.account_type === "Candidate" &&(
                     <div className="flex order-4 mt-5 text-sm items-center gap-2">
@@ -1092,26 +1091,25 @@ const UserProfile = () => {
                       </a>
                     )}
                   </div> */}
-                  {user.account_type == "Employeer" &&
-                     (user.company_details.bio ? (
-                      <div>{user.company_details.bio}</div>
-                    ) : (
-                      <div
-                        onClick={() => {
-                          setFormType("userDetails");
-                        }}
-                        className=" text-sm font-normal text-gray-300 px-2 py-1 rounded-lg border w-fit  border-dashed"
-                      >
-                        Add a bio +
-                      </div>
-                    ))}
+                  {userDetails.bio ? (
+                    <div>{userDetails.bio}</div>
+                  ) : (
+                    <div
+                      onClick={() => {
+                        setFormType("userDetails");
+                      }}
+                      className=" text-sm font-normal text-gray-300 px-2 py-1 rounded-lg border w-fit  border-dashed"
+                    >
+                      Add a bio +
+                    </div>
+                  )}
                   {userDetails.account_type == "Candidate" && (
                     <div className="order-2 text-sm -mb-2">
                       <p className="mt-2 ">Works at Google</p>
                     </div>
                   )}
-                   <div className="flex text-gray-400  order-4  items-end text-sm space-x-1">
-                  {/* <svg
+                  <div className="flex text-gray-400  order-4  items-end text-sm space-x-1">
+                    {/* <svg
                     text="muted"
                     aria-hidden="true"
                     height="18"
@@ -1124,15 +1122,16 @@ const UserProfile = () => {
                   >
                     <path d="M2 5.5a3.5 3.5 0 1 1 5.898 2.549 5.508 5.508 0 0 1 3.034 4.084.75.75 0 1 1-1.482.235 4 4 0 0 0-7.9 0 .75.75 0 0 1-1.482-.236A5.507 5.507 0 0 1 3.102 8.05 3.493 3.493 0 0 1 2 5.5ZM11 4a3.001 3.001 0 0 1 2.22 5.018 5.01 5.01 0 0 1 2.56 3.012.749.749 0 0 1-.885.954.752.752 0 0 1-.549-.514 3.507 3.507 0 0 0-2.522-2.372.75.75 0 0 1-.574-.73v-.352a.75.75 0 0 1 .416-.672A1.5 1.5 0 0 0 11 5.5.75.75 0 0 1 11 4Zm-5.5-.5a2 2 0 1 0-.001 3.999A2 2 0 0 0 5.5 3.5Z"></path>
                   </svg> */}
-                  <p>
-                    <span>
-                      {userDetails.company_details.location?.address} ·{" "}
-                    </span>
-                    {userDetails.followers?userDetails.followers:0}<span className=" "> followers</span> 
-                    {/* · {userDetails.followings?userDetails.followings:0}{" "}
+                    <p>
+                      <span>
+                        {userDetails.company_details.location?.address} ·{" "}
+                      </span>
+                      {userDetails.followers ? userDetails.followers : 0}
+                      <span className=" "> followers</span>
+                      {/* · {userDetails.followings?userDetails.followings:0}{" "}
                     <span className="">following</span> */}
-                  </p>
-                </div>
+                    </p>
+                  </div>
                   <div className="flex gap-1 order-last max-w-full flex-wrap ">
                     {userDetails.tags?.map((tag) => (
                       <p className="flex rounded-md w-fit px-px  text-blue-500 text-nowrap">
@@ -1140,7 +1139,7 @@ const UserProfile = () => {
                       </p>
                     ))}
                     <p className="text-xs text-gray-400 -mt-1.5">
-                      The tags won't be shown on you profile
+                      The tags won't be visible on you profile to others
                     </p>
                   </div>
                 </div>

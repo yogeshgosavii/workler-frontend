@@ -84,6 +84,7 @@ function UserDetailsForm({ onClose, setData, data }) {
   // }, []);
 
   const handleInputChange = (e) => {
+    console.log(formData);
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
   };
@@ -255,23 +256,14 @@ function UserDetailsForm({ onClose, setData, data }) {
             />
           </>
         )}
-        {formData.account_type == "Candidate" && (
+      
           <TextAreaInput
             name="bio"
-            value={formData.personal_details.bio}
+            value={formData.bio}
             onChange={handleInputChange}
             placeholder="Bio"
           />
-        )}
-
-        {formData.account_type == "Employeer" && (
-          <TextAreaInput
-            name="bio"
-            value={formData.company_details.bio}
-            onChange={handleInputChange}
-            placeholder="Bio"
-          />
-        )}
+    
 
         <AddInput
           name="tags"
@@ -316,7 +308,7 @@ function UserDetailsForm({ onClose, setData, data }) {
           Cancel
         </Button> */}
         <Button
-          className={`bg-blue-500 text-white w-full disabled:bg-blue-300`}
+          className={`bg-blue-500 flex justify-center items-center text-white w-full text-lg disabled:bg-blue-300`}
           onClick={handleUpdateUserDetails}
           disabled={!isFormValid() || loading}
         >
