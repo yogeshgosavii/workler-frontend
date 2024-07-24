@@ -237,30 +237,42 @@ function UserDetailsForm({ onClose, setData, data }) {
           onChange={handleInputChange}
         /> */}
         {userData.account_type == "Employeer" && (
-         <>
-          <DateInput
-          name="found_in_date"
-          type={"date"}
-          value={formData.company_details.found_in_date.split("T")[0]}
-          onChange={handleInputChange}
-          placeholder="Found in"
-          isRequired={true}
-          />
-          <LocationInput
-            name="location"
-            value={formData.company_details.location}
-            onChange={handleInputChange}
-            placeholder="Location"
-            isRequired={true}
-          />
-         </>
+          <>
+            <DateInput
+              name="found_in_date"
+              type={"date"}
+              value={formData.company_details.found_in_date.split("T")[0]}
+              onChange={handleInputChange}
+              placeholder="Found in"
+              isRequired={true}
+            />
+            <LocationInput
+              name="location"
+              value={formData.company_details.location}
+              onChange={handleInputChange}
+              placeholder="Location"
+              isRequired={true}
+            />
+          </>
         )}
-        <TextAreaInput
-          name="about"
-          value={formData.about}
-          onChange={handleInputChange}
-          placeholder="About"
-        />
+        {formData.account_type == "Candidate" && (
+          <TextAreaInput
+            name="bio"
+            value={formData.personal_details.bio}
+            onChange={handleInputChange}
+            placeholder="Bio"
+          />
+        )}
+
+        {formData.account_type == "Employeer" && (
+          <TextAreaInput
+            name="bio"
+            value={formData.company_details.bio}
+            onChange={handleInputChange}
+            placeholder="Bio"
+          />
+        )}
+
         <AddInput
           name="tags"
           data={formData.tags}
@@ -284,10 +296,18 @@ function UserDetailsForm({ onClose, setData, data }) {
         />
         {userData.account_type == "Candidate" && (
           <UrlInput
-            name="portfolioLink"
-            value={formData.portfolioLink}
+            name="portfolio"
+            value={formData.personal_details.portfolio}
             onChange={handleInputChange}
             placeholder="Portfolio"
+          />
+        )}
+         {userData.account_type == "Employeer" && (
+          <UrlInput
+            name="website"
+            value={formData.company_details.website}
+            onChange={handleInputChange}
+            placeholder="Website"
           />
         )}
       </div>

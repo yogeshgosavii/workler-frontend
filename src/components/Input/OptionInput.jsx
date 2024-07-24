@@ -44,8 +44,8 @@ function OptionInput({
             Select an option
           </option>
           {options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.title}
+            <option key={option?.value || option} value={option?.value || option}>
+              {option?.title || option}
             </option>
           ))}
         </select>

@@ -140,7 +140,7 @@ function Signup() {
             location: "",
           }));
 
-          setusernameError("Username already exists");
+          setusernameError("Username already taken");
         } else {
           setusernameError("");
 
@@ -700,6 +700,7 @@ function Signup() {
                   placeholder={"Company name"}
                 />
 
+
                 <LocationInput
                   name={"location"}
                   className={"flex-grow"}
@@ -713,6 +714,45 @@ function Signup() {
                   value={company_details.location?.address}
                 />
               </div>
+              <div className="flex gap-6 flex-wrap">
+              <OptionInput
+                  name={"industry"}
+                  options={[
+                    "Agriculture",
+                    "Automotive",
+                    "Banking",
+                    "Construction",
+                    "Consulting",
+                    "Consumer Goods",
+                    "Education",
+                    "Energy",
+                    "Entertainment",
+                    "Financial Services",
+                    "Healthcare",
+                    "Hospitality",
+                    "Information Technology",
+                    "Insurance",
+                    "Manufacturing",
+                    "Media",
+                    "Nonprofit",
+                    "Pharmaceuticals",
+                    "Real Estate",
+                    "Retail",
+                    "Telecommunications",
+                    "Transportation",
+                    "Travel",
+                    "Utilities"
+                  ]}
+                  className={"flex-grow"}
+                  value={company_details.industry}
+                  onChange={(e) => {
+                    setcompany_details((prev) => ({
+                      ...prev,
+                      industry: e.target.value,
+                    }));
+                  }}
+                  placeholder={"Industry"}
+                />
               <DateInput
                 name={"found_in_date"}
                 type={"date"}
@@ -726,6 +766,7 @@ function Signup() {
                 }}
                 value={company_details.found_in_date}
               />
+              </div>
               {/* <UrlInput
                name={"website"}
                placeholder={"Website"}
@@ -743,7 +784,7 @@ function Signup() {
         </div>
         <Button
           type="submit"
-          className={`flex items-center text-xl justify-center bg-blue-500 text-white py-2  rounded disabled:opacity-50 mt-6 `}
+          className={`flex items-center text-xl justify-center   bg-blue-500 text-white py-2  rounded disabled:opacity-50 mt-6 ${userNameAvailable?"-translate-y-0":"-translate-y-[300px]"}`}
           disabled={!isFormValid() || loader} // Ensure the form validation is active
         >
           {loader ? (

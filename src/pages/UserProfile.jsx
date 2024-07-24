@@ -90,7 +90,6 @@ const UserProfile = () => {
     ],
   };
 
-
   const [loading, setLoading] = useState({
     education: true,
     skills: true,
@@ -851,8 +850,10 @@ const UserProfile = () => {
                   {atTop >= 100 ? user.username : "Profile"}
                 </p>
                 <div className="flex gap-1 items-center">
-                  <span className="h-2 w-2 rounded-full border bg-green-500"></span>
-                  <p className="text-xs text-gray-400">Currently active</p>
+                  <span className="h-2 w-2 rounded-full shadow-lg bg-green-500"></span>
+                  <p className="text-xs text-gray-400 -mt-px">
+                    Currently active
+                  </p>
                 </div>
               </div>
             </div>
@@ -913,8 +914,8 @@ const UserProfile = () => {
                 </div>
               </div>
             ) : (
-              <div className="mt-2">
-                <div className="flex  w-full gap-4  items-center">
+              <div className="mt-2 flex flex-col ">
+                <div className="flex mb-4 w-full gap-4  items-center">
                   <UserImageInput
                     isEditable={false}
                     image={userDetails.profileImage}
@@ -923,7 +924,11 @@ const UserProfile = () => {
                   <div className="flex w-full  justify-between items-center">
                     <div>
                       <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-                        {user.account_type == "Employeer"?user.company_details.company_name:user.personal_details?.firstname+" "+user.personal_details?.lastname}
+                        {user.account_type == "Employeer"
+                          ? user.company_details.company_name
+                          : user.personal_details?.firstname +
+                            " " +
+                            user.personal_details?.lastname}
                       </h1>
                       <div className="flex  gap-2">
                         <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
@@ -933,35 +938,10 @@ const UserProfile = () => {
                     </div>
                   </div>
                 </div>
-                <div className="order-2">
-                  <p className="mt-2 ">{userDetails.about}</p>
-                </div>
-                {/* <div className="flex items-end order-5 md:order-3 text-sm space-x-1 mt-3 font-bold">
-              <svg
-                text="muted"
-                aria-hidden="true"
-                height="18"
-                fill="#848d97"
-                viewBox="0 0 16 16"
-                version="1.1"
-                width="16"
-                data-view-component="true"
-                class="octicon octicon-people pb-0.5"
-              >
-                <path d="M2 5.5a3.5 3.5 0 1 1 5.898 2.549 5.508 5.508 0 0 1 3.034 4.084.75.75 0 1 1-1.482.235 4 4 0 0 0-7.9 0 .75.75 0 0 1-1.482-.236A5.507 5.507 0 0 1 3.102 8.05 3.493 3.493 0 0 1 2 5.5ZM11 4a3.001 3.001 0 0 1 2.22 5.018 5.01 5.01 0 0 1 2.56 3.012.749.749 0 0 1-.885.954.752.752 0 0 1-.549-.514 3.507 3.507 0 0 0-2.522-2.372.75.75 0 0 1-.574-.73v-.352a.75.75 0 0 1 .416-.672A1.5 1.5 0 0 0 11 5.5.75.75 0 0 1 11 4Zm-5.5-.5a2 2 0 1 0-.001 3.999A2 2 0 0 0 5.5 3.5Z"></path>
-              </svg>
-              <p>
-                {" "}
-                20<span className="text-[#848d97] font-normal">
-                  {" "}
-                  followers
-                </span>{" "}
-                · 20{" "}
-                <span className="text-[#848d97] font-normal">following</span>
-              </p>
-            </div> */}
-                <div className="order-4 flex flex-col gap-2">
-                  {userDetails.email &&  user.account_type === "Candidate" &&(
+
+               
+                <div className="order-3 flex flex-col gap-2">
+                  {/* {userDetails.email &&  user.account_type === "Candidate" &&(
                     <div className="flex order-4 mt-5 text-sm items-center gap-2">
                       <svg
                         class="octicon octicon-mail"
@@ -976,8 +956,8 @@ const UserProfile = () => {
                       </svg>
                       <p>{userDetails.email}</p>
                     </div>
-                  )}
-                  <div className=" space-y-2 order-4 text-sm">
+                  )} */}
+                  {/* <div className=" space-y-2 order-4 text-sm">
                     {userDetails.githubLink && (
                       <a
                         className="flex  gap-2 cursor-pointer"
@@ -1111,14 +1091,58 @@ const UserProfile = () => {
                         <p>{userDetails.portfolioLink}</p>
                       </a>
                     )}
-                  </div>
+                  </div> */}
+                  {user.account_type == "Employeer" &&
+                     (user.company_details.bio ? (
+                      <div>{user.company_details.bio}</div>
+                    ) : (
+                      <div
+                        onClick={() => {
+                          setFormType("userDetails");
+                        }}
+                        className=" text-sm font-normal text-gray-300 px-2 py-1 rounded-lg border w-fit  border-dashed"
+                      >
+                        Add a bio +
+                      </div>
+                    ))}
+                  {userDetails.account_type == "Candidate" && (
+                    <div className="order-2 text-sm -mb-2">
+                      <p className="mt-2 ">Works at Google</p>
+                    </div>
+                  )}
+                   <div className="flex text-gray-400  order-4  items-end text-sm space-x-1">
+                  {/* <svg
+                    text="muted"
+                    aria-hidden="true"
+                    height="18"
+                    fill="#9ca3af"
+                    viewBox="0 0 16 16"
+                    version="1.1"
+                    width="16"
+                    data-view-component="true"
+                    class="octicon octicon-people pb-0.5"
+                  >
+                    <path d="M2 5.5a3.5 3.5 0 1 1 5.898 2.549 5.508 5.508 0 0 1 3.034 4.084.75.75 0 1 1-1.482.235 4 4 0 0 0-7.9 0 .75.75 0 0 1-1.482-.236A5.507 5.507 0 0 1 3.102 8.05 3.493 3.493 0 0 1 2 5.5ZM11 4a3.001 3.001 0 0 1 2.22 5.018 5.01 5.01 0 0 1 2.56 3.012.749.749 0 0 1-.885.954.752.752 0 0 1-.549-.514 3.507 3.507 0 0 0-2.522-2.372.75.75 0 0 1-.574-.73v-.352a.75.75 0 0 1 .416-.672A1.5 1.5 0 0 0 11 5.5.75.75 0 0 1 11 4Zm-5.5-.5a2 2 0 1 0-.001 3.999A2 2 0 0 0 5.5 3.5Z"></path>
+                  </svg> */}
+                  <p>
+                    <span>
+                      {userDetails.company_details.location?.address} ·{" "}
+                    </span>
+                    {userDetails.followers?userDetails.followers:0}<span className=" "> followers</span> 
+                    {/* · {userDetails.followings?userDetails.followings:0}{" "}
+                    <span className="">following</span> */}
+                  </p>
                 </div>
-                <div className="flex gap-1 order-1 mt-2 max-w-full flex-wrap ">
-                  {userDetails.tags?.map((tag) => (
-                    <p className="flex rounded-md w-fit text-blue-500 text-nowrap">
-                      #{tag}
+                  <div className="flex gap-1 order-last max-w-full flex-wrap ">
+                    {userDetails.tags?.map((tag) => (
+                      <p className="flex rounded-md w-fit px-px  text-blue-500 text-nowrap">
+                        #{tag}
+                      </p>
+                    ))}
+                    <p className="text-xs text-gray-400 -mt-1.5">
+                      The tags won't be shown on you profile
                     </p>
-                  ))}
+                  </div>
                 </div>
               </div>
             )}
@@ -1152,7 +1176,7 @@ const UserProfile = () => {
             }}
             className={`flex-grow z-20  max-w-full overflow-x-auto border-b sm:border-x  ${
               atTop > 340 ? " md:border-t" : null
-            } w-full -mt-px sticky top-16 sm:top-0  gap-3  mb-4   order-last bg-white   font-medium  h-full  flex`}
+            } w-full -mt-px sticky top-16 sm:top-0  gap-3  md:mb-4   order-last bg-white   font-medium  h-full  flex`}
           >
             {/* <p className=" px-4 w-full text-center bg-blue-50 border-b-2 border-blue-500 py-3">
               Profile
@@ -1233,9 +1257,13 @@ const UserProfile = () => {
             <div className="bg-white w-full h-full">Hello</div>
           )}
 
+          {currentTab == "About" && (
+            <div className="bg-white w-full h-full">Hello</div>
+          )}
+
           {currentTab == "Jobs" &&
             (jobData.length > 0 ? (
-              <div className="bg-white border-x h-full px-4 py-4 md:border -mt-4 md:-mt-0 w-full flex-1">
+              <div className="bg-white border-x h-full px-4 py-4 md:border md:-mt-0 w-full flex-1">
                 <div className="flex justify-between mb-3 items-center">
                   <p className="font-medium">Recently posted jobs</p>
                   <p
