@@ -247,23 +247,23 @@ function UserDetailsForm({ onClose, setData, data }) {
               placeholder="Found in"
               isRequired={true}
             />
-            <LocationInput
-              name="location"
-              value={formData.company_details.location}
-              onChange={handleInputChange}
-              placeholder="Location"
-              isRequired={true}
-            />
           </>
         )}
-      
-          <TextAreaInput
-            name="bio"
-            value={formData.bio}
-            onChange={handleInputChange}
-            placeholder="Bio"
-          />
-    
+
+        <LocationInput
+          name="location"
+          value={formData.location}
+          onChange={handleInputChange}
+          placeholder="Location"
+          isRequired={true}
+        />
+
+        <TextAreaInput
+          name="bio"
+          value={formData.bio}
+          onChange={handleInputChange}
+          placeholder="Bio"
+        />
 
         <AddInput
           name="tags"
@@ -294,7 +294,7 @@ function UserDetailsForm({ onClose, setData, data }) {
             placeholder="Portfolio"
           />
         )}
-         {userData.account_type == "Employeer" && (
+        {userData.account_type == "Employeer" && (
           <UrlInput
             name="website"
             value={formData.company_details.website}

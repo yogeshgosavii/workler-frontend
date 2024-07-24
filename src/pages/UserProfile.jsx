@@ -1104,7 +1104,9 @@ const UserProfile = () => {
                     </div>
                   )}
                   {userDetails.account_type == "Candidate" && (
-                    <div className="order-2 text-sm -mb-2">
+                    <div  onClick={() => {
+                        setFormType("userDetails");
+                      }} className="order-2 text-sm -mb-2">
                       <p className="mt-2 ">Works at Google</p>
                     </div>
                   )}
@@ -1124,7 +1126,7 @@ const UserProfile = () => {
                   </svg> */}
                     <p>
                       <span>
-                        {userDetails.company_details.location?.address} ·{" "}
+                        {userDetails.location?.address} ·{" "}
                       </span>
                       {userDetails.followers ? userDetails.followers : 0}
                       <span className=" "> followers</span>
@@ -1132,13 +1134,15 @@ const UserProfile = () => {
                     <span className="">following</span> */}
                     </p>
                   </div>
-                  <div className="flex gap-1 order-last max-w-full flex-wrap ">
-                    {userDetails.tags?.map((tag) => (
+                  <div className="  order-last ">
+                   <div className="flex gap-1max-w-full flex-wrap ">
+                   {userDetails.tags?.map((tag) => (
                       <p className="flex rounded-md w-fit px-px  text-blue-500 text-nowrap">
                         #{tag}
                       </p>
                     ))}
-                    <p className="text-xs text-gray-400 -mt-1.5">
+                    </div>
+                    <p className="text-xs text-gray-400">
                       The tags won't be visible on you profile to others
                     </p>
                   </div>
