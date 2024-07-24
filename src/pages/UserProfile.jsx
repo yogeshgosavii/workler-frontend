@@ -42,6 +42,7 @@ const UserProfile = () => {
   const [jobData, setjobData] = useState();
   const profileApi = useProfileApi();
   const jobApi = useJobApi();
+  const [settings, setsettings] = useState(false);
 
   const [scrollDirection, setScrollDirection] = useState("up");
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -735,86 +736,89 @@ const UserProfile = () => {
   return (
     <div
       className={`w-full ${
+        settings ? "-ml-[60%]" : "-ml-0"
+      } ${
         (formType || updateFormType) && "fixed"
-      } flex flex-col md:flex-row justify-center gap-5  bg-gray-100  sm:py-5 md:px-5 `}
+      }  flex flex-col md:flex-row transition-all duration-300  justify-center gap-5  bg-gray-100  sm:py-5 md:px-5 `}
     >
-      {formType && (
-        <div
-          className="fixed inset-0 z-30 flex justify-center items-center bg-black bg-opacity-50"
-          onClick={handleClose}
-        >
+      <div className={``}>
+        {formType && (
           <div
-            className="fixed z-20 w-full border h-full sm:h-fit sm:max-w-md mx-auto"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-30 flex justify-center items-center bg-black bg-opacity-50"
+            onClick={handleClose}
           >
-            {console.log(formType)}
-            {React.createElement(FormComponents[formType], {
-              onClose: handleClose,
-              setData:
-                formType === "skills"
-                  ? setSkillData
-                  : formType === "education"
-                  ? setEducationData
-                  : formType === "work_experience"
-                  ? setWorkExperienceData
-                  : formType === "personalDetails"
-                  ? setPersonalData
-                  : formType === "userDetails"
-                  ? setuserDetails
-                  : formType === "job"
-                  ? setjobData
-                  : null,
-              data:
-                formType === "skills"
-                  ? skillData
-                  : formType === "education"
-                  ? educationData
-                  : formType === "work_experience"
-                  ? workExperienceData
-                  : formType === "personalDetails"
-                  ? personalData
-                  : formType === "userDetails"
-                  ? userDetails
-                  : formType == "job"
-                  ? jobData
-                  : null,
-            })}
+            <div
+              className="fixed z-20 w-full border h-full sm:h-fit sm:max-w-md mx-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {console.log(formType)}
+              {React.createElement(FormComponents[formType], {
+                onClose: handleClose,
+                setData:
+                  formType === "skills"
+                    ? setSkillData
+                    : formType === "education"
+                    ? setEducationData
+                    : formType === "work_experience"
+                    ? setWorkExperienceData
+                    : formType === "personalDetails"
+                    ? setPersonalData
+                    : formType === "userDetails"
+                    ? setuserDetails
+                    : formType === "job"
+                    ? setjobData
+                    : null,
+                data:
+                  formType === "skills"
+                    ? skillData
+                    : formType === "education"
+                    ? educationData
+                    : formType === "work_experience"
+                    ? workExperienceData
+                    : formType === "personalDetails"
+                    ? personalData
+                    : formType === "userDetails"
+                    ? userDetails
+                    : formType == "job"
+                    ? jobData
+                    : null,
+              })}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {updateFormType ? (
-        <div
-          className="fixed inset-0 z-30 flex justify-center items-center bg-black bg-opacity-50"
-          onClick={handleClose}
-        >
+        {updateFormType ? (
           <div
-            className="fixed z-20 w-full border h-full sm:h-fit sm:max-w-md mx-auto"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-30 flex justify-center items-center bg-black bg-opacity-50"
+            onClick={handleClose}
           >
-            {React.createElement(UpdateFormComponents[updateFormType], {
-              onClose: handleUpdateFormClose,
-              data: updateData[updateFormType],
-              setData:
-                updateFormType === "skills"
-                  ? setSkillData
-                  : updateFormType === "education"
-                  ? setEducationData
-                  : updateFormType === "workExperience"
-                  ? setWorkExperienceData
-                  : updateFormType === "projects"
-                  ? setprojectData
-                  : updateFormType === "job"
-                  ? setjobData
-                  : null,
-            })}
+            <div
+              className="fixed z-20 w-full border h-full sm:h-fit sm:max-w-md mx-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {React.createElement(UpdateFormComponents[updateFormType], {
+                onClose: handleUpdateFormClose,
+                data: updateData[updateFormType],
+                setData:
+                  updateFormType === "skills"
+                    ? setSkillData
+                    : updateFormType === "education"
+                    ? setEducationData
+                    : updateFormType === "workExperience"
+                    ? setWorkExperienceData
+                    : updateFormType === "projects"
+                    ? setprojectData
+                    : updateFormType === "job"
+                    ? setjobData
+                    : null,
+              })}
+            </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
 
-      <div className="w-full md:min-w-[60%] h-full">
-        <div className="  flex gap-4 max-h-min flex-wrap ">
-          {/* <div className="w-full bg-white px-4 flex justify-end py-4 border-y">
+        <div className={`w-full md:min-w-[60%] h-full `}>
+          <div className="  flex gap-4 max-h-min flex-wrap ">
+            {/* <div className="w-full bg-white px-4 flex justify-end py-4 border-y">
           <svg
                   class="h-8 w-8 text-gray-400"
                   width="24"
@@ -832,115 +836,116 @@ const UserProfile = () => {
                   <circle cx="12" cy="12" r="3" />
                 </svg>
           </div> */}
-          <div
-            className={`w-full md:hidden ${
-              formType || updateFormType ? "hidden" : null
-            } fixed md:w-[57.6%] border-x md:mt-5  z-20 top-0  mb-4 px-4 py-4 bg-white flex  justify-between `}
-          >
-            <div className="flex items-center gap-4">
-              {atTop >= 100 && (
-                <UserImageInput
-                  isEditable={false}
-                  image={userDetails.profileImage}
-                  imageHeight="40"
-                />
-              )}
-              <div className="  flex flex-col justify-center ">
-                <p className="text-xl font-semibold">
-                  {atTop >= 100 ? user.username : "Profile"}
-                </p>
-                <div className="flex gap-1 items-center">
-                  <span className="h-2 w-2 rounded-full shadow-lg bg-green-500"></span>
-                  <p className="text-xs text-gray-400 -mt-px">
-                    Currently active
+            <div
+              className={`w-full md:hidden ${
+                formType || updateFormType ? "hidden" : ""
+              } fixed md:w-[57.6%] md:border-x md:mt-5 z-20 top-0 mb-4 px-4 py-4 bg-white flex justify-between`}
+            >
+              <div className="flex items-center gap-4">
+                {atTop >= 100 && (
+                  <UserImageInput
+                    isEditable={false}
+                    image={userDetails.profileImage}
+                    imageHeight="40"
+                  />
+                )}
+                <div className="flex flex-col justify-center">
+                  <p className="text-xl font-semibold">
+                    {atTop >= 100 ? user.username : "Profile"}
                   </p>
+                  <div className="flex gap-1 items-center">
+                    <span className="h-2 w-2 rounded-full shadow-lg bg-green-500"></span>
+                    <p className="text-xs text-gray-400 -mt-px">
+                      Currently active
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <svg
-              class="h-8 w-8 text-gray-800"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M4 6h16M4 12h16m-7 6h7"
-              />
-            </svg>
-          </div>
-          <div className="flex border-t pt-8 pb-6 mt-10 md:mt-0   flex-grow  sm:border-x  px-4 md:px-6 gap-3 bg-white justify-center flex-col">
-            <div className="w-full hidden md:flex   mb-4 bg-white   justify-between ">
-              <p className="text-2xl font-semibold">Profile</p>
               <svg
-                class="h-8 w-8 text-gray-800"
+                className="h-8 w-8 text-gray-800"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
+                onClick={() => setsettings(!settings)}
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M4 6h16M4 12h16m-7 6h7"
                 />
               </svg>
             </div>
-            {loading.userDetails ? (
-              <div className="animate-pulse mt-2">
-                <div className="flex  items-center">
-                  <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
-                  <div className=" w-32 ml-2">
-                    <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
+            <div className="flex border-t pt-8 pb-6 mt-10 md:mt-0   flex-grow  sm:border-x  px-4 md:px-6 gap-3 bg-white justify-center flex-col">
+              <div className="w-full hidden md:flex   mb-4 bg-white   justify-between ">
+                <p className="text-2xl font-semibold">Profile</p>
+                <svg
+                  class="h-8 w-8 text-gray-800"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 6h16M4 12h16m-7 6h7"
+                  />
+                </svg>
+              </div>
+              {loading.userDetails ? (
+                <div className="animate-pulse mt-2">
+                  <div className="flex  items-center">
+                    <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
+                    <div className=" w-32 ml-2">
+                      <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
+                    </div>
+                  </div>
+                  <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
+                  <div className="h-3 bg-gray-200 rounded-md mt-1"></div>
+                  <div className="flex  items-center mt-4">
+                    <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
+                    <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
+                  </div>
+                  <div className="flex  items-center mt-1">
+                    <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
+                    <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
+                  </div>
+
+                  <div className="flex mt-4">
+                    <div className="h-3 w-20 bg-gray-200 rounded-md "></div>
+                    <div className="h-3 w-20 bg-gray-200 rounded-md ml-2"></div>
                   </div>
                 </div>
-                <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
-                <div className="h-3 bg-gray-200 rounded-md mt-1"></div>
-                <div className="flex  items-center mt-4">
-                  <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
-                  <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
-                </div>
-                <div className="flex  items-center mt-1">
-                  <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
-                  <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
-                </div>
-
-                <div className="flex mt-4">
-                  <div className="h-3 w-20 bg-gray-200 rounded-md "></div>
-                  <div className="h-3 w-20 bg-gray-200 rounded-md ml-2"></div>
-                </div>
-              </div>
-            ) : (
-              <div className="mt-2 flex flex-col ">
-                <div className="flex mb-4 w-full gap-4  items-center">
-                  <UserImageInput
-                    isEditable={false}
-                    image={userDetails.profileImage}
-                    imageHeight="70"
-                  />
-                  <div className="flex w-full  justify-between items-center">
-                    <div>
-                      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-                        {user.account_type == "Employeer"
-                          ? userDetails.company_details.company_name
-                          : userDetails.personal_details?.firstname +
-                            " " +
-                            userDetails.personal_details?.lastname}
-                      </h1>
-                      <div className="flex  gap-2">
-                        <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
-                          {user?.username || "Username"}
-                        </p>
+              ) : (
+                <div className="mt-2 flex flex-col ">
+                  <div className="flex mb-4 w-full gap-4  items-center">
+                    <UserImageInput
+                      isEditable={false}
+                      image={userDetails.profileImage}
+                      imageHeight="70"
+                    />
+                    <div className="flex w-full  justify-between items-center">
+                      <div>
+                        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+                          {user.account_type == "Employeer"
+                            ? userDetails.company_details.company_name
+                            : userDetails.personal_details?.firstname +
+                              " " +
+                              userDetails.personal_details?.lastname}
+                        </h1>
+                        <div className="flex  gap-2">
+                          <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
+                            {user?.username || "Username"}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="order-3 flex flex-col gap-2">
-                  {/* {userDetails.email &&  user.account_type === "Candidate" &&(
+                  <div className="order-3 flex flex-col gap-2">
+                    {/* {userDetails.email &&  user.account_type === "Candidate" &&(
                     <div className="flex order-4 mt-5 text-sm items-center gap-2">
                       <svg
                         class="octicon octicon-mail"
@@ -956,7 +961,7 @@ const UserProfile = () => {
                       <p>{userDetails.email}</p>
                     </div>
                   )} */}
-                  {/* <div className=" space-y-2 order-4 text-sm">
+                    {/* <div className=" space-y-2 order-4 text-sm">
                     {userDetails.githubLink && (
                       <a
                         className="flex  gap-2 cursor-pointer"
@@ -1091,27 +1096,30 @@ const UserProfile = () => {
                       </a>
                     )}
                   </div> */}
-                  {userDetails.bio ? (
-                    <div>{userDetails.bio}</div>
-                  ) : (
-                    <div
-                      onClick={() => {
-                        setFormType("userDetails");
-                      }}
-                      className=" text-sm font-normal text-gray-300 px-2 py-1 rounded-lg border w-fit  border-dashed"
-                    >
-                      Add a bio +
-                    </div>
-                  )}
-                  {userDetails.account_type == "Candidate" && (
-                    <div  onClick={() => {
-                        setFormType("userDetails");
-                      }} className="order-2 text-sm -mb-2">
-                      <p className="mt-2 ">Works at Google</p>
-                    </div>
-                  )}
-                  <div className="flex text-gray-400  order-4  items-end text-sm space-x-1">
-                    {/* <svg
+                    {userDetails.bio ? (
+                      <div>{userDetails.bio}</div>
+                    ) : (
+                      <div
+                        onClick={() => {
+                          setFormType("userDetails");
+                        }}
+                        className=" text-sm font-normal text-gray-300 px-2 py-1 rounded-lg border w-fit  border-dashed"
+                      >
+                        Add a bio +
+                      </div>
+                    )}
+                    {userDetails.account_type == "Candidate" && (
+                      <div
+                        onClick={() => {
+                          setFormType("userDetails");
+                        }}
+                        className="order-2 text-sm -mb-2"
+                      >
+                        <p className="mt-2 ">Works at Google</p>
+                      </div>
+                    )}
+                    <div className="flex text-gray-400  order-4  items-end text-sm space-x-1">
+                      {/* <svg
                     text="muted"
                     aria-hidden="true"
                     height="18"
@@ -1124,41 +1132,39 @@ const UserProfile = () => {
                   >
                     <path d="M2 5.5a3.5 3.5 0 1 1 5.898 2.549 5.508 5.508 0 0 1 3.034 4.084.75.75 0 1 1-1.482.235 4 4 0 0 0-7.9 0 .75.75 0 0 1-1.482-.236A5.507 5.507 0 0 1 3.102 8.05 3.493 3.493 0 0 1 2 5.5ZM11 4a3.001 3.001 0 0 1 2.22 5.018 5.01 5.01 0 0 1 2.56 3.012.749.749 0 0 1-.885.954.752.752 0 0 1-.549-.514 3.507 3.507 0 0 0-2.522-2.372.75.75 0 0 1-.574-.73v-.352a.75.75 0 0 1 .416-.672A1.5 1.5 0 0 0 11 5.5.75.75 0 0 1 11 4Zm-5.5-.5a2 2 0 1 0-.001 3.999A2 2 0 0 0 5.5 3.5Z"></path>
                   </svg> */}
-                    <p>
-                      <span>
-                        {userDetails.location?.address} ·{" "}
-                      </span>
-                      {userDetails.followers ? userDetails.followers : 0}
-                      <span className=" "> followers</span>
-                      {/* · {userDetails.followings?userDetails.followings:0}{" "}
+                      <p>
+                        <span>{userDetails.location?.address} · </span>
+                        {userDetails.followers ? userDetails.followers : 0}
+                        <span className=" "> followers</span>
+                        {/* · {userDetails.followings?userDetails.followings:0}{" "}
                     <span className="">following</span> */}
-                    </p>
-                  </div>
-                  <div className="  order-last ">
-                   <div className="flex gap-1 max-w-full flex-wrap ">
-                   {userDetails.tags?.map((tag) => (
-                      <p className="flex rounded-md w-fit px-px  text-blue-500 text-nowrap">
-                        #{tag}
                       </p>
-                    ))}
                     </div>
-                    <p className="text-xs text-gray-400">
-                      The tags won't be visible on you profile to others
-                    </p>
+                    <div className=" mt-2 order-last ">
+                      <div className="flex gap-1 max-w-full flex-wrap ">
+                        {userDetails.tags?.map((tag) => (
+                          <p className="flex rounded-md w-fit px-px  text-blue-500 text-nowrap">
+                            #{tag}
+                          </p>
+                        ))}
+                      </div>
+                      <p className="text-xs text-gray-400">
+                        The tags won't be visible on you profile to others
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            <button
-              onClick={() => setFormType("userDetails")}
-              className="w-full flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5 border justify-center text-gray-600 bg-gray-100 sm:hover:bg-gray-200 py-1.5 rounded-md border-gray-400"
-            >
-              Edit details
-            </button>
-          </div>
+              <button
+                onClick={() => setFormType("userDetails")}
+                className="w-full flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5 border justify-center text-gray-600 bg-gray-100 sm:hover:bg-gray-200 py-1.5 rounded-md border-gray-400"
+              >
+                Edit details
+              </button>
+            </div>
 
-          {/* <div className="flex-grow gap-3 bg-white py-4  border font-medium  h-full md:w-fit px-6 flex w-full">
+            {/* <div className="flex-grow gap-3 bg-white py-4  border font-medium  h-full md:w-fit px-6 flex w-full">
             <p className=" px-4 w-full text-center bg-blue-50 border rounded-lg border-blue-500 py-1">
               Profile
             </p>
@@ -1166,52 +1172,52 @@ const UserProfile = () => {
               Posts
             </p>
           </div> */}
-        </div>
-        <div
-          className={` sticky top-16 z-20 transition-all ease-in-out sm:top-0 md:${
-            atTop < 340 ? "pt-0" : "pt-5"
-          } bg-gray-100`}
-        >
+          </div>
           <div
-            style={{
-              overflowX: "auto",
-              scrollbarWidth: "none" /* Firefox */,
-            }}
-            className={`flex-grow z-20  max-w-full overflow-x-auto border-b sm:border-x  ${
-              atTop > 340 ? " md:border-t" : null
-            } w-full -mt-px sticky top-16 sm:top-0  gap-3  md:mb-4   order-last bg-white   font-medium  h-full  flex`}
+            className={` sticky top-16 z-20 transition-all ease-in-out sm:top-0 md:${
+              atTop < 340 ? "pt-0" : "pt-5"
+            } bg-gray-100`}
           >
-            {/* <p className=" px-4 w-full text-center bg-blue-50 border-b-2 border-blue-500 py-3">
+            <div
+              style={{
+                overflowX: "auto",
+                scrollbarWidth: "none" /* Firefox */,
+              }}
+              className={`flex-grow z-20  max-w-full overflow-x-auto border-b sm:border-x  ${
+                atTop > 340 ? " md:border-t" : null
+              } w-full -mt-px sticky top-16 sm:top-0  gap-3  md:mb-4   order-last bg-white   font-medium  h-full  flex`}
+            >
+              {/* <p className=" px-4 w-full text-center bg-blue-50 border-b-2 border-blue-500 py-3">
               Profile
             </p>
             <p className=" px-4 w-full text-center py-3">
               Posts
             </p> */}
-            {[
-              "Home",
-              ...(userDetails.account_type == "Employeer"
-                ? ["About", "Posts", "Jobs", "People"]
-                : ["Posts", "Qualification"]),
-            ].map((tab) => (
-              <p
-                onClick={() => {
-                  setcurrentTab(tab);
-                }}
-                className={`px-4 text-base md:text-lg font-medium md:font-semibold cursor-pointer ${
-                  tab == currentTab
-                    ? "  border-b-2 text-blue-500 border-blue-500"
-                    : null
-                } w-full text-center py-2`}
-              >
-                {tab}
-              </p>
-            ))}
+              {[
+                "Home",
+                ...(userDetails.account_type == "Employeer"
+                  ? ["About", "Posts", "Jobs", "People"]
+                  : ["Posts", "Qualification"]),
+              ].map((tab) => (
+                <p
+                  onClick={() => {
+                    setcurrentTab(tab);
+                  }}
+                  className={`px-4 text-base md:text-lg font-medium md:font-semibold cursor-pointer ${
+                    tab == currentTab
+                      ? "  border-b-2 text-blue-500 border-blue-500"
+                      : null
+                  } w-full text-center py-2`}
+                >
+                  {tab}
+                </p>
+              ))}
+            </div>
           </div>
-        </div>
-        <div className="">
-          {currentTab == "Qualification" && (
-            <div>
-              {/* <div className="flex-grow border  h-full md:w-fit px-6 bg-white sm:px-8 py-5 flex w-full">
+          <div className="">
+            {currentTab == "Qualification" && (
+              <div>
+                {/* <div className="flex-grow border  h-full md:w-fit px-6 bg-white sm:px-8 py-5 flex w-full">
               <div className="h-full">
                 <p className="text-xl font-medium">Profile Analytics</p>
                 <PieChart
@@ -1237,118 +1243,138 @@ const UserProfile = () => {
                 />
               </div>
             </div> */}
-              {userDetailsList.map((item, index) => (
-                <div
-                  key={index}
-                  className="cursor-pointer bg-white"
-                  draggable
-                  onDragStart={(e) => handleDragStart(e, item.id)}
-                  onDrop={(e) => handleDrop(e, item.id)}
-                  onDragOver={(e) => e.preventDefault()}
-                >
-                  <Section
-                    id={item.id}
-                    title={item.title}
-                    content={item.content}
-                    loading={item.loading}
-                  />
+                {userDetailsList.map((item, index) => (
+                  <div
+                    key={index}
+                    className="cursor-pointer bg-white"
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, item.id)}
+                    onDrop={(e) => handleDrop(e, item.id)}
+                    onDragOver={(e) => e.preventDefault()}
+                  >
+                    <Section
+                      id={item.id}
+                      title={item.title}
+                      content={item.content}
+                      loading={item.loading}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+            {currentTab == "Posts" && (
+              <div className="bg-white w-full h-full">Hello</div>
+            )}
+
+            {currentTab == "About" && (
+              <div className="bg-white w-full h-full">Hello</div>
+            )}
+
+            {currentTab == "Jobs" &&
+              (jobData.length > 0 ? (
+                <div className="bg-white border-x h-full px-4 py-4 md:border md:-mt-0 w-full flex-1">
+                  <div className="flex justify-between mb-3 items-center">
+                    <p className="font-medium">Recently posted jobs</p>
+                    <p
+                      onClick={() => {
+                        setFormType("job");
+                      }}
+                      className="bg-blue-50 cursor-pointer text-xs text-blue-500 rounded-full border border-blue-500 font-medium py-1 px-4"
+                    >
+                      Create job
+                    </p>
+                  </div>
+
+                  {jobData.map((job, index) => (
+                    <div
+                      onClick={() => {
+                        console.log(job);
+                        setUpdateData({ job: job });
+                        setupdateFormType("job");
+                      }}
+                      className={`flex items-start gap-4 justify-between ${
+                        index < jobData.length - 1
+                          ? "border-b cursor-pointer"
+                          : ""
+                      } py-4`}
+                      key={job.id}
+                    >
+                      <div>
+                        <p className="text-xl font-medium">{job.job_role}</p>
+                        <p className="text-xs text-gray-800">
+                          {job.location.address}
+                        </p>
+                        {job.job_update_date ? (
+                          <p className="text-xs mt-0.5 text-gray-400">
+                            Updated{" "}
+                            {formatDistanceToNow(
+                              new Date(job.job_update_date),
+                              {
+                                addSuffix: true,
+                              }
+                            )}
+                          </p>
+                        ) : (
+                          <p className="text-xs mt-0.5 text-gray-400">
+                            Posted{" "}
+                            {formatDistanceToNow(new Date(job.job_post_date), {
+                              addSuffix: true,
+                            })}
+                          </p>
+                        )}
+                      </div>
+                      <svg
+                        class="h-7 w-7 text-gray-500"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        stroke-width="2"
+                        stroke="currentColor"
+                        fill="none"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        {" "}
+                        <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                        <circle cx="12" cy="12" r="1" />{" "}
+                        <circle cx="12" cy="19" r="1" />{" "}
+                        <circle cx="12" cy="5" r="1" />
+                      </svg>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
-          {currentTab == "Posts" && (
-            <div className="bg-white w-full h-full">Hello</div>
-          )}
-
-          {currentTab == "About" && (
-            <div className="bg-white w-full h-full">Hello</div>
-          )}
-
-          {currentTab == "Jobs" &&
-            (jobData.length > 0 ? (
-              <div className="bg-white border-x h-full px-4 py-4 md:border md:-mt-0 w-full flex-1">
-                <div className="flex justify-between mb-3 items-center">
-                  <p className="font-medium">Recently posted jobs</p>
+              ) : (
+                <div className="bg-white border-x  text-center pt-10 md:border -mt-4 md:-mt-0 items-center  w-full flex-1">
+                  <p className="font-bold text-2xl">No jobs posted </p>
                   <p
                     onClick={() => {
                       setFormType("job");
                     }}
-                    className="bg-blue-50 cursor-pointer text-xs text-blue-500 rounded-full border border-blue-500 font-medium py-1 px-4"
+                    className=" font-semibold text-blue-500 mt-1"
                   >
-                    Create job
+                    Post a job
                   </p>
                 </div>
-
-                {jobData.map((job, index) => (
-                  <div
-                    onClick={() => {
-                      console.log(job);
-                      setUpdateData({ job: job });
-                      setupdateFormType("job");
-                    }}
-                    className={`flex items-start gap-4 justify-between ${
-                      index < jobData.length - 1
-                        ? "border-b cursor-pointer"
-                        : ""
-                    } py-4`}
-                    key={job.id}
-                  >
-                    <div>
-                      <p className="text-xl font-medium">{job.job_role}</p>
-                      <p className="text-xs text-gray-800">
-                        {job.location.address}
-                      </p>
-                      {job.job_update_date ? (
-                        <p className="text-xs mt-0.5 text-gray-400">
-                          Updated{" "}
-                          {formatDistanceToNow(new Date(job.job_update_date), {
-                            addSuffix: true,
-                          })}
-                        </p>
-                      ) : (
-                        <p className="text-xs mt-0.5 text-gray-400">
-                          Posted{" "}
-                          {formatDistanceToNow(new Date(job.job_post_date), {
-                            addSuffix: true,
-                          })}
-                        </p>
-                      )}
-                    </div>
-                    <svg
-                      class="h-7 w-7 text-gray-500"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      stroke-width="2"
-                      stroke="currentColor"
-                      fill="none"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    >
-                      {" "}
-                      <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                      <circle cx="12" cy="12" r="1" />{" "}
-                      <circle cx="12" cy="19" r="1" />{" "}
-                      <circle cx="12" cy="5" r="1" />
-                    </svg>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="bg-white border-x  text-center pt-10 md:border -mt-4 md:-mt-0 items-center  w-full flex-1">
-                <p className="font-bold text-2xl">No jobs posted </p>
-                <p
-                  onClick={() => {
-                    setFormType("job");
-                  }}
-                  className=" font-semibold text-blue-500 mt-1"
-                >
-                  Post a job
-                </p>
-              </div>
-            ))}
+              ))}
+          </div>
         </div>
       </div>
+   {  true && <div
+        className={`fixed top-0 border-l  z-40 h-full w-[60%] bg-white transition-all duration-300 ease-in-out 
+          ${
+          settings ? " right-0" : "-right-[60%]"
+        }
+          `}
+      >
+        <div className="p-4 flex h-full flex-col">
+          <h2 className="text-xl font-semibold">Settings</h2>
+          <div className="flex-1 ">
+            
+          </div>
+          <p className="mt-2">Sign out</p>
+        </div>
+      </div>
+}
       <div className="w-full hidden md:flex flex-col gap-4">
         <div
           className={`border  h-fit px-6 sticky ${
