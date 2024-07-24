@@ -925,10 +925,10 @@ const UserProfile = () => {
                     <div>
                       <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
                         {user.account_type == "Employeer"
-                          ? user.company_details.company_name
-                          : user.personal_details?.firstname +
+                          ? userDetails.company_details.company_name
+                          : userDetails.personal_details?.firstname +
                             " " +
-                            user.personal_details?.lastname}
+                            userDetails.personal_details?.lastname}
                       </h1>
                       <div className="flex  gap-2">
                         <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
@@ -1135,7 +1135,7 @@ const UserProfile = () => {
                     </p>
                   </div>
                   <div className="  order-last ">
-                   <div className="flex gap-1max-w-full flex-wrap ">
+                   <div className="flex gap-1 max-w-full flex-wrap ">
                    {userDetails.tags?.map((tag) => (
                       <p className="flex rounded-md w-fit px-px  text-blue-500 text-nowrap">
                         #{tag}

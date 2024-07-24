@@ -16,6 +16,12 @@ function UserDetailsForm({ onClose, setData, data }) {
   const [loading, setloading] = useState(false);
   const [formData, setFormData] = useState(data);
   const [userDetails, setUserDetails] = useState(data);
+  const [company_details, setcompany_details] = useState(
+    formData?.company_details
+  );
+  const [personal_details, setpersonal_details] = useState(
+    formData?.personal_details
+  );
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState(null);
   const userData = useSelector((state) => state.auth.user);
@@ -41,8 +47,8 @@ function UserDetailsForm({ onClose, setData, data }) {
 
   const isFormValid = () => {
     return (
-      formData.username !== "" &&
-      formData.email !== "" &&
+      // formData.username !== "" &&
+      // formData.email !== "" &&
       !deepEqual(formData, userDetails)
     );
   };
@@ -206,27 +212,53 @@ function UserDetailsForm({ onClose, setData, data }) {
             Remove Image
           </Button>
         )}
-        <TextInput
-          name="company_name"
-          value={formData.company_details.company_name}
-          isRequired={true}
-          placeholder="Conpany name"
-          onChange={handleInputChange}
-        />
-        {userData.account_type == "Candidate" && (
+        {formData.account_type == "Employeer" && (
+          <TextInput
+            name="company_name"
+            value={formData.company_details?.company_name}
+            isRequired={true}
+            placeholder="Conpany name"
+            onChange={(e) => {
+              setFormData((prev) => ({
+                ...prev,
+                company_details: {
+                  ...prev.company_details,
+                  company_name: e.target.value,
+                },
+              }));
+            }}
+          />
+        )}
+        {formData.account_type == "Candidate" && (
           <>
             <TextInput
               name="firstname"
-              value={formData.firstname}
+              value={formData.personal_details?.firstname}
               isRequired={true}
               placeholder="Firstname"
-              onChange={handleInputChange}
+              onChange={(e) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  personal_details: {
+                    ...prev.personal_details,
+                    firstname: e.target.value,
+                  },
+                }));
+              }}
             />
             <TextInput
               name="lastname"
-              value={formData.lastname}
+              value={formData.personal_details?.lastname}
               placeholder="Lastname"
-              onChange={handleInputChange}
+              onChange={(e) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  personal_details: {
+                    ...prev.personal_details,
+                    lastname: e.target.value,
+                  },
+                }));
+              }}
             />
           </>
         )}
@@ -243,7 +275,15 @@ function UserDetailsForm({ onClose, setData, data }) {
               name="found_in_date"
               type={"date"}
               value={formData.company_details.found_in_date.split("T")[0]}
-              onChange={handleInputChange}
+              onChange={(e) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  company_details: {
+                    ...prev.company_details,
+                    found_in_date: e.target.value,
+                  },
+                }));
+              }}
               placeholder="Found in"
               isRequired={true}
             />
@@ -290,7 +330,15 @@ function UserDetailsForm({ onClose, setData, data }) {
           <UrlInput
             name="portfolio"
             value={formData.personal_details.portfolio}
-            onChange={handleInputChange}
+            onChange={(e) => {
+              setFormData((prev) => ({
+                ...prev,
+                personal_details: {
+                  ...prev.personal_details,
+                  portfolio: e.target.value,
+                },
+              }));
+            }}
             placeholder="Portfolio"
           />
         )}
@@ -298,7 +346,15 @@ function UserDetailsForm({ onClose, setData, data }) {
           <UrlInput
             name="website"
             value={formData.company_details.website}
-            onChange={handleInputChange}
+            onChange={(e) => {
+              setFormData((prev) => ({
+                ...prev,
+                company_details: {
+                  ...prev.company_details,
+                  website: e.target.value,
+                },
+              }));
+            }}
             placeholder="Website"
           />
         )}
