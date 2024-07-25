@@ -6,6 +6,8 @@ function UserImageInput({
   className,
   imageHeight = 50,
   image,
+  imageBorder = 2,
+  onClick,
   onImageChange, // callback to handle image change
 }) {
   const fileInputRef = useRef(null);
@@ -18,6 +20,7 @@ function UserImageInput({
   }, [image]);
 
   const handleImageClick = () => {
+    onClick()
     if (isEditable) {
       fileInputRef.current.click();
     }
@@ -42,7 +45,7 @@ function UserImageInput({
     <div className={`${className}`}>
       <div
         onClick={handleImageClick}
-        className={`relative bg-gray-50 ${isEditable ? "cursor-pointer" : ""} border-2 rounded-full flex items-center justify-center`}
+        className={`relative bg-gray-50 ${isEditable ? "cursor-pointer" : ""} border-${imageBorder} rounded-full flex items-center justify-center`}
         style={{ height: `${imageHeight}px`, width: `${imageHeight}px` }}
       >
         <img

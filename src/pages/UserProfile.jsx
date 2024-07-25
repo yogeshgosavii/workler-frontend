@@ -34,15 +34,19 @@ const UserProfile = () => {
   const [updateFormType, setupdateFormType] = useState(null);
   const user = useSelector((state) => state.auth.user);
   const [educationData, setEducationData] = useState([]);
+  const [latestEducation, setlatestEducation] = useState(null);
   const [personalData, setPersonalData] = useState(null);
   const [skillData, setSkillData] = useState([]);
-  const [workExperienceData, setWorkExperienceData] = useState([]); // Added work experience data
+  const [workExperienceData, setWorkExperienceData] = useState([]); 
+  const [worksAt, setworksAt] = useState(null);
   const [projectData, setprojectData] = useState([]);
   const [userDetails, setuserDetails] = useState([]);
   const [jobData, setjobData] = useState();
   const profileApi = useProfileApi();
   const jobApi = useJobApi();
   const [settings, setsettings] = useState(false);
+  const [showProfileImage, setshowProfileImage] = useState(false);
+  
 
   const [scrollDirection, setScrollDirection] = useState("up");
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -146,12 +150,30 @@ const UserProfile = () => {
     try {
       const data = await profileApi.education.getAll();
       setEducationData(data);
+  
+      if (data.length === 0) {
+        console.log("No education data available.");
+        return;
+      }
+      const currentDate = new Date();
+      const latestEducationData = data.reduce((closest, item) => {
+        const itemDate = new Date(item.end_month);
+        const closestDate = new Date(closest.end_month);
+  
+        return Math.abs(itemDate - currentDate) < Math.abs(closestDate - currentDate)
+          ? item
+          : closest;
+      });
+  
+      console.log("latestEducationData", latestEducationData);
+      setlatestEducation(latestEducationData);
     } catch (error) {
       console.error("Error fetching education data:", error);
     } finally {
       setLoading((prev) => ({ ...prev, education: false }));
     }
   }, [profileApi.education]);
+  
 
   const fetchProjectData = useCallback(async () => {
     try {
@@ -191,6 +213,11 @@ const UserProfile = () => {
     try {
       const data = await profileApi.workExperience.getAll();
       setWorkExperienceData(data);
+      data.map((item) => {
+        if (item.joiningDate && !item.leavingDate){
+           setworksAt(item);
+        }
+      })
     } catch (error) {
       console.error("Error fetching work experience data:", error);
     } finally {
@@ -324,7 +351,7 @@ const UserProfile = () => {
     const handlePopState = (event) => {
       console.log("Back button pressed. Event:", event);
 
-      setsettings(false)
+      setsettings(false);
       if (event.state && event.state.formType) {
         setFormType(event.state.formType);
       } else {
@@ -371,16 +398,15 @@ const UserProfile = () => {
         setsettings(false);
       }
     };
-  
+
     // Add event listener for popstate
     window.addEventListener("popstate", handlePopState);
-  
+
     // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
   }, [settings]); // Add settings to the dependency array
-  
 
   const handleUpdateFormClose = () => {
     setupdateFormType(null);
@@ -744,15 +770,15 @@ const UserProfile = () => {
 
   return (
     <div
-      className={`w-full  ${
-        settings ? "-ml-[60%]" : "-ml-0"
-      } ${
-        (formType || updateFormType) && "fixed"
-      }  flex flex-col md:flex-row transition-all duration-300  justify-center gap-5  bg-gray-100  sm:py-5 md:px-5 `}
+      className={`w-full  ${settings ? "-ml-[60%]" : "-ml-0"} ${
+        (formType || settings || showProfileImage || updateFormType) && "fixed"
+      }  flex flex-col md:flex-row transition-all duration-300   justify-center gap-5  bg-gray-100  sm:py-5 md:px-5 `}
     >
-      <div className={` ${
-        settings ? "pointer-events-none" : "pointer-events-auto"
-      }`}>
+      <div
+        className={`  w-full flex-1 flex-grow  ${
+          settings ? "pointer-events-none " : "pointer-events-auto"
+        }`}
+      >
         {formType && (
           <div
             className="fixed inset-0 z-30 flex justify-center items-center bg-black bg-opacity-50"
@@ -827,8 +853,16 @@ const UserProfile = () => {
           </div>
         ) : null}
 
-        <div className={`w-full md:min-w-[60%] h-full `}>
-          <div className="  flex gap-4 max-h-min flex-wrap ">
+        <div className={`w-full relative  md:min-w-full flex-1 h-full `}>
+          {showProfileImage && (
+            <div
+              onClick={() => {
+                setshowProfileImage(false);
+              }}
+              className={`h-full border w-full  top-0 backdrop-blur-3xl    opacity-55   z-50 absolute `}
+            ></div>
+          )}
+          <div className="  flex gap-4  max-h-min flex-wrap ">
             {/* <div className="w-full bg-white px-4 flex justify-end py-4 border-y">
           <svg
                   class="h-8 w-8 text-gray-400"
@@ -850,7 +884,7 @@ const UserProfile = () => {
             <div
               className={`w-full md:hidden ${
                 formType || updateFormType ? "hidden" : ""
-              } fixed md:w-[57.6%] md:border-x md:mt-5 z-20 top-0 mb-4 px-4 py-4 bg-white flex justify-between`}
+              } fixed md:min-w-[57.6%]  md:border-x md:mt-5 z-20 top-0 mb-4 px-4 py-4 bg-white flex justify-between`}
             >
               <div className="flex items-center gap-4">
                 {atTop >= 100 && (
@@ -878,7 +912,7 @@ const UserProfile = () => {
                 viewBox="0 0 24 24"
                 stroke="currentColor"
                 onClick={() => {
-                  setsettings(!settings)
+                  setsettings(!settings);
                   // setFormType(null)
                   // setupdateFormType(null)
                 }}
@@ -934,14 +968,21 @@ const UserProfile = () => {
                   </div>
                 </div>
               ) : (
-                <div className="mt-2 flex flex-col ">
-                  <div className="flex mb-4 w-full gap-4  items-center">
+                <div className="mt-2 flex relative  flex-col ">
+                  <div className="flex mb-4 mt-0.5  w-full gap-4  items-center">
                     <UserImageInput
+                      onClick={() => {
+                        setshowProfileImage(!showProfileImage);
+                      }}
+                      imageBorder={showProfileImage ? "none" : "2"}
+                      className={`transition-all ease-in-out  absolute  blur-none  duration-300 ${
+                        showProfileImage ? "ml-[40%] z-50 mt-40 scale-[2]" : ""
+                      }`}
                       isEditable={false}
                       image={userDetails.profileImage}
                       imageHeight="70"
                     />
-                    <div className="flex w-full  justify-between items-center">
+                    <div className="flex w-full ml-20  justify-between items-center">
                       <div>
                         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
                           {user.account_type == "Employeer"
@@ -1130,7 +1171,11 @@ const UserProfile = () => {
                         }}
                         className="order-2 text-sm -mb-2"
                       >
-                        <p className="mt-2 ">Works at Google</p>
+                        <p className="mt-2 text-wrap truncate">
+                         {worksAt &&
+                         <span>{worksAt.companyName}{"·"}</span>
+                         } {latestEducation && <span>Completed {latestEducation.course} from {latestEducation.university}</span>}
+                        </p>
                       </div>
                     )}
                     <div className="flex text-gray-400  order-4  items-end text-sm space-x-1">
@@ -1196,7 +1241,7 @@ const UserProfile = () => {
             <div
               style={{
                 overflowX: "auto",
-                scrollbarWidth: "none" /* Firefox */,
+                scrollbarWidth: "none",
               }}
               className={`flex-grow z-20  max-w-full overflow-x-auto border-b sm:border-x  ${
                 atTop > 340 ? " md:border-t" : null
@@ -1373,24 +1418,22 @@ const UserProfile = () => {
               ))}
           </div>
         </div>
-      </div>
-   {  true && <div
-        className={`fixed top-0 border-l  z-40 h-full w-[60%] bg-white transition-all duration-300 ease-in-out 
-          ${
-          settings ? " right-0" : "-right-[60%]"
-        }
+        {true && (
+          <div
+            className={`fixed top-0 border-l  z-40 h-full w-[60%] bg-white transition-all duration-300 ease-in-out 
+          ${settings ? " right-0" : "-right-[60%]"}
           `}
-      >
-        <div className="p-4 flex h-full flex-col">
-          <h2 className="text-xl font-semibold">Settings</h2>
-          <div className="flex-1 ">
-            
+          >
+            <div className="p-4 flex h-full flex-col">
+              <h2 className="text-xl font-semibold">Settings</h2>
+              <div className="flex-1 "></div>
+              <p className="mt-2">Sign out</p>
+            </div>
           </div>
-          <p className="mt-2">Sign out</p>
-        </div>
+        )}
       </div>
-}
-      <div className="w-full hidden md:flex flex-col gap-4">
+
+      <div className=" min-w-[35%] hidden lg:flex flex-col gap-4">
         <div
           className={`border  h-fit px-6 sticky ${
             atTop <= 500 ? "-mt-8" : null
