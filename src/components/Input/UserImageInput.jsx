@@ -8,6 +8,7 @@ function UserImageInput({
   image,
   imageBorder = 2,
   onClick,
+  imageClassName,
   onImageChange, // callback to handle image change
 }) {
   const fileInputRef = useRef(null);
@@ -45,11 +46,11 @@ function UserImageInput({
     <div className={`${className}`}>
       <div
         onClick={handleImageClick}
-        className={`relative bg-gray-50 ${isEditable ? "cursor-pointer" : ""} border-${imageBorder} rounded-full flex items-center justify-center`}
+        className={`relative  bg-gray-50 ${isEditable ? "cursor-pointer" : ""} border-${imageBorder} rounded-full flex items-center justify-center`}
         style={{ height: `${imageHeight}px`, width: `${imageHeight}px` }}
       >
         <img
-          className="object-cover rounded-full"
+          className={`object-cover rounded-full ${imageClassName}`}
           src={currentImage || profileImageDefault}
           alt="Profile"
           style={{ height: "100%", width: "100%" }}

@@ -37,7 +37,7 @@ const UserProfile = () => {
   const [latestEducation, setlatestEducation] = useState(null);
   const [personalData, setPersonalData] = useState(null);
   const [skillData, setSkillData] = useState([]);
-  const [workExperienceData, setWorkExperienceData] = useState([]); 
+  const [workExperienceData, setWorkExperienceData] = useState([]);
   const [worksAt, setworksAt] = useState(null);
   const [projectData, setprojectData] = useState([]);
   const [userDetails, setuserDetails] = useState([]);
@@ -46,7 +46,6 @@ const UserProfile = () => {
   const jobApi = useJobApi();
   const [settings, setsettings] = useState(false);
   const [showProfileImage, setshowProfileImage] = useState(false);
-  
 
   const [scrollDirection, setScrollDirection] = useState("up");
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -150,7 +149,7 @@ const UserProfile = () => {
     try {
       const data = await profileApi.education.getAll();
       setEducationData(data);
-  
+
       if (data.length === 0) {
         console.log("No education data available.");
         return;
@@ -159,12 +158,13 @@ const UserProfile = () => {
       const latestEducationData = data.reduce((closest, item) => {
         const itemDate = new Date(item.end_month);
         const closestDate = new Date(closest.end_month);
-  
-        return Math.abs(itemDate - currentDate) < Math.abs(closestDate - currentDate)
+
+        return Math.abs(itemDate - currentDate) <
+          Math.abs(closestDate - currentDate)
           ? item
           : closest;
       });
-  
+
       console.log("latestEducationData", latestEducationData);
       setlatestEducation(latestEducationData);
     } catch (error) {
@@ -173,7 +173,6 @@ const UserProfile = () => {
       setLoading((prev) => ({ ...prev, education: false }));
     }
   }, [profileApi.education]);
-  
 
   const fetchProjectData = useCallback(async () => {
     try {
@@ -214,10 +213,10 @@ const UserProfile = () => {
       const data = await profileApi.workExperience.getAll();
       setWorkExperienceData(data);
       data.map((item) => {
-        if (item.joiningDate && !item.leavingDate){
-           setworksAt(item);
+        if (item.joiningDate && !item.leavingDate) {
+          setworksAt(item);
         }
-      })
+      });
     } catch (error) {
       console.error("Error fetching work experience data:", error);
     } finally {
@@ -853,13 +852,13 @@ const UserProfile = () => {
           </div>
         ) : null}
 
-        <div className={`w-full relative  md:min-w-full flex-1 h-full `}>
+        <div className={`w-full relative md:min-w-full flex-1 h-full `}>
           {showProfileImage && (
             <div
               onClick={() => {
                 setshowProfileImage(false);
               }}
-              className={`h-full border w-full  top-0 backdrop-blur-3xl    opacity-55   z-50 absolute `}
+              className={`h-screen border w-full top-0 bg-white opacity-85   z-50 absolute `}
             ></div>
           )}
           <div className="  flex gap-4  max-h-min flex-wrap ">
@@ -898,7 +897,7 @@ const UserProfile = () => {
                   <p className="text-xl font-semibold">
                     {atTop >= 100 ? user.username : "Profile"}
                   </p>
-                  <div className="flex gap-1 items-center">
+                  <div className="flex gap-1 mt-0.5 items-center">
                     <span className="h-2 w-2 rounded-full shadow-lg bg-green-500"></span>
                     <p className="text-xs text-gray-400 -mt-px">
                       Currently active
@@ -975,9 +974,12 @@ const UserProfile = () => {
                         setshowProfileImage(!showProfileImage);
                       }}
                       imageBorder={showProfileImage ? "none" : "2"}
-                      className={`transition-all ease-in-out  absolute  blur-none  duration-300 ${
-                        showProfileImage ? "ml-[40%] z-50 mt-40 scale-[2]" : ""
+                      className={`transition-all ease-in-out absolute sh  blur-none  duration-300 ${
+                        showProfileImage
+                          ? "ml-[40%]   z-50 mt-80 scale-[3] "
+                          : ""
                       }`}
+                      imageClassName={showProfileImage ? "shadow-3xl" : ""}
                       isEditable={false}
                       image={userDetails.profileImage}
                       imageHeight="70"
@@ -1172,9 +1174,20 @@ const UserProfile = () => {
                         className="order-2 text-sm -mb-2"
                       >
                         <p className="mt-2 text-wrap truncate">
-                         {worksAt &&
-                         <span>{worksAt.companyName}{"·"}</span>
-                         } {latestEducation && <span>Completed {latestEducation.course} from {latestEducation.university}</span>}
+                          Works at{" "}
+                          {worksAt && (
+                            <span>
+                              {worksAt.companyName}{" "}
+                              <span className="font-extrabold ">{"·"}</span>
+                            </span>
+                          )}{" "}
+                          {latestEducation && (
+                            <span>
+                              {" "}
+                              Completed {latestEducation.course} from{" "}
+                              {latestEducation.university}
+                            </span>
+                          )}
                         </p>
                       </div>
                     )}
