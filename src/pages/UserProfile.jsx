@@ -968,15 +968,15 @@ const UserProfile = () => {
                 </div>
               ) : (
                 <div className="mt-2 flex relative  flex-col ">
-                  <div className="flex mb-4 mt-0.5  w-full gap-4  items-center">
+                  <div className="flex mb-4 mt-1  w-full gap-4  items-center">
                     <UserImageInput
                       onClick={() => {
                         setshowProfileImage(!showProfileImage);
                       }}
                       imageBorder={showProfileImage ? "none" : "2"}
-                      className={`transition-all ease-in-out absolute sh  blur-none  duration-300 ${
+                      className={`transition-all ease-in-out absolute  blur-none  duration-300 ${
                         showProfileImage
-                          ? "ml-[40%]   z-50 mt-80 scale-[3] "
+                          ? "ml-[40%]   z-50 mt-80 scale-[3.5] "
                           : ""
                       }`}
                       imageClassName={showProfileImage ? "shadow-3xl" : ""}
@@ -1155,24 +1155,19 @@ const UserProfile = () => {
                     )}
                   </div> */}
                     {userDetails.bio ? (
-                      <div>{userDetails.bio}</div>
+                      <div onClick={() => setFormType("userDetails")}>
+                        {userDetails.bio}
+                      </div>
                     ) : (
                       <div
-                        onClick={() => {
-                          setFormType("userDetails");
-                        }}
+                        onClick={() => setFormType("userDetails")}
                         className=" text-sm font-normal text-gray-300 px-2 py-1 rounded-lg border w-fit  border-dashed"
                       >
                         Add a bio +
                       </div>
                     )}
                     {userDetails.account_type == "Candidate" && (
-                      <div
-                        onClick={() => {
-                          setFormType("userDetails");
-                        }}
-                        className="order-2 text-sm -mb-2"
-                      >
+                      <div className="order-2 text-sm -mb-2">
                         <p className="mt-2 text-wrap truncate">
                           Works at{" "}
                           {worksAt && (
