@@ -976,7 +976,7 @@ const UserProfile = () => {
                       imageBorder={showProfileImage ? "none" : "2"}
                       className={`transition-all ease-in-out absolute  blur-none  duration-300 ${
                         showProfileImage
-                          ? "ml-[40%]   z-50 mt-80 scale-[3.5] "
+                          ? " ml-[40%] md:ml-[45%]  z-50 translate-y-[200%] scale-[3.5] "
                           : ""
                       }`}
                       imageClassName={showProfileImage ? "shadow-3xl" : ""}
@@ -1335,7 +1335,58 @@ const UserProfile = () => {
             )}
 
             {currentTab == "About" && (
-              <div className="bg-white w-full h-full">Hello</div>
+              <div className="bg-white flex flex-col gap-8 w-full px-4 py-4 sm:px-8 h-full">
+                <div className="">
+                  <p className="text-xl font-semibold mb-2">Description</p>
+                  {userDetails?.company_details.description ? (
+                      <div>
+                        <p>Website</p>
+                        <p>{userDetails?.company_details.website}</p>
+                      </div>
+                    ):(
+                      <div
+                      className="text-sm font-normal text-gray-300 p-3 px-4 rounded-xl border w-fit border-dashed"
+                    >
+                      Add a description. For example: "We are a dynamic company committed to excellence and innovation."
+                    </div>
+                    )}
+                </div>
+                <div>
+                  <p className="font-medium text-lg mb-2">Details</p>
+                  <div className="text-sm flex flex-col gap-2">
+                    {userDetails?.company_details.website && (
+                      <div>
+                        <p>Website</p>
+                        <p>{userDetails?.company_details.website}</p>
+                      </div>
+                    )}
+                    {userDetails?.company_details.industry && (
+                      <div>
+                        <p>Industry</p>
+                        <p>{userDetails?.company_details.industry}</p>
+                      </div>
+                    )}
+                    {userDetails?.location && (
+                      <div>
+                        <p>Company location</p>
+                        <p className="text-gray-400">
+                          {userDetails?.location.address}
+                        </p>
+                      </div>
+                    )}
+                    {userDetails?.company_details.found_in_date && (
+                      <div>
+                        <p>Found in</p>
+                        <p className="text-gray-400">
+                          {new Date(
+                            userDetails.company_details.found_in_date
+                          ).getFullYear()}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             )}
 
             {currentTab == "Jobs" &&
