@@ -1,5 +1,5 @@
-const API_URL = "https://workler-backend.vercel.app/api/auth";
-// const API_URL = "http://localhost:5002/api/auth";
+// const API_URL = "https://workler-backend.vercel.app/api/auth";
+const API_URL = "http://localhost:5002/api/auth";
 
 const token = localStorage.getItem("token");
 
@@ -83,7 +83,7 @@ const authService = {
   },
 
   updateUserDetails: async (data) => {
-    console.log(data); // Inspect the data being sent
+    console.log("INspect",data); // Inspect the data being sent
     try {
       const response = await fetch(`${API_URL}/update-user`, {
         method: "PUT", // Ensure method is set correctly

@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+} from "react";
 import { useSelector } from "react-redux";
 import profileImageDefault from "../assets/user_male_icon.png";
 import EducationForm from "../components/Forms/EducationForm";
@@ -25,6 +31,8 @@ import UserDetailsForm from "../components/Forms/UserDetailsForm";
 import UserImageInput from "../components/Input/UserImageInput";
 import authService from "../services/authService";
 import JobUpdateForm from "../components/Forms/JobUpdateForm";
+import TextInput from "../components/Input/TextInput";
+import Button from "../components/Button/Button";
 
 // Register necessary components from Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
@@ -46,6 +54,8 @@ const UserProfile = () => {
   const jobApi = useJobApi();
   const [settings, setsettings] = useState(false);
   const [showProfileImage, setshowProfileImage] = useState(false);
+  const [descriptionInput, setdescriptionInput] = useState(false);
+  const [descriptionInputText, setdescriptionInputText] = useState("");
 
   const [scrollDirection, setScrollDirection] = useState("up");
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -72,7 +82,7 @@ const UserProfile = () => {
     };
   }, [lastScrollY]);
 
-  const [currentTab, setcurrentTab] = useState("Profile");
+  const [currentTab, setcurrentTab] = useState("Home");
   const data = {
     labels: ["ReactJs", "Frontend", "Java developer", "Spring boot"],
     datasets: [
@@ -117,6 +127,7 @@ const UserProfile = () => {
     personalDetails: null,
     job: null,
   });
+
   useEffect(() => {
     const fetchData = async () => {
       const token = localStorage.getItem("token");
@@ -229,6 +240,7 @@ const UserProfile = () => {
       const data = await authService.fetchUserDetails();
       setuserDetails(data);
       console.log("userDetails", userDetails);
+      setdescriptionInputText(data.description)
     } catch (error) {
       console.error("Error fetching user data:", error);
     } finally {
@@ -271,6 +283,23 @@ const UserProfile = () => {
   );
 
   const handleDragStart = (e, id) => e.dataTransfer.setData("id", id);
+
+  const adddescription = async () => {
+    console.log(descriptionInputText);
+    try {
+      const response = await authService.updateUserDetails({
+        ...userDetails,
+        description:descriptionInputText,
+      });
+      console.log(response);
+      setdescriptionInputText(response.description)
+      setuserDetails(response);
+      setdescriptionInput(false);
+      
+    } catch {
+      throw "Error: description error";
+    }
+  };
 
   const handleDrop = (e, id) => {
     e.preventDefault();
@@ -911,6 +940,7 @@ const UserProfile = () => {
                 viewBox="0 0 24 24"
                 stroke="currentColor"
                 onClick={() => {
+                  console.log("Hello");
                   setsettings(!settings);
                   // setFormType(null)
                   // setupdateFormType(null)
@@ -1283,6 +1313,46 @@ const UserProfile = () => {
             </div>
           </div>
           <div className="">
+            {currentTab == "Home" && (
+              <div className="space-y-2 py-2">
+                <div className="flex flex-col bg-white border-y md:border shadow-sm md:shadow-lg   gap-2">
+                  <div className="px-4 md:px-6 py-4">
+                    <p className="text-xl font-medium">About</p>
+                    <p className=" line-clamp-3 mt-1 text-sm mb-2">
+                      Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                      Similique dolores, neque fuga, molestiae molestias
+                      consectetur est enim omnis recusandae adipisci illum animi
+                      corporis sapiente libero ipsam, illo veritatis eveniet
+                      deleniti!
+                    </p>
+                    <a className="text-sm text-blue-500">
+                      {userDetails.company_details?.website}
+                    </a>
+                  </div>
+                  <p
+                    onClick={() => {
+                      setcurrentTab("About");
+                    }}
+                    className="w-full text-center text-sm border-t font-medium py-2 text-gray-500"
+                  >
+                    Learn more
+                  </p>
+                </div>
+                <div className="bg-white border-y md:border shadow-sm md:shadow-lg ">
+                  <div className="flex flex-col px-4 md:px-6 py-4 ">
+                    <p className="text-xl font-medium">Posts</p>
+                  </div>
+                  <p
+                    onClick={() => {
+                      setcurrentTab("Posts");
+                    }}
+                    className="w-full text-center text-sm border-t font-medium py-2 text-gray-500"
+                  >
+                    See all posts
+                  </p>
+                </div>
+              </div>
+            )}
             {currentTab == "Qualification" && (
               <div>
                 {/* <div className="flex-grow border  h-full md:w-fit px-6 bg-white sm:px-8 py-5 flex w-full">
@@ -1335,29 +1405,69 @@ const UserProfile = () => {
             )}
 
             {currentTab == "About" && (
-              <div className="bg-white flex flex-col gap-8 w-full px-4 py-4 sm:px-8 h-full">
-                <div className="">
+              <div className="bg-white flex flex-col gap-4 w-full px-4 py-4 sm:px-6 h-full">
+                <div className="relative overflow-hidden pb-12">
                   <p className="text-xl font-semibold mb-2">Description</p>
-                  {userDetails?.company_details.description ? (
-                      <div>
-                        <p>Website</p>
-                        <p>{userDetails?.company_details.website}</p>
+
+                  <div className={`text-sm ${descriptionInput ? "hidden" : ""}`}>
+                    {userDetails?.description ? (
+                      <div onClick={() => setdescriptionInput(true)}>
+                        <p>{userDetails.description}</p>
                       </div>
-                    ):(
+                    ) : (
                       <div
-                      className="text-sm font-normal text-gray-300 p-3 px-4 rounded-xl border w-fit border-dashed"
-                    >
-                      Add a description. For example: "We are a dynamic company committed to excellence and innovation."
-                    </div>
+                        onClick={() => setdescriptionInput(true)}
+                        className="text-sm font-normal text-gray-300 w-full"
+                      >
+                        Add a description. For example: "We are a dynamic
+                        company committed to excellence and innovation."
+                      </div>
                     )}
+                  </div>
+
+                  {descriptionInput && (
+                    <div>
+                      <textarea
+                        onChange={(e)=>{setdescriptionInputText(e.target.value)}}
+                        value={descriptionInputText}
+                        autoFocus
+                        placeholder='Add a description. For example: "We are a dynamic company committed to excellence and innovation."'
+                        className="text-sm -mb-[6px] h-full font-normal placeholder:text-wrap placeholder:text-gray-300 outline-none w-full"
+                      />
+                    </div>
+                  )}
+
+                  <div
+                    className={`absolute flex gap-2 right-0 bottom-0 transition-all ${
+                      descriptionInput ? "translate-x-0" : "translate-x-40"
+                    }`}
+                  >
+                    <button
+                      onClick={() => setdescriptionInput(false)}
+                      className="font-medium px-4 py-1 rounded-2xl text-blue-500"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={() => {
+                        adddescription();
+                      }}
+                      className="font-medium px-4 py-1 bg-blue-500 rounded-full text-white"
+                    >
+                      Save
+                    </button>
+                  </div>
                 </div>
-                <div>
-                  <p className="font-medium text-lg mb-2">Details</p>
+
+                <div className="-mt-4">
+                  <p className="font-medium text-lg mb-2  ">Details</p>
                   <div className="text-sm flex flex-col gap-2">
                     {userDetails?.company_details.website && (
                       <div>
                         <p>Website</p>
-                        <p>{userDetails?.company_details.website}</p>
+                        <p className="text-blue-500">
+                          {userDetails?.company_details.website}
+                        </p>
                       </div>
                     )}
                     {userDetails?.company_details.industry && (
@@ -1391,17 +1501,17 @@ const UserProfile = () => {
 
             {currentTab == "Jobs" &&
               (jobData.length > 0 ? (
-                <div className="bg-white border-x h-full px-4 py-4 md:border md:-mt-0 w-full flex-1">
+                <div className="bg-white border-x h-full px-4 py-4 md:px-6 md:border md:-mt-0 w-full flex-1">
                   <div className="flex justify-between mb-3 items-center">
                     <p className="font-medium">Recently posted jobs</p>
-                    <p
+                    <button
                       onClick={() => {
                         setFormType("job");
                       }}
-                      className="bg-blue-50 cursor-pointer text-xs text-blue-500 rounded-full border border-blue-500 font-medium py-1 px-4"
+                      className="text-blue-500 bg-blue-50 text-sm py-1 px-4 border rounded-full font-medium border-blue-500"
                     >
                       Create job
-                    </p>
+                    </button>
                   </div>
 
                   {jobData.map((job, index) => (
