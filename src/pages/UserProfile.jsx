@@ -18,6 +18,7 @@ import SkillUpdateForm from "../components/Forms/SkillUpdateForm";
 import WorkExperienceUpdateForm from "../components/Forms/WorkExperienceUpdateForm"; // Assuming you have this form
 import { format, formatDate } from "date-fns";
 import useProfileApi from "../services/profileService"; // Adjust the import path
+import { logout } from "../features/auth/authSlice";
 import useJobApi from "../services/jobService"; // Adjust the import path
 import { formatDistanceToNow } from "date-fns";
 
@@ -33,6 +34,7 @@ import authService from "../services/authService";
 import JobUpdateForm from "../components/Forms/JobUpdateForm";
 import TextInput from "../components/Input/TextInput";
 import Button from "../components/Button/Button";
+import { useDispatch } from "react-redux";
 
 // Register necessary components from Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
@@ -56,6 +58,7 @@ const UserProfile = () => {
   const [showProfileImage, setshowProfileImage] = useState(false);
   const [descriptionInput, setdescriptionInput] = useState(false);
   const [descriptionInputText, setdescriptionInputText] = useState("");
+  const dispatch = useDispatch();
 
   const [scrollDirection, setScrollDirection] = useState("up");
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -240,7 +243,7 @@ const UserProfile = () => {
       const data = await authService.fetchUserDetails();
       setuserDetails(data);
       console.log("userDetails", userDetails);
-      setdescriptionInputText(data.description)
+      setdescriptionInputText(data.description);
     } catch (error) {
       console.error("Error fetching user data:", error);
     } finally {
@@ -289,13 +292,12 @@ const UserProfile = () => {
     try {
       const response = await authService.updateUserDetails({
         ...userDetails,
-        description:descriptionInputText,
+        description: descriptionInputText,
       });
       console.log(response);
-      setdescriptionInputText(response.description)
+      setdescriptionInputText(response.description);
       setuserDetails(response);
       setdescriptionInput(false);
-      
     } catch {
       throw "Error: description error";
     }
@@ -700,7 +702,7 @@ const UserProfile = () => {
                         ( {data.employmentType} )
                       </span>
                     </p>
-                    <p className="">{data.companyName}</p>
+                    <p className="">{data.company_name}</p>
                     <p className="text-sm text-gray-400">
                       {formattedJoiningDate} - {formattedLeavingDate}
                     </p>
@@ -798,9 +800,7 @@ const UserProfile = () => {
 
   return (
     <div
-      className={`w-full  ${settings ? "-ml-[60%]" : "-ml-0"} ${
-        (formType || settings || showProfileImage || updateFormType) && "fixed"
-      }  flex flex-col md:flex-row transition-all duration-300   justify-center gap-5  bg-gray-100  sm:py-5 md:px-5 `}
+      className={`w-full flex    justify-center gap-5  bg-gray-100  sm:py-5 md:px-5 `}
     >
       <div
         className={`  w-full flex-1 flex-grow  ${
@@ -880,8 +880,13 @@ const UserProfile = () => {
             </div>
           </div>
         ) : null}
-
-        <div className={`w-full relative md:min-w-full flex-1 h-full `}>
+        {/* Profile page */}
+        <div
+          className={`w-full ${settings ? "-ml-[60%]" : "-ml-0"} ${
+            (formType || settings || showProfileImage || updateFormType) &&
+            "fixed"
+          }   md:flex-row transition-all duration-300 relative md:min-w-full flex-1 h-full `}
+        >
           {showProfileImage && (
             <div
               onClick={() => {
@@ -1091,7 +1096,7 @@ const UserProfile = () => {
                           userDetails.linkedInLink.startsWith("http")
                             ? "noopener noreferrer"
                             : ""
-                        }
+                        }`
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -1409,7 +1414,9 @@ const UserProfile = () => {
                 <div className="relative overflow-hidden pb-12">
                   <p className="text-xl font-semibold mb-2">Description</p>
 
-                  <div className={`text-sm ${descriptionInput ? "hidden" : ""}`}>
+                  <div
+                    className={`text-sm ${descriptionInput ? "hidden" : ""}`}
+                  >
                     {userDetails?.description ? (
                       <div onClick={() => setdescriptionInput(true)}>
                         <p>{userDetails.description}</p>
@@ -1428,11 +1435,13 @@ const UserProfile = () => {
                   {descriptionInput && (
                     <div>
                       <textarea
-                        onChange={(e)=>{setdescriptionInputText(e.target.value)}}
+                        onChange={(e) => {
+                          setdescriptionInputText(e.target.value);
+                        }}
                         value={descriptionInputText}
                         autoFocus
                         placeholder='Add a description. For example: "We are a dynamic company committed to excellence and innovation."'
-                        className="text-sm -mb-[6px] h-full font-normal placeholder:text-wrap placeholder:text-gray-300 outline-none w-full"
+                        className="text-sm caret-blue-500 -mb-[6px] h-full font-normal placeholder:text-wrap placeholder:text-gray-300 outline-none w-full"
                       />
                     </div>
                   )}
@@ -1587,20 +1596,29 @@ const UserProfile = () => {
               ))}
           </div>
         </div>
-        {true && (
-          <div
-            className={`fixed top-0 border-l  z-40 h-full w-[60%] bg-white transition-all duration-300 ease-in-out 
+      </div>
+      {true && (
+        <div
+          className={`fixed top-0 border-l  z-40 h-full w-[60%] bg-white transition-all duration-300 ease-in-out 
           ${settings ? " right-0" : "-right-[60%]"}
           `}
-          >
-            <div className="p-4 flex h-full flex-col">
-              <h2 className="text-xl font-semibold">Settings</h2>
-              <div className="flex-1 "></div>
-              <p className="mt-2">Sign out</p>
-            </div>
+        >
+          <div className="p-4 flex h-full flex-col">
+            <h2 className="text-xl font-semibold">Settings</h2>
+            <div className="flex-1 "></div>
+            <a
+              href="/login"
+              onClick={() => {
+                console.log("logout");
+                dispatch(logout());
+              }}
+              className="mt-2 border"
+            >
+              Sign out
+            </a>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className=" min-w-[35%] hidden lg:flex flex-col gap-4">
         <div
