@@ -25,6 +25,8 @@ import { formatDistanceToNow } from "date-fns";
 import { Doughnut } from "react-chartjs-2";
 import { PieChart } from "@mui/x-charts/PieChart";
 import githubLogo from "../assets/github-mark.svg";
+import { useNavigate, useLocation } from "react-router-dom";
+
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
 import ProjectUpdateForm from "../components/Forms/ProjectUpdateForm";
@@ -43,6 +45,7 @@ const UserProfile = () => {
   const [formType, setFormType] = useState(null);
   const [updateFormType, setupdateFormType] = useState(null);
   const user = useSelector((state) => state.auth.user);
+  const navigate = useNavigate();
   const [educationData, setEducationData] = useState([]);
   const [latestEducation, setlatestEducation] = useState(null);
   const [personalData, setPersonalData] = useState(null);
@@ -1319,16 +1322,22 @@ const UserProfile = () => {
           </div>
           <div className="">
             {currentTab == "Home" && (
-              <div className="space-y-2 py-2">
-                <div className="flex flex-col bg-white border-y md:border shadow-sm md:shadow-lg   gap-2">
+              <div className="space-y-2 ">
+                <div className="flex flex-col bg-white border-b md:border shadow-sm md:shadow-lg   gap-2">
                   <div className="px-4 md:px-6 py-4">
-                    <p className="text-xl font-medium">About</p>
+                    <p className="text-xl font-bold">About</p>
                     <p className=" line-clamp-3 mt-1 text-sm mb-2">
-                      Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                      Similique dolores, neque fuga, molestiae molestias
-                      consectetur est enim omnis recusandae adipisci illum animi
-                      corporis sapiente libero ipsam, illo veritatis eveniet
-                      deleniti!
+                      {userDetails == "" ? (
+                        <div>
+                          <div className="animate-pulse z-10 mt-2">
+                            <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
+                            <div className="h-2 bg-gray-200 rounded-md "></div>
+                            <div className="h-2 w-1/2 bg-gray-200 rounded-md mt-5"></div>
+                          </div>
+                        </div>
+                      ) : (
+                        <span> {userDetails.description}</span>
+                      )}
                     </p>
                     <a className="text-sm text-blue-500">
                       {userDetails.company_details?.website}
@@ -1338,7 +1347,7 @@ const UserProfile = () => {
                     onClick={() => {
                       setcurrentTab("About");
                     }}
-                    className="w-full text-center text-sm border-t font-medium py-2 text-gray-500"
+                    className="w-full text-center border-t font-medium py-2 text-gray-400"
                   >
                     Learn more
                   </p>
@@ -1351,7 +1360,7 @@ const UserProfile = () => {
                     onClick={() => {
                       setcurrentTab("Posts");
                     }}
-                    className="w-full text-center text-sm border-t font-medium py-2 text-gray-500"
+                    className="w-full text-center  border-t font-medium py-2 text-gray-400"
                   >
                     See all posts
                   </p>
@@ -1412,7 +1421,7 @@ const UserProfile = () => {
             {currentTab == "About" && (
               <div className="bg-white flex flex-col gap-4 w-full px-4 py-4 sm:px-6 h-full">
                 <div className="relative overflow-hidden pb-12">
-                  <p className="text-xl font-semibold mb-2">Description</p>
+                  <p className="text-xl font-bold mb-2">Description</p>
 
                   <div
                     className={`text-sm ${descriptionInput ? "hidden" : ""}`}
@@ -1469,7 +1478,7 @@ const UserProfile = () => {
                 </div>
 
                 <div className="-mt-4">
-                  <p className="font-medium text-lg mb-2  ">Details</p>
+                  <p className="font-semibold text-lg mb-2  ">Details</p>
                   <div className="text-sm flex flex-col gap-2">
                     {userDetails?.company_details.website && (
                       <div>
@@ -1530,15 +1539,15 @@ const UserProfile = () => {
                         setUpdateData({ job: job });
                         setupdateFormType("job");
                       }}
-                      className={`flex items-start gap-4 justify-between ${
+                      className={`flex py-2 items-start  justify-between ${
                         index < jobData.length - 1
                           ? "border-b cursor-pointer"
                           : ""
-                      } py-4`}
+                      } `}
                       key={job.id}
                     >
-                      <div>
-                        <p className="text-xl font-medium">{job.job_role}</p>
+                      <div className="">
+                        <p className="text-lg font-semibold">{job.job_role}</p>
                         <p className="text-xs text-gray-800">
                           {job.location.address}
                         </p>
@@ -1562,7 +1571,7 @@ const UserProfile = () => {
                         )}
                       </div>
                       <svg
-                        class="h-7 w-7 text-gray-500"
+                        class="h-6 w-6 mt-1.5 text-gray-500"
                         width="24"
                         height="24"
                         viewBox="0 0 24 24"
@@ -1607,9 +1616,10 @@ const UserProfile = () => {
             <h2 className="text-xl font-semibold">Settings</h2>
             <div className="flex-1 "></div>
             <a
-              href="/login"
+             
               onClick={() => {
                 console.log("logout");
+                navigate("/login")
                 dispatch(logout());
               }}
               className="mt-2 border"
