@@ -57,6 +57,12 @@ const UserProfile = () => {
   const [jobData, setjobData] = useState();
   const profileApi = useProfileApi();
   const jobApi = useJobApi();
+  useEffect(() => {
+    
+    return () => {
+      
+    };
+  }, []);
   const [settings, setsettings] = useState(false);
   const [showProfileImage, setshowProfileImage] = useState(false);
   const [descriptionInput, setdescriptionInput] = useState(false);
@@ -118,6 +124,24 @@ const UserProfile = () => {
     personalDetails: true,
     userDetails: true,
   });
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading((prev) => ({ ...prev, userDetails: true }));
+      try {
+        const data = await authService.fetchUserDetails();
+        setuserDetails(data);
+        setdescriptionInputText(data.description);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading((prev) => ({ ...prev, userDetails: false }));
+      }
+    };
+  
+    fetchData();
+  }, []);
+  
   const [updateForm, setUpdateForm] = useState({
     education: false,
     skills: false,
@@ -134,25 +158,25 @@ const UserProfile = () => {
     job: null,
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      console.log("token", token);
-      fetch("https://workler-backend.vercel.app/api/auth/user", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then((response) => response.text()) // Use text() to get the raw response
-        .then((data) => {
-          console.log(data); // Log the raw response
-          return JSON.parse(data); // Attempt to parse the response
-        })
-        .catch((error) => console.error("Error:", error));
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const token = localStorage.getItem("token");
+  //     console.log("token", token);
+  //     fetch("https://workler-backend.vercel.app/api/auth/user", {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     })
+  //       .then((response) => response.text()) // Use text() to get the raw response
+  //       .then((data) => {
+  //         console.log(data); // Log the raw response
+  //         return JSON.parse(data); // Attempt to parse the response
+  //       })
+  //       .catch((error) => console.error("Error:", error));
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
   const fetchJobData = useCallback(async () => {
     try {
       const data = await jobApi.job.getAll();
@@ -161,7 +185,7 @@ const UserProfile = () => {
       console.error("Error fetching education data:", error);
     } finally {
     }
-  }, [jobApi.job]);
+  }, []);
   const fetchEducationData = useCallback(async () => {
     try {
       const data = await profileApi.education.getAll();
@@ -401,18 +425,30 @@ const UserProfile = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const handlePopState = (event) => {
+      if (event.state && event.state.formType) {
+        setFormType(event.state.formType);
+      } else {
+        setFormType(null);
+      }
+    };
+  
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+  
   const handleClose = () => {
     setFormType(null);
-    console.log("Hello");
-    window.history.back(); // Go back to the previous state in the history
+    window.history.back();
   };
-
+  
   useEffect(() => {
     if (formType) {
-      // Push new state into history with formType
       window.history.pushState({ formType }, "", `profile/${formType}`);
     } else {
-      // Replace state if no formType is present
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [formType]);
@@ -1415,7 +1451,7 @@ const UserProfile = () => {
               </div>
             )}
             {currentTab == "Posts" && (
-              <div className="bg-white w-full h-full">Hello</div>
+              <div className="bg-white w-full h-full"></div>
             )}
 
             {currentTab == "About" && (
@@ -1619,10 +1655,10 @@ const UserProfile = () => {
              
               onClick={() => {
                 console.log("logout");
-                navigate("/login")
                 dispatch(logout());
+                  navigate('/', { replace: true });
               }}
-              className="mt-2 border"
+              className="mt-2 bg-red-50 font-bold w-fit py-1 px-3 rounded-md border border-red-500 text-red-500"
             >
               Sign out
             </a>

@@ -37,7 +37,6 @@ function Signup() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
-  const profileApi = useProfileApi();
 
   const handleIconClick = () => {
     // Trigger click event on the file input element
@@ -112,7 +111,6 @@ function Signup() {
         );
       }
     }
-    console.log("Form not valid");
     return false;
   };
   const verifyUserName = async (username) => {
