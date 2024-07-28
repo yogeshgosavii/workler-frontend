@@ -1,7 +1,7 @@
 const API_URL = "https://workler-backend.vercel.app/api/auth";
 // const API_URL = "http://localhost:5002/api/auth";
 
-const token = localStorage.getItem("token");
+const getToken = () => localStorage.getItem('token');
 
 const authService = {
   checkEmail: async (email) => {
@@ -66,7 +66,7 @@ const authService = {
     }
   },
 
-  fetchUserDetails: async (userToken = token) => {
+  fetchUserDetails: async (userToken = getToken()) => {
     try {
       const response = await fetch(`${API_URL}/user`, {
         headers: { Authorization: `Bearer ${userToken}` },
@@ -89,7 +89,7 @@ const authService = {
         method: "PUT", // Ensure method is set correctly
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
         },
         body: JSON.stringify(data), // Send the cleaned data
       });

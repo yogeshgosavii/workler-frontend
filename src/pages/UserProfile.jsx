@@ -264,8 +264,8 @@ const UserProfile = () => {
     }
   }, [profileApi.workExperience, user]);
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchUserDetails = useCallback(
+    async () => {
       setLoading((prev) => ({ ...prev, userDetails: true })); // Set loading state for userDetails to true
 
       try {
@@ -278,12 +278,10 @@ const UserProfile = () => {
       } finally {
         setLoading((prev) => ({ ...prev, userDetails: false })); // Set loading state for userDetails to false
       }
-    };
-
-    fetchData(); // Call fetchData function
-
-    // Adding 'user' to the dependency array ensures this effect runs when 'user' changes
-  }, [user]);
+    },
+    authService.fetchUserDetails,
+    user
+  );
 
   useEffect(() => {
     setpageLoading(true);
@@ -292,7 +290,7 @@ const UserProfile = () => {
     fetchPersonalData();
     fetchSkillData();
     fetchWorkExperienceData();
-    // fetchUserDetails();
+    fetchUserDetails();
     fetchJobData();
     setpageLoading(false);
   }, []);
@@ -1027,7 +1025,7 @@ const UserProfile = () => {
                     />
                   </svg>
                 </div>
-                {loading.userDetails ? (
+                {loading.userDetails == null ? (
                   <div className="animate-pulse mt-2">
                     <div className="flex  items-center">
                       <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
@@ -1273,19 +1271,6 @@ const UserProfile = () => {
                         </div>
                       )}
                       <div className="flex text-gray-400  order-4  items-end text-sm space-x-1">
-                        {/* <svg
-                    text="muted"
-                    aria-hidden="true"
-                    height="18"
-                    fill="#9ca3af"
-                    viewBox="0 0 16 16"
-                    version="1.1"
-                    width="16"
-                    data-view-component="true"
-                    class="octicon octicon-people pb-0.5"
-                  >
-                    <path d="M2 5.5a3.5 3.5 0 1 1 5.898 2.549 5.508 5.508 0 0 1 3.034 4.084.75.75 0 1 1-1.482.235 4 4 0 0 0-7.9 0 .75.75 0 0 1-1.482-.236A5.507 5.507 0 0 1 3.102 8.05 3.493 3.493 0 0 1 2 5.5ZM11 4a3.001 3.001 0 0 1 2.22 5.018 5.01 5.01 0 0 1 2.56 3.012.749.749 0 0 1-.885.954.752.752 0 0 1-.549-.514 3.507 3.507 0 0 0-2.522-2.372.75.75 0 0 1-.574-.73v-.352a.75.75 0 0 1 .416-.672A1.5 1.5 0 0 0 11 5.5.75.75 0 0 1 11 4Zm-5.5-.5a2 2 0 1 0-.001 3.999A2 2 0 0 0 5.5 3.5Z"></path>
-                  </svg> */}
                         <p>
                           <span>{user.location?.address} · </span>
                           {user.followers ? user.followers : 0}
@@ -1317,15 +1302,6 @@ const UserProfile = () => {
                   Edit details
                 </button>
               </div>
-
-              {/* <div className="flex-grow gap-3 bg-white py-4  border font-medium  h-full md:w-fit px-6 flex w-full">
-            <p className=" px-4 w-full text-center bg-blue-50 border rounded-lg border-blue-500 py-1">
-              Profile
-            </p>
-            <p className=" px-4 w-full text-center py-1">
-              Posts
-            </p>
-          </div> */}
             </div>
             <div
               className={` sticky top-16 z-20 transition-all ease-in-out sm:top-0 md:${
@@ -1350,7 +1326,7 @@ const UserProfile = () => {
                 {[
                   "Home",
                   ...(user.account_type == "Employeer"
-                    ? ["About", "Posts", "Jobs", "People"]
+                    ? ["About", "Posts", "Jobs", "People", "Qualification"]
                     : ["Posts", "Qualification"]),
                 ].map((tab) => (
                   <p
@@ -1373,25 +1349,29 @@ const UserProfile = () => {
                 <div className="space-y-2 ">
                   {user.account_type == "Employeer" ? (
                     <div className="flex flex-col bg-white border-b md:border shadow-sm md:shadow-lg   gap-2">
-                      <div className="px-4 md:px-6 py-4">
-                        <p className="text-xl font-bold">About</p>
-                        <p className=" line-clamp-3 mt-1 text-sm mb-2">
-                          {userDetails == "" ? (
-                            <div>
-                              <div className="animate-pulse z-10 mt-2">
-                                <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
-                                <div className="h-2 bg-gray-200 rounded-md "></div>
-                                <div className="h-2 w-1/2 bg-gray-200 rounded-md mt-5"></div>
+                      {loading.userDetails ? (
+                        <div>Loading...</div>
+                      ) : (
+                        <div className="px-4 md:px-6 py-4">
+                          <p className="text-xl font-bold">About</p>
+                          <p className=" line-clamp-3 mt-1 text-sm mb-2">
+                            {userDetails == "" ? (
+                              <div>
+                                <div className="animate-pulse z-10 mt-2">
+                                  <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
+                                  <div className="h-2 bg-gray-200 rounded-md "></div>
+                                  <div className="h-2 w-1/2 bg-gray-200 rounded-md mt-5"></div>
+                                </div>
                               </div>
-                            </div>
-                          ) : (
-                            <span> {user.description}</span>
-                          )}
-                        </p>
-                        <a className="text-sm text-blue-500">
-                          {userDetails.company_details?.website}
-                        </a>
-                      </div>
+                            ) : (
+                              <span> {userDetails.description}</span>
+                            )}
+                          </p>
+                          <a className="text-sm text-blue-500">
+                            {userDetails.company_details?.website}
+                          </a>
+                        </div>
+                      )}
                       <p
                         onClick={() => {
                           setcurrentTab("About");
@@ -1401,67 +1381,39 @@ const UserProfile = () => {
                         Learn more
                       </p>
                     </div>
-                  ):
-                  (
-                    <div className="relative overflow-hidden bg-white px-4 py-4 pb-16">
-                    <p className="text-xl font-bold ">Description</p>
-                    <p className="text-gray-400 text-sm mb-3 font-normal">Click on the text to make the changes or add a new description</p>
-                    <div
-                      className={`text-sm font-normal ${descriptionInput ? "hidden" : ""}`}
-                    >
-                      {user?.description ? (
-                        <div onClick={() => setdescriptionInput(true)}>
-                          <p>{user.description}</p>
-                        </div>
-                      ) : (
-                        <div
-                          onClick={() => setdescriptionInput(true)}
-                          className="text-sm font-normal text-gray-300 w-full"
-                        >
-                          Add a description. For example: "We are a dynamic
-                          company committed to excellence and innovation."
-                        </div>
-                      )}
-                    </div>
-
-                    <div>
-                      {descriptionInput && (
-                        <div>
-                          <textarea
-                            onChange={(e) =>
-                              setdescriptionInputText(e.target.value)
-                            }
-                            value={descriptionInputText}
-                            onFocus={() => setdescriptionInput(true)}
-                            onBlur={() => setdescriptionInput(false)}
-                            placeholder='Add a description. For example: "We are a dynamic company committed to excellence and innovation."'
-                            className="text-sm caret-blue-500 -mb-[6px] h-full font-normal placeholder:text-wrap placeholder:text-gray-300 outline-none w-full"
-                          />
-                        </div>
-                      )}
-
+                  ) : (
+                    <div className="relative overflow-hidden bg-white px-4 py-4 pb-6">
+                      <p className="text-xl font-bold ">Description</p>
+                      <p className="text-gray-400 text-sm mb-3 font-normal">
+                        Click on the text to update it.
+                      </p>
                       <div
-                        className={`absolute flex gap-2 right-4 bottom-4 transition-transform duration-300 ${
-                          descriptionInput == true
-                            ? "translate-x-0"
-                            : "translate-x-40"
-                        }`}
+                        className={`text-sm font-normal  `}
                       >
-                        <button
-                          onClick={() => setdescriptionInput(false)}
-                          className="font-medium px-4 py-1 rounded-2xl text-blue-500"
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={adddescription}
-                          className="font-medium px-4 py-1 bg-blue-500 rounded-full text-white"
-                        >
-                          Save
-                        </button>
+                        {!loading.userDetails ? (
+                          userDetails.description ? (
+                            <div onClick={() => setdescriptionInput(true)}>
+                              <p>{userDetails.description}</p>
+                            </div>
+                          ) : (
+                            <div
+                              onClick={() => setdescriptionInput(true)}
+                              className="text-sm font-normal text-gray-300 w-full"
+                            >
+                              Add a description. For example: "We are a dynamic
+                              company committed to excellence and innovation."
+                            </div>
+                          )
+                        ) : (
+                          <div className="animate-pulse z-10 ">
+                            <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
+                            <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
+                          </div>
+                        )}
                       </div>
+
+                     
                     </div>
-                  </div>
                   )}
                   <div className="bg-white border-y md:border shadow-sm md:shadow-lg ">
                     <div className="flex flex-col px-4 md:px-6 py-4 ">
@@ -1529,7 +1481,7 @@ const UserProfile = () => {
                 <div className="bg-white w-full h-full"></div>
               )}
 
-              {currentTab == "About" && (
+              {currentTab == "About" && !loading.userDetails && (
                 <div className="bg-white flex flex-col gap-4 w-full px-4 py-4 sm:px-6 h-full">
                   <div className="relative overflow-hidden pb-12">
                     <p className="text-xl font-bold mb-2">Description</p>
@@ -1537,13 +1489,22 @@ const UserProfile = () => {
                     <div
                       className={`text-sm ${descriptionInput ? "hidden" : ""}`}
                     >
-                      {user?.description ? (
-                        <div onClick={() => setdescriptionInput(true)}>
-                          <p>{user.description}</p>
+                      {userDetails.description ? (
+                        <div
+                          onClick={() => {
+                            setdescriptionInputText(userDetails.description);
+
+                            setdescriptionInput(true);
+                          }}
+                        >
+                          <p>{userDetails.description}</p>
                         </div>
                       ) : (
                         <div
-                          onClick={() => setdescriptionInput(true)}
+                          onClick={() => {
+                            setdescriptionInputText(userDetails.description);
+                            setdescriptionInput(true);
+                          }}
                           className="text-sm font-normal text-gray-300 w-full"
                         >
                           Add a description. For example: "We are a dynamic
@@ -1594,7 +1555,7 @@ const UserProfile = () => {
                   <div className="-mt-4">
                     <p className="font-semibold text-lg mb-2  ">Details</p>
                     <div className="text-sm flex flex-col gap-2">
-                      {userDetails?.company_details.website && (
+                      {userDetails?.company_details?.website && (
                         <div>
                           <p>Website</p>
                           <p className="text-blue-500">
@@ -1602,7 +1563,7 @@ const UserProfile = () => {
                           </p>
                         </div>
                       )}
-                      {userDetails?.company_details.industry && (
+                      {userDetails?.company_details?.industry && (
                         <div>
                           <p>Industry</p>
                           <p>{userDetails?.company_details.industry}</p>
@@ -1616,7 +1577,7 @@ const UserProfile = () => {
                           </p>
                         </div>
                       )}
-                      {userDetails?.company_details.found_in_date && (
+                      {userDetails?.company_details?.found_in_date && (
                         <div>
                           <p>Found in</p>
                           <p className="text-gray-400">
