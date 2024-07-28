@@ -27,7 +27,6 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import githubLogo from "../assets/github-mark.svg";
 import { useNavigate, useLocation } from "react-router-dom";
 
-
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
 import ProjectUpdateForm from "../components/Forms/ProjectUpdateForm";
 import UserDetailsForm from "../components/Forms/UserDetailsForm";
@@ -57,12 +56,11 @@ const UserProfile = () => {
   const [jobData, setjobData] = useState();
   const profileApi = useProfileApi();
   const jobApi = useJobApi();
+
   useEffect(() => {
-    
-    return () => {
-      
-    };
+    return () => {};
   }, []);
+  const [pageLoading, setpageLoading] = useState(false);
   const [settings, setsettings] = useState(false);
   const [showProfileImage, setshowProfileImage] = useState(false);
   const [descriptionInput, setdescriptionInput] = useState(false);
@@ -124,12 +122,13 @@ const UserProfile = () => {
     personalDetails: true,
     userDetails: true,
   });
-  
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading((prev) => ({ ...prev, userDetails: true }));
       try {
         const data = await authService.fetchUserDetails();
+        console.log(data);
         setuserDetails(data);
         setdescriptionInputText(data.description);
       } catch (error) {
@@ -138,10 +137,10 @@ const UserProfile = () => {
         setLoading((prev) => ({ ...prev, userDetails: false }));
       }
     };
-  
+
     fetchData();
   }, []);
-  
+
   const [updateForm, setUpdateForm] = useState({
     education: false,
     skills: false,
@@ -213,7 +212,7 @@ const UserProfile = () => {
     } finally {
       setLoading((prev) => ({ ...prev, education: false }));
     }
-  }, [profileApi.education]);
+  }, [profileApi.education, user]);
 
   const fetchProjectData = useCallback(async () => {
     try {
@@ -224,7 +223,7 @@ const UserProfile = () => {
     } finally {
       setLoading((prev) => ({ ...prev, projects: false }));
     }
-  }, [profileApi.projectDetails]);
+  }, [profileApi.projectDetails, user]);
 
   const fetchPersonalData = useCallback(async () => {
     try {
@@ -236,7 +235,7 @@ const UserProfile = () => {
     } finally {
       setLoading((prev) => ({ ...prev, personalDetails: false }));
     }
-  }, [profileApi.personalDetails]);
+  }, [profileApi.personalDetails, user]);
 
   const fetchSkillData = useCallback(async () => {
     try {
@@ -247,7 +246,7 @@ const UserProfile = () => {
     } finally {
       setLoading((prev) => ({ ...prev, skills: false }));
     }
-  }, [profileApi.skills]);
+  }, [profileApi.skills, user]);
 
   const fetchWorkExperienceData = useCallback(async () => {
     try {
@@ -263,29 +262,39 @@ const UserProfile = () => {
     } finally {
       setLoading((prev) => ({ ...prev, workExperience: false }));
     }
-  }, [profileApi.workExperience]);
-
-  const fetchUserDetails = useCallback(async () => {
-    try {
-      const data = await authService.fetchUserDetails();
-      setuserDetails(data);
-      console.log("userDetails", userDetails);
-      setdescriptionInputText(data.description);
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    } finally {
-      setLoading((prev) => ({ ...prev, userDetails: false }));
-    }
-  }, []);
+  }, [profileApi.workExperience, user]);
 
   useEffect(() => {
+    const fetchData = async () => {
+      setLoading((prev) => ({ ...prev, userDetails: true })); // Set loading state for userDetails to true
+
+      try {
+        const data = await authService.fetchUserDetails(); // Fetch user details
+        console.log(data);
+        setuserDetails(data); // Update userDetails state with fetched data
+        setdescriptionInput(data.description); // Update descriptionInputText state with description from fetched data
+      } catch (error) {
+        console.error("Error fetching user data:", error); // Log any errors
+      } finally {
+        setLoading((prev) => ({ ...prev, userDetails: false })); // Set loading state for userDetails to false
+      }
+    };
+
+    fetchData(); // Call fetchData function
+
+    // Adding 'user' to the dependency array ensures this effect runs when 'user' changes
+  }, [user]);
+
+  useEffect(() => {
+    setpageLoading(true);
     fetchEducationData();
     fetchProjectData();
     fetchPersonalData();
     fetchSkillData();
     fetchWorkExperienceData();
-    fetchUserDetails();
+    // fetchUserDetails();
     fetchJobData();
+    setpageLoading(false);
   }, []);
 
   const FormComponents = useMemo(
@@ -433,18 +442,18 @@ const UserProfile = () => {
         setFormType(null);
       }
     };
-  
+
     window.addEventListener("popstate", handlePopState);
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
   }, []);
-  
+
   const handleClose = () => {
     setFormType(null);
     window.history.back();
   };
-  
+
   useEffect(() => {
     if (formType) {
       window.history.pushState({ formType }, "", `profile/${formType}`);
@@ -841,101 +850,104 @@ const UserProfile = () => {
     <div
       className={`w-full flex    justify-center gap-5  bg-gray-100  sm:py-5 md:px-5 `}
     >
-      <div
-        className={`  w-full flex-1 flex-grow  ${
-          settings ? "pointer-events-none " : "pointer-events-auto"
-        }`}
-      >
-        {formType && (
-          <div
-            className="fixed inset-0 z-30 flex justify-center items-center bg-black bg-opacity-50"
-            onClick={handleClose}
-          >
-            <div
-              className="fixed z-20 w-full border h-full sm:h-fit sm:max-w-md mx-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {console.log(formType)}
-              {React.createElement(FormComponents[formType], {
-                onClose: handleClose,
-                setData:
-                  formType === "skills"
-                    ? setSkillData
-                    : formType === "education"
-                    ? setEducationData
-                    : formType === "work_experience"
-                    ? setWorkExperienceData
-                    : formType === "personalDetails"
-                    ? setPersonalData
-                    : formType === "userDetails"
-                    ? setuserDetails
-                    : formType === "job"
-                    ? setjobData
-                    : null,
-                data:
-                  formType === "skills"
-                    ? skillData
-                    : formType === "education"
-                    ? educationData
-                    : formType === "work_experience"
-                    ? workExperienceData
-                    : formType === "personalDetails"
-                    ? personalData
-                    : formType === "userDetails"
-                    ? userDetails
-                    : formType == "job"
-                    ? jobData
-                    : null,
-              })}
-            </div>
-          </div>
-        )}
-
-        {updateFormType ? (
-          <div
-            className="fixed inset-0 z-30 flex justify-center items-center bg-black bg-opacity-50"
-            onClick={handleClose}
-          >
-            <div
-              className="fixed z-20 w-full border h-full sm:h-fit sm:max-w-md mx-auto"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {React.createElement(UpdateFormComponents[updateFormType], {
-                onClose: handleUpdateFormClose,
-                data: updateData[updateFormType],
-                setData:
-                  updateFormType === "skills"
-                    ? setSkillData
-                    : updateFormType === "education"
-                    ? setEducationData
-                    : updateFormType === "workExperience"
-                    ? setWorkExperienceData
-                    : updateFormType === "projects"
-                    ? setprojectData
-                    : updateFormType === "job"
-                    ? setjobData
-                    : null,
-              })}
-            </div>
-          </div>
-        ) : null}
-        {/* Profile page */}
+      {pageLoading ? (
+        <div>Loading...</div>
+      ) : (
         <div
-          className={`w-full ${settings ? "-ml-[60%]" : "-ml-0"} ${
-            (formType || settings || showProfileImage || updateFormType) &&
-            "fixed"
-          }   md:flex-row transition-all duration-300 relative md:min-w-full flex-1 h-full `}
+          className={`  w-full flex-1 flex-grow  ${
+            settings ? "pointer-events-none " : "pointer-events-auto"
+          }`}
         >
-          {showProfileImage && (
+          {formType && (
             <div
-              onClick={() => {
-                setshowProfileImage(false);
-              }}
-              className={`h-screen border w-full top-0 bg-white opacity-85   z-50 absolute `}
-            ></div>
+              className="fixed inset-0 z-30 flex justify-center items-center bg-black bg-opacity-50"
+              onClick={handleClose}
+            >
+              <div
+                className="fixed z-20 w-full border h-full sm:h-fit sm:max-w-md mx-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {console.log(formType)}
+                {React.createElement(FormComponents[formType], {
+                  onClose: handleClose,
+                  setData:
+                    formType === "skills"
+                      ? setSkillData
+                      : formType === "education"
+                      ? setEducationData
+                      : formType === "work_experience"
+                      ? setWorkExperienceData
+                      : formType === "personalDetails"
+                      ? setPersonalData
+                      : formType === "userDetails"
+                      ? setuserDetails
+                      : formType === "job"
+                      ? setjobData
+                      : null,
+                  data:
+                    formType === "skills"
+                      ? skillData
+                      : formType === "education"
+                      ? educationData
+                      : formType === "work_experience"
+                      ? workExperienceData
+                      : formType === "personalDetails"
+                      ? personalData
+                      : formType === "userDetails"
+                      ? userDetails
+                      : formType == "job"
+                      ? jobData
+                      : null,
+                })}
+              </div>
+            </div>
           )}
-          <div className="  flex gap-4  max-h-min flex-wrap ">
-            {/* <div className="w-full bg-white px-4 flex justify-end py-4 border-y">
+
+          {updateFormType ? (
+            <div
+              className="fixed inset-0 z-30 flex justify-center items-center bg-black bg-opacity-50"
+              onClick={handleClose}
+            >
+              <div
+                className="fixed z-20 w-full border h-full sm:h-fit sm:max-w-md mx-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {React.createElement(UpdateFormComponents[updateFormType], {
+                  onClose: handleUpdateFormClose,
+                  data: updateData[updateFormType],
+                  setData:
+                    updateFormType === "skills"
+                      ? setSkillData
+                      : updateFormType === "education"
+                      ? setEducationData
+                      : updateFormType === "workExperience"
+                      ? setWorkExperienceData
+                      : updateFormType === "projects"
+                      ? setprojectData
+                      : updateFormType === "job"
+                      ? setjobData
+                      : null,
+                })}
+              </div>
+            </div>
+          ) : null}
+          {/* Profile page */}
+          <div
+            className={`w-full ${settings ? "-ml-[60%]" : "-ml-0"} ${
+              (formType || settings || showProfileImage || updateFormType) &&
+              "fixed"
+            }   md:flex-row transition-all duration-300 relative md:min-w-full flex-1 h-full `}
+          >
+            {showProfileImage && (
+              <div
+                onClick={() => {
+                  setshowProfileImage(false);
+                }}
+                className={`h-screen border w-full top-0 bg-white opacity-85   z-50 absolute `}
+              ></div>
+            )}
+            <div className="  flex gap-4  max-h-min flex-wrap ">
+              {/* <div className="w-full bg-white px-4 flex justify-end py-4 border-y">
           <svg
                   class="h-8 w-8 text-gray-400"
                   width="24"
@@ -953,131 +965,131 @@ const UserProfile = () => {
                   <circle cx="12" cy="12" r="3" />
                 </svg>
           </div> */}
-            <div
-              className={`w-full md:hidden ${
-                formType || updateFormType ? "hidden" : ""
-              } fixed md:min-w-[57.6%]  md:border-x md:mt-5 z-20 top-0 mb-4 px-4 py-4 bg-white flex justify-between`}
-            >
-              <div className="flex items-center gap-4">
-                {atTop >= 100 && (
-                  <UserImageInput
-                    isEditable={false}
-                    image={userDetails.profileImage}
-                    imageHeight="40"
-                  />
-                )}
-                <div className="flex flex-col justify-center">
-                  <p className="text-xl font-semibold">
-                    {atTop >= 100 ? user.username : "Profile"}
-                  </p>
-                  <div className="flex gap-1 mt-0.5 items-center">
-                    <span className="h-2 w-2 rounded-full shadow-lg bg-green-500"></span>
-                    <p className="text-xs text-gray-400 -mt-px">
-                      Currently active
+              <div
+                className={`w-full md:hidden ${
+                  formType || updateFormType ? "hidden" : ""
+                } fixed md:min-w-[57.6%]  md:border-x md:mt-5 z-20 top-0 mb-4 px-4 py-4 bg-white flex justify-between`}
+              >
+                <div className="flex items-center gap-4">
+                  {atTop >= 100 && (
+                    <UserImageInput
+                      isEditable={false}
+                      image={user.profileImage}
+                      imageHeight="40"
+                    />
+                  )}
+                  <div className="flex flex-col justify-center">
+                    <p className="text-xl font-semibold">
+                      {atTop >= 100 ? user.username : "Profile"}
                     </p>
+                    <div className="flex gap-1 mt-0.5 items-center">
+                      <span className="h-2 w-2 rounded-full shadow-lg bg-green-500"></span>
+                      <p className="text-xs text-gray-400 -mt-px">
+                        Currently active
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <svg
-                className="h-8 w-8 text-gray-800 pointer-events-auto"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                onClick={() => {
-                  console.log("Hello");
-                  setsettings(!settings);
-                  // setFormType(null)
-                  // setupdateFormType(null)
-                }}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16m-7 6h7"
-                />
-              </svg>
-            </div>
-            <div className="flex border-t pt-8 pb-6 mt-10 md:mt-0   flex-grow  sm:border-x  px-4 md:px-6 gap-3 bg-white justify-center flex-col">
-              <div className="w-full hidden md:flex   mb-4 bg-white   justify-between ">
-                <p className="text-2xl font-semibold">Profile</p>
                 <svg
-                  class="h-8 w-8 text-gray-800"
+                  className="h-8 w-8 text-gray-800 pointer-events-auto"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
+                  onClick={() => {
+                    console.log("Hello");
+                    setsettings(!settings);
+                    // setFormType(null)
+                    // setupdateFormType(null)
+                  }}
                 >
                   <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M4 6h16M4 12h16m-7 6h7"
                   />
                 </svg>
               </div>
-              {loading.userDetails ? (
-                <div className="animate-pulse mt-2">
-                  <div className="flex  items-center">
-                    <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
-                    <div className=" w-32 ml-2">
-                      <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
-                      <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
+              <div className="flex border-t pt-8 pb-6 mt-10 md:mt-0   flex-grow  sm:border-x  px-4 md:px-6 gap-3 bg-white justify-center flex-col">
+                <div className="w-full hidden md:flex   mb-4 bg-white   justify-between ">
+                  <p className="text-2xl font-semibold">Profile</p>
+                  <svg
+                    class="h-8 w-8 text-gray-800"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 6h16M4 12h16m-7 6h7"
+                    />
+                  </svg>
+                </div>
+                {loading.userDetails ? (
+                  <div className="animate-pulse mt-2">
+                    <div className="flex  items-center">
+                      <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
+                      <div className=" w-32 ml-2">
+                        <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
+                        <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
+                      </div>
+                    </div>
+                    <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
+                    <div className="h-3 bg-gray-200 rounded-md mt-1"></div>
+                    <div className="flex  items-center mt-4">
+                      <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
+                      <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
+                    </div>
+                    <div className="flex  items-center mt-1">
+                      <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
+                      <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
+                    </div>
+
+                    <div className="flex mt-4">
+                      <div className="h-3 w-20 bg-gray-200 rounded-md "></div>
+                      <div className="h-3 w-20 bg-gray-200 rounded-md ml-2"></div>
                     </div>
                   </div>
-                  <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
-                  <div className="h-3 bg-gray-200 rounded-md mt-1"></div>
-                  <div className="flex  items-center mt-4">
-                    <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
-                    <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
-                  </div>
-                  <div className="flex  items-center mt-1">
-                    <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
-                    <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
-                  </div>
-
-                  <div className="flex mt-4">
-                    <div className="h-3 w-20 bg-gray-200 rounded-md "></div>
-                    <div className="h-3 w-20 bg-gray-200 rounded-md ml-2"></div>
-                  </div>
-                </div>
-              ) : (
-                <div className="mt-2 flex relative  flex-col ">
-                  <div className="flex mb-4 mt-1  w-full gap-4  items-center">
-                    <UserImageInput
-                      onClick={() => {
-                        setshowProfileImage(!showProfileImage);
-                      }}
-                      imageBorder={showProfileImage ? "none" : "2"}
-                      className={`transition-all ease-in-out absolute  blur-none  duration-300 ${
-                        showProfileImage
-                          ? " ml-[40%] md:ml-[45%]  z-50 translate-y-[200%] scale-[3.5] "
-                          : ""
-                      }`}
-                      imageClassName={showProfileImage ? "shadow-3xl" : ""}
-                      isEditable={false}
-                      image={userDetails.profileImage}
-                      imageHeight="70"
-                    />
-                    <div className="flex w-full ml-20  justify-between items-center">
-                      <div>
-                        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-                          {user.account_type == "Employeer"
-                            ? userDetails.company_details.company_name
-                            : userDetails.personal_details?.firstname +
-                              " " +
-                              userDetails.personal_details?.lastname}
-                        </h1>
-                        <div className="flex  gap-2">
-                          <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
-                            {user?.username || "Username"}
-                          </p>
+                ) : (
+                  <div className="mt-2 flex relative  flex-col ">
+                    <div className="flex mb-4 mt-1  w-full gap-4  items-center">
+                      <UserImageInput
+                        onClick={() => {
+                          setshowProfileImage(!showProfileImage);
+                        }}
+                        imageBorder={showProfileImage ? "none" : "2"}
+                        className={`transition-all ease-in-out absolute  blur-none  duration-300 ${
+                          showProfileImage
+                            ? " ml-[40%] md:ml-[45%]  z-50 translate-y-[200%] scale-[3.5] "
+                            : ""
+                        }`}
+                        imageClassName={showProfileImage ? "shadow-3xl" : ""}
+                        isEditable={false}
+                        image={user.profileImage}
+                        imageHeight="70"
+                      />
+                      <div className="flex w-full ml-20  justify-between items-center">
+                        <div>
+                          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+                            {user.account_type == "Employeer"
+                              ? user.company_details?.company_name
+                              : user.personal_details?.firstname +
+                                " " +
+                                user.personal_details?.lastname}
+                          </h1>
+                          <div className="flex  gap-2">
+                            <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
+                              {user?.username || "Username"}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="order-3 flex flex-col gap-2">
-                    {/* {userDetails.email &&  user.account_type === "Candidate" &&(
+                    <div className="order-3 flex flex-col gap-2">
+                      {/* {userDetails.email &&  user.account_type === "Candidate" &&(
                     <div className="flex order-4 mt-5 text-sm items-center gap-2">
                       <svg
                         class="octicon octicon-mail"
@@ -1093,7 +1105,7 @@ const UserProfile = () => {
                       <p>{userDetails.email}</p>
                     </div>
                   )} */}
-                    {/* <div className=" space-y-2 order-4 text-sm">
+                      {/* <div className=" space-y-2 order-4 text-sm">
                     {userDetails.githubLink && (
                       <a
                         className="flex  gap-2 cursor-pointer"
@@ -1228,40 +1240,40 @@ const UserProfile = () => {
                       </a>
                     )}
                   </div> */}
-                    {userDetails.bio ? (
-                      <div onClick={() => setFormType("userDetails")}>
-                        {userDetails.bio}
-                      </div>
-                    ) : (
-                      <div
-                        onClick={() => setFormType("userDetails")}
-                        className=" text-sm font-normal text-gray-300 px-2 py-1 rounded-lg border w-fit  border-dashed"
-                      >
-                        Add a bio +
-                      </div>
-                    )}
-                    {userDetails.account_type == "Candidate" && (
-                      <div className="order-2 text-sm -mb-2">
-                        <p className="mt-2 text-wrap truncate">
-                          Works at{" "}
-                          {worksAt && (
-                            <span>
-                              {worksAt.companyName}{" "}
-                              <span className="font-extrabold ">{"·"}</span>
-                            </span>
-                          )}{" "}
-                          {latestEducation && (
-                            <span>
-                              {" "}
-                              Completed {latestEducation.course} from{" "}
-                              {latestEducation.university}
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                    )}
-                    <div className="flex text-gray-400  order-4  items-end text-sm space-x-1">
-                      {/* <svg
+                      {user.bio ? (
+                        <div onClick={() => setFormType("userDetails")}>
+                          {user.bio}
+                        </div>
+                      ) : (
+                        <div
+                          onClick={() => setFormType("userDetails")}
+                          className=" text-sm font-normal text-gray-300 px-2 py-1 rounded-lg border w-fit  border-dashed"
+                        >
+                          Add a bio +
+                        </div>
+                      )}
+                      {user.account_type == "Candidate" && (
+                        <div className="order-2 text-sm -mb-2">
+                          <p className="mt-2 text-wrap truncate">
+                            Works at{" "}
+                            {worksAt && (
+                              <span>
+                                {worksAt.companyName}{" "}
+                                <span className="font-extrabold ">{"·"}</span>
+                              </span>
+                            )}{" "}
+                            {latestEducation && (
+                              <span>
+                                {" "}
+                                Completed {latestEducation.course} from{" "}
+                                {latestEducation.university}
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                      )}
+                      <div className="flex text-gray-400  order-4  items-end text-sm space-x-1">
+                        {/* <svg
                     text="muted"
                     aria-hidden="true"
                     height="18"
@@ -1274,39 +1286,39 @@ const UserProfile = () => {
                   >
                     <path d="M2 5.5a3.5 3.5 0 1 1 5.898 2.549 5.508 5.508 0 0 1 3.034 4.084.75.75 0 1 1-1.482.235 4 4 0 0 0-7.9 0 .75.75 0 0 1-1.482-.236A5.507 5.507 0 0 1 3.102 8.05 3.493 3.493 0 0 1 2 5.5ZM11 4a3.001 3.001 0 0 1 2.22 5.018 5.01 5.01 0 0 1 2.56 3.012.749.749 0 0 1-.885.954.752.752 0 0 1-.549-.514 3.507 3.507 0 0 0-2.522-2.372.75.75 0 0 1-.574-.73v-.352a.75.75 0 0 1 .416-.672A1.5 1.5 0 0 0 11 5.5.75.75 0 0 1 11 4Zm-5.5-.5a2 2 0 1 0-.001 3.999A2 2 0 0 0 5.5 3.5Z"></path>
                   </svg> */}
-                      <p>
-                        <span>{userDetails.location?.address} · </span>
-                        {userDetails.followers ? userDetails.followers : 0}
-                        <span className=" "> followers</span>
-                        {/* · {userDetails.followings?userDetails.followings:0}{" "}
+                        <p>
+                          <span>{user.location?.address} · </span>
+                          {user.followers ? user.followers : 0}
+                          <span className=" "> followers</span>
+                          {/* · {userDetails.followings?userDetails.followings:0}{" "}
                     <span className="">following</span> */}
-                      </p>
-                    </div>
-                    <div className=" mt-2 order-last ">
-                      <div className="flex gap-1 max-w-full flex-wrap ">
-                        {userDetails.tags?.map((tag) => (
-                          <p className="flex rounded-md w-fit px-px  text-blue-500 text-nowrap">
-                            #{tag}
-                          </p>
-                        ))}
+                        </p>
                       </div>
-                      <p className="text-xs text-gray-400">
-                        The tags won't be visible on you profile to others
-                      </p>
+                      <div className=" mt-2 order-last ">
+                        <div className="flex gap-1 max-w-full flex-wrap ">
+                          {user.tags?.map((tag) => (
+                            <p className="flex rounded-md w-fit px-px  text-blue-500 text-nowrap">
+                              #{tag}
+                            </p>
+                          ))}
+                        </div>
+                        <p className="text-xs text-gray-400">
+                          The tags won't be visible on you profile to others
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              <button
-                onClick={() => setFormType("userDetails")}
-                className="w-full flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5 border justify-center text-gray-600 bg-gray-100 sm:hover:bg-gray-200 py-1.5 rounded-md border-gray-400"
-              >
-                Edit details
-              </button>
-            </div>
+                <button
+                  onClick={() => setFormType("userDetails")}
+                  className="w-full flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5 border justify-center text-gray-600 bg-gray-100 sm:hover:bg-gray-200 py-1.5 rounded-md border-gray-400"
+                >
+                  Edit details
+                </button>
+              </div>
 
-            {/* <div className="flex-grow gap-3 bg-white py-4  border font-medium  h-full md:w-fit px-6 flex w-full">
+              {/* <div className="flex-grow gap-3 bg-white py-4  border font-medium  h-full md:w-fit px-6 flex w-full">
             <p className=" px-4 w-full text-center bg-blue-50 border rounded-lg border-blue-500 py-1">
               Profile
             </p>
@@ -1314,98 +1326,161 @@ const UserProfile = () => {
               Posts
             </p>
           </div> */}
-          </div>
-          <div
-            className={` sticky top-16 z-20 transition-all ease-in-out sm:top-0 md:${
-              atTop < 340 ? "pt-0" : "pt-5"
-            } bg-gray-100`}
-          >
+            </div>
             <div
-              style={{
-                overflowX: "auto",
-                scrollbarWidth: "none",
-              }}
-              className={`flex-grow z-20  max-w-full overflow-x-auto border-b sm:border-x  ${
-                atTop > 340 ? " md:border-t" : null
-              } w-full -mt-px sticky top-16 sm:top-0  gap-3  md:mb-4   order-last bg-white   font-medium  h-full  flex`}
+              className={` sticky top-16 z-20 transition-all ease-in-out sm:top-0 md:${
+                atTop < 340 ? "pt-0" : "pt-5"
+              } bg-gray-100`}
             >
-              {/* <p className=" px-4 w-full text-center bg-blue-50 border-b-2 border-blue-500 py-3">
+              <div
+                style={{
+                  overflowX: "auto",
+                  scrollbarWidth: "none",
+                }}
+                className={`flex-grow z-20  max-w-full overflow-x-auto border-b sm:border-x  ${
+                  atTop > 340 ? " md:border-t" : null
+                } w-full -mt-px sticky top-16 sm:top-0  gap-3  md:mb-4   order-last bg-white   font-medium  h-full  flex`}
+              >
+                {/* <p className=" px-4 w-full text-center bg-blue-50 border-b-2 border-blue-500 py-3">
               Profile
             </p>
             <p className=" px-4 w-full text-center py-3">
               Posts
             </p> */}
-              {[
-                "Home",
-                ...(userDetails.account_type == "Employeer"
-                  ? ["About", "Posts", "Jobs", "People"]
-                  : ["Posts", "Qualification"]),
-              ].map((tab) => (
-                <p
-                  onClick={() => {
-                    setcurrentTab(tab);
-                  }}
-                  className={`px-4 text-base md:text-lg font-medium md:font-semibold cursor-pointer ${
-                    tab == currentTab
-                      ? "  border-b-2 text-blue-500 border-blue-500"
-                      : null
-                  } w-full text-center py-2`}
-                >
-                  {tab}
-                </p>
-              ))}
+                {[
+                  "Home",
+                  ...(user.account_type == "Employeer"
+                    ? ["About", "Posts", "Jobs", "People"]
+                    : ["Posts", "Qualification"]),
+                ].map((tab) => (
+                  <p
+                    onClick={() => {
+                      setcurrentTab(tab);
+                    }}
+                    className={`px-4 text-base md:text-lg font-medium md:font-semibold cursor-pointer ${
+                      tab == currentTab
+                        ? "  border-b-2 text-blue-500 border-blue-500"
+                        : null
+                    } w-full text-center py-2`}
+                  >
+                    {tab}
+                  </p>
+                ))}
+              </div>
             </div>
-          </div>
-          <div className="">
-            {currentTab == "Home" && (
-              <div className="space-y-2 ">
-                <div className="flex flex-col bg-white border-b md:border shadow-sm md:shadow-lg   gap-2">
-                  <div className="px-4 md:px-6 py-4">
-                    <p className="text-xl font-bold">About</p>
-                    <p className=" line-clamp-3 mt-1 text-sm mb-2">
-                      {userDetails == "" ? (
-                        <div>
-                          <div className="animate-pulse z-10 mt-2">
-                            <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
-                            <div className="h-2 bg-gray-200 rounded-md "></div>
-                            <div className="h-2 w-1/2 bg-gray-200 rounded-md mt-5"></div>
-                          </div>
+            <div className="">
+              {currentTab == "Home" && (
+                <div className="space-y-2 ">
+                  {user.account_type == "Employeer" ? (
+                    <div className="flex flex-col bg-white border-b md:border shadow-sm md:shadow-lg   gap-2">
+                      <div className="px-4 md:px-6 py-4">
+                        <p className="text-xl font-bold">About</p>
+                        <p className=" line-clamp-3 mt-1 text-sm mb-2">
+                          {userDetails == "" ? (
+                            <div>
+                              <div className="animate-pulse z-10 mt-2">
+                                <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
+                                <div className="h-2 bg-gray-200 rounded-md "></div>
+                                <div className="h-2 w-1/2 bg-gray-200 rounded-md mt-5"></div>
+                              </div>
+                            </div>
+                          ) : (
+                            <span> {user.description}</span>
+                          )}
+                        </p>
+                        <a className="text-sm text-blue-500">
+                          {userDetails.company_details?.website}
+                        </a>
+                      </div>
+                      <p
+                        onClick={() => {
+                          setcurrentTab("About");
+                        }}
+                        className="w-full text-center border-t font-medium py-2 text-gray-400"
+                      >
+                        Learn more
+                      </p>
+                    </div>
+                  ):
+                  (
+                    <div className="relative overflow-hidden bg-white px-4 py-4 pb-16">
+                    <p className="text-xl font-bold ">Description</p>
+                    <p className="text-gray-400 text-sm mb-3 font-normal">Click on the text to make the changes or add a new description</p>
+                    <div
+                      className={`text-sm font-normal ${descriptionInput ? "hidden" : ""}`}
+                    >
+                      {user?.description ? (
+                        <div onClick={() => setdescriptionInput(true)}>
+                          <p>{user.description}</p>
                         </div>
                       ) : (
-                        <span> {userDetails.description}</span>
+                        <div
+                          onClick={() => setdescriptionInput(true)}
+                          className="text-sm font-normal text-gray-300 w-full"
+                        >
+                          Add a description. For example: "We are a dynamic
+                          company committed to excellence and innovation."
+                        </div>
                       )}
+                    </div>
+
+                    <div>
+                      {descriptionInput && (
+                        <div>
+                          <textarea
+                            onChange={(e) =>
+                              setdescriptionInputText(e.target.value)
+                            }
+                            value={descriptionInputText}
+                            onFocus={() => setdescriptionInput(true)}
+                            onBlur={() => setdescriptionInput(false)}
+                            placeholder='Add a description. For example: "We are a dynamic company committed to excellence and innovation."'
+                            className="text-sm caret-blue-500 -mb-[6px] h-full font-normal placeholder:text-wrap placeholder:text-gray-300 outline-none w-full"
+                          />
+                        </div>
+                      )}
+
+                      <div
+                        className={`absolute flex gap-2 right-4 bottom-4 transition-transform duration-300 ${
+                          descriptionInput == true
+                            ? "translate-x-0"
+                            : "translate-x-40"
+                        }`}
+                      >
+                        <button
+                          onClick={() => setdescriptionInput(false)}
+                          className="font-medium px-4 py-1 rounded-2xl text-blue-500"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={adddescription}
+                          className="font-medium px-4 py-1 bg-blue-500 rounded-full text-white"
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  )}
+                  <div className="bg-white border-y md:border shadow-sm md:shadow-lg ">
+                    <div className="flex flex-col px-4 md:px-6 py-4 ">
+                      <p className="text-xl font-medium">Posts</p>
+                    </div>
+                    <p
+                      onClick={() => {
+                        setcurrentTab("Posts");
+                      }}
+                      className="w-full text-center  border-t font-medium py-2 text-gray-400"
+                    >
+                      See all posts
                     </p>
-                    <a className="text-sm text-blue-500">
-                      {userDetails.company_details?.website}
-                    </a>
                   </div>
-                  <p
-                    onClick={() => {
-                      setcurrentTab("About");
-                    }}
-                    className="w-full text-center border-t font-medium py-2 text-gray-400"
-                  >
-                    Learn more
-                  </p>
                 </div>
-                <div className="bg-white border-y md:border shadow-sm md:shadow-lg ">
-                  <div className="flex flex-col px-4 md:px-6 py-4 ">
-                    <p className="text-xl font-medium">Posts</p>
-                  </div>
-                  <p
-                    onClick={() => {
-                      setcurrentTab("Posts");
-                    }}
-                    className="w-full text-center  border-t font-medium py-2 text-gray-400"
-                  >
-                    See all posts
-                  </p>
-                </div>
-              </div>
-            )}
-            {currentTab == "Qualification" && (
-              <div>
-                {/* <div className="flex-grow border  h-full md:w-fit px-6 bg-white sm:px-8 py-5 flex w-full">
+              )}
+              {currentTab == "Qualification" && (
+                <div>
+                  {/* <div className="flex-grow border  h-full md:w-fit px-6 bg-white sm:px-8 py-5 flex w-full">
               <div className="h-full">
                 <p className="text-xl font-medium">Profile Analytics</p>
                 <PieChart
@@ -1431,217 +1506,227 @@ const UserProfile = () => {
                 />
               </div>
             </div> */}
-                {userDetailsList.map((item, index) => (
-                  <div
-                    key={index}
-                    className="cursor-pointer bg-white"
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, item.id)}
-                    onDrop={(e) => handleDrop(e, item.id)}
-                    onDragOver={(e) => e.preventDefault()}
-                  >
-                    <Section
-                      id={item.id}
-                      title={item.title}
-                      content={item.content}
-                      loading={item.loading}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-            {currentTab == "Posts" && (
-              <div className="bg-white w-full h-full"></div>
-            )}
-
-            {currentTab == "About" && (
-              <div className="bg-white flex flex-col gap-4 w-full px-4 py-4 sm:px-6 h-full">
-                <div className="relative overflow-hidden pb-12">
-                  <p className="text-xl font-bold mb-2">Description</p>
-
-                  <div
-                    className={`text-sm ${descriptionInput ? "hidden" : ""}`}
-                  >
-                    {userDetails?.description ? (
-                      <div onClick={() => setdescriptionInput(true)}>
-                        <p>{userDetails.description}</p>
-                      </div>
-                    ) : (
-                      <div
-                        onClick={() => setdescriptionInput(true)}
-                        className="text-sm font-normal text-gray-300 w-full"
-                      >
-                        Add a description. For example: "We are a dynamic
-                        company committed to excellence and innovation."
-                      </div>
-                    )}
-                  </div>
-
-                  {descriptionInput && (
-                    <div>
-                      <textarea
-                        onChange={(e) => {
-                          setdescriptionInputText(e.target.value);
-                        }}
-                        value={descriptionInputText}
-                        autoFocus
-                        placeholder='Add a description. For example: "We are a dynamic company committed to excellence and innovation."'
-                        className="text-sm caret-blue-500 -mb-[6px] h-full font-normal placeholder:text-wrap placeholder:text-gray-300 outline-none w-full"
-                      />
-                    </div>
-                  )}
-
-                  <div
-                    className={`absolute flex gap-2 right-0 bottom-0 transition-all ${
-                      descriptionInput ? "translate-x-0" : "translate-x-40"
-                    }`}
-                  >
-                    <button
-                      onClick={() => setdescriptionInput(false)}
-                      className="font-medium px-4 py-1 rounded-2xl text-blue-500"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={() => {
-                        adddescription();
-                      }}
-                      className="font-medium px-4 py-1 bg-blue-500 rounded-full text-white"
-                    >
-                      Save
-                    </button>
-                  </div>
-                </div>
-
-                <div className="-mt-4">
-                  <p className="font-semibold text-lg mb-2  ">Details</p>
-                  <div className="text-sm flex flex-col gap-2">
-                    {userDetails?.company_details.website && (
-                      <div>
-                        <p>Website</p>
-                        <p className="text-blue-500">
-                          {userDetails?.company_details.website}
-                        </p>
-                      </div>
-                    )}
-                    {userDetails?.company_details.industry && (
-                      <div>
-                        <p>Industry</p>
-                        <p>{userDetails?.company_details.industry}</p>
-                      </div>
-                    )}
-                    {userDetails?.location && (
-                      <div>
-                        <p>Company location</p>
-                        <p className="text-gray-400">
-                          {userDetails?.location.address}
-                        </p>
-                      </div>
-                    )}
-                    {userDetails?.company_details.found_in_date && (
-                      <div>
-                        <p>Found in</p>
-                        <p className="text-gray-400">
-                          {new Date(
-                            userDetails.company_details.found_in_date
-                          ).getFullYear()}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {currentTab == "Jobs" &&
-              (jobData.length > 0 ? (
-                <div className="bg-white border-x h-full px-4 py-4 md:px-6 md:border md:-mt-0 w-full flex-1">
-                  <div className="flex justify-between mb-3 items-center">
-                    <p className="font-medium">Recently posted jobs</p>
-                    <button
-                      onClick={() => {
-                        setFormType("job");
-                      }}
-                      className="text-blue-500 bg-blue-50 text-sm py-1 px-4 border rounded-full font-medium border-blue-500"
-                    >
-                      Create job
-                    </button>
-                  </div>
-
-                  {jobData.map((job, index) => (
+                  {userDetailsList.map((item, index) => (
                     <div
-                      onClick={() => {
-                        console.log(job);
-                        setUpdateData({ job: job });
-                        setupdateFormType("job");
-                      }}
-                      className={`flex py-2 items-start  justify-between ${
-                        index < jobData.length - 1
-                          ? "border-b cursor-pointer"
-                          : ""
-                      } `}
-                      key={job.id}
+                      key={index}
+                      className="cursor-pointer bg-white"
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, item.id)}
+                      onDrop={(e) => handleDrop(e, item.id)}
+                      onDragOver={(e) => e.preventDefault()}
                     >
-                      <div className="">
-                        <p className="text-lg font-semibold">{job.job_role}</p>
-                        <p className="text-xs text-gray-800">
-                          {job.location.address}
-                        </p>
-                        {job.job_update_date ? (
-                          <p className="text-xs mt-0.5 text-gray-400">
-                            Updated{" "}
-                            {formatDistanceToNow(
-                              new Date(job.job_update_date),
-                              {
-                                addSuffix: true,
-                              }
-                            )}
-                          </p>
-                        ) : (
-                          <p className="text-xs mt-0.5 text-gray-400">
-                            Posted{" "}
-                            {formatDistanceToNow(new Date(job.job_post_date), {
-                              addSuffix: true,
-                            })}
-                          </p>
-                        )}
-                      </div>
-                      <svg
-                        class="h-6 w-6 mt-1.5 text-gray-500"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        stroke-width="2"
-                        stroke="currentColor"
-                        fill="none"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        {" "}
-                        <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                        <circle cx="12" cy="12" r="1" />{" "}
-                        <circle cx="12" cy="19" r="1" />{" "}
-                        <circle cx="12" cy="5" r="1" />
-                      </svg>
+                      <Section
+                        id={item.id}
+                        title={item.title}
+                        content={item.content}
+                        loading={item.loading}
+                      />
                     </div>
                   ))}
                 </div>
-              ) : (
-                <div className="bg-white border-x  text-center pt-10 md:border -mt-4 md:-mt-0 items-center  w-full flex-1">
-                  <p className="font-bold text-2xl">No jobs posted </p>
-                  <p
-                    onClick={() => {
-                      setFormType("job");
-                    }}
-                    className=" font-semibold text-blue-500 mt-1"
-                  >
-                    Post a job
-                  </p>
+              )}
+              {currentTab == "Posts" && (
+                <div className="bg-white w-full h-full"></div>
+              )}
+
+              {currentTab == "About" && (
+                <div className="bg-white flex flex-col gap-4 w-full px-4 py-4 sm:px-6 h-full">
+                  <div className="relative overflow-hidden pb-12">
+                    <p className="text-xl font-bold mb-2">Description</p>
+
+                    <div
+                      className={`text-sm ${descriptionInput ? "hidden" : ""}`}
+                    >
+                      {user?.description ? (
+                        <div onClick={() => setdescriptionInput(true)}>
+                          <p>{user.description}</p>
+                        </div>
+                      ) : (
+                        <div
+                          onClick={() => setdescriptionInput(true)}
+                          className="text-sm font-normal text-gray-300 w-full"
+                        >
+                          Add a description. For example: "We are a dynamic
+                          company committed to excellence and innovation."
+                        </div>
+                      )}
+                    </div>
+
+                    <div>
+                      {descriptionInput && (
+                        <div>
+                          <textarea
+                            onChange={(e) =>
+                              setdescriptionInputText(e.target.value)
+                            }
+                            value={descriptionInputText}
+                            onFocus={() => setdescriptionInput(true)}
+                            onBlur={() => setdescriptionInput(false)}
+                            placeholder='Add a description. For example: "We are a dynamic company committed to excellence and innovation."'
+                            className="text-sm caret-blue-500 -mb-[6px] h-full font-normal placeholder:text-wrap placeholder:text-gray-300 outline-none w-full"
+                          />
+                        </div>
+                      )}
+
+                      <div
+                        className={`absolute flex gap-2 right-0 bottom-0 transition-transform duration-300 ${
+                          descriptionInput == true
+                            ? "translate-x-0"
+                            : "translate-x-40"
+                        }`}
+                      >
+                        <button
+                          onClick={() => setdescriptionInput(false)}
+                          className="font-medium px-4 py-1 rounded-2xl text-blue-500"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={adddescription}
+                          className="font-medium px-4 py-1 bg-blue-500 rounded-full text-white"
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="-mt-4">
+                    <p className="font-semibold text-lg mb-2  ">Details</p>
+                    <div className="text-sm flex flex-col gap-2">
+                      {userDetails?.company_details.website && (
+                        <div>
+                          <p>Website</p>
+                          <p className="text-blue-500">
+                            {userDetails?.company_details.website}
+                          </p>
+                        </div>
+                      )}
+                      {userDetails?.company_details.industry && (
+                        <div>
+                          <p>Industry</p>
+                          <p>{userDetails?.company_details.industry}</p>
+                        </div>
+                      )}
+                      {userDetails?.location && (
+                        <div>
+                          <p>Company location</p>
+                          <p className="text-gray-400">
+                            {userDetails?.location.address}
+                          </p>
+                        </div>
+                      )}
+                      {userDetails?.company_details.found_in_date && (
+                        <div>
+                          <p>Found in</p>
+                          <p className="text-gray-400">
+                            {new Date(
+                              userDetails.company_details.found_in_date
+                            ).getFullYear()}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              ))}
+              )}
+
+              {currentTab == "Jobs" &&
+                (jobData.length > 0 ? (
+                  <div className="bg-white border-x h-full px-4 py-4 md:px-6 md:border md:-mt-0 w-full flex-1">
+                    <div className="flex justify-between mb-3 items-center">
+                      <p className="font-medium">Recently posted jobs</p>
+                      <button
+                        onClick={() => {
+                          setFormType("job");
+                        }}
+                        className="text-blue-500 bg-blue-50 text-sm py-1 px-4 border rounded-full font-medium border-blue-500"
+                      >
+                        Create job
+                      </button>
+                    </div>
+
+                    {jobData.map((job, index) => (
+                      <div
+                        onClick={() => {
+                          console.log(job);
+                          setUpdateData({ job: job });
+                          setupdateFormType("job");
+                        }}
+                        className={`flex py-2 items-start  justify-between ${
+                          index < jobData.length - 1
+                            ? "border-b cursor-pointer"
+                            : ""
+                        } `}
+                        key={job.id}
+                      >
+                        <div className="">
+                          <p className="text-lg font-semibold">
+                            {job.job_role}
+                          </p>
+                          <p className="text-xs text-gray-800">
+                            {job.location.address}
+                          </p>
+                          {job.job_update_date ? (
+                            <p className="text-xs mt-0.5 text-gray-400">
+                              Updated{" "}
+                              {formatDistanceToNow(
+                                new Date(job.job_update_date),
+                                {
+                                  addSuffix: true,
+                                }
+                              )}
+                            </p>
+                          ) : (
+                            <p className="text-xs mt-0.5 text-gray-400">
+                              Posted{" "}
+                              {formatDistanceToNow(
+                                new Date(job.job_post_date),
+                                {
+                                  addSuffix: true,
+                                }
+                              )}
+                            </p>
+                          )}
+                        </div>
+                        <svg
+                          class="h-6 w-6 mt-1.5 text-gray-500"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          stroke-width="2"
+                          stroke="currentColor"
+                          fill="none"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          {" "}
+                          <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                          <circle cx="12" cy="12" r="1" />{" "}
+                          <circle cx="12" cy="19" r="1" />{" "}
+                          <circle cx="12" cy="5" r="1" />
+                        </svg>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="bg-white border-x  text-center pt-10 md:border -mt-4 md:-mt-0 items-center  w-full flex-1">
+                    <p className="font-bold text-2xl">No jobs posted </p>
+                    <p
+                      onClick={() => {
+                        setFormType("job");
+                      }}
+                      className=" font-semibold text-blue-500 mt-1"
+                    >
+                      Post a job
+                    </p>
+                  </div>
+                ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
       {true && (
         <div
           className={`fixed top-0 border-l  z-40 h-full w-[60%] bg-white transition-all duration-300 ease-in-out 
@@ -1652,11 +1737,10 @@ const UserProfile = () => {
             <h2 className="text-xl font-semibold">Settings</h2>
             <div className="flex-1 "></div>
             <a
-             
               onClick={() => {
                 console.log("logout");
                 dispatch(logout());
-                  navigate('/', { replace: true });
+                navigate("/", { replace: true });
               }}
               className="mt-2 bg-red-50 font-bold w-fit py-1 px-3 rounded-md border border-red-500 text-red-500"
             >
