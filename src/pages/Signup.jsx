@@ -15,6 +15,7 @@ import { useDispatch } from "react-redux";
 import { loginSuccess, loginFailure } from "../features/auth/authSlice";
 import UrlInput from "../components/Input/UrlInput";
 import LocationInput from "../components/Input/LocationInput";
+import NumberInput from "../components/Input/NumberInput";
 
 function Signup() {
   const [otpInput, setotpInput] = useState(false);
@@ -64,24 +65,31 @@ function Signup() {
   const [company_details, setcompany_details] = useState({});
 
   const handleInputChange = (e) => {
-    console.log(userData, personal_details);
-    let { name, value } = e.target;
+    const { name, value } = e.target;
+    console.log("User Data:", userData);
+    console.log("Personal Details:", personal_details);
+  
+    // Update userData state
+    setuserData((prevState) => ({ ...prevState, [name]: value }));
+  
+    // Handle username validation with debounce
     if (name === "username") {
+      if (usernameTimeout.current) {
+        clearTimeout(usernameTimeout.current);
+      }
+  
       if (value !== "") {
-        if (usernameTimeout.current) {
-          clearTimeout(usernameTimeout.current);
-        }
-
         usernameTimeout.current = setTimeout(() => {
           setusernameChecking(true);
           verifyUserName(value);
         }, 500);
       } else {
         setuserNameAvailable(false);
+        setusernameError("Username cannot be empty");
       }
     }
-    setuserData((prevState) => ({ ...prevState, [name]: value }));
   };
+  
   const isFormValid = () => {
     console.log(userData, personal_details, company_details);
     if (
@@ -91,11 +99,13 @@ function Signup() {
       userData.password &&
       userData.account_type
     ) {
-      if (userData.account_type === "Candidate") {
-        if (personal_details.birthdate || personal_details.firstname) {
+      if (userData.account_type == "Candidate") {
+        console.log("HI",personal_details);
+
+        if (personal_details.birthdate && personal_details.firstname) {
           console.log("form valid");
+          return true;
         }
-        return personal_details.birthdate && personal_details.firstname;
       } else {
         if (
           company_details.company_name &&
@@ -113,65 +123,65 @@ function Signup() {
     }
     return false;
   };
+  const resetFormStates = () => {
+    setuserData((prev) => ({
+      ...prev,
+      password: "",
+    }));
+    setpersonal_details((prev) => ({
+      ...prev,
+      firstname: "",
+      lastname: "",
+      birthdate: "",
+    }));
+    setcompany_details((prev) => ({
+      ...prev,
+      company_name: "",
+      found_in_date: "",
+      location: "",
+    }));
+  };
+  
   const verifyUserName = async (username) => {
     setusernameChecking(true);
     setusernameChecked(false);
+  
     try {
-      if (username.length <= 30) {
+      // Check if the username is empty
+      if (username.length === 0) {
+        setuserNameAvailable(false);
+        resetFormStates();
+        setusernameError("Username cannot be empty");
+      } 
+      // Check if the username exceeds the maximum length
+      else if (username.length > 30) {
+        setuserNameAvailable(false);
+        resetFormStates();
+        setusernameError("Username can have only 30 characters");
+      } 
+      // Valid length: Check if the username is available
+      else {
         const response = await authService.checkUsername(username);
+  
         if (response.exists) {
           setuserNameAvailable(false);
-          setuserData((prev) => ({
-            ...prev,
-            password: "",
-          }));
-          setpersonal_details((prev) => ({
-            ...prev,
-            firstname: "",
-            lastname: "",
-            birthdate: "",
-          }));
-          setcompany_details((prev) => ({
-            ...prev,
-            company_name: "",
-            found_in_date: "",
-            location: "",
-          }));
-
+          resetFormStates();
           setusernameError("Username already taken");
         } else {
-          setusernameError("");
-
           setuserNameAvailable(true);
+          setusernameError("");
         }
-      } else {
-        setuserNameAvailable(false);
-        setuserData((prev) => ({
-          ...prev,
-          password: "",
-        }));
-        setpersonal_details((prev) => ({
-          ...prev,
-          firstname: "",
-          lastname: "",
-          birthdate: "",
-        }));
-        setcompany_details((prev) => ({
-          ...prev,
-          company_name: "",
-          found_in_date: "",
-          location: "",
-        }));
-
-        setusernameError("Username can have only 30 characters ");
       }
     } catch (error) {
       console.error("Error checking username:", error);
+      setusernameError("Error checking username");
     } finally {
       setusernameChecked(true);
       setusernameChecking(false);
     }
   };
+  
+  
   const verifyEmail = async () => {
     var validRegex =
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -235,6 +245,7 @@ function Signup() {
     if(userData.account_type  === "Employeer"){
        response = await fetch(
         "https://workler-backend.vercel.app/api/auth/signup",
+        // "http://localhost:5002/api/auth/signup",
         {
           method: "POST",
           headers: {
@@ -245,6 +256,8 @@ function Signup() {
       );
     }else{
        response = await fetch(
+        // "http://localhost:5002/api/auth/signup",
+
         "https://workler-backend.vercel.app/api/auth/signup",
         {
           method: "POST",
@@ -284,7 +297,7 @@ function Signup() {
   };
 
   return (
-    <div className="flex flex-col h-svh  items-center w-full justify-center overflow-y-auto  text-gray-800">
+    <div className={`flex flex-col h-svh  items-center w-full justify-center   text-gray-800 overflow-y-hidden ${!userNameAvailable || userData.username == "" ?"overflow-hidden":""}`}>
       <div
         className={` flex h-full flex-col justify-between items-center sm:justify-center  w-full   ${
           next ? "hidden" : null
@@ -292,7 +305,7 @@ function Signup() {
       >
         <div
           id="email-form"
-          className={` w-full  sm:border px-6 mt-10 sm:p-10 max-w-sm flex  flex-col  `}
+          className={` w-full  sm:border px-4 sm:px-6 mt-10 sm:p-10 max-w-sm flex  flex-col  `}
         >
           <div className="">
             <p className="text-2xl font-semibold text-gray-800 ">Hello User</p>
@@ -377,10 +390,10 @@ function Signup() {
             <OptionInput
               placeholder={"Purpose"}
               options={[
-                { value: "Candidate", title: "Search and apply for jobs" },
+                { value: "Candidate", name: "Search and apply for jobs" },
                 {
                   value: "Employeer",
-                  title: " Post job openings and find candidate",
+                  name: " Post job openings and find candidate",
                 },
               ]}
               className={"mt-5"}
@@ -445,7 +458,7 @@ function Signup() {
           console.log("create");
           create(e);
         }}
-        className={`sm:border w-full flex-1 sm:flex-none flex overflow-y-auto flex-col h-fit sm:w-full sm:max-w-fit px-4 md:mt-32 md:mb-10 py-10 sm:p-10 ${
+        className={`sm:border w-full flex-1  sm:flex-none flex overflow-y-auto flex-col h-fit sm:w-full sm:max-w-fit px-4 md:mt-32 md:mb-10 py-10 sm:p-10 ${
           next ? null : "hidden"
         }`}
       >
@@ -566,13 +579,13 @@ function Signup() {
             />
           </div>
           {userData.account_type == "Candidate" && (
-            <div
-              className={`transition-transform flex flex-col gap-6 duration-300 ease-in-out ${
-                userNameAvailable
-                  ? "md:flex opacity-100 translate-y-0"
-                  : "md:hidden opacity-0 -translate-y-5"
-              }`}
-            >
+          <div
+          className={`transition-transform  flex flex-col gap-6 duration-300 ease-in-out ${
+            userNameAvailable
+              ? "md:flex opacity-100 translate-y-0"
+              : "md:hidden opacity-0 -translate-y-5"
+          }`}
+        >
               <div className="flex flex-wrap gap-6 w-full">
                 <TextInput
                   name={"firstname"}
@@ -601,18 +614,21 @@ function Signup() {
               </div>
               <div className="flex flex-wrap gap-6 w-full">
                 <DateInput
+                type={"date"}
                   className={"flex-grow"}
-                  name={"date_of_birth"}
+                  name={"birthdate"}
                   onChange={(e) => {
                     setpersonal_details((prev) => ({
                       ...prev,
-                      date_of_birth: e.target.value,
+                      birthdate: e.target.value,
                     }));
                   }}
                   placeholder={"Date of Birth"}
                   value={personal_details.date_of_birth}
                 />
                 <LocationInput
+                className={"flex-grow"}
+                placeholder={"Location"}
                   value={personal_details.location}
                   onChange={(value) => {
                     setpersonal_details((prev) => ({
@@ -622,10 +638,11 @@ function Signup() {
                   }}
                 />
               </div>
-              <div className="flex gap-6 w-full">
-                <TextInput
+              <div className="flex flex-wrap gap-4 sm:gap-6 w-full">
+                <NumberInput
                   name={"phone"}
-                  className={"flex-grow"}
+                  max={10}
+                  className={"flex-grow min-w-32"}
                   value={personal_details.phone}
                   onChange={(e) => {
                     setpersonal_details((prev) => ({
@@ -636,7 +653,7 @@ function Signup() {
                   placeholder={"Phone Number"}
                 />
                 <OptionInput
-                  className={"flex-grow"}
+                  className={"flex-grow min-w-32"}
                   name={"gender"}
                   options={[
                     {
@@ -656,24 +673,16 @@ function Signup() {
                       value: "Others",
                     },
                   ]}
-                  placeholder={"Select Gender"}
-                  onChange={(value) => {
+                  placeholder={"Gender"}
+                  onChange={(e) => {
                     setpersonal_details((prev) => ({
                       ...prev,
-                      gender: value,
+                      gender: e.target.value,
                     }));
                   }}
                 />
               </div>
-              <TextInput
-                name={"email"}
-                className={"flex-grow"}
-                value={userData.email}
-                onChange={(e) => {
-                  handleInputChange(e);
-                }}
-                placeholder={"Email Address"}
-              />
+            
             </div>
           )}
           {userData.account_type == "Employeer" && (
@@ -782,7 +791,7 @@ function Signup() {
         </div>
         <Button
           type="submit"
-          className={`flex items-center text-xl justify-center   bg-blue-500 text-white py-2  rounded disabled:opacity-50 mt-6 ${userNameAvailable?"-translate-y-0":"-translate-y-[300px]"}`}
+          className={`flex items-center text-xl justify-center   bg-blue-500 text-white py-2  rounded disabled:opacity-50 mt-6 ${userNameAvailable?"-translate-y-0":userData.account_type =="Candidate"?"-translate-y-[512px]":"-translate-y-[300px]"}`}
           disabled={!isFormValid() || loader} // Ensure the form validation is active
         >
           {loader ? (

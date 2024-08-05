@@ -16,15 +16,28 @@ function UserImageInput({
   const [currentImage, setCurrentImage] = useState(image);
 
   useEffect(() => {
-    setCurrentImage(image)
-   
+    if (image instanceof File) {
+      // If the image is a File object, convert it to a data URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCurrentImage(reader.result);
+      };
+      reader.readAsDataURL(image);
+    } else {
+      // Otherwise, set the image directly
+      setCurrentImage(image);
+    }
   }, [image]);
 
+
   const handleImageClick = () => {
-    onClick()
+   
     if (isEditable) {
       fileInputRef.current.click();
     }
+    else{
+     onClick()
+     }
   };
 
   const handleFileChange = (event) => {
@@ -46,7 +59,7 @@ function UserImageInput({
     <div className={`${className}`}>
       <div
         onClick={handleImageClick}
-        className={`relative  bg-gray-50 ${isEditable ? "cursor-pointer" : ""} border-${imageBorder} rounded-full flex items-center justify-center`}
+        className={`relative  bg-gray-50 ${isEditable ? "cursor-pointer" : ""} ${imageBorder>1?`border-${imageBorder}`:"border"} rounded-full flex items-center justify-center`}
         style={{ height: `${imageHeight}px`, width: `${imageHeight}px` }}
       >
         <img
@@ -80,6 +93,7 @@ function UserImageInput({
         )}
         <input
           type="file"
+          // name="images"
           ref={fileInputRef}
           style={{ display: "none" }}
           accept="image/*"

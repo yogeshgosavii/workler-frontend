@@ -72,7 +72,7 @@ function SkillUpdateForm({ data, onClose, setData }) {
             name={"level"}
             placeholder={"Skill Level"}
             value={level}
-            optionList={["Beginner", "Intermediate", "Advanced"]}
+            options={["Beginner", "Intermediate", "Advanced"]}
             isRequired={true}
             onChange={(e) => setLevel(e.target.value)}
           />

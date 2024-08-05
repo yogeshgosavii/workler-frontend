@@ -56,6 +56,9 @@ function JobUpdateForm({ onClose,data, setData }) {
   console.log(deepEqual(formData,data));
   const handleChange = (e) => {
     console.log(formData);
+    if(formData.job_type == "Current portal"){
+      setFormData((prev)=>({...prev,job_url :""}))
+    }
     const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
@@ -116,7 +119,6 @@ function JobUpdateForm({ onClose,data, setData }) {
       !description ||
       !company_name ||
       !location ||
-      !company_logo ||
       skills_required.length === 0 ||  // Ensure skills_required is checked correctly
       deepEqual(data, formData)
     ) {
@@ -358,7 +360,7 @@ function JobUpdateForm({ onClose,data, setData }) {
 
         {
           <Button
-            className="bg-blue-500 w-full text-white disabled:bg-blue-300"
+            className="bg-blue-500 w-full text-lg flex items-center justify-center text-white disabled:bg-blue-300"
             onClick={handleUpdateJob}
             disabled={!isFormValid() || loading || data?.candidates_applied > 0}
           >

@@ -1,4 +1,4 @@
-// const API_URL = "http://localhost:5002/api/files";
+// const API_URL = "http://localhost:5002/api/images";
 const API_URL = "https://workler-backend.vercel.app/api/files"; 
 
 const token = localStorage.getItem("token");
@@ -16,7 +16,8 @@ const imageService = {
         },
         body: formData, // Send the FormData object directly
       });
-
+      console.log(response);
+      
       if (!response.ok) {
         throw new Error("Failed to upload images");
       }

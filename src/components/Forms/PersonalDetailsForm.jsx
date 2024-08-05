@@ -4,24 +4,68 @@ import TextInput from "../Input/TextInput";
 import NumberInput from "../Input/NumberInput";
 import TextAreaInput from "../Input/TextAreaInput";
 import DateInput from "../Input/DateInput";
-import useProfileApi from "../../services/profileService";
+import authService from "../../services/authService";
+import { useSelector } from "react-redux";
+import LocationInput from "../Input/LocationInput";
+import UrlInput from "../Input/UrlInput";
 
-function PersonalDetailsForm({ onClose, data, setdata }) {
+function PersonalDetailsForm({ onClose, data, setData }) {
   const [loading, setloading] = useState(false);
-  const [formData, setFormData] = useState(data || {});
-  const profileApi = useProfileApi();
+  const user = useSelector((state) => state.auth.user);
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    return date.toISOString().split('T')[0];
+  const [formData, setFormData] = useState(data || {});
+
+  const deepEqual = (obj1, obj2) => {
+    // Check if both values are strictly equal
+    if (obj1 === obj2) {
+      return true;
+    }
+
+    // Check if either value is not an object or is null
+    if (
+      typeof obj1 !== "object" ||
+      obj1 === null ||
+      typeof obj2 !== "object" ||
+      obj2 === null
+    ) {
+      return false;
+    }
+
+    // Get the keys of both objects
+    let keys1 = Object.keys(obj1);
+    let keys2 = Object.keys(obj2);
+
+    // Check if the number of keys is different
+    if (keys1.length !== keys2.length) {
+      return false;
+    }
+
+    // Iterate over the keys of obj1
+    for (let key of keys1) {
+      // Check if obj2 has the key and the values of the key are deeply equal
+      if (!keys2.includes(key) || !deepEqual(obj1[key], obj2[key])) {
+        // Handle special case for numeric values to consider them equal if numeric value is same
+        if (
+          typeof obj1[key] === "number" &&
+          typeof obj2[key] === "number" &&
+          obj1[key] === obj2[key]
+        ) {
+          continue; // Continue checking other keys
+        }
+        return false;
+      }
+    }
+
+    // If all checks pass, the objects are deeply equal
+    return true;
   };
 
   const isFormValid = () => {
-    if(formData.fullname!="" && formData.birthdate!=""){
-      return true
-    };
-    return false
+    if (formData.location !== "" && !deepEqual(data,formData) ) {
+      console.log("formvalid");
+      return true;
+    }
+    return false;
   };
 
   const handleInputChange = (e) => {
@@ -37,7 +81,7 @@ function PersonalDetailsForm({ onClose, data, setdata }) {
   };
 
   const handleSave = async () => {
-    setloading(true)
+    setloading(true);
     if (!isFormValid()) {
       return;
     }
@@ -47,8 +91,11 @@ function PersonalDetailsForm({ onClose, data, setdata }) {
         .filter(([key, value]) => value !== null && value !== "")
         .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 
-      const token = localStorage.getItem("token");
-      const personalData = await profileApi.personalDetails.add(filteredData, token);
+      const personalData = await authService.updateUserDetails(
+        filteredData,
+      );
+      setData(formData)
+      onClose()
 
       console.log("Personal data saved successfully:", personalData);
     } catch (error) {
@@ -57,56 +104,148 @@ function PersonalDetailsForm({ onClose, data, setdata }) {
   };
 
   return (
-    <form className="bg-white pt-6 pb-6 px-4 sm:px-8 rounded-sm w-full flex flex-col justify-between h-full">
+    <div className="h-full flex  sm:max-h-[450px] flex-col gap-6 pt-2 pb-6 overflow-auto bg-white">
       <div className="">
-        <h2 className="text-xl font-medium">Personal Details</h2>
-        <div className="flex flex-col w-full gap-6 mt-5">
-          <TextInput
-            name="fullname"
-            value={formData.fullname}
+      <div className={`sticky z-20 -top-2.5 py-4 px-4 sm:px-8  ${window.scroll >0?"shadow-lg":""} bg-white`}>
+        <h2 className="text-xl font-medium">
+        {user.account_type == "Employeer" ? (
+            <span>Company details</span>
+          ) : (
+            <span>Personal details</span>
+          )}
+        </h2>
+        <p className="text-sm text-gray-400">
+          Update the details or add new to them
+        </p>
+      </div>
+        <div className="flex flex-col w-full px-4 sm:px-8  gap-6 mt-5">
+          <TextAreaInput
+            name="description"
+            value={formData?.description}
             onChange={handleInputChange}
-            placeholder="Full name"
-            isRequired={true}
+            placeholder="Description"
           />
           <NumberInput
             name="phone"
-            value={formData.phone}
+            value={formData?.personal_details?.phone}
             placeholder="Phone"
-            onChange={handleInputChange}
+            onChange={(e) => {
+              setFormData((prev) => ({
+                ...prev,
+                personal_details: {
+                  ...prev.personal_details,
+                  phone: e.target.value
+                }
+              }));
+              console.log(formData);
+            }}
+            
           />
-          <TextAreaInput
-            name="address"
-            value={formData.address}
-            onChange={handleInputChange}
-            placeholder="Address"
+         
+        {user.account_type == "Employeer" && (
+          <>
+            <DateInput
+              name="found_in_date"
+              type={"date"}
+              value={formData?.company_details?.found_in_date.split("T")[0]}
+              onChange={(e) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  company_details: {
+                    ...prev.company_details,
+                    found_in_date: e.target.value,
+                  },
+                }));
+              }}
+              placeholder="Found in"
+              isRequired={true}
+            />
+          </>
+        )}
+
+        <LocationInput
+          name="location"
+          value={formData?.location}
+          onChange={handleInputChange}
+          placeholder="Location"
+          isRequired={true}
+        />
+
+        <UrlInput
+          name="githubLink"
+          value={formData?.githubLink}
+          onChange={handleInputChange}
+          placeholder="Github"
+        />
+        <UrlInput
+          name="linkedInLink"
+          value={formData?.linkedInLink}
+          onChange={handleInputChange}
+          placeholder="LinkedIn"
+        />
+        {user.account_type == "Candidate" && (
+          <UrlInput
+            name="portfolio"
+            value={formData?.personal_details?.portfolio}
+            onChange={(e) => {
+              setFormData((prev) => ({
+                ...prev,
+                personal_details: {
+                  ...prev.personal_details,
+                  portfolio: e.target.value,
+                },
+              }));
+            }}
+            placeholder="Portfolio"
           />
-          <DateInput
-            type="date"
-            name="birthdate"
-            value={formatDate(formData.birthdate)}
-            className="w-full"
-            onChange={handleInputChange}
-            placeholder="Birthdate"
-            isRequired={true}
+        )}
+        {user.account_type == "Employeer" && (
+          <UrlInput
+            name="website"
+            value={formData?.company_details?.website}
+            onChange={(e) => {
+              setFormData((prev) => ({
+                ...prev,
+                company_details: {
+                  ...prev.company_details,
+                  website: e.target.value,
+                },
+              }));
+            }}
+            placeholder="Website"
           />
+        )}
         </div>
       </div>
-      <div className="mt-8 flex justify-end">
-        {/* <button className="mr-2 py-2 px-7 rounded-md font-semibold text-blue-500" onClick={onClose}>
-          Cancel
-        </button> */}
-        <button className="bg-blue-500 py-2 px-7 rounded-md font-semibold disabled:bg-blue-300 text-white" disabled={!isFormValid() || loading} onClick={handleSave}>
-        {
-              loading? (
-                 <svg className="inline w-7 h-7 text-transparent animate-spin fill-white" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
-                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
-                  </svg>
-              ) :"Update"
-            }
+      <div className="mt-8 px-4 sm:px-8 flex w-full justify-end">
+       
+        <button
+          className="bg-blue-500 w-full py-2 text-lg flex items-center justify-center px-7 rounded-md font-semibold disabled:bg-blue-300 text-white"
+          disabled={!isFormValid()}
+          onClick={handleSave}
+        >
+          {loading ? (
+            <svg
+              className="inline w-7 h-7 text-transparent animate-spin fill-white"
+              viewBox="0 0 100 101"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                fill="currentColor"
+              />
+              <path
+                d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                fill="currentFill"
+              />
+            </svg>
+          ) : (
+            "Update"
+          )}
         </button>
       </div>
-    </form>
+    </div>
   );
 }
 

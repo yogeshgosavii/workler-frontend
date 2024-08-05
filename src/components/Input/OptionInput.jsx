@@ -10,6 +10,8 @@ function OptionInput({
   className,
   promptMessage,
 }) {
+  console.log(options);
+  
   const [message, setMessage] = useState(promptMessage);
   const [currentValue, setCurrentValue] = useState(value);
 
@@ -44,8 +46,8 @@ function OptionInput({
             Select an option
           </option>
           {options.map((option) => (
-            <option key={option?.value || option} value={option?.value || option}>
-              {option?.title || option}
+            <option key={option?.value} value={option?.value}>
+              {option?.name }
             </option>
           ))}
         </select>

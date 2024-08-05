@@ -83,15 +83,15 @@ const authService = {
   },
 
   updateUserDetails: async (data) => {
-    console.log("INspect",data); // Inspect the data being sent
+    console.log("Inspect",data); // Inspect the data being sent
     try {
       const response = await fetch(`${API_URL}/update-user`, {
         method: "PUT", // Ensure method is set correctly
         headers: {
-          "Content-Type": "application/json",
+          // "Content-Type": "application/json",
           Authorization: `Bearer ${getToken()}`,
         },
-        body: JSON.stringify(data), // Send the cleaned data
+        body: data, // Send the cleaned data
       });
       if (!response.ok) {
         throw new Error("Failed to update user details");

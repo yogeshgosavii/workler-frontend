@@ -15,7 +15,9 @@ function NumberInput({
   const [message, setMessage] = useState(promtMessage);
 
   const handleChange = (e) => {
-    onChange(e);
+    if(e.target.value.length <= max){
+      onChange(e);
+    }
     if (isRequired && !e.target.value) {
       setMessage({ type: "error", text: "This is a required field" });
     } else {

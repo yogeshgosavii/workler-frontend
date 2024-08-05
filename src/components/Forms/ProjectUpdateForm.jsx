@@ -8,6 +8,7 @@ import TextAreaInput from "../Input/TextAreaInput";
 import TextInput from "../Input/TextInput";
 
 function ProjectUpdateForm({ data, setData, onClose }) {
+  console.log(data);
   console.log(onClose);
   const [loading, setloading] = useState(false);
   const [previousData, setpreviousData] = useState({
