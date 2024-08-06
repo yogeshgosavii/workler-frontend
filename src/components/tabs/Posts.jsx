@@ -21,8 +21,8 @@ function Posts({ setFormType, postData, userDetails }) {
           </p>
         </div>
       ) : (
-        <div className="flex flex-col gap-4">
-          <div className="flex px-4 bg-white justify-between py-4 border-b items-center">
+        <div className="flex flex-col gap-4 ">
+          <div className="flex px-4 bg-white justify-between py-4 border-b sm:border items-center">
             <p className="font-medium">Recently posts</p>
             <button
               onClick={() => {
@@ -33,8 +33,9 @@ function Posts({ setFormType, postData, userDetails }) {
               Add post
             </button>
           </div>
+          <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 ">
           {postData.map((post, index) => (
-            <div key={index} className="border-y bg-white border-gray-300 py-4 ">
+            <div key={index} className="border-y sm:border sm:shadow-xl bg-white border-gray-300 py-4 px-4 ">
               <div className="flex  items-center justify-between px-4">
                 <div className="flex gap-2 items-center">
                   <UserImageInput
@@ -73,7 +74,7 @@ function Posts({ setFormType, postData, userDetails }) {
                   <circle cx="12" cy="5" r="1" />
                 </svg>
               </div>
-              <p className="mt-1 px-4 text-sm">{post.content}</p>
+              <p className="mt-1 px-4 text-sm ">{post.content}</p>
               {post.images && (
                 <div
                   style={{
@@ -103,6 +104,8 @@ function Posts({ setFormType, postData, userDetails }) {
               </div> */}
             </div>
           ))}
+          </div>
+         
         </div>
       )}
     </div>

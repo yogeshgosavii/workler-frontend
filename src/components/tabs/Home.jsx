@@ -179,36 +179,31 @@ function Home({
         </div>
       )}
       {postData && (
-        <div className="bg-white  md:border md:shadow-lg ">
+        <div className="bg-white border-y md:border md:shadow-lg ">
           <div className="flex flex-col px-4 md:px-6 py-4 ">
             <p className="text-xl font-bold">Posts</p>
           </div>
-          {/* {postData.map((post, index) => ( */}
-            <div
-              // key={index}
-              className=" bg-white border-gray-300 py-4 "
-            >
-              <div className="flex  items-center justify-between px-4">
+         <div className="grid grid-cols-1 sm:grid-cols-2 px-4 gap-4 sm:px-4 md:px-6 mb-4">
+         {postData.map((post, index) => (
+            <div key={index} className=" border  bg-white border-gray-300 py-4 px-4 ">
+              <div className="flex  items-center justify-between ">
                 <div className="flex gap-2 items-center">
                   <UserImageInput
                     className="w-[35px] h-[35px] rounded-full"
                     imageHeight={35}
                     imageBorder={1}
                     // src={post.userAvatar || profileImageDefault}
-                    image={postData.profileImage || profileImageDefault}
-                    alt={`${postData.username}'s avatar`}
+                    image={post.profileImage || profileImageDefault}
+                    alt={`${post.username}'s avatar`}
                     isEditable={false}
                   />
                   <div>
                     <p className="font-medium text-sm">
                       {userDetails.username}
                     </p>
-                    <p className="text-xs text-gray-400">
-                      {" "}
-                      {formatDistanceToNow(new Date(postData.timestamp), {
-                        addSuffix: true,
-                      })}
-                    </p>
+                    <p className="text-xs text-gray-400"> {formatDistanceToNow(new Date(post.timestamp), {
+                  addSuffix: true,
+                })}</p>
                   </div>
                 </div>
                 <svg
@@ -229,28 +224,28 @@ function Home({
                   <circle cx="12" cy="5" r="1" />
                 </svg>
               </div>
-              <p className="mt-1 mb-1 px-4 text-sm">{postData.content}</p>
-              {postData.images && (
-                // <div
-                //   style={{
-                //     overflowX: "auto",
-                //     scrollbarWidth: "none",
-                //   }}
-                //   className="mt-2 px-4 flex gap-2 overflow-x-auto"
-                // >
-                //   {postData.images.compressedImage.map((image, imgIndex) => (
-                //     <img
-                //       key={imgIndex}
-                //       height={"10px"}
-                //       className="w-full h-full  rounded-sm border aspect-square border-gray-800  object-cover"
-                //       src={image}
-                //       // alt={`Post ${index} image ${imgIndex}`}
-                //     />
-                //   ))}
-                // </div>
-                <ImageCarousel
-                images={postData.images.compressedImage}
-                />
+              <p className="mt-1 text-sm ">{post.content}</p>
+              {post.images && (
+                <div
+                  style={{
+                    overflowX: "auto",
+                    scrollbarWidth: "none",
+                  }}
+                  className="mt-2  flex overflow-x-auto"
+                >
+                  <ImageCarousel
+                  images={post.images.originalImage}
+                  />
+                  {/* {post.images.compressedImage.map((image, imgIndex) => (
+                    <img
+                      key={imgIndex}
+                      height={"10px"}
+                      className="w-full max-h-52  border-gray-400  object-cover"
+                      src={image}
+                      alt={`Post ${index} image ${imgIndex}`}
+                    />
+                  ))} */}
+                </div>
               )}
               {/* <div className="flex justify-between items-center mt-4">
                 <button className="text-sm text-blue-500">Like</button>
@@ -258,7 +253,8 @@ function Home({
                 <button className="text-sm text-blue-500">Share</button>
               </div> */}
             </div>
-          {/* ))} */}
+          ))}
+          </div>
           <p
             onClick={() => {
               setcurrentTab("Posts");

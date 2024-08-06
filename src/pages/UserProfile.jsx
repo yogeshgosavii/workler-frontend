@@ -782,7 +782,7 @@ const UserProfile = () => {
                   loading={loading}
                   userDetails={userDetails}
                   setcurrentTab={setcurrentTab}
-                  postData={postData[0]}
+                  postData={postData.slice(0,2)}
                   setupdateFormType={setupdateFormType}
                   setUpdateData={setUpdateData}
                 />
