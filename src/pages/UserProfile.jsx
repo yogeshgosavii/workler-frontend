@@ -600,7 +600,7 @@ const UserProfile = () => {
                     />
                   </svg>
                 </div>
-                {loading.userDetails == null ? (
+                {loading.userDetails ? (
                   <div className="animate-pulse mt-2">
                     <div className="flex  items-center">
                       <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>

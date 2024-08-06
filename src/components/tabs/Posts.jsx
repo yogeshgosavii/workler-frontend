@@ -3,6 +3,7 @@ import profileImageDefault from "../../assets/user_male_icon.png";
 
 import UserImageInput from "../Input/UserImageInput";
 import { formatDistanceToNow } from "date-fns";
+import ImageCarousel from "../ImageCarousel";
 
 function Posts({ setFormType, postData, userDetails }) {
   console.log(postData);
@@ -79,17 +80,20 @@ function Posts({ setFormType, postData, userDetails }) {
                     overflowX: "auto",
                     scrollbarWidth: "none",
                   }}
-                  className="mt-2 px-4 flex gap-2 overflow-x-auto"
+                  className="mt-2  flex overflow-x-auto"
                 >
-                  {post.images.compressedImage.map((image, imgIndex) => (
+                  <ImageCarousel
+                  images={post.images.originalImage}
+                  />
+                  {/* {post.images.compressedImage.map((image, imgIndex) => (
                     <img
                       key={imgIndex}
                       height={"10px"}
-                      className="w-full h-full  rounded-sm border aspect-square border-gray-800  object-cover"
+                      className="w-full max-h-52  border-gray-400  object-cover"
                       src={image}
                       alt={`Post ${index} image ${imgIndex}`}
                     />
-                  ))}
+                  ))} */}
                 </div>
               )}
               {/* <div className="flex justify-between items-center mt-4">
