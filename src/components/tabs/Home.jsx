@@ -2,6 +2,7 @@ import React from "react";
 import UserImageInput from "../Input/UserImageInput";
 import profileImageDefault from "../../assets/user_male_icon.png";
 import { formatDistanceToNow } from "date-fns";
+import ImageCarousel from "../ImageCarousel";
 
 function Home({
   user,
@@ -228,25 +229,28 @@ function Home({
                   <circle cx="12" cy="5" r="1" />
                 </svg>
               </div>
-              <p className="mt-1 px-4 text-sm">{postData.content}</p>
+              <p className="mt-1 mb-1 px-4 text-sm">{postData.content}</p>
               {postData.images && (
-                <div
-                  style={{
-                    overflowX: "auto",
-                    scrollbarWidth: "none",
-                  }}
-                  className="mt-2 px-4 flex gap-2 overflow-x-auto"
-                >
-                  {postData.images.compressedImage.map((image, imgIndex) => (
-                    <img
-                      key={imgIndex}
-                      height={"10px"}
-                      className="w-full h-full  rounded-sm border aspect-square border-gray-800  object-cover"
-                      src={image}
-                      // alt={`Post ${index} image ${imgIndex}`}
-                    />
-                  ))}
-                </div>
+                // <div
+                //   style={{
+                //     overflowX: "auto",
+                //     scrollbarWidth: "none",
+                //   }}
+                //   className="mt-2 px-4 flex gap-2 overflow-x-auto"
+                // >
+                //   {postData.images.compressedImage.map((image, imgIndex) => (
+                //     <img
+                //       key={imgIndex}
+                //       height={"10px"}
+                //       className="w-full h-full  rounded-sm border aspect-square border-gray-800  object-cover"
+                //       src={image}
+                //       // alt={`Post ${index} image ${imgIndex}`}
+                //     />
+                //   ))}
+                // </div>
+                <ImageCarousel
+                images={postData.images.compressedImage}
+                />
               )}
               {/* <div className="flex justify-between items-center mt-4">
                 <button className="text-sm text-blue-500">Like</button>
