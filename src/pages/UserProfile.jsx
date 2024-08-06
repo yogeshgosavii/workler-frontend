@@ -429,7 +429,7 @@ const UserProfile = () => {
 
   return (
     <div
-      className={`w-full flex    justify-center gap-5  bg-gray-100  sm:py-5 md:px-5 `}
+      className={`w-full flex  ${(formType || updateFormType || settings) ? "fixed":""}  justify-center gap-5  bg-gray-100  sm:py-5 md:px-5 `}
     >
       {pageLoading ? (
         <div>Loading...</div>

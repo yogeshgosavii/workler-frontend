@@ -4,6 +4,7 @@ import profileImageDefault from "../../assets/user_male_icon.png";
 import UserImageInput from "../Input/UserImageInput";
 import { formatDistanceToNow } from "date-fns";
 import ImageCarousel from "../ImageCarousel";
+import LikeButton from "../Button/LikeButton";
 
 function Posts({ setFormType, postData, userDetails }) {
   console.log(postData);
@@ -36,7 +37,7 @@ function Posts({ setFormType, postData, userDetails }) {
           <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 ">
           {postData.map((post, index) => (
             <div key={index} className="border-y sm:border sm:shadow-xl bg-white border-gray-300 py-4 px-4 ">
-              <div className="flex  items-center justify-between px-4">
+              <div className="flex  items-center justify-between">
                 <div className="flex gap-2 items-center">
                   <UserImageInput
                     className="w-[35px] h-[35px] rounded-full"
@@ -74,7 +75,7 @@ function Posts({ setFormType, postData, userDetails }) {
                   <circle cx="12" cy="5" r="1" />
                 </svg>
               </div>
-              <p className="mt-1 px-4 text-sm ">{post.content}</p>
+              <p className="mt-1  text-sm ">{post.content}</p>
               {post.images && (
                 <div
                   style={{
@@ -97,11 +98,11 @@ function Posts({ setFormType, postData, userDetails }) {
                   ))} */}
                 </div>
               )}
-              {/* <div className="flex justify-between items-center mt-4">
-                <button className="text-sm text-blue-500">Like</button>
-                <button className="text-sm text-blue-500">Comment</button>
-                <button className="text-sm text-blue-500">Share</button>
-              </div> */}
+              <div className="flex gap-4 items-center mt-4">
+                <LikeButton postLikes={post.likes} className=""/>
+                {/* <button className="text-sm text-blue-500">Comment</button>
+                <button className="text-sm text-blue-500">Share</button> */}
+              </div>
             </div>
           ))}
           </div>
