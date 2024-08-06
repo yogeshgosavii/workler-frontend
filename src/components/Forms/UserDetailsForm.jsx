@@ -23,6 +23,7 @@ function UserDetailsForm({ onClose, setData, data }) {
       // username: data.username || "",
       // email: data.email || "",
       // about: data.about || "",
+      account_type : data.account_type,
       tags: data.tags || [],
       githubLink: data.githubLink || "",
       linkedInLink: data.linkedInLink || "",
@@ -187,7 +188,7 @@ function UserDetailsForm({ onClose, setData, data }) {
             }
           />
         )}
-        {formData.account_type === "Candidate" && (
+        {formData.account_type == "Candidate" && (
           <>
             <TextInput
               name="firstname"
@@ -254,7 +255,7 @@ function UserDetailsForm({ onClose, setData, data }) {
           value={inputValue}
           handleDelete={handleDeleteTags}
         />
-        <UrlInput
+        {/* <UrlInput
           name="githubLink"
           value={formData.githubLink}
           onChange={handleInputChange}
@@ -289,7 +290,7 @@ function UserDetailsForm({ onClose, setData, data }) {
             }
             placeholder="Website"
           />
-        )}
+        )} */}
       </div>
       <div className="flex justify-end gap-5">
         {/* <Button onClick={onClose} disabled={loading}>

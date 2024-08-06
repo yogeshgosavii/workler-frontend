@@ -87,13 +87,21 @@ function Home({
                     <p className="text-gray-400">{userDetails.description}</p>
                   </div>
                 ) : (
-                  <div
-                    onClick={() => setdescriptionInput(true)}
+                  userDetails.account_type == "Employeer"?(
+                    <div
                     className="text-sm font-normal text-gray-300 w-full"
                   >
                     Add a description. For example: "We are a dynamic company
                     committed to excellence and innovation."
                   </div>
+                  ):(
+                    <div
+                    className="text-sm font-normal text-gray-300 w-full"
+                  >
+                    Add a description. For example: "Experienced professional with a strong background in developing."
+                  </div>
+                  )
+                 
                 )}
               </div>
               {userDetails?.linkedInLink && (
@@ -169,14 +177,14 @@ function Home({
           )}
         </div>
       )}
-      {postData.length > 0 && (
+      {postData && (
         <div className="bg-white  md:border md:shadow-lg ">
           <div className="flex flex-col px-4 md:px-6 py-4 ">
             <p className="text-xl font-bold">Posts</p>
           </div>
-          {postData.map((post, index) => (
+          {/* {postData.map((post, index) => ( */}
             <div
-              key={index}
+              // key={index}
               className=" bg-white border-gray-300 py-4 "
             >
               <div className="flex  items-center justify-between px-4">
@@ -186,8 +194,8 @@ function Home({
                     imageHeight={35}
                     imageBorder={1}
                     // src={post.userAvatar || profileImageDefault}
-                    image={post.profileImage || profileImageDefault}
-                    alt={`${post.username}'s avatar`}
+                    image={postData.profileImage || profileImageDefault}
+                    alt={`${postData.username}'s avatar`}
                     isEditable={false}
                   />
                   <div>
@@ -196,7 +204,7 @@ function Home({
                     </p>
                     <p className="text-xs text-gray-400">
                       {" "}
-                      {formatDistanceToNow(new Date(post.timestamp), {
+                      {formatDistanceToNow(new Date(postData.timestamp), {
                         addSuffix: true,
                       })}
                     </p>
@@ -220,8 +228,8 @@ function Home({
                   <circle cx="12" cy="5" r="1" />
                 </svg>
               </div>
-              <p className="mt-1 px-4 text-sm">{post.content}</p>
-              {post.images && (
+              <p className="mt-1 px-4 text-sm">{postData.content}</p>
+              {postData.images && (
                 <div
                   style={{
                     overflowX: "auto",
@@ -229,13 +237,13 @@ function Home({
                   }}
                   className="mt-2 px-4 flex gap-2 overflow-x-auto"
                 >
-                  {post.images.compressedImage.map((image, imgIndex) => (
+                  {postData.images.compressedImage.map((image, imgIndex) => (
                     <img
                       key={imgIndex}
                       height={"10px"}
                       className="w-full h-full  rounded-sm border aspect-square border-gray-800  object-cover"
                       src={image}
-                      alt={`Post ${index} image ${imgIndex}`}
+                      // alt={`Post ${index} image ${imgIndex}`}
                     />
                   ))}
                 </div>
@@ -246,7 +254,7 @@ function Home({
                 <button className="text-sm text-blue-500">Share</button>
               </div> */}
             </div>
-          ))}
+          {/* ))} */}
           <p
             onClick={() => {
               setcurrentTab("Posts");

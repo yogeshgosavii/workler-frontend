@@ -1,9 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { useSelector } from "react-redux";
 import profileImageDefault from "../assets/user_male_icon.png";
 import EducationForm from "../components/Forms/EducationForm";
@@ -36,7 +31,7 @@ import Posts from "../components/tabs/Posts";
 import Qualification from "../components/tabs/Qualification";
 import Home from "../components/tabs/Home";
 import Jobs from "../components/tabs/Jobs";
-import PostForm from "../components/Forms/PostForm"
+import PostForm from "../components/Forms/PostForm";
 import { getUserPosts } from "../services/postService";
 
 // Register necessary components from Chart.js
@@ -160,7 +155,6 @@ const UserProfile = () => {
     job: null,
   });
 
-
   const fetchJobData = useCallback(async () => {
     try {
       const data = await jobApi.job.getAll();
@@ -171,17 +165,15 @@ const UserProfile = () => {
     }
   }, []);
 
-  const fetchPostData = useCallback(async ()=>{
-    try{
+  const fetchPostData = useCallback(async () => {
+    try {
       const data = await getUserPosts();
-      setPostData(data)
-    }catch (error) {
+      setPostData(data);
+    } catch (error) {
       console.error("Error fetching education data:", error);
     } finally {
     }
-
-  },[])
-
+  }, []);
 
   const fetchEducationData = useCallback(async () => {
     try {
@@ -222,7 +214,6 @@ const UserProfile = () => {
       setLoading((prev) => ({ ...prev, projects: false }));
     }
   }, [profileApi.projectDetails, user]);
-
 
   const fetchSkillData = useCallback(async () => {
     try {
@@ -291,7 +282,7 @@ const UserProfile = () => {
       skills: SkillForm,
       userDetails: UserDetailsForm,
       job: JobForm,
-      post : PostForm
+      post: PostForm,
     }),
     []
   );
@@ -306,7 +297,6 @@ const UserProfile = () => {
     }),
     []
   );
-
 
   const addDescription = async () => {
     console.log(descriptionInputText);
@@ -342,8 +332,6 @@ const UserProfile = () => {
   //     updatedList.splice(targetIndex, 0, draggedItem);
   //   }
   // };
-
-  
 
   useEffect(() => {
     // Function to handle popstate event
@@ -438,8 +426,6 @@ const UserProfile = () => {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [updateFormType]);
-
- 
 
   return (
     <div
@@ -544,7 +530,6 @@ const UserProfile = () => {
               ></div>
             )}
             <div className="  flex gap-4  max-h-min flex-wrap ">
-             
               <div
                 className={`w-full md:hidden ${
                   formType || updateFormType ? "hidden" : ""
@@ -554,7 +539,7 @@ const UserProfile = () => {
                   {atTop >= 100 && (
                     <UserImageInput
                       isEditable={false}
-                      image={user.profileImage?.originalImage}
+                      image={userDetails.profileImage?.compressedImage}
                       imageHeight="40"
                     />
                   )}
@@ -571,23 +556,31 @@ const UserProfile = () => {
                   </div>
                 </div>
                 <svg
-                  className="h-8 w-8 text-gray-800 pointer-events-auto"
+                  className="h-8 w-8 text-gray-800 pointer-events-auto transition-all duration-500 ease-in-out transform"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   onClick={() => {
-                    console.log("Hello");
                     setsettings(!settings);
-                    // setFormType(null)
-                    // setupdateFormType(null)
                   }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16m-7 6h7"
-                  />
+                  {settings ? (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                      className="transition-all duration-500 ease-in-out"
+                    />
+                  ) : (
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4 6h16M4 12h16m-7 6h7"
+                      className="transition-all duration-500 ease-in-out"
+                    />
+                  )}
                 </svg>
               </div>
               <div className="flex border-t pt-8 pb-6 mt-10 md:mt-0   flex-grow  sm:border-x  px-4 md:px-6 gap-3 bg-white justify-center flex-col">
@@ -647,7 +640,11 @@ const UserProfile = () => {
                         }`}
                         imageClassName={showProfileImage ? "shadow-3xl" : ""}
                         isEditable={false}
-                        image={userDetails?.profileImage?.originalImage || userDetails?.profileImage || profileImageDefault}
+                        image={
+                          userDetails?.profileImage?.originalImage ||
+                          userDetails?.profileImage ||
+                          profileImageDefault
+                        }
                         imageHeight="70"
                       />
                       <div className="flex w-full ml-20  justify-between items-center">
@@ -669,19 +666,25 @@ const UserProfile = () => {
                     </div>
 
                     <div className="order-3 flex flex-col gap-2">
-                      
-                    <div className="flex mt-2  order-1  items-end font-medium text-sm ">
+                      <div className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm ">
                         <p>
                           {/* <span>{user.location?.address} · </span> */}
                           {user.followers ? user.followers : 0}
-                          <span className=" "> followers</span>{" "}
-                         {user.account_type == "Candidate"  &&<span>· {userDetails.followings?userDetails.followings:0}{" "}
-                         <span className="">following</span></span>}
+                          <span className="  font-normal"> followers</span>{" "}
+                          {user.account_type == "Candidate" && (
+                            <span>
+                              ·{" "}
+                              {userDetails.followings
+                                ? userDetails.followings
+                                : 0}{" "}
+                              <span className="  font-normal">following</span>
+                            </span>
+                          )}
                         </p>
                       </div>
-                      {user.bio ? (
+                      {userDetails.bio ? (
                         <div onClick={() => setFormType("userDetails")}>
-                          {user.bio}
+                          {userDetails.bio}
                         </div>
                       ) : (
                         <div
@@ -694,11 +697,9 @@ const UserProfile = () => {
                       {user.account_type == "Candidate" && (
                         <div className="order-2 text-sm -mt-1">
                           <p className=" text-wrap truncate">
-                          
                             {worksAt && (
                               <span>
-                                Works at{" "}
-                                {worksAt.companyName}{" "}
+                                Works at {worksAt.companyName}{" "}
                                 <span className="font-extrabold ">{"·"}</span>
                               </span>
                             )}{" "}
@@ -712,19 +713,21 @@ const UserProfile = () => {
                           </p>
                         </div>
                       )}
-                    
-                     { user.tags.length >0 && <div className=" mt-4 order-last ">
-                        <div className="flex gap-1 max-w-full flex-wrap ">
-                          {user.tags?.map((tag) => (
-                            <p className="flex rounded-md w-fit px-px  text-blue-500 text-nowrap">
-                              #{tag}
-                            </p>
-                          ))}
+
+                      {user.tags.length > 0 && (
+                        <div className=" mt-4 order-last ">
+                          <div className="flex gap-1 max-w-full flex-wrap ">
+                            {user.tags?.map((tag) => (
+                              <p className="flex rounded-md w-fit px-px  text-blue-500 text-nowrap">
+                                #{tag}
+                              </p>
+                            ))}
+                          </div>
+                          <p className="text-xs text-gray-400">
+                            The tags won't be visible on you profile to others
+                          </p>
                         </div>
-                        <p className="text-xs text-gray-400">
-                          The tags won't be visible on you profile to others
-                        </p>
-                      </div>}
+                      )}
                     </div>
                   </div>
                 )}
@@ -751,7 +754,6 @@ const UserProfile = () => {
                   atTop > 340 ? " md:border-t" : null
                 } w-full -mt-px sticky top-16 sm:top-0  gap-3  md:mb-4   order-last bg-white   font-medium  h-full  flex`}
               >
-                
                 {[
                   "Home",
                   ...(user.account_type == "Employeer"
@@ -776,65 +778,63 @@ const UserProfile = () => {
             <div className="">
               {currentTab == "Home" && (
                 <Home
-                user = {user}
-                loading={loading}
-                userDetails={userDetails}
-                setcurrentTab={setcurrentTab}
-                postData={postData}
-                setupdateFormType={setupdateFormType}
-                setUpdateData = {setUpdateData}
+                  user={user}
+                  loading={loading}
+                  userDetails={userDetails}
+                  setcurrentTab={setcurrentTab}
+                  postData={postData[0]}
+                  setupdateFormType={setupdateFormType}
+                  setUpdateData={setUpdateData}
                 />
               )}
               {currentTab == "Qualification" && (
                 <Qualification
-                className={""}
-                setSkillData = {setSkillData}
-                skillData = {skillData}
-                educationData={educationData}
-                setEducationData={setEducationData}
-                workExperienceData={workExperienceData}
-                setWorkExperienceData={setWorkExperienceData}
-                projectData={projectData}
-                setProjectData={setprojectData}
-                loading={loading}
-                setFormType={setFormType}
-                setUpdateFormType={setupdateFormType}
-                setUpdateForm={setUpdateForm}
-                setUpdateData={setUpdateData}
-
+                  className={""}
+                  setSkillData={setSkillData}
+                  skillData={skillData}
+                  educationData={educationData}
+                  setEducationData={setEducationData}
+                  workExperienceData={workExperienceData}
+                  setWorkExperienceData={setWorkExperienceData}
+                  projectData={projectData}
+                  setProjectData={setprojectData}
+                  loading={loading}
+                  setFormType={setFormType}
+                  setUpdateFormType={setupdateFormType}
+                  setUpdateForm={setUpdateForm}
+                  setUpdateData={setUpdateData}
                 />
               )}
               {currentTab == "Posts" && (
                 <Posts
-                setFormType= {setFormType}
-                postData = {postData}
-                userDetails = {user}
+                  setFormType={setFormType}
+                  postData={postData}
+                  userDetails={user}
                 />
               )}
 
               {currentTab == "About" && !loading.userDetails && (
                 <About
-                setUpdateData={setUpdateData}
-                setUpdateForm={setUpdateForm}
-                setupdateFormType={setupdateFormType}
-                setdescriptionInput={setdescriptionInput}
-                descriptionInput={descriptionInput}
-                setdescriptionInputText={setdescriptionInputText}
-                descriptionInputText={descriptionInputText}
-                userDetails={userDetails}
-                addDescription={addDescription}
+                  setUpdateData={setUpdateData}
+                  setUpdateForm={setUpdateForm}
+                  setupdateFormType={setupdateFormType}
+                  setdescriptionInput={setdescriptionInput}
+                  descriptionInput={descriptionInput}
+                  setdescriptionInputText={setdescriptionInputText}
+                  descriptionInputText={descriptionInputText}
+                  userDetails={userDetails}
+                  addDescription={addDescription}
                 />
-               
               )}
 
-              {currentTab == "Jobs" &&
+              {currentTab == "Jobs" && (
                 <Jobs
-                setFormType={setFormType}
-                setUpdateData={setUpdateData}
-                setupdateFormType={setupdateFormType}
-                jobData={jobData}
+                  setFormType={setFormType}
+                  setUpdateData={setUpdateData}
+                  setupdateFormType={setupdateFormType}
+                  jobData={jobData}
                 />
-              }
+              )}
             </div>
           </div>
         </div>
