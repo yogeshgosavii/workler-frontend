@@ -2,8 +2,8 @@
 
 import { setAuthHeaders } from "../../utility";
 
-const API_URL = 'https://workler-backend.vercel.app/api/posts/post';
-// const API_URL = "http://localhost:5002/api/posts/post";
+// const API_URL = 'https://workler-backend.vercel.app/api/posts/post';
+const API_URL = "http://localhost:5002/api/posts/post";
 
 const getToken = () => localStorage.getItem('token');
 
@@ -32,6 +32,16 @@ export const createPost = async (postData) => {
       // Do not set Content-Type; it will be set automatically when using FormData
     },
     body: postData
+  });
+  return response;
+};
+
+export const addLike = async (likeData) => {
+  console.log(likeData);
+  const response = await handleRequest(API_URL+`/${likeData._id}/like`, {
+    method: 'PUT',
+    headers: setAuthHeaders(getToken()),
+    body: JSON.stringify(likeData)
   });
   return response;
 };

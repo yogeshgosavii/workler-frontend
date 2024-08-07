@@ -561,6 +561,7 @@ const UserProfile = () => {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   onClick={() => {
+                    console.log("Hello")
                     setsettings(!settings);
                   }}
                 >
@@ -810,6 +811,7 @@ const UserProfile = () => {
                   setFormType={setFormType}
                   postData={postData}
                   userDetails={user}
+                  setPostData={setPostData}
                 />
               )}
 
@@ -840,7 +842,7 @@ const UserProfile = () => {
         </div>
       )}
 
-      {true && (
+    
         <div
           className={`fixed top-0 border-l  z-40 h-full w-[60%] bg-white transition-all duration-300 ease-in-out 
           ${settings ? " right-0" : "-right-[60%]"}
@@ -861,7 +863,7 @@ const UserProfile = () => {
             </a>
           </div>
         </div>
-      )}
+
 
       <div className=" min-w-[35%] hidden lg:flex flex-col gap-4">
         <div

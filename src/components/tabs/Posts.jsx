@@ -6,9 +6,9 @@ import { formatDistanceToNow } from "date-fns";
 import ImageCarousel from "../ImageCarousel";
 import LikeButton from "../Button/LikeButton";
 
-function Posts({ setFormType, postData, userDetails }) {
+function Posts({ setFormType, postData,setPostData, userDetails }) {
   console.log(postData);
-
+  // const [postData, setPostData] = useState(postData);
   return (
     <div className=" w-full">
       {postData.length === 0 ? (
@@ -99,7 +99,7 @@ function Posts({ setFormType, postData, userDetails }) {
                 </div>
               )}
               <div className="flex gap-4 items-center mt-4">
-                <LikeButton postLikes={post.likes} className=""/>
+                <LikeButton postData={post} setPostData={setPostData} className=""/>
                 {/* <button className="text-sm text-blue-500">Comment</button>
                 <button className="text-sm text-blue-500">Share</button> */}
               </div>
