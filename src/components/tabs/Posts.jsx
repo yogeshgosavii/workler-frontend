@@ -44,7 +44,7 @@ function Posts({ setFormType, postData,setPostData, userDetails }) {
                     imageHeight={35}
                     imageBorder={1}
                     // src={post.userAvatar || profileImageDefault}
-                    image={post.profileImage || profileImageDefault}
+                    image={userDetails.profileImage?.compressedImage || profileImageDefault}
                     alt={`${post.username}'s avatar`}
                     isEditable={false}
                   />
@@ -52,7 +52,7 @@ function Posts({ setFormType, postData,setPostData, userDetails }) {
                     <p className="font-medium text-sm">
                       {userDetails.username}
                     </p>
-                    <p className="text-xs text-gray-400"> {formatDistanceToNow(new Date(post.timestamp), {
+                    <p className="text-xs text-gray-400"> {formatDistanceToNow(new Date(post.createdAt), {
                   addSuffix: true,
                 })}</p>
                   </div>

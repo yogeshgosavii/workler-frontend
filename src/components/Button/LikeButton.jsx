@@ -13,21 +13,22 @@ const LikeButton = ({ postData, setPostData }) => {
   const [likes_count, setLikes_count] = useState(postData.likes_count || 0);
   const scrollReference = useRef();
   const debounceTimeout = useRef(null);
+  const [clicked, setClicked] = useState(false);
+
   const [likes, setlikes] = useState(postData.likes);
-  console.log( postData.likes[0]?.user ,user._id);
-  
-
+  console.log(postData.likes[0]?.user, user._id);
   useEffect(() => {
-    if (scrollReference.current) {
-      const scrollElement = scrollReference.current;
 
-      // Smoothly scroll to the bottom or top based on the liked state
-      scrollElement.scrollTo({
-        top: liked ? scrollElement.scrollHeight : 0,
-        behavior: "smooth",
-      });
-    }
-  }, [liked]);
+  if (liked && scrollReference.current ) {
+    const scrollElement = scrollReference.current;
+
+    // Smoothly scroll to the bottom or top based on the liked state
+    scrollElement.scrollTo({
+      top: liked ? scrollElement.scrollHeight : 0,
+      behavior: "smooth",
+    });
+  }
+}, [liked]);
 
   const handleLike = async () => {
     // Clear the previous debounce timeout if it exists
@@ -39,31 +40,41 @@ const LikeButton = ({ postData, setPostData }) => {
       // Send API request to update like status
       try {
         setLiked(!liked);
-      
-     
+        setClicked(true);
+        setTimeout(() => {
+          setClicked(false);
+        }, 400);
+
         let response;
         if (liked) {
-          setLikes_count((prev)=>prev-1)
-          setlikes(likes.filter((like) => like.user == user._id));
+          setLikes_count((prev) => prev - 1);
+          setlikes(likes.filter((like) => like.user != user._id));
           console.log(likes.filter((like) => like.user != user._id));
-          
+
           response = addLike({
             ...postData,
             likes_count: likes_count - 1,
-            likes:likes.filter((like) => like.user != user._id),
+            likes: likes.filter((like) => like.user != user._id),
           });
         } else {
-          setLikes_count((prev)=>prev+1)
-          setlikes(
-            likes.push({
+          setLikes_count((prev) => prev + 1);
+          setlikes([
+            ...likes,
+            {
               post: postData._id,
-              user: postData.likes?.user || user._id,
-            })
-          );
+              user: user._id,
+            },
+          ]);
           response = addLike({
             ...postData,
             likes_count: likes_count + 1,
-            likes,
+            likes: [
+              ...likes,
+              {
+                post: postData._id,
+                user: user._id,
+              },
+            ],
           });
         }
 
@@ -71,18 +82,6 @@ const LikeButton = ({ postData, setPostData }) => {
           console.log("response", response);
 
           setPostData((prev) => ({ ...prev, response }));
-          // Update local state based on API response
-          // setLikes(newLikesCount);
-
-          // if (scrollReference.current) {
-          //   const scrollElement = scrollReference.current;
-
-          //   // Smoothly scroll to the bottom or top based on the liked state
-          //   scrollElement.scrollTo({
-          //     top: newLiked ? scrollElement.scrollHeight : 0,
-          //     behavior: 'smooth'
-          //   });
-          // }
         } else {
           console.error("Failed to update like status");
         }
@@ -94,7 +93,7 @@ const LikeButton = ({ postData, setPostData }) => {
 
   return (
     <button
-      className={`flex items-center space-x-2  rounded-full ${
+      className={`flex items-center space-x-2 rounded-full ${
         liked ? "border-red-500 text-red-500" : "border-gray-500 text-gray-500"
       }`}
       onClick={handleLike}
@@ -106,7 +105,7 @@ const LikeButton = ({ postData, setPostData }) => {
         stroke="currentColor"
         strokeWidth="2"
         className={`w-5 h-5 transition-transform duration-200 ${
-          liked ? "liked-animation" : "unliked-animation"
+          clicked ? (liked ? "liked-animation" : "unliked-animation") : ""
         }`}
       >
         <path
@@ -125,8 +124,8 @@ const LikeButton = ({ postData, setPostData }) => {
         }}
         className="flex flex-col scroll-smooth transition-all h-6 overflow-y-auto"
       >
-        <span>{liked?likes_count-1:likes_count}</span>
-        <span>{liked?likes_count:likes_count + 1}</span>
+        <span>{liked ? likes_count - 1 : likes_count}</span>
+        <span>{liked ? likes_count : likes_count + 1}</span>
       </div>
     </button>
   );

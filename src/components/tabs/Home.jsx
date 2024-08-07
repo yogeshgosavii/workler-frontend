@@ -54,7 +54,7 @@ function Home({
           </p>
         </div>
       ) : (
-        <div className="relative border-b overflow-hidden bg-white px-4 py-4 pb-6">
+        <div className="relative border-b md:px-6 overflow-hidden bg-white px-4 py-4 pb-6">
           <div className="flex justify-between items-center mb-2 ">
             <p className="text-xl font-bold ">About</p>
             <svg
@@ -193,7 +193,7 @@ function Home({
                     imageHeight={35}
                     imageBorder={1}
                     // src={post.userAvatar || profileImageDefault}
-                    image={post.profileImage || profileImageDefault}
+                    image={userDetails.profileImage?.compressedImage || profileImageDefault}
                     alt={`${post.username}'s avatar`}
                     isEditable={false}
                   />
@@ -201,7 +201,7 @@ function Home({
                     <p className="font-medium text-sm">
                       {userDetails.username}
                     </p>
-                    <p className="text-xs text-gray-400"> {formatDistanceToNow(new Date(post.timestamp), {
+                    <p className="text-xs text-gray-400"> {formatDistanceToNow(new Date(post.createdAt), {
                   addSuffix: true,
                 })}</p>
                   </div>

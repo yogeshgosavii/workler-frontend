@@ -810,7 +810,7 @@ const UserProfile = () => {
                 <Posts
                   setFormType={setFormType}
                   postData={postData}
-                  userDetails={user}
+                  userDetails={userDetails}
                   setPostData={setPostData}
                 />
               )}
