@@ -51,6 +51,7 @@ const UserProfile = () => {
   const [projectData, setprojectData] = useState([]);
   const [userDetails, setuserDetails] = useState([]);
   const [postData, setPostData] = useState([]);
+  const [tabIndex, settabIndex] = useState(0);
   const [jobData, setjobData] = useState();
   const profileApi = useProfileApi();
   const jobApi = useJobApi();
@@ -429,7 +430,9 @@ const UserProfile = () => {
 
   return (
     <div
-      className={`w-full flex  ${(formType || updateFormType || settings) ? "fixed":""}  justify-center gap-5  bg-gray-100  sm:py-5 md:px-5 `}
+      className={`w-full flex  ${
+        formType || updateFormType || settings ? "fixed" : ""
+      }  justify-center gap-5  bg-gray-100  sm:py-5 md:px-5 `}
     >
       {pageLoading ? (
         <div>Loading...</div>
@@ -561,7 +564,7 @@ const UserProfile = () => {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   onClick={() => {
-                    console.log("Hello")
+                    console.log("Hello");
                     setsettings(!settings);
                   }}
                 >
@@ -742,40 +745,51 @@ const UserProfile = () => {
               </div>
             </div>
             <div
-              className={` sticky top-16 z-20 transition-all ease-in-out sm:top-0 md:${
-                atTop < 340 ? "pt-0" : "pt-5"
-              } bg-gray-100`}
+              className={`sticky top-16 md:top-[3px] md:mb-4 z-20 transition-all ease-in-out bg-gray-100 ${
+                atTop < 340 ? "pt-0" : "md:pt-5"
+              }`}
             >
-              <div
-                style={{
-                  overflowX: "auto",
-                  scrollbarWidth: "none",
-                }}
-                className={`flex-grow z-20  max-w-full overflow-x-auto border-b sm:border-x  ${
-                  atTop > 340 ? " md:border-t" : null
-                } w-full -mt-px sticky top-16 sm:top-0  gap-3  md:mb-4   order-last bg-white   font-medium  h-full  flex`}
-              >
-                {[
-                  "Home",
-                  ...(user.account_type == "Employeer"
-                    ? ["About", "Posts", "Jobs", "People"]
-                    : ["Posts", "Qualification"]),
-                ].map((tab) => (
-                  <p
-                    onClick={() => {
-                      setcurrentTab(tab);
-                    }}
-                    className={`px-4 text-base md:text-lg font-medium md:font-semibold cursor-pointer ${
-                      tab == currentTab
-                        ? "  border-b-2 text-blue-500 border-blue-500"
-                        : null
-                    } w-full text-center py-2`}
-                  >
-                    {tab}
-                  </p>
-                ))}
+              <div className=" transition-all ease-in-out">
+                <div
+                  style={{
+                    overflowX: "auto",
+                    scrollbarWidth: "none",
+                  }}
+                  className={`flex-grow z-20 absolute max-w-full overflow-x-auto border-b sm:border-x ${
+                    atTop > 340 ? "md:border-t" : ""
+                  } w-full -mt-px sticky top-16 sm:top-0 gap-3 bg-white font-medium flex`}
+                >
+                  {[
+                    "Home",
+                    ...(user.account_type === "Employeer"
+                      ? ["About", "Posts", "Jobs", "People"]
+                      : ["Posts", "Qualification"]),
+                  ].map((tab, index) => (
+                    <p
+                      key={tab} // Add a key for each element in the list
+                      onClick={() => {
+                        setcurrentTab(tab);
+                        settabIndex(index);
+                      }}
+                      className={`px-4 text-base md:text-lg mb-2 font-medium md:font-semibold cursor-pointer ${
+                        tab === currentTab ? "z-20 text-blue-500" : ""
+                      } w-full text-center py-2`}
+                    >
+                      {tab}
+                    </p>
+                  ))}
+                </div>
+                <div
+                  style={{
+                    left: `${(100 / 3) * tabIndex}%`,
+                    transition: 'left 0.2s ease-in-out', 
+
+                  }}
+                  className="w-1/3 h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute"
+                ></div>
               </div>
             </div>
+
             <div className="">
               {currentTab == "Home" && (
                 <Home
@@ -783,7 +797,7 @@ const UserProfile = () => {
                   loading={loading}
                   userDetails={userDetails}
                   setcurrentTab={setcurrentTab}
-                  postData={postData.slice(0,2)}
+                  postData={postData.slice(0, 2)}
                   setupdateFormType={setupdateFormType}
                   setUpdateData={setUpdateData}
                 />
@@ -842,28 +856,26 @@ const UserProfile = () => {
         </div>
       )}
 
-    
-        <div
-          className={`fixed top-0 border-l  z-40 h-full w-[60%] bg-white transition-all duration-300 ease-in-out 
+      <div
+        className={`fixed top-0 border-l  z-40 h-full w-[60%] bg-white transition-all duration-300 ease-in-out 
           ${settings ? " right-0" : "-right-[60%]"}
           `}
-        >
-          <div className="p-4 flex h-full flex-col">
-            <h2 className="text-xl font-semibold">Settings</h2>
-            <div className="flex-1 "></div>
-            <a
-              onClick={() => {
-                console.log("logout");
-                dispatch(logout());
-                navigate("/", { replace: true });
-              }}
-              className="mt-2 bg-red-50 font-bold w-fit py-1 px-3 rounded-md border border-red-500 text-red-500"
-            >
-              Sign out
-            </a>
-          </div>
+      >
+        <div className="p-4 flex h-full flex-col">
+          <h2 className="text-xl font-semibold">Settings</h2>
+          <div className="flex-1 "></div>
+          <a
+            onClick={() => {
+              console.log("logout");
+              dispatch(logout());
+              navigate("/", { replace: true });
+            }}
+            className="mt-2 bg-red-50 font-bold w-fit py-1 px-3 rounded-md border border-red-500 text-red-500"
+          >
+            Sign out
+          </a>
         </div>
-
+      </div>
 
       <div className=" min-w-[35%] hidden lg:flex flex-col gap-4">
         <div

@@ -5,6 +5,8 @@ function OptionInput({
   placeholder,
   value,
   options,
+  optionClassName,
+  initialValue="",
   onChange,
   isRequired,
   className,
@@ -37,13 +39,13 @@ function OptionInput({
         <select
           name={name}
           id={name}
-          className={`block px-3 py-3 w-full font-normal bg-white rounded-sm border appearance-none focus:outline-none focus:ring-0 focus:border-blue-500
+          className={`block px-3 py-3 w-full ${optionClassName} font-normal bg-white rounded-sm border appearance-none focus:outline-none focus:ring-0 focus:border-blue-500
            peer ${currentValue ? "text-black" : "text-gray-500"}`}
           value={currentValue || ""}
           onChange={handleChange}
         >
           <option value="" disabled={!currentValue}>
-            Select an option
+            {initialValue}
           </option>
           {options.map((option) => (
             <option key={option?.value} value={option?.value}>

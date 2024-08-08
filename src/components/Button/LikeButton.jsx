@@ -19,7 +19,7 @@ const LikeButton = ({ postData, setPostData }) => {
   console.log(postData.likes[0]?.user, user._id);
   useEffect(() => {
 
-  if (liked && scrollReference.current ) {
+  if ( scrollReference.current ) {
     const scrollElement = scrollReference.current;
 
     // Smoothly scroll to the bottom or top based on the liked state
