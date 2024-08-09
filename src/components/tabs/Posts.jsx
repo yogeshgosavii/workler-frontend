@@ -83,7 +83,7 @@ function Posts({ setFormType, postData, setPostData, userDetails }) {
                     <circle cx="12" cy="5" r="1" />
                   </svg>
                 </div>
-                <p className="mt-1 text-sm">{post.content}</p>
+                <p className=" mt-3 text-sm">{post.content}</p>
                 {post.images && (
                   <div
                     style={{ overflowX: "auto", scrollbarWidth: "none" }}
@@ -100,12 +100,12 @@ function Posts({ setFormType, postData, setPostData, userDetails }) {
                     scrollBehavior: "smooth",
                     scrollMarginLeft: "20px",
                   }}
-                  className="flex gap-4 w-full overflow-x-auto"
+                  className="flex gap-4 w-full mt-4 overflow-x-auto"
                 >
                   {post.post_type === "job" &&
                     post.jobs.map((job) => {
                       const logoLetter = job.company_name
-                        .charAt(0)
+                        ?.charAt(0)
                         .toUpperCase();
                       return (
                         <div
@@ -132,9 +132,9 @@ function Posts({ setFormType, postData, setPostData, userDetails }) {
                             perferendis temporibus facilis voluptate dolores
                             magnam! Commodi, a voluptas?
                           </p>
-                          <Button className="bg-blue-500 w-full text-xl font-bold text-white mt-4">
+                          <a href={job.job_url} target="_blank" className="bg-blue-500 rounded-lg w-full px-4 py-2 pb-3 flex items-center justify-center text-xl font-bold text-white mt-4">
                             Apply
-                          </Button>
+                          </a>
                         </div>
                       );
                     })}
