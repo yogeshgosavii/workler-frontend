@@ -36,6 +36,16 @@ export const createPost = async (postData) => {
   return response;
 };
 
+export const createJobPost = async (postData) => {
+  console.log(postData);
+  const response = await handleRequest(API_URL+`/job-post`, {
+    method: 'POST',
+    headers: setAuthHeaders(getToken()),
+    body: JSON.stringify(postData)
+  });
+  return response;
+};
+
 export const addLike = async (likeData) => {
   console.log(likeData);
   const response = await handleRequest(API_URL+`/${likeData._id}/like`, {

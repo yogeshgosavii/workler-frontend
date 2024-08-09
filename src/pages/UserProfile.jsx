@@ -745,7 +745,7 @@ const UserProfile = () => {
               </div>
             </div>
             <div
-              className={`sticky top-16 md:top-[3px] md:mb-4 z-20 transition-all ease-in-out bg-gray-100 ${
+              className={`sticky top-16 md:top-0 md:mb-4 z-20 transition-all ease-in-out bg-gray-100 ${
                 atTop < 340 ? "pt-0" : "md:pt-5"
               }`}
             >
@@ -759,31 +759,35 @@ const UserProfile = () => {
                     atTop > 340 ? "md:border-t" : ""
                   } w-full -mt-px sticky top-16 sm:top-0 gap-3 bg-white font-medium flex`}
                 >
-                  {[
-                    "Home",
-                    ...(user.account_type === "Employeer"
-                      ? ["About", "Posts", "Jobs", "People"]
-                      : ["Posts", "Qualification"]),
-                  ].map((tab, index) => (
-                    <p
-                      key={tab} // Add a key for each element in the list
-                      onClick={() => {
-                        setcurrentTab(tab);
-                        settabIndex(index);
-                      }}
-                      className={`px-4 text-base md:text-lg mb-2 font-medium md:font-semibold cursor-pointer ${
-                        tab === currentTab ? "z-20 text-blue-500" : ""
-                      } w-full text-center py-2`}
-                    >
-                      {tab}
-                    </p>
-                  ))}
+                  <div className="flex w-full pt-1">
+                    {[
+                      "Home",
+                      ...(user.account_type === "Employeer"
+                        ? ["About", "Posts", "Jobs", "People"]
+                        : ["Posts", "Qualification"]),
+                    ].map((tab, index, arr) => (
+                      <p
+                        key={tab}
+                        onClick={() => {
+                          setcurrentTab(tab);
+                          settabIndex(index);
+                        }}
+                        className={` text-base  md:text-lg mb-1 truncate font-medium md:font-semibold cursor-pointer ${
+                          tab === currentTab ? "z-20 text-blue-500" : ""
+                        } text-center py-2`}
+                        style={{
+                          width: `${100 / 3}%`, 
+                        }}
+                      >
+                        {tab}
+                      </p>
+                    ))}
+                  </div>
                 </div>
                 <div
                   style={{
                     left: `${(100 / 3) * tabIndex}%`,
-                    transition: 'left 0.2s ease-in-out', 
-
+                    transition: "left 0.2s ease-in-out",
                   }}
                   className="w-1/3 h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute"
                 ></div>

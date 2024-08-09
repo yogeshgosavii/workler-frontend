@@ -9,7 +9,8 @@ function TextInput({
   className,
   promptMessage,
   onFocus,
-  onBlur
+  onBlur,
+  inputProps,
 }) {
   const [message, setMessage] = useState(promptMessage);
   const inputRef = useRef(null);
@@ -27,6 +28,7 @@ function TextInput({
     <div className={className}>
       <div className="relative flex peer">
         <input
+          autoFocus={inputProps.autoFocus}
           type="text"
           name={name}
           id={name}
@@ -34,6 +36,7 @@ function TextInput({
           onChange={handleChange}
           onFocus={onFocus}
           onBlur={onBlur}
+          {...inputProps}
           className={`block px-3 py-3 w-full font-normal bg-white rounded-sm border focus:border-blue-500
            appearance-none focus:outline-none peer`}
           placeholder=""
@@ -58,7 +61,9 @@ function TextInput({
       {message && (
         <p
           className={`w-fit ml-1 mt-0.5 text-xs mb-1 rounded-sm ${
-            message.type === "error" ? "text-red-500" : "text-green-500 bg-green-50"
+            message.type === "error"
+              ? "text-red-500"
+              : "text-green-500 bg-green-50"
           }`}
         >
           {message.text}

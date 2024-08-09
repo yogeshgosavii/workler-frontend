@@ -2,6 +2,8 @@ import { setAuthHeaders } from '../../utility';
 import { useSelector } from 'react-redux';
 
 const apiBaseUrl = 'https://workler-backend.vercel.app/api/jobs';
+// const apiBaseUrl = 'http://localhost:5002/api/jobs';
+
 
 const makeApiRequest = async (url, options) => {
   try {
@@ -30,7 +32,36 @@ const createApiMethods = (endpoint) => {
       return response;
     },
 
+    addMultiple: async (jobs) => {
+      const token = getToken();
+      const response = await makeApiRequest(`${apiBaseUrl}/multiple-job/`, {
+        method: 'POST',
+        headers: setAuthHeaders(token),
+        body: JSON.stringify(jobs),
+      });
+      return response;
+    },
+
+
     getAll: async () => {
+      const token = getToken();
+      const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/`, {
+        method: 'GET',
+        headers: setAuthHeaders(token),
+      });
+      return response;
+    },
+
+    getById: async (id) => {
+      const token = getToken();
+      const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/${id}`, {
+        method: 'GET',
+        headers: setAuthHeaders(token),
+      });
+      return response;
+    },
+
+    getByIds: async (ids) => {
       const token = getToken();
       const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/`, {
         method: 'GET',

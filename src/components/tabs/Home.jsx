@@ -16,7 +16,7 @@ function Home({
   return (
     <div className="  flex flex-col gap-4 mb-4">
       {user.account_type == "Employeer" ? (
-        <div className="flex flex-col  bg-white md:border  md:shadow-lg   gap-2">
+        <div className="flex flex-col  bg-white md:border    gap-2">
           <p className="text-xl font-bold px-4 mt-4 md:px-6">About</p>
           {loading.userDetails ? (
             <div className="px-4 md:px-6 py-4">
@@ -54,7 +54,7 @@ function Home({
           </p>
         </div>
       ) : (
-        <div className="relative border-b md:border md:shadow-lg md:px-6 overflow-hidden bg-white px-4 py-4 pb-6">
+        <div className="relative border-b md:border md:px-6 overflow-hidden bg-white px-4 py-4 pb-6">
           <div className="flex justify-between items-center mb-2 ">
             <p className="text-xl font-bold ">About</p>
             <svg
@@ -179,13 +179,13 @@ function Home({
         </div>
       )}
       {postData && (
-        <div className="bg-white border-y md:border md:shadow-lg ">
+        <div className="bg-white border-y md:border  ">
           <div className="flex flex-col px-4 md:px-6 py-4 ">
             <p className="text-xl font-bold">Posts</p>
           </div>
-         <div className="grid grid-cols-1 sm:grid-cols-2 px-4 gap-4 sm:px-4 md:px-6 mb-4">
+         <div className="grid grid-cols-1 sm:grid-cols-2 px-4 gap-4 sm:px-4 md:px-6 mb-6">
          {postData.map((post, index) => (
-            <div key={index} className=" border  bg-white border-gray-300 py-4 px-4 ">
+            <div key={index} className=" border transition-all md:hover:scale-105 md:hover:shadow-lg  bg-white border-gray-300 py-4 px-4 ">
               <div className="flex  items-center justify-between ">
                 <div className="flex gap-2 items-center">
                   <UserImageInput
@@ -259,7 +259,7 @@ function Home({
             onClick={() => {
               setcurrentTab("Posts");
             }}
-            className="w-full text-center  border-t font-medium py-2 text-gray-400"
+            className="w-full text-center mt-4  border-t font-medium py-2 text-gray-400"
           >
             See all posts
           </p>

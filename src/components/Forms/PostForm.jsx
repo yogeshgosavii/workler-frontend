@@ -1,18 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
 import imageService from "../../services/imageService.js"; // Adjust the import path as needed
-import { createPost } from "../../services/postService"; // Adjust the import path as needed
+import { createJobPost, createPost } from "../../services/postService"; // Adjust the import path as needed
 import { useSelector } from "react-redux";
 import UserImageInput from "../Input/UserImageInput.jsx";
 import profileImageDefault from "../../assets/user_male_icon.png";
 import OptionInput from "../Input/OptionInput.jsx";
 import ImageCarousel from "../ImageCarousel.jsx";
+import TextInput from "../Input/TextInput.jsx";
+import UrlInput from "../Input/UrlInput.jsx";
+import AddInput from "../Input/AddInput.jsx";
+import useJobApi from "../../services/jobService.js";
 
-function PostForm({ userDetails }) {
+function PostForm({ userDetails, onClose }) {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [formData, setFormData] = useState({ content: "", images: [] });
   const [postType, setPostType] = useState("content");
+  const [jobs, setJobs] = useState([]);
+
+  const jobService = useJobApi();
+  const [tagsText, settagsText] = useState([]);
   const user = useSelector((state) => state.auth.user);
   const textareaRef = useRef(null);
 
@@ -27,6 +35,12 @@ function PostForm({ userDetails }) {
     resizeTextarea(); // Resize on mount
   }, []);
 
+  useEffect(() => {
+    if (jobs.length == 0) {
+      setPostType("content");
+    }
+  }, [jobs]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
@@ -34,8 +48,8 @@ function PostForm({ userDetails }) {
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files); // Convert FileList to Array
+    setImages((prevImages) => [...prevImages, ...files]);
     setFormData((prevState) => ({ ...prevState, images: files }));
-    setImages(files); // Update preview
   };
 
   const handleSubmit = async (e) => {
@@ -49,15 +63,38 @@ function PostForm({ userDetails }) {
       formDataToSend.append("images", image);
     });
 
-    try {
-      await createPost(formDataToSend);
-      setFormData({ content: "", images: [] });
-      setImages([]);
-      alert("Post created successfully!");
-    } catch (error) {
-      setError("Failed to create post");
-    } finally {
-      setLoading(false);
+    // console.log({content:formData.content,jobs});
+
+    if (postType == "content") {
+      try {
+        await createPost(formDataToSend);
+        setFormData({ content: "", images: [] });
+        setImages([]);
+        alert("Post created successfully!");
+      } catch (error) {
+        setError("Failed to create post");
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      const response = await jobService.job.addMultiple(jobs);
+      const jobIds = response.map((job) => job._id);
+      console.log(jobIds);
+
+      try {
+        await createJobPost({
+          content: formData.content,
+          post_type: postType,
+          jobs: jobIds,
+        });
+        onClose();
+        setFormData({ content: "", images: [] });
+        setImages([]);
+      } catch (error) {
+        setError("Failed to create post");
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -68,8 +105,8 @@ function PostForm({ userDetails }) {
         className="flex flex-col gap-4 h-full"
         encType="multipart/form-data"
       >
-        <div className="px-4 md:px-6 flex-1">
-          <div className="flex justify-between">
+        <div className=" flex-1">
+          <div className="flex px-4 md:px-6 justify-between">
             <svg
               class="h-8 w-8 text-gray-700"
               width="24"
@@ -87,21 +124,7 @@ function PostForm({ userDetails }) {
               <line x1="6" y1="6" x2="18" y2="18" />
             </svg>
             <div className="flex gap-4">
-              {/* <OptionInput
-              optionClassName={"rounded-full"}
-                initialValue={"Post type"}
-                options={[
-                  {
-                    name: "content post",
-                    value: "content",
-                  },
-                  {
-                    name: "job post",
-                    value: "job",
-                  },
-                ]}
-              /> */}
-              <div className="relative rounded-full bg-blue-50 px-4 gap-8 flex min-w-20 justify-between py-1 border items-center ">
+              <div className="relative rounded-full bg-blue-50 px-2 gap-4 flex min-w-[80px] w-16 justify-between py-1  items-center ">
                 <div className="w-full flex justify-center ">
                   <svg
                     class={`h-5 w-5 z-10 ${
@@ -112,9 +135,9 @@ function PostForm({ userDetails }) {
                     height="16"
                     fill="currentColor"
                     onClick={() => {
+                      setFormData((prev) => ({ ...prev, content: "" }));
                       setPostType("content");
                     }}
-                    // class="bi bi-camera-fill"
                     viewBox="0 0 16 16"
                   >
                     <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
@@ -133,6 +156,18 @@ function PostForm({ userDetails }) {
                     viewBox="0 0 16 16"
                     onClick={() => {
                       setPostType("job");
+                      setFormData((prev) => ({ ...prev, content: "" }));
+                      setJobs([
+                        {
+                          jobId: 0,
+                          job_source: "job_post",
+                          job_role: "",
+                          company_name: "",
+                          job_tags: "",
+                          job_url: "",
+                        },
+                      ]);
+                      setImages([]);
                     }}
                   >
                     <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v1.384l7.614 2.03a1.5 1.5 0 0 0 .772 0L16 5.884V4.5A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5" />
@@ -151,19 +186,35 @@ function PostForm({ userDetails }) {
               </div>
               <button
                 type="submit"
-                disabled={loading}
-                className={` text-white font-semibold px-4 rounded-full ${
-                  loading
-                    ? "bg-gray-400"
-                    : "bg-blue-500 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500"
-                } focus:outline-none focus:ring`}
+                // disabled={loading}
+                className={` text-white w-fit  font-semibold px-4 flex items-center rounded-full ${
+                  loading ? "" : "bg-blue-500 hover:bg-blue-600 "
+                } focus:outline-none `}
               >
-                {loading ? "Posting..." : "Post"}
+                {loading ? (
+                  <svg
+                    className="inline w-8 h-7 my-1.5 text-transparent animate-spin fill-blue-500 "
+                    viewBox="0 0 100 101"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                      fill="currentColor"
+                    />
+                    <path
+                      d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                      fill="currentFill"
+                    />
+                  </svg>
+                ) : (
+                  <p className="py-2">Post</p>
+                )}
               </button>
             </div>
           </div>
           <div className="flex flex-col mt-4 items-start">
-            <div className="flex gap-4 w-full mb-6">
+            <div className="flex px-4 md:px-6 gap-4 w-full mb-4">
               <UserImageInput
                 className="w-[35px] h-[35px] rounded-full"
                 imageHeight={35}
@@ -177,31 +228,235 @@ function PostForm({ userDetails }) {
               />
               <textarea
                 name="content"
+                autoFocus
                 value={formData.content}
                 onChange={(e) => {
                   handleInputChange(e);
                   resizeTextarea();
                 }}
-                placeholder="What's happening?"
+                placeholder={
+                  postType == "content"
+                    ? "What's happening?"
+                    : "Describe more about the job like deadline and more..."
+                }
                 ref={textareaRef}
                 className="w-full h-max caret-blue-500 mt-1 focus:outline-none resize-none overflow-hidden"
               />
             </div>
-            <div className="flex w-full  overflow-auto mt-4 ">
-              <ImageCarousel
-                // className={"ml-10"}
-                dots={false}
-                edges={"rounded-lg"}
-                gap={2}
-                images={images}
-              />
-            </div>
+            {postType == "content" ? (
+              <div className="flex w-full  overflow-auto  ">
+                <ImageCarousel
+                  // className={"ml-10"}
+                  dots={false}
+                  isEditable={true}
+                  edges={"rounded-2xl"}
+                  gap={2}
+                  images={images}
+                />
+              </div>
+            ) : (
+              <div
+                className="w-full flex gap-3 overflow-x-auto px-5"
+                style={{
+                  overflowX: "scroll",
+                  scrollbarWidth: "none",
+                  scrollSnapType: "x mandatory",
+                  scrollBehavior: "smooth",
+                }}
+              >
+                {jobs.map((job, index, arr) => (
+                  <div className="border min-w-full transition-all rounded-2xl flex flex-col gap-4 p-5  flex-grow">
+                    <div className="flex justify-between items-center">
+                      <p className="font-medium text-lg">Job {index + 1}</p>
+                      <div className="flex gap-4">
+                        <div
+                          onClick={() => {
+                            setJobs((prev) => [
+                              ...prev,
+                              {
+                                jobId: arr.length,
+                                job_source: "job_post",
+                                job_role: "",
+                                company_name: "",
+                                job_tags: [],
+                                job_url: "",
+                              },
+                            ]);
+                            console.log(jobs);
+                          }}
+                          className={`${jobs.length >= 3 ? "hidden" : ""}`}
+                        >
+                          <svg
+                            class="h-10 w-10 rounded-full p-2 bg-blue-50 text-blue-500"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            stroke-width="2"
+                            stroke="currentColor"
+                            fill="none"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                          >
+                            {" "}
+                            <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                            <line x1="12" y1="5" x2="12" y2="19" />{" "}
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                          </svg>
+                        </div>
+                        <div
+                          className=" "
+                          onClick={() => {
+                            setJobs((prev) =>
+                              prev.filter((item) => item.jobId != job.jobId)
+                            );
+                            console.log(jobs);
+                          }}
+                        >
+                          {/* <div className=" w-[38px] h-full   bg-black opacity-45 rounded-full"></div> */}
+                          <svg
+                            className="h-10 w-10 bg-gray-100 p-2 text-gray-800 rounded-full  top-3 right-[12px]   z-10"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            strokeWidth="2"
+                            stroke="currentColor"
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path stroke="none" d="M0 0h24v24H0z" />
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <TextInput
+                      key={job.jobId + "_textInput"}
+                      inputProps={{ autoFocus: true }}
+                      onChange={(e) => {
+                        const updatedJobs = jobs.map((j, index) =>
+                          index === job.jobId
+                            ? { ...j, job_role: e.target.value }
+                            : j
+                        );
+                        setJobs(updatedJobs);
+                      }}
+                      value={job.jobRole}
+                      placeholder={"Job role"}
+                    />
+                    <OptionInput
+                      key={job.jobId + "_optionInput"}
+                      name={"company_name"}
+                      initialValue="Click to select"
+                      onChange={(e) => {
+                        const updatedJobs = jobs.map((j, index) =>
+                          index === job.jobId
+                            ? { ...j, company_name: e.target.value }
+                            : j
+                        );
+                        setJobs(updatedJobs);
+                      }}
+                      value={job.company_name}
+                      placeholder={"Company name"}
+                      options={[
+                        {
+                          name: "Accenture",
+                          value: "accenture",
+                        },
+                        {
+                          name: "Microsoft",
+                          value: "microsoft",
+                        },
+                        {
+                          name: "Google",
+                          value: "google",
+                        },
+                      ]}
+                    />
+                    <AddInput
+                      key={job.jobId + "_addInput"}
+                      name={"job_tags"}
+                      onChange={(e) => {
+                        console.log(e.target.value);
+
+                        settagsText((prev) => {
+                          const updatedList = prev.map((tag) =>
+                            tag.jobId === job.jobId
+                              ? { ...tag, tagText: e.target.value }
+                              : tag
+                          );
+
+                          const jobExists = updatedList.some(
+                            (tag) => tag.jobId === job.jobId
+                          );
+                          if (!jobExists) {
+                            updatedList.push({
+                              jobId: job.jobId,
+                              tagText: e.target.value,
+                            });
+                          }
+
+                          console.log(updatedList);
+
+                          return updatedList;
+                        });
+                        console.log(tagsText);
+                      }}
+                      handleAdd={() => {
+                        const updatedJobs = jobs.map((j, index) => {
+                          if (index === job.jobId) {
+                            const newTags = tagsText
+                              .filter((tag) => tag.jobId === job.jobId)
+                              .map((tag) => tag.tagText);
+
+                            const uniqueTags = [
+                              ...j.job_tags,
+                              ...newTags.filter(
+                                (tag) => !j.job_tags.includes(tag)
+                              ),
+                            ];
+
+                            return {
+                              ...j,
+                              job_tags: uniqueTags,
+                            };
+                          }
+                          return j;
+                        });
+
+                        setJobs(updatedJobs);
+                        console.log(updatedJobs);
+                      }}
+                      data={job.job_tags}
+                      placeholder={"Tags for job"}
+                    />
+                    <UrlInput
+                      key={job.jobId + "_urlInput"}
+                      name={"job_url"}
+                      onChange={(e) => {
+                        console.log(index, job.jobId);
+
+                        const updatedJobs = jobs.map((j, index) =>
+                          index === job.jobId
+                            ? { ...j, job_url: e.target.value }
+                            : j
+                        );
+                        setJobs(updatedJobs);
+                      }}
+                      value={job.job_url}
+                      placeholder={"Link to apply"}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
         <div className="flex gap-4 text-blue-500 border-y py-4 px-4 md:px-6 items-center">
-          <div>
+          <div className="disabled:text-blue-300">
             <svg
-              className="h-8 w-8 z-20 cursor-pointer"
+              className="h-8 w-8 z-20  cursor-pointer"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -219,7 +474,6 @@ function PostForm({ userDetails }) {
               type="file"
               id="fileInput"
               name="images"
-              multiple
               onChange={handleImageChange}
               className="hidden"
             />
