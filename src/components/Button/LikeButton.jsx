@@ -18,17 +18,16 @@ const LikeButton = ({ postData, setPostData }) => {
   const [likes, setlikes] = useState(postData.likes);
   console.log(postData.likes[0]?.user, user._id);
   useEffect(() => {
+    if (scrollReference.current) {
+      const scrollElement = scrollReference.current;
 
-  if ( scrollReference.current ) {
-    const scrollElement = scrollReference.current;
-
-    // Smoothly scroll to the bottom or top based on the liked state
-    scrollElement.scrollTo({
-      top: liked ? scrollElement.scrollHeight : 0,
-      behavior: "smooth",
-    });
-  }
-}, [liked]);
+      // Smoothly scroll to the bottom or top based on the liked state
+      scrollElement.scrollTo({
+        top: liked ? scrollElement.scrollHeight : 0,
+        behavior: "smooth",
+      });
+    }
+  }, [liked]);
 
   const handleLike = async () => {
     // Clear the previous debounce timeout if it exists
@@ -93,12 +92,12 @@ const LikeButton = ({ postData, setPostData }) => {
 
   return (
     <button
-      className={`flex items-center space-x-2 rounded-full ${
-        liked ? "border-red-500 text-red-500" : "border-gray-500 text-gray-500"
+      className={`flex items-center gap-1 h-full  ${
+        liked ? "  text-red-500" : " "
       }`}
       onClick={handleLike}
     >
-      <svg
+      {/* <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill={liked ? "currentColor" : "none"}
@@ -115,18 +114,36 @@ const LikeButton = ({ postData, setPostData }) => {
               : "M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3c3.09 0 5.5 2.42 5.5 5.5 0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
           }
         />
+      </svg> */}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="15"
+        height="15"
+        fill="currentColor"
+        class={`bi bi-heart-fill transition-all `}
+        viewBox="0 0 16 16"
+      >
+        {liked ? (
+          <path
+          fill-rule="evenodd"
+          d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"
+        />
+        ) : (
+          <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15" />
+
+        )}
       </svg>
-      <div
+    {  likes_count>0 &&<div
         ref={scrollReference}
         style={{
           scrollbarWidth: "none",
           pointerEvents: "none",
         }}
-        className="flex flex-col scroll-smooth transition-all h-6 overflow-y-auto"
+        className="flex flex-col  scroll-smooth  transition-all h-6 overflow-y-auto"
       >
         <span>{liked ? likes_count - 1 : likes_count}</span>
         <span>{liked ? likes_count : likes_count + 1}</span>
-      </div>
+      </div>}
     </button>
   );
 };

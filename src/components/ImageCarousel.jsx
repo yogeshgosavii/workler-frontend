@@ -1,19 +1,28 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 const ImageCarousel = ({
   images,
   className,
+  imageClassName,
   dots = true,
   gap = 0,
+  setImages,
   edges = "",
   isEditable = false,
   imagePreview = false,
 }) => {
-  const imageContainerRef = useRef();
+  const [animatingImages, setAnimatingImages] = useState(images);
+  const [removedImage, setRemovedImage] = useState(null);
+  const imageContainerRef = useRef();  // Define the imageContainerRef here
+
+
+  useEffect(() => {
+    setAnimatingImages(images);
+  }, [images]);
 
   // Cleanup URLs when component unmounts or images change
   useEffect(() => {
-    const objectURLs = images.map((image) =>
+    const objectURLs = animatingImages.map((image) =>
       typeof image !== "string" ? URL.createObjectURL(image) : null
     );
 
@@ -24,25 +33,38 @@ const ImageCarousel = ({
         }
       });
     };
-  }, [images]);
+  }, [animatingImages]);
+
+  // Handle image removal with animation
+  const handleRemoveImage = (image) => {
+    setRemovedImage(image);
+
+    // Wait for the fade-out animation to complete before removing the image
+    setTimeout(() => {
+      const updatedImages = animatingImages.filter((img) => img !== image);
+      setAnimatingImages(updatedImages);
+      setImages(updatedImages);
+      setRemovedImage(null);
+    }, 300); // Match this duration to the CSS transition duration
+  };
 
   return (
     <div className={`${className}`}>
       <div
         ref={imageContainerRef}
-        className={`flex ${!dots && "pl-14 pr-4"} w-full   gap-${gap}`}
+        className={`flex ${!dots && "pl-[43px]"} transition-all w-full max-h-min gap-${gap}`}
         style={{
           overflowX: "scroll",
           scrollbarWidth: "none",
-          scrollSnapType: "x mandatory",
-          scrollBehavior:"smooth",
-          scrollMarginLeft:"20px"
-          // gap: `${gap}px`, // Using inline style for gap
+          scrollBehavior: "smooth",
+          scrollMarginLeft: "20px",
         }}
       >
-        {images.map((image, index) => (
+        {animatingImages.map((image, index) => (
           <div
-            className="relative"
+            className={`relative transition-all duration-300 ease-in-out ${
+              removedImage === image ? "opacity-0 scale-95" : "opacity-100 scale-100"
+            }`}
             key={index}
             style={{
               minWidth: "100%",
@@ -50,15 +72,18 @@ const ImageCarousel = ({
             }}
           >
             <img
-              className={`w-full h-full object-cover max-h-60 ${edges}`}
+              className={`w-full h-full ${imageClassName} object-cover max-h-60 ${edges}`}
               src={
                 typeof image === "string" ? image : URL.createObjectURL(image)
               }
               alt={`Image ${index + 1}`}
             />
             {isEditable && (
-              <div className="absolute top-4 right-4 border">
-                <div className="absolute w-10 h-10  -top-[3px] -right-[4px]  bg-black opacity-45 rounded-full"></div>
+              <div
+                onClick={() => handleRemoveImage(image)}
+                className="absolute top-4 right-4 border cursor-pointer"
+              >
+                <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
                 <svg
                   className="h-5 w-5 text-white rounded-full absolute top-[7px] right-1.5 z-10"
                   width="24"
@@ -80,12 +105,15 @@ const ImageCarousel = ({
         ))}
       </div>
 
-      {imagePreview && images.length > 1 && (
-        <div className="flex  mt-4 gap-2 h-1/5">
-          {images.slice(1).map((image, index) => (
-            <div key={index} className=" h-20 relative">
+      {imagePreview && animatingImages.length > 1 && (
+        <div className="flex mt-4 gap-2 h-1/5">
+          {animatingImages.slice(1).map((image, index) => (
+            <div
+              key={index}
+              className="h-20 relative transition-all duration-300 ease-in-out"
+            >
               <img
-                className={`w-full h-full object-cover rounded-md ${edges}`}
+                className={`w-full h-full object-cover ${edges}`}
                 src={
                   typeof image === "string" ? image : URL.createObjectURL(image)
                 }

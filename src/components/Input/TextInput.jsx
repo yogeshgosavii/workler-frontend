@@ -28,7 +28,7 @@ function TextInput({
     <div className={className}>
       <div className="relative flex peer">
         <input
-          autoFocus={inputProps.autoFocus}
+          autoFocus={inputProps?.autoFocus}
           type="text"
           name={name}
           id={name}
