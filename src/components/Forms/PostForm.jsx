@@ -13,7 +13,7 @@ import useJobApi from "../../services/jobService.js";
 import JobPost from "../JobList.jsx";
 import JobList from "../JobList.jsx";
 
-function PostForm({ userDetails, onClose }) {
+function PostForm({ userDetails,setData, onClose }) {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -69,10 +69,11 @@ function PostForm({ userDetails, onClose }) {
 
     if (postType == "content") {
       try {
-        await createPost(formDataToSend);
+        const data = await createPost(formDataToSend);
+        setData(prev =>([...prev,data]))
+        onClose()
         setFormData({ content: "", images: [] });
         setImages([]);
-        alert("Post created successfully!");
       } catch (error) {
         setError("Failed to create post");
       } finally {
@@ -84,11 +85,12 @@ function PostForm({ userDetails, onClose }) {
       console.log(jobIds);
 
       try {
-        await createJobPost({
+        const data = await createJobPost({
           content: formData.content,
           post_type: postType,
           jobs: jobIds,
         });
+        setData(prev =>([...prev,data]))
         onClose();
         setFormData({ content: "", images: [] });
         setImages([]);
@@ -111,6 +113,7 @@ function PostForm({ userDetails, onClose }) {
           <div className="flex px-4 md:px-6 justify-between">
             <svg
               class="h-8 w-8 text-gray-700"
+              onClick={()=>{onClose()}}
               width="24"
               height="24"
               viewBox="0 0 24 24"
@@ -482,6 +485,7 @@ function PostForm({ userDetails, onClose }) {
               type="file"
               id="fileInput"
               name="images"
+              multiple
               onChange={handleImageChange}
               className="hidden"
             />

@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
-function CommentButton({ postData, setPostData }) {
+function CommentButton({ onClick, postData, setPostData, className }) {
   const user = useSelector((state) => state.auth.user);
 
-  const [commented, setCommented] = useState(
-    postData.comments[0]?.user == user._id || false
-  );
+  // const [commented, setCommented] = useState(
+  //   postData.comments[0]?.user == user._id || false
+  // );
   const [comment_count, setComment_count] = useState(
-    postData.comment_count > 0 &&
-      typeof postData.comment_count == String &&
-      postData.comment_count
+    postData.comments_count > 0 && postData.comments_count
   );
   return (
-    <div className="flex gap-1 -mt-px items-center">
+    <div
+      onClick={onClick}
+      className={`flex gap-1 -mt-px items-center ${className}`}
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="15"
@@ -32,8 +33,7 @@ function CommentButton({ postData, setPostData }) {
         }}
         className="flex flex-col  scroll-smooth  transition-all h-6 overflow-y-auto"
       >
-        <span>{comment_count}</span>
-        {/* <span>{commented ? comment_count : comment_count + 1}</span> */}
+        <span>{postData.comments_count > 0 && postData.comments_count}</span>
       </div>
     </div>
   );

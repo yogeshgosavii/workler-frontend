@@ -6,6 +6,9 @@
   animation: scale-down 0.4s ease-in-out forwards;
 }
 
+.send-animation {
+  animation: go-out 0.5s ;
+}
 @keyframes scale-up {
   0% {
     transform: scale(1);
@@ -35,3 +38,17 @@
     transform: scale(1);
   }
 }
+
+@keyframes go-out {
+  0% {
+    transform: translateX(0px) rotate(45deg);
+  }
+  50% {
+    transform: translateX(-10px) rotate(45deg);
+  }
+  100% {
+    transform: translateX(40px) rotate(45deg);
+  }
+}
+
+

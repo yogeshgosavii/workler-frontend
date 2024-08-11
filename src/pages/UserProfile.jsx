@@ -467,6 +467,8 @@ const UserProfile = () => {
                       ? setuserDetails
                       : formType === "job"
                       ? setjobData
+                      : formType == "post"
+                      ? setPostData
                       : null,
                   data:
                     formType === "skills"
@@ -481,6 +483,8 @@ const UserProfile = () => {
                       ? userDetails
                       : formType == "job"
                       ? jobData
+                      : formType == "post"
+                      ? postData
                       : null,
                 })}
               </div>

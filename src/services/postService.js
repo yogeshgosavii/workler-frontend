@@ -2,8 +2,8 @@
 
 import { setAuthHeaders } from "../../utility";
 
-const API_URL = 'https://workler-backend.vercel.app/api/posts/post';
-// const API_URL = "http://localhost:5002/api/posts/post";
+// const API_URL = 'https://workler-backend.vercel.app/api/posts/post';
+const API_URL = "http://localhost:5002/api/posts/post";
 
 const getToken = () => localStorage.getItem('token');
 
@@ -52,6 +52,16 @@ export const addLike = async (likeData) => {
     method: 'PUT',
     headers: setAuthHeaders(getToken()),
     body: JSON.stringify(likeData)
+  });
+  return response;
+};
+
+export const addComment = async (commentData) => {
+  console.log(commentData);
+  const response = await handleRequest(API_URL+`/${commentData._id}/comment`, {
+    method: 'PUT',
+    headers: setAuthHeaders(getToken()),
+    body: JSON.stringify(commentData)
   });
   return response;
 };
