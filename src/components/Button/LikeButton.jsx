@@ -29,7 +29,8 @@ const LikeButton = ({ postData, setPostData }) => {
     }
   }, [liked]);
 
-  const handleLike = async () => {
+  const handleLike = async (e) => {
+    e.stopPropagation()
     // Clear the previous debounce timeout if it exists
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);

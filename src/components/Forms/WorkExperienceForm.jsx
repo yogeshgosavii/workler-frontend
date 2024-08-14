@@ -243,7 +243,7 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
               <div className="flex w-full gap-1 items-end">
                 <input
                   name="years"
-                  className="border  focus:border-blue-500 p-2 outline-none  text-center w-full rounded-sm"
+                  className="border   p-2 outline-none  text-center w-full rounded-sm"
                   value={formData.years}
                   readOnly
                   required
@@ -253,7 +253,7 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
               <div className="flex w-full items-end gap-1">
                 <input
                   name="months"
-                  className="border focus:border-blue-500 p-2 outline-none  text-center w-full rounded-sm"
+                  className="border  p-2 outline-none  text-center w-full rounded-sm"
                   value={formData.months}
                   readOnly
                   required
@@ -369,7 +369,7 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
                 name={"department"}
                 value={formData.department}
                 onChange={handleInputChange}
-                optionList={departmentOptions}
+                options={departmentOptions}
                 isRequired={true}
                 placeholder={"Department"}
               />
@@ -394,7 +394,7 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
                         Present
                       </p>
                     ) : (
-                      <DateInput8
+                      <DateInput
                         type="date"
                         name="leavingDate"
                         id="leavingDate"

@@ -33,7 +33,7 @@ function Header() {
   const navigate = useNavigate();
 
   return (
-    <div className='w-full fixed top-0 bg-white z-10 flex justify-center border-b-2 sm:border-none sm:shadow-md'>
+    <div className={`${isAuthenticated && "hidden"} w-full fixed top-0 bg-white z-10 flex justify-center border-b-2 sm:border-none sm:shadow-md`}>
       <div className='flex w-full px-5 sm:px-8 py-2 sm:py-4 justify-between items-center'>
         <svg className="h-8 w-8 sm:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <line x1="3" y1="12" x2="21" y2="12" />

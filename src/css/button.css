@@ -7,7 +7,7 @@
 }
 
 .send-animation {
-  animation: go-out 0.5s ;
+  animation: go-out 0.6s ;
 }
 @keyframes scale-up {
   0% {
@@ -47,7 +47,7 @@
     transform: translateX(-10px) rotate(45deg);
   }
   100% {
-    transform: translateX(40px) rotate(45deg);
+    transform: translateX(50px) rotate(45deg);
   }
 }
 

@@ -26,13 +26,14 @@ import JobUpdateForm from "../components/Forms/JobUpdateForm";
 import TextInput from "../components/Input/TextInput";
 import Button from "../components/Button/Button";
 import { useDispatch } from "react-redux";
-import About from "../components/tabs/About";
-import Posts from "../components/tabs/Posts";
-import Qualification from "../components/tabs/Qualification";
-import Home from "../components/tabs/Home";
-import Jobs from "../components/tabs/Jobs";
+import About from "../components/profileTabs/About";
+import Posts from "../components/profileTabs/Posts";
+import Qualification from "../components/profileTabs/Qualification";
+import Home from "../components/profileTabs/Home";
+import Jobs from "../components/profileTabs/Jobs";
 import PostForm from "../components/Forms/PostForm";
 import { getUserPosts } from "../services/postService";
+import FreezeScroll from "../components/FreezeScroll";
 
 // Register necessary components from Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
@@ -429,16 +430,15 @@ const UserProfile = () => {
   }, [updateFormType]);
 
   return (
-    <div
-      className={`w-full flex  ${
-        formType || updateFormType || settings ? "fixed" : ""
-      }  justify-center gap-5  bg-gray-100  sm:py-5 md:px-5 `}
+    <FreezeScroll
+      freezeScroll={formType || updateFormType || settings}
+      className={`w-full flex justify-center gap-5 bg-gray-100 sm:py-5 md:px-5`}
     >
       {pageLoading ? (
         <div>Loading...</div>
       ) : (
         <div
-          className={`  w-full flex-1 flex-grow  ${
+          className={`w-full flex-1 flex-grow ${
             settings ? "pointer-events-none " : "pointer-events-auto"
           }`}
         >
@@ -780,7 +780,7 @@ const UserProfile = () => {
                           tab === currentTab ? "z-20 text-blue-500" : ""
                         } text-center py-2`}
                         style={{
-                          width: `${100 / 3}%`, 
+                          width: `${100 / 3}%`,
                         }}
                       >
                         {tab}
@@ -905,7 +905,7 @@ const UserProfile = () => {
           <p className="text-xl font-medium">Candidates</p>
         </div>
       </div>
-    </div>
+    </FreezeScroll>
   );
 };
 

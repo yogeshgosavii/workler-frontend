@@ -15,10 +15,7 @@ function Qualification({
   className,
 }) {
   const user = useSelector((state) => state.auth.user);
-  console.log( educationData,
-    skillData,
-    workExperienceData,
-    projectData,);
+  console.log(educationData, skillData, workExperienceData, projectData);
 
   const Section = ({ id, title, content, loading, onAdd }) => (
     <div className="flex bg-white flex-col border-y sm:border px-4 sm:px-6 py-6 mt-3">
@@ -27,7 +24,10 @@ function Qualification({
         {onAdd && (
           <p
             className="text-blue-500 font-medium cursor-pointer"
-            onClick={() => onAdd(title)}
+            onClick={() => {
+              console.log("onAdd called for", id); // Debug log
+              onAdd(id);
+            }}
           >
             Add
           </p>
@@ -75,7 +75,10 @@ function Qualification({
           </div>
         ),
         loading: loading.skills,
-        onAdd: (id) => setFormType(id),
+        onAdd: (id) => {
+          console.log("Adding skill");
+          setFormType(id);
+        },
       },
       {
         id: "education",
@@ -151,10 +154,13 @@ function Qualification({
           })
         ),
         loading: loading.education,
-        onAdd: (id) => setFormType(id),
+        onAdd: (id) => {
+          console.log("Adding education");
+          setFormType(id);
+        },
       },
       {
-        id: "workExperience",
+        id: "work_experience",
         title: "Work experience",
         content: workExperienceData.length === 0 ? (
           <p className="text-sm text-gray-400 mt-1">
@@ -173,8 +179,8 @@ function Qualification({
               <div
                 key={index}
                 onClick={() => {
-                    console.log("Hello");
-                    setUpdateFormType("workExperience")
+                  console.log("Hello");
+                  setUpdateFormType("workExperience");
                   setUpdateData({ workExperience: data });
                   setUpdateForm({ workExperience: true });
                 }}
@@ -192,7 +198,10 @@ function Qualification({
           })
         ),
         loading: loading.workExperience,
-        onAdd: (id) => setFormType(id),
+        onAdd: (id) => {
+          console.log("Adding work experience");
+          setFormType(id);
+        },
       },
       {
         id: "projects",
@@ -213,8 +222,8 @@ function Qualification({
               <div
                 key={index}
                 onClick={() => {
-                setUpdateFormType("projects")
-                console.log(data);
+                  setUpdateFormType("projects");
+                  console.log(data);
                   setUpdateData({ projects: data });
                   setUpdateForm({ projects: true });
                 }}
@@ -232,7 +241,10 @@ function Qualification({
           })
         ),
         loading: loading.projects,
-        onAdd: (id) => setFormType(id),
+        onAdd: (id) => {
+          console.log("Adding projects");
+          setFormType(id);
+        },
       },
     ],
     [educationData, projectData, skillData, user, workExperienceData]

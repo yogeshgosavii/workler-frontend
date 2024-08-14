@@ -47,18 +47,25 @@ const ImageCarousel = ({
       setRemovedImage(null);
     }, 300); // Match this duration to the CSS transition duration
   };
-
+  const scrollContainerStyle = {
+    display: 'flex',
+    overflowX: 'auto',
+    scrollSnapType: 'x mandatory',
+    scrollbarWidth: 'none',
+    WebkitOverflowScrolling: 'touch', // Smooth scrolling in WebKit-based browsers
+  };
+  const scrollItemStyle = {
+    flex: '0 0 auto',
+    scrollSnapAlign: 'start',
+    minWidth: '100%', // Ensure each item takes up the full width of the container
+  };
   return (
     <div className={`${className}`}>
       <div
         ref={imageContainerRef}
-        className={`flex ${!dots && "pl-[43px]"} transition-all w-full max-h-min gap-${gap}`}
-        style={{
-          overflowX: "scroll",
-          scrollbarWidth: "none",
-          scrollBehavior: "smooth",
-          scrollMarginLeft: "20px",
-        }}
+        className={`flex ${!dots && images.length>1 && "pl-[43px]"} transition-all w-full max-h-min gap-${gap}`}
+        style={
+        scrollContainerStyle}
       >
         {animatingImages.map((image, index) => (
           <div
@@ -66,10 +73,7 @@ const ImageCarousel = ({
               removedImage === image ? "opacity-0 scale-95" : "opacity-100 scale-100"
             }`}
             key={index}
-            style={{
-              minWidth: "100%",
-              scrollSnapAlign: "start",
-            }}
+            style={scrollItemStyle}
           >
             <img
               className={`w-full h-full ${imageClassName} object-cover max-h-60 ${edges}`}
