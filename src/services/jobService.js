@@ -1,8 +1,8 @@
 import { setAuthHeaders } from '../../utility';
 import { useSelector } from 'react-redux';
 
-// const apiBaseUrl = 'https://workler-backend.vercel.app/api/jobs';
-const apiBaseUrl = 'http://localhost:5002/api/jobs';
+const apiBaseUrl = 'https://workler-backend.vercel.app/api/jobs';
+// const apiBaseUrl = 'http://localhost:5002/api/jobs';
 
 
 const makeApiRequest = async (url, options) => {

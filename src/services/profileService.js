@@ -2,7 +2,8 @@ import { setAuthHeaders } from '../../utility';
 import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
 
-const apiBaseUrl = 'http://localhost:5002/api/profile'; // Update as needed
+// const apiBaseUrl = 'http://localhost:5002/api/profile'; // Update as needed
+const apiBaseUrl = "https://workler-backend.vercel.app/api/profile";
 
 const makeApiRequest = async (url, options) => {
   try {
