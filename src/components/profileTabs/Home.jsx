@@ -7,18 +7,19 @@ import ImageCarousel from "../ImageCarousel";
 function Home({
   user,
   loading,
-  userDetails,
   setcurrentTab,
   setupdateFormType,
   setUpdateData,
   postData,
+  isEditable
 }) {
+  console.log("user",user)
   return (
     <div className="  flex flex-col gap-4 mb-4">
-      {user.account_type == "Employeer" ? (
+      {user?.account_type == "Employeer" ? (
         <div className="flex flex-col  bg-white md:border    gap-2">
           <p className="text-xl font-bold px-4 mt-4 md:px-6">About</p>
-          {loading.userDetails ? (
+          {loading.user ? (
             <div className="px-4 md:px-6 py-4">
               <div className="h-2 bg-gray-200 rounded-md mb-2 "></div>
               <div className="h-2 bg-gray-200 rounded-md mb-4 "></div>
@@ -27,7 +28,7 @@ function Home({
           ) : (
             <div className="mb-4 px-4 md:px-6 ">
               <p className=" line-clamp-3 mt-1 text-sm mb-2">
-                {userDetails == "" ? (
+                {user == "" ? (
                   <div>
                     <div className="animate-pulse z-10 mt-2">
                       <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
@@ -36,11 +37,11 @@ function Home({
                     </div>
                   </div>
                 ) : (
-                  <span> {userDetails.description}</span>
+                  <span> {user.description}</span>
                 )}
               </p>
               <a className="text-sm text-blue-500">
-                {userDetails.company_details?.website}
+                {user.company_details?.website}
               </a>
             </div>
           )}
@@ -57,7 +58,7 @@ function Home({
         <div className="relative border-b md:border md:px-6 overflow-hidden bg-white px-4 py-4 pb-6">
           <div className="flex justify-between items-center mb-2 ">
             <p className="text-xl font-bold ">About</p>
-            <svg
+           { isEditable && <svg
               class="h-5 w-5 text-blue-500"
               width="24"
               height="24"
@@ -71,24 +72,24 @@ function Home({
               onClick={() => {
                 setupdateFormType("personalDetails");
                 console.log(user);
-                setUpdateData({ personalDetails: userDetails });
+                setUpdateData({ personalDetails: user });
                 // setUpdateForm({ personalDetails: true });
               }}
             >
               {" "}
               <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-            </svg>
+            </svg>}
           </div>
           {!loading.userDetails ? (
             <div className="flex flex-col gap-4 mt-5">
-              <div className={`text-sm font-normal  `}>
+             {isEditable || user.description && <div className={`text-sm font-normal  `}>
                 <p className="font-semibold mb-1">Description</p>
-                {userDetails.description ? (
+                {user.description ? (
                   <div onClick={() => setdescriptionInput(true)}>
-                    <p className="text-gray-400">{userDetails.description}</p>
+                    <p className="text-gray-400">{user.description}</p>
                   </div>
                 ) : (
-                  userDetails.account_type == "Employeer"?(
+                  user.account_type == "Employeer"?(
                     <div
                     className="text-sm font-normal text-gray-300 w-full"
                   >
@@ -104,49 +105,49 @@ function Home({
                   )
                  
                 )}
-              </div>
-              {userDetails?.linkedInLink && (
+              </div>}
+              {user?.linkedInLink && (
                 <div className={`text-sm font-normal  `}>
                   <p className="font-bold">LinkedIn</p>
-                  {!loading.userDetails && (
+                  {!loading.user && (
                     <a
                       className="text-sm font-normal text-blue-500 w-full"
-                      href={userDetails?.linkedInLink}
+                      href={user?.linkedInLink}
                     >
-                      {userDetails?.linkedInLink}
+                      {user?.linkedInLink}
                     </a>
                   )}
                 </div>
               )}
-              {userDetails.githubLink && (
+              {user.githubLink && (
                 <div className={`text-sm font-normal  `}>
                   <p className="font-bold">Github</p>
-                  {!loading.userDetails && (
+                  {!loading.user && (
                     <a
                       className="text-sm font-normal text-blue-500 w-full"
-                      href={userDetails?.githubLink}
+                      href={user?.githubLink}
                     >
-                      {userDetails?.githubLink}
+                      {user?.githubLink}
                     </a>
                   )}
                 </div>
               )}
-              {userDetails?.location && (
+              {user?.location && (
                 <div className={`text-sm font-normal  `}>
                   <p className="font-bold">Address</p>
-                  {!loading.userDetails && (
+                  {!loading.user && (
                     <div className="text-sm font-normal text-gray-400 w-full">
-                      {userDetails?.location?.address}
+                      {user?.location?.address}
                     </div>
                   )}
                 </div>
               )}
-              {userDetails?.personal_details?.phone && (
+              {user?.personal_details?.phone && (
                 <div className={`text-sm font-normal  `}>
                   <p className="font-bold">Phone</p>
-                  {!loading.userDetails && (
+                  {!loading.user && (
                     <div className="text-sm font-normal text-gray-400 w-full">
-                      {userDetails?.personal_details?.phone}
+                      {user?.personal_details?.phone}
                     </div>
                   )}
                 </div>
@@ -193,13 +194,13 @@ function Home({
                     imageHeight={35}
                     imageBorder={1}
                     // src={post.userAvatar || profileImageDefault}
-                    image={userDetails.profileImage?.compressedImage || profileImageDefault}
+                    image={user.profileImage?.compressedImage || profileImageDefault}
                     alt={`${post.username}'s avatar`}
                     isEditable={false}
                   />
                   <div>
                     <p className="font-medium text-sm">
-                      {userDetails.username}
+                      {user.username}
                     </p>
                     <p className="text-xs text-gray-400"> {formatDistanceToNow(new Date(post.createdAt), {
                   addSuffix: true,

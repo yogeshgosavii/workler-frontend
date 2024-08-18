@@ -11,6 +11,7 @@ import UrlInput from "../Input/UrlInput.jsx";
 import AddInput from "../Input/AddInput.jsx";
 import useJobApi from "../../services/jobService.js";
 import JobPost from "../JobList.jsx";
+import authservice from  "../../services/authService.js"
 import JobList from "../JobList.jsx";
 
 function PostForm({ userDetails,setData, onClose }) {
@@ -49,7 +50,7 @@ function PostForm({ userDetails,setData, onClose }) {
   };
 
   const handleImageChange = (e) => {
-    const files = Array.from(e.target.files); // Convert FileList to Array
+    const files = Array.from(e.target.files); 
     setImages((prevImages) => [...prevImages, ...files]);
     setFormData((prevState) => ({ ...prevState, images: files }));
   };
@@ -65,11 +66,16 @@ function PostForm({ userDetails,setData, onClose }) {
       formDataToSend.append("images", image);
     });
 
-    // console.log({content:formData.content,jobs});
 
     if (postType == "content") {
       try {
         const data = await createPost(formDataToSend);
+        const user = await authservice.updateUserDetails({
+          ...userDetails,
+          posts : [...userDetails.posts , data._id]
+
+        })
+        
         setData(prev =>([...prev,data]))
         onClose()
         setFormData({ content: "", images: [] });
@@ -90,6 +96,11 @@ function PostForm({ userDetails,setData, onClose }) {
           post_type: postType,
           jobs: jobIds,
         });
+        const user = await authservice.updateUserDetails({
+          ...userDetails,
+          posts : [...userDetails.posts , data._id]
+
+        })
         setData(prev =>([...prev,data]))
         onClose();
         setFormData({ content: "", images: [] });
@@ -103,10 +114,11 @@ function PostForm({ userDetails,setData, onClose }) {
   };
 
   return (
-    <div className="h-full flex  sm:max-h-[450px] flex-col gap-6 pt-4  overflow-auto bg-white">
+    <div className="w-full  flex justify-center">
+      <div className="h-full w-full md:max-w-[400px]  md:mt-10  border  rounded-xl  flex   flex-col gap-6 pt-4  overflow-auto bg-white">
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-4 h-full"
+        className="flex flex-col min-w-full  gap-4 h-full"
         encType="multipart/form-data"
       >
         <div className=" flex-1">
@@ -270,7 +282,7 @@ function PostForm({ userDetails,setData, onClose }) {
             )}
           </div>
         </div>
-        <div className="flex gap-4 text-blue-500 border-y py-4 px-4 md:px-6 items-center">
+        <div className="flex gap-4 text-blue-500 border-t py-4 px-4 md:px-6 items-center">
           <div className="disabled:text-blue-300">
             <svg
               className="h-8 w-8 z-20  cursor-pointer"
@@ -320,6 +332,7 @@ function PostForm({ userDetails,setData, onClose }) {
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
       </form>
+    </div>
     </div>
   );
 }

@@ -2,7 +2,7 @@ import { setAuthHeaders } from '../../utility';
 import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
 
-const apiBaseUrl = 'https://workler-backend.vercel.app/api/profile';
+const apiBaseUrl = 'http://localhost:5002/api/profile'; // Update as needed
 
 const makeApiRequest = async (url, options) => {
   try {
@@ -59,12 +59,20 @@ const createApiMethods = (endpoint) => {
       });
       return response;
     },
+
+    getQualificationById: async (userId) => {
+      const token = getToken();
+      const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/${userId}`, {
+        method: 'GET',
+        headers: setAuthHeaders(token),
+      });
+      return response;
+    },
   };
 };
 
 const useProfileApi = () => {
   const user = useSelector((state) => state.auth.user);
-  console.log(user);
 
   if (!user || !user._id) {
     throw new Error('User is not logged in or user ID is missing');
@@ -80,6 +88,7 @@ const useProfileApi = () => {
     workExperience: createApiMethods('workExperience'),
     description: createApiMethods('description'),
     job: createApiMethods('job'),
+    qualification: createApiMethods('getQualification'),
   }), [userId]);
 
   return apiMethods;

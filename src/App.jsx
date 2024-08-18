@@ -54,21 +54,23 @@ const App = () => {
   }, [location.pathname]); // Re-run effect when location changes
 
   return (
-    <div className="relative flex flex-col h-screen justify-between text-gray-700">
-      <Header />
-      <div className="flex-1 overflow-y-auto flex justify-center px-4 w-full sm:px-10 py-5">
-        <Outlet />
+    <div className="relative flex flex-col sm:flex-row h-screen  text-gray-700">
+      <div className="sm:ml-16 w-full h-full">
+        <Header />
+        <div className="flex-1  h-full w-full  overflow-y-auto flex justify-center pb-14 sm:pb-5  sm:px-10 py-5">
+          <Outlet />
+        </div>
       </div>
       <div
         className={`${
           !isAuthenticated && "hidden"
-        } fixed flex border-t-2 bottom-0 py-3 left-0 w-full bg-white`}
+        } fixed flex border-t-2 justify-between sm:justify-evenly sm:border-r sm:border-t-0 bottom-0 sm:px-5  sm:flex-col py-3 left-0 sm:top-0  w-full sm:w-fit bg-white`}
       >
         <p
           onClick={() => {
             navigate("home");
           }}
-          className={`w-1/4 text-center flex justify-center items-center ${
+          className={`w-1/5 sm:w-fit  text-center flex justify-center items-center ${
             activeTab === "home" ? "text-blue-500" : "text-gray-400"
           }`}
         >
@@ -89,7 +91,7 @@ const App = () => {
           onClick={() => {
             navigate("search");
           }}
-          className={`w-1/4 text-center flex justify-center items-center ${
+          className={`w-1/5 sm:w-fit   text-center flex justify-center items-center ${
             activeTab === "search" ? "text-blue-500" : "text-gray-400"
           }`}
         >
@@ -110,14 +112,13 @@ const App = () => {
           onClick={() => {
             navigate("/post");
           }}
-          className={`w-1/4 text-center flex justify-center items-center ${
+          className={`w-1/5 sm:w-fit  text-center flex justify-center items-center ${
             activeTab === "post" ? "text-blue-500" : "text-gray-500"
           }`}
         >
           <svg
-            className="h-10 w-10 rounded-full p-2.5 bg-blue-50 text-blue-500"
-            width="24"
-            height="24"
+            className=" w-8 p-2 rounded-full  bg-blue-50 text-blue-500"
+          
             viewBox="0 0 24 24"
             strokeWidth="2"
             stroke="currentColor"
@@ -134,12 +135,12 @@ const App = () => {
           onClick={() => {
             navigate("notifications");
           }}
-          className={`w-1/4 text-center flex justify-center items-center ${
+          className={`w-1/5 sm:w-fit   text-center flex justify-center items-center ${
             activeTab === "notifications" ? "text-blue-500" : "text-gray-400"
           }`}
         >
           <svg
-            className="h-6 w-6"
+            className="h-6 w-6 "
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -155,7 +156,7 @@ const App = () => {
           onClick={() => {
             navigate("/profile");
           }}
-          className={`w-1/4 text-center flex justify-center items-center ${
+          className={`w-1/5 sm:w-fit   text-center flex justify-center items-center ${
             activeTab === "profile" ? "text-blue-500" : "text-gray-400"
           }`}
         >

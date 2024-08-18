@@ -1,8 +1,21 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import SearchInput from '../components/Input/SearchInput'
 import Button from '../components/Button/Button';
+import { useSelector } from 'react-redux';
+import { Link ,useNavigate} from 'react-router-dom';
+
 
 function Home() {
+    const { isAuthenticated, user } = useSelector((state) => state.auth);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if(isAuthenticated){
+            navigate("/home")
+        }
+    }, []);
+  
+
     const professions = [
         "Accountant",
         "Actor",

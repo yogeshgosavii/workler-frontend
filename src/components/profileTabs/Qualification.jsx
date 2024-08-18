@@ -13,6 +13,7 @@ function Qualification({
   setUpdateFormType,
   setUpdateData,
   className,
+  isEditable = true
 }) {
   const user = useSelector((state) => state.auth.user);
   console.log(educationData, skillData, workExperienceData, projectData);
@@ -21,7 +22,7 @@ function Qualification({
     <div className="flex bg-white flex-col border-y sm:border px-4 sm:px-6 py-6 mt-3">
       <div className="flex justify-between items-center">
         <p className="text-xl font-medium">{title}</p>
-        {onAdd && (
+        {onAdd && isEditable && (
           <p
             className="text-blue-500 font-medium cursor-pointer"
             onClick={() => {
@@ -74,7 +75,7 @@ function Qualification({
             ))}
           </div>
         ),
-        loading: loading.skills,
+        loading: loading?.skills,
         onAdd: (id) => {
           console.log("Adding skill");
           setFormType(id);
@@ -153,7 +154,7 @@ function Qualification({
             }
           })
         ),
-        loading: loading.education,
+        loading: loading?.education,
         onAdd: (id) => {
           console.log("Adding education");
           setFormType(id);
@@ -240,7 +241,7 @@ function Qualification({
             );
           })
         ),
-        loading: loading.projects,
+        loading: loading?.projects,
         onAdd: (id) => {
           console.log("Adding projects");
           setFormType(id);

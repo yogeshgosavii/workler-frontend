@@ -25,6 +25,7 @@ import UserHome from "./pages/UserHome.jsx";
 import Notification from "./pages/Notification.jsx";
 import Search from "./pages/Search.jsx";
 import PostForm from "./components/Forms/PostForm.jsx";
+import UserProfileView from "./components/UserProfileView.jsx";
 
 const router = createBrowserRouter([
   {
@@ -61,11 +62,24 @@ const router = createBrowserRouter([
       {
         path: "/search",
         element: (
-          <LoginVerification>
+           <LoginVerification>
               <Search />
-          </LoginVerification>
+           </LoginVerification>
         ),
-      },
+        children: [
+           { path: ":userId", element: <UserProfileView /> }, // Note the ":" before userId
+        ],
+     }
+      // {
+      //   path: "/post",
+      //   element: (
+      //     <LoginVerification>
+      //       <PageTransition>
+      //         <PostForm />
+      //       </PageTransition>
+      //     </LoginVerification>
+      //   ),
+      // },
     ],
   },
   {

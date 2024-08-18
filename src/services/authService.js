@@ -1,5 +1,5 @@
-const API_URL = "https://workler-backend.vercel.app/api/auth";
-// const API_URL = "http://localhost:5002/api/auth";
+// const API_URL = "https://workler-backend.vercel.app/api/auth";
+const API_URL = "http://localhost:5002/api/auth";
 
 const getToken = () => localStorage.getItem('token');
 
@@ -69,6 +69,22 @@ const authService = {
   fetchUserDetails: async (userToken = getToken()) => {
     try {
       const response = await fetch(`${API_URL}/user`, {
+        headers: { Authorization: `Bearer ${userToken}` },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch user details");
+      }
+      const userData = await response.json();
+      return userData; // Return the user details
+    } catch (error) {
+      console.error("Error in fetchUserDetails:", error);
+      throw error;
+    }
+  },
+
+  fetchUserDetailsById: async (userId,userToken = getToken()) => {
+    try {
+      const response = await fetch(`${API_URL}/user/${userId}`, {
         headers: { Authorization: `Bearer ${userToken}` },
       });
       if (!response.ok) {
