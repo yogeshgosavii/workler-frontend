@@ -5,8 +5,11 @@ import profileImageDefault from "../assets/user_male_icon.png";
 import Qualification from "./profileTabs/Qualification";
 import Home from "./profileTabs/Home";
 import useProfileApi from "../services/profileService";
+import useJobApi from "../services/jobService";
 import Posts from "./profileTabs/Posts";
 import { useParams } from "react-router-dom";
+import About from "./profileTabs/About";
+import Jobs from "./profileTabs/Jobs";
 
 function UserProfileView() {
   const { userId } = useParams();
@@ -15,11 +18,13 @@ function UserProfileView() {
   const [qualification, setQualification] = useState();
   const [settings, setSettings] = useState(false);
   const [postData, setpostData] = useState();
-  const [currentTab, setCurrentTab] = useState("Home");
-  const [tabIndex, setTabIndex] = useState(0);
+  const [currentTab, setCurrentTab] = useState("Posts");
+  const [tabIndex, setTabIndex] = useState(1);
+  const [jobData, setJobData] = useState(null);
   const [loading, setLoading] = useState({ userDetails: true });
   const [atTop, setAtTop] = useState(0);
   const profileService = useProfileApi();
+  const jobService = useJobApi()
   const profileRef = useRef();
   console.log(userId);
 
@@ -52,10 +57,25 @@ function UserProfileView() {
       }
     };
 
+    const fetchUserJobsPosts = async ()=>{
+      setLoading((prev) => ({ ...prev, job: true }));
+      try {
+        const jobData =
+          await jobService.job.getByUserIds(userId);
+        console.log("jobData:", jobData);
+        setJobData(jobData);
+      } catch (error) {
+        console.error("Failed to fetch qualification data", error);
+      } finally {
+        setLoading((prev) => ({ ...prev, job: false }));
+      }
+    }
+
     if (userId) {
       // Ensure userId exists before making requests
       fetchData();
       fetchQualificationData();
+      fetchUserJobsPosts()
     }
   }, [userId]);
 
@@ -118,9 +138,18 @@ function UserProfileView() {
           />
         );
       case "About":
-        return "About";
+        return(
+        <About
+        isEditable ={false}
+        userDetails={userDetails}
+        />);
       case "Jobs":
-        return "Jobs";
+        return (
+          <Jobs
+          
+          jobData={jobData}
+          />
+        );
       default:
         return null;
     }
@@ -250,18 +279,20 @@ function UserProfileView() {
                       )}
                     </p>
                   </div>
-                  {userDetails.bio ? (
+                  {userDetails.bio && (
                     <div onClick={() => setFormType("userDetails")}>
                       {userDetails.bio}
                     </div>
-                  ) : (
-                    <div
-                      onClick={() => setFormType("userDetails")}
-                      className=" text-sm font-normal text-gray-300 px-2 py-1 rounded-lg border w-fit  border-dashed"
-                    >
-                      Add a bio +
-                    </div>
-                  )}
+                  ) 
+                  // : (
+                  //   <div
+                  //     onClick={() => setFormType("userDetails")}
+                  //     className=" text-sm font-normal text-gray-300 px-2 py-1 rounded-lg border w-fit  border-dashed"
+                  //   >
+                  //     Add a bio +
+                  //   </div>
+                  // )
+                  }
                   {userDetails.account_type == "Candidate" && (
                     <div className="order-2 text-sm -mt-1">
                       <p className=" text-wrap truncate">
@@ -303,10 +334,9 @@ function UserProfileView() {
             >
               <div className="flex w-full pt-1">
                 {[
-                  "Home",
                   ...(userDetails?.account_type === "Employeer"
                     ? ["About", "Posts", "Jobs", "People"]
-                    : ["Posts", "Qualification"]),
+                    : ["Home","Posts", "Qualification"]),
                 ].map((tab, index, arr) => (
                   <p
                     key={tab}
@@ -318,7 +348,7 @@ function UserProfileView() {
                       tab === currentTab ? "z-20 text-blue-500" : ""
                     } text-center py-2`}
                     style={{
-                      width: `${100 / 3}%`,
+                      width: `${100 / arr.length}%`,
                     }}
                   >
                     {tab}
@@ -328,10 +358,10 @@ function UserProfileView() {
             </div>
             <div
               style={{
-                left: `${(100 / 3) * tabIndex}%`,
+                left: `${(100 / (userDetails?.account_type === "Employeer"?4:3)) * tabIndex}%`,
                 transition: "left 0.2s ease-in-out",
               }}
-              className="w-1/3 h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute"
+              className={`w-1/${userDetails?.account_type === "Employeer"?"4":"3"} h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute`}
             ></div>
         </div>
 

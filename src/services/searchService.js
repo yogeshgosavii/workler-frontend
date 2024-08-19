@@ -44,24 +44,20 @@ const searchService = {
     }
   },
 
-  secrchByJob: async (email, password) => {
+  secrchJobByKeyword: async (keyword) => {
     try {
-      const response = await fetch(`${API_URL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
+      const response = await fetch(`${API_URL}/search-job-by-keyword?keyword=${keyword}`, {
+        method: "GET",
+        headers: setAuthHeaders(getToken()),
       });
       if (!response.ok) {
         throw new Error("Login failed");
       }
       const data = await response.json();
-      const { token } = data;
-      localStorage.setItem("token", token);
-      return token; // Return the token
+    
+      return data; // Return the token
     } catch (error) {
-      console.error("Error in login:", error);
+      console.error("Error getting job data by key word:", error);
       throw error;
     }
   },
@@ -82,27 +78,7 @@ const searchService = {
     }
   },
 
-  updateUserDetails: async (data) => {
-    console.log("Inspect",data); // Inspect the data being sent
-    try {
-      const response = await fetch(`${API_URL}/update-user`, {
-        method: "PUT", // Ensure method is set correctly
-        headers: {
-          // "Content-Type": "application/json",
-          Authorization: `Bearer ${getToken()}`,
-        },
-        body: data, // Send the cleaned data
-      });
-      if (!response.ok) {
-        throw new Error("Failed to update user details");
-      }
-      const userData = await response.json();
-      return userData; // Return the updated user details
-    } catch (error) {
-      console.error("Error in updateUserDetails:", error);
-      throw error;
-    }
-  },
+  
 
  
 };

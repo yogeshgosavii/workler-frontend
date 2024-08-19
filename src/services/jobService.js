@@ -71,6 +71,17 @@ const createApiMethods = (endpoint) => {
       return response;
     },
 
+    getByUserIds: async (userId) => {
+      const token = getToken();
+      const response = await makeApiRequest(`${apiBaseUrl}/get-user-jobs/${userId}`, {
+        method: 'GET',
+        headers: setAuthHeaders(token),
+      });
+      return response;
+    },
+
+
+
     update: async (id, data) => {
       const token = getToken();
       const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/${id}`, {

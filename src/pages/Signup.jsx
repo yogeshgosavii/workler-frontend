@@ -389,11 +389,12 @@ function Signup() {
           {purpose && (
             <OptionInput
               placeholder={"Purpose"}
+              initialValue="Click to select"
               options={[
-                { value: "Candidate", name: "Search and apply for jobs" },
+                { value: "Candidate", name: "Get highered" },
                 {
                   value: "Employeer",
-                  name: " Post job openings and find candidate",
+                  name: "Higher candidates",
                 },
               ]}
               className={"mt-5"}
@@ -655,6 +656,7 @@ function Signup() {
                 <OptionInput
                   className={"flex-grow min-w-32"}
                   name={"gender"}
+                  initialValue="Click to select"
                   options={[
                     {
                       name: "Male",

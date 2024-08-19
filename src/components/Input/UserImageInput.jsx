@@ -12,7 +12,6 @@ function UserImageInput({
   onImageChange, // callback to handle image change
 }) {
   const fileInputRef = useRef(null);
-  console.log(image);
   const [currentImage, setCurrentImage] = useState(image);
 
   useEffect(() => {

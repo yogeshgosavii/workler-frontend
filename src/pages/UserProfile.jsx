@@ -52,7 +52,9 @@ const UserProfile = () => {
   const [projectData, setprojectData] = useState([]);
   const [userDetails, setuserDetails] = useState([]);
   const [postData, setPostData] = useState([]);
-  const [tabIndex, settabIndex] = useState(0);
+  const [tabIndex, settabIndex] = useState(1);
+  const [currentTab, setCurrentTab] = useState("Posts");
+
   const [jobData, setjobData] = useState();
   const profileApi = useProfileApi();
   const jobApi = useJobApi();
@@ -92,7 +94,6 @@ const UserProfile = () => {
     };
   }, [lastScrollY]);
 
-  const [currentTab, setcurrentTab] = useState("Home");
   const data = {
     labels: ["ReactJs", "Frontend", "Java developer", "Spring boot"],
     datasets: [
@@ -540,7 +541,7 @@ const UserProfile = () => {
               <div
                 className={`w-full md:hidden ${
                   formType || updateFormType ? "hidden" : ""
-                } fixed md:min-w-[57.6%]  md:border-x md:mt-5 z-20 top-0 mb-4 px-4 py-4 bg-white flex justify-between`}
+                } fixed  z-20 md:min-w-[57.6%]  md:border-x md:mt-5 top-0 mb-4 px-4 py-4 bg-white flex justify-between`}
               >
                 <div className="flex items-center gap-4">
                   {atTop >= 100 && (
@@ -638,7 +639,9 @@ const UserProfile = () => {
                     <div className="flex mb-4 mt-1  w-full gap-4  items-center">
                       <UserImageInput
                         onClick={() => {
-                          setshowProfileImage(true);
+                          if(userDetails?.profileImage){
+                            setshowProfileImage(true);
+                          }
                         }}
                         imageBorder={showProfileImage ? "none" : "2"}
                         className={`transition-all ease-in-out absolute  blur-none  duration-300 ${
@@ -749,7 +752,7 @@ const UserProfile = () => {
               </div>
             </div>
             <div
-              className={`sticky top-16 md:top-0 md:mb-4 z-20 transition-all ease-in-out bg-gray-100 ${
+              className={`sticky w-full top-16 md:top-0 md:mb-4 z-20 transition-all ease-in-out bg-gray-100 ${
                 atTop < 340 ? "pt-0" : "md:pt-5"
               }`}
             >
@@ -763,24 +766,24 @@ const UserProfile = () => {
                     atTop > 340 ? "md:border-t" : ""
                   } w-full -mt-px sticky top-16 sm:top-0 gap-3 bg-white font-medium flex`}
                 >
-                  <div className="flex w-full pt-1">
+                  <div className="flex w-screen md:w-full pt-1">
                     {[
-                      "Home",
+                   
                       ...(user.account_type === "Employeer"
                         ? ["About", "Posts", "Jobs", "People"]
-                        : ["Posts", "Qualification"]),
+                        : ["Home","Posts", "Qualification"]),
                     ].map((tab, index, arr) => (
                       <p
                         key={tab}
                         onClick={() => {
-                          setcurrentTab(tab);
+                          setCurrentTab(tab);
                           settabIndex(index);
                         }}
                         className={` text-base  md:text-lg mb-1 truncate font-medium md:font-semibold cursor-pointer ${
                           tab === currentTab ? "z-20 text-blue-500" : ""
                         } text-center py-2`}
                         style={{
-                          width: `${100 / 3}%`,
+                          width: `${100 / (user.account_type === "Employeer"?4:3)}%`,
                         }}
                       >
                         {tab}
@@ -790,21 +793,21 @@ const UserProfile = () => {
                 </div>
                 <div
                   style={{
-                    left: `${(100 / 3) * tabIndex}%`,
+                    left: `${(100 / (user.account_type === "Employeer"?4:3)) * tabIndex}%`,
                     transition: "left 0.2s ease-in-out",
                   }}
-                  className="w-1/3 h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute"
+                  className={`w-1/${user.account_type === "Employeer"?"4":"3"} h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute`}
                 ></div>
               </div>
             </div>
 
-            <div className="">
+            <div className=" w-full">
               {currentTab == "Home" && (
                 <Home
                   user={user}
                   loading={loading}
                   userDetails={userDetails}
-                  setcurrentTab={setcurrentTab}
+                  setcurrentTab={setCurrentTab}
                   postData={postData.slice(0, 2)}
                   setupdateFormType={setupdateFormType}
                   setUpdateData={setUpdateData}

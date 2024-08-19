@@ -11,9 +11,9 @@ function Home({
   setupdateFormType,
   setUpdateData,
   postData,
-  isEditable
+  isEditable,
 }) {
-  console.log("user",user)
+  console.log("user", user);
   return (
     <div className="  flex flex-col gap-4 mb-4">
       {user?.account_type == "Employeer" ? (
@@ -37,7 +37,47 @@ function Home({
                     </div>
                   </div>
                 ) : (
-                  <span> {user.description}</span>
+                  <div>
+                    <span> {user.description}</span>
+                    {!user.description && (
+                      <div className="text-sm flex flex-col gap-2">
+                        {user?.company_details?.website && (
+                          <div>
+                            <p>Website</p>
+                            <p className="text-blue-500">
+                              {user?.company_details.website}
+                            </p>
+                          </div>
+                        )}
+                        {user?.company_details?.industry && (
+                          <div>
+                            <p>Industry</p>
+                            <p className="text-gray-400">
+                              {user?.company_details.industry}
+                            </p>
+                          </div>
+                        )}
+                        {user?.location && (
+                          <div>
+                            <p>Company location</p>
+                            <p className="text-gray-400">
+                              {user?.location.address}
+                            </p>
+                          </div>
+                        )}
+                        {user?.company_details?.found_in_date && (
+                          <div>
+                            <p>Found in</p>
+                            <p className="text-gray-400">
+                              {new Date(
+                                user.company_details.found_in_date
+                              ).getFullYear()}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
                 )}
               </p>
               <a className="text-sm text-blue-500">
@@ -49,7 +89,7 @@ function Home({
             onClick={() => {
               setcurrentTab("About");
             }}
-            className="w-full text-center border-t font-medium py-2 text-gray-400"
+            className="w-full text-center border-y font-medium py-2 text-gray-400"
           >
             Learn more
           </p>
@@ -58,54 +98,53 @@ function Home({
         <div className="relative  md:border md:px-6 overflow-hidden bg-white px-4 py-4 pb-6">
           <div className="flex justify-between items-center mb-2 ">
             <p className="text-xl font-bold ">About</p>
-           { isEditable && <svg
-              class="h-5 w-5 text-blue-500"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              onClick={() => {
-                setupdateFormType("personalDetails");
-                console.log(user);
-                setUpdateData({ personalDetails: user });
-                // setUpdateForm({ personalDetails: true });
-              }}
-            >
-              {" "}
-              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
-            </svg>}
+            {isEditable && (
+              <svg
+                class="h-5 w-5 text-blue-500"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                onClick={() => {
+                  setupdateFormType("personalDetails");
+                  console.log(user);
+                  setUpdateData({ personalDetails: user });
+                  // setUpdateForm({ personalDetails: true });
+                }}
+              >
+                {" "}
+                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+              </svg>
+            )}
           </div>
           {!loading.userDetails ? (
             <div className="flex flex-col gap-4 mt-5">
-             {isEditable || user.description && <div className={`text-sm font-normal  `}>
-                <p className="font-semibold mb-1">Description</p>
-                {user.description ? (
-                  <div onClick={() => setdescriptionInput(true)}>
-                    <p className="text-gray-400">{user.description}</p>
+              {isEditable ||
+                (user.description && (
+                  <div className={`text-sm font-normal  `}>
+                    <p className="font-semibold mb-1">Description</p>
+                    {user.description ? (
+                      <div onClick={() => setdescriptionInput(true)}>
+                        <p className="text-gray-400">{user.description}</p>
+                      </div>
+                    ) : user.account_type == "Employeer" ? (
+                      <div className="text-sm font-normal text-gray-300 w-full">
+                        Add a description. For example: "We are a dynamic
+                        company committed to excellence and innovation."
+                      </div>
+                    ) : (
+                      <div className="text-sm font-normal text-gray-300 w-full">
+                        Add a description. For example: "Experienced
+                        professional with a strong background in developing."
+                      </div>
+                    )}
                   </div>
-                ) : (
-                  user.account_type == "Employeer"?(
-                    <div
-                    className="text-sm font-normal text-gray-300 w-full"
-                  >
-                    Add a description. For example: "We are a dynamic company
-                    committed to excellence and innovation."
-                  </div>
-                  ):(
-                    <div
-                    className="text-sm font-normal text-gray-300 w-full"
-                  >
-                    Add a description. For example: "Experienced professional with a strong background in developing."
-                  </div>
-                  )
-                 
-                )}
-              </div>}
+                ))}
               {user?.linkedInLink && (
                 <div className={`text-sm font-normal  `}>
                   <p className="font-bold">LinkedIn</p>
@@ -184,60 +223,65 @@ function Home({
           <div className="flex flex-col px-4 md:px-6 py-4 ">
             <p className="text-xl font-bold">Posts</p>
           </div>
-         <div className="grid grid-cols-1 sm:grid-cols-2 px-4 gap-4 sm:px-4 md:px-6 mb-6">
-         {postData.map((post, index) => (
-            <div key={index} className=" border transition-all md:hover:scale-105 md:hover:shadow-lg  bg-white border-gray-300 py-4 px-4 ">
-              <div className="flex  items-center justify-between ">
-                <div className="flex gap-2 items-center">
-                  <UserImageInput
-                    className="w-[35px] h-[35px] rounded-full"
-                    imageHeight={35}
-                    imageBorder={1}
-                    // src={post.userAvatar || profileImageDefault}
-                    image={user.profileImage?.compressedImage || profileImageDefault}
-                    alt={`${post.username}'s avatar`}
-                    isEditable={false}
-                  />
-                  <div>
-                    <p className="font-medium text-sm">
-                      {user.username}
-                    </p>
-                    <p className="text-xs text-gray-400"> {formatDistanceToNow(new Date(post.createdAt), {
-                  addSuffix: true,
-                })}</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 px-4 gap-4 sm:px-4 md:px-6 mb-6">
+            {postData.map((post, index) => (
+              <div
+                key={index}
+                className=" border transition-all md:hover:scale-105 md:hover:shadow-lg  bg-white border-gray-300 py-4 px-4 "
+              >
+                <div className="flex  items-center justify-between ">
+                  <div className="flex gap-2 items-center">
+                    <UserImageInput
+                      className="w-[35px] h-[35px] rounded-full"
+                      imageHeight={35}
+                      imageBorder={1}
+                      // src={post.userAvatar || profileImageDefault}
+                      image={
+                        user.profileImage?.compressedImage ||
+                        profileImageDefault
+                      }
+                      alt={`${post.username}'s avatar`}
+                      isEditable={false}
+                    />
+                    <div>
+                      <p className="font-medium text-sm">{user.username}</p>
+                      <p className="text-xs text-gray-400">
+                        {" "}
+                        {formatDistanceToNow(new Date(post.createdAt), {
+                          addSuffix: true,
+                        })}
+                      </p>
+                    </div>
                   </div>
+                  <svg
+                    class="h-6 w-6 text-gray-500"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="currentColor"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    {" "}
+                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                    <circle cx="12" cy="12" r="1" />{" "}
+                    <circle cx="12" cy="19" r="1" />{" "}
+                    <circle cx="12" cy="5" r="1" />
+                  </svg>
                 </div>
-                <svg
-                  class="h-6 w-6 text-gray-500"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  stroke-width="2"
-                  stroke="currentColor"
-                  fill="none"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  {" "}
-                  <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                  <circle cx="12" cy="12" r="1" />{" "}
-                  <circle cx="12" cy="19" r="1" />{" "}
-                  <circle cx="12" cy="5" r="1" />
-                </svg>
-              </div>
-              <p className="mt-1 text-sm ">{post.content}</p>
-              {post.images && (
-                <div
-                  style={{
-                    overflowX: "auto",
-                    scrollbarWidth: "none",
-                  }}
-                  className="mt-2  flex overflow-x-auto"
-                >
-                  <ImageCarousel
-                  images={post.images.originalImage}
-                  />
-                  {/* {post.images.compressedImage.map((image, imgIndex) => (
+                <p className="mt-1 text-sm ">{post.content}</p>
+                {post.images && (
+                  <div
+                    style={{
+                      overflowX: "auto",
+                      scrollbarWidth: "none",
+                    }}
+                    className="mt-2  flex overflow-x-auto"
+                  >
+                    <ImageCarousel images={post.images.originalImage} />
+                    {/* {post.images.compressedImage.map((image, imgIndex) => (
                     <img
                       key={imgIndex}
                       height={"10px"}
@@ -246,15 +290,15 @@ function Home({
                       alt={`Post ${index} image ${imgIndex}`}
                     />
                   ))} */}
-                </div>
-              )}
-              {/* <div className="flex justify-between items-center mt-4">
+                  </div>
+                )}
+                {/* <div className="flex justify-between items-center mt-4">
                 <button className="text-sm text-blue-500">Like</button>
                 <button className="text-sm text-blue-500">Comment</button>
                 <button className="text-sm text-blue-500">Share</button>
               </div> */}
-            </div>
-          ))}
+              </div>
+            ))}
           </div>
           <p
             onClick={() => {

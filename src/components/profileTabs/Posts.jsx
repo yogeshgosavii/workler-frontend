@@ -69,9 +69,9 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
   };
 
   return (
-    <div className="w-full relative">
+    <div className="w-full relative h-full">
       {postData.length === 0 ? (
-        <div className="flex flex-col items-center bg-white">
+        <div className="flex w-full  flex-col items-center bg-white">
           <p className="font-bold text-xl mt-6">Create your first post</p>
           <p
             onClick={() => setFormType("post")}

@@ -6,6 +6,11 @@
   animation: scale-down 0.4s ease-in-out forwards;
 }
 
+.clicked-animation  {
+  animation: scale-up 0.4s ease-in-out forwards;
+
+}
+
 .send-animation {
   animation: go-out 0.6s ;
 }

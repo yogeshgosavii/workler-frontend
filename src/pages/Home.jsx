@@ -132,7 +132,7 @@ function Home() {
         },
       ]
   return (
-    <div className='w-full'>
+    <div className='w-full px-4'>
     <div className='mt-24'>
         <p className='text-blue-500 font-bold text-xl'>#BEST HELP</p>
         <p className=' text-4xl md:text-5xl text-black font-bold mt-5 leading-[48px] md:leading-[55px]'>Search your dream job here</p>

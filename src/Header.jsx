@@ -49,7 +49,7 @@ function Header() {
         </div>
         {isAuthenticated ? (
           <div onClick={()=>navigate("/profile")} className='flex items-center cursor-pointer gap-3 sm:border sm:px-4 sm:pr-5  sm:py-2 rounded-md '>
-            <img className='h-10 w-10 object-cover border rounded-full ' src={userDetails?.profileImage.compressedImage || profileImageDefault} alt='Profile' />
+            <img className='h-10 w-10 object-cover border rounded-full ' src={userDetails?.profileImage?.compressedImage || profileImageDefault} alt='Profile' />
             <div className='hidden sm:inline'>
               <p className=' font-medium'>{user?.username || "User"}</p>
               {/* <p className='text-red-500'>Logout</p> */}
