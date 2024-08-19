@@ -55,7 +55,7 @@ function Home({
           </p>
         </div>
       ) : (
-        <div className="relative border-b md:border md:px-6 overflow-hidden bg-white px-4 py-4 pb-6">
+        <div className="relative  md:border md:px-6 overflow-hidden bg-white px-4 py-4 pb-6">
           <div className="flex justify-between items-center mb-2 ">
             <p className="text-xl font-bold ">About</p>
            { isEditable && <svg

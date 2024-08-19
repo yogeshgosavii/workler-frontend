@@ -19,7 +19,7 @@ function Qualification({
   console.log(educationData, skillData, workExperienceData, projectData);
 
   const Section = ({ id, title, content, loading, onAdd }) => (
-    <div className="flex bg-white flex-col border-y sm:border px-4 sm:px-6 py-6 mt-3">
+    <div className="flex bg-white flex-col border-y sm:border px-4 sm:px-6 py-6 sm:mt-3">
       <div className="flex justify-between items-center">
         <p className="text-xl font-medium">{title}</p>
         {onAdd && isEditable && (
