@@ -26,6 +26,8 @@ import Notification from "./pages/Notification.jsx";
 import Search from "./pages/Search.jsx";
 import PostForm from "./components/Forms/PostForm.jsx";
 import UserProfileView from "./components/UserProfileView.jsx";
+import JobProfileView from "./components/JobProfileView.jsx";
+import Employment from "./pages/Employment.jsx";
 
 const router = createBrowserRouter([
   {
@@ -60,6 +62,14 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/employment",
+        element: (
+          <LoginVerification>
+              <Employment />
+          </LoginVerification>
+        ),
+      },
+      {
         path: "/search",
         element: (
            <LoginVerification>
@@ -67,7 +77,8 @@ const router = createBrowserRouter([
            </LoginVerification>
         ),
         children: [
-           { path: ":userId", element: <UserProfileView /> }, // Note the ":" before userId
+           { path: "user/:userId", element: <UserProfileView /> },
+           { path: "job/:jobId", element: <JobProfileView /> }
         ],
      }
       // {

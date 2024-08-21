@@ -11,7 +11,7 @@ function Jobs({
 }) {
   return (
     <div className="bg-white border-x h-full px-4 py-4 md:px-6 md:border md:-mt-0 w-full flex-1">
-      {isEditable &&
+      {isEditable ||
         (jobData?.length > 0 ? (
           <div className="flex justify-between mb-3 items-center">
             <p className="font-medium">Recently posted jobs</p>
@@ -63,17 +63,17 @@ function Jobs({
             <div className="-mt-1">
               <p className="text-lg font-semibold">{job.job_role}</p>
               <p className="text-xs text-gray-800 text-wrap">{job.location.address}</p>
-              {job.job_update_date ? (
+              {job.updatedAt ? (
                 <p className="text-xs mt-0.5 text-gray-400">
                   Updated{" "}
-                  {formatDistanceToNow(new Date(job.job_update_date), {
+                  {formatDistanceToNow(new Date(job.updatedAt || job.job_post_date), {
                     addSuffix: true,
                   })}
                 </p>
               ) : (
                 <p className="text-xs mt-0.5 text-gray-400">
                   Posted{" "}
-                  {formatDistanceToNow(new Date(job.job_post_date), {
+                  {formatDistanceToNow(new Date(job.createdAt || job.job_post_date), {
                     addSuffix: true,
                   })}
                 </p>

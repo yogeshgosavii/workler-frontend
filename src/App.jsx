@@ -64,7 +64,7 @@ const App = () => {
       <div
         className={`${
           !isAuthenticated && "hidden"
-        } fixed flex border-t-2 justify-between sm:justify-evenly sm:border-r sm:border-t-0 bottom-0 sm:px-5  sm:flex-col py-3 left-0 sm:top-0  w-full sm:w-fit bg-white`}
+        } fixed flex border-t-2 z-40 justify-between sm:justify-evenly sm:border-r sm:border-t-0 bottom-0 sm:px-5  sm:flex-col py-3 left-0 sm:top-0  w-full sm:w-fit bg-white`}
       >
         <p
           onClick={() => {
@@ -110,6 +110,25 @@ const App = () => {
         </p>
         <p
           onClick={() => {
+            navigate("employment");
+          }}
+          className={`w-1/5 sm:w-fit   text-center flex justify-center items-center ${
+            activeTab === "search" ? "text-blue-500" : "text-gray-400"
+          }`}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+       
+            fill="currentColor"
+            className="h-6 w-6"
+            viewBox="0 0 16 16"
+          >
+            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+          </svg>
+        </p>
+
+        {/* <p
+          onClick={() => {
             navigate("/post");
           }}
           className={`w-1/5 sm:w-fit  text-center flex justify-center items-center ${
@@ -118,7 +137,6 @@ const App = () => {
         >
           <svg
             className=" w-8 p-2 rounded-full  bg-blue-50 text-blue-500"
-          
             viewBox="0 0 24 24"
             strokeWidth="2"
             stroke="currentColor"
@@ -130,7 +148,7 @@ const App = () => {
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>
-        </p>
+        </p> */}
         <p
           onClick={() => {
             navigate("notifications");

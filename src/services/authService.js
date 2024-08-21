@@ -1,7 +1,7 @@
 const API_URL = "https://workler-backend.vercel.app/api/auth";
 // const API_URL = "http://localhost:5002/api/auth";
 
-const getToken = () => localStorage.getItem('token');
+const getToken = () => localStorage.getItem("token");
 
 const authService = {
   checkEmail: async (email) => {
@@ -24,7 +24,7 @@ const authService = {
     }
   },
 
-  checkUsername : async (username)=>{
+  checkUsername: async (username) => {
     try {
       const response = await fetch(`${API_URL}/check-username`, {
         method: "POST",
@@ -82,7 +82,7 @@ const authService = {
     }
   },
 
-  fetchUserDetailsById: async (userId,userToken = getToken()) => {
+  fetchUserDetailsById: async (userId, userToken = getToken()) => {
     try {
       const response = await fetch(`${API_URL}/user/${userId}`, {
         headers: { Authorization: `Bearer ${userToken}` },
@@ -99,16 +99,27 @@ const authService = {
   },
 
   updateUserDetails: async (data) => {
-    console.log("Inspect",data); // Inspect the data being sent
+    console.log("Inspect", data); // Inspect the data being sent
+    let response;
     try {
-      const response = await fetch(`${API_URL}/update-user`, {
-        method: "PUT", // Ensure method is set correctly
-        headers: {
-          // "Content-Type": "application/json",
-          Authorization: `Bearer ${getToken()}`,
-        },
-        body: data, // Send the cleaned data
-      });
+      if (data.files) {
+      response = await fetch(`${API_URL}/update-user`, {
+          method: "PUT", // Ensure method is set correctly
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+          body: data, // Send the cleaned data
+        });
+      } else {
+         response = await fetch(`${API_URL}/update-user`, {
+          method: "PUT", // Ensure method is set correctly
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+          body: JSON.stringify(data), // Send the cleaned data
+        });
+      }
       if (!response.ok) {
         throw new Error("Failed to update user details");
       }
@@ -119,8 +130,6 @@ const authService = {
       throw error;
     }
   },
-
- 
 };
 
 export default authService;

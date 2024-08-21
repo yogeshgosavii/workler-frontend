@@ -219,7 +219,7 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
                                   scrollSnapAlign: "start", // Snap to the start of each item
                                   minWidth: "100%", // Ensure items take full width
                                 }}
-                                className="mt-2 border p-5 rounded-2xl flex-shrink-0"
+                                className="mt-2 border p-5 w-full rounded-2xl flex-shrink-0"
                               >
                                 <div className="flex gap-4">
                                   <p className="bg-pink-950 text-white font-bold text-3xl -ml-px rounded-full flex items-center justify-center w-14 h-14">
@@ -234,7 +234,7 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
                                     </p>
                                   </div>
                                 </div>
-                                <p className="text-sm mt-2 line-clamp-3">
+                                <p className="text-sm mt-2 line-clamp-3 max-w-fit text-wrap truncate">
                                   {job.description}
                                 </p>
                                 <a

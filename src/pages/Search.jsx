@@ -7,6 +7,7 @@ import "../css/button.css";
 
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { formatDate } from "date-fns";
+import { useSelector } from "react-redux";
 
 function Search() {
   const [searchInputFocus, setSearchInputFocus] = useState(false);
@@ -21,6 +22,7 @@ function Search() {
   const [selectedProfile, setSelectedProfile] = useState("");
   const [atTop, setAtTop] = useState(0);
   const profileRef = useRef();
+  const user =  useSelector(state => state.auth.user)
 
   useEffect(() => {
     console.log(location.pathname);
@@ -99,8 +101,8 @@ function Search() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
-            <div className="flex gap-4 items-center">
-              <div className="p-2 border rounded-full ">
+            <div className={`flex gap-4 ${user.account_type == "Employeer" && "py-1"} items-center`}>
+             {user.account_type == "Candidate"  && <div className={`p-2  border rounded-full `}>
                 {searchType == "user" ? (
                   <svg
                     onClick={() => {
@@ -108,7 +110,7 @@ function Search() {
                     }}
                     xmlns="http://www.w3.org/2000/svg"
                     fill="currentColor"
-                    class=" h-4 w-4  "
+                    class=""
                     viewBox="0 0 16 16"
                   >
                     <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
@@ -127,7 +129,7 @@ function Search() {
                     <path d="M0 12.5A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5V6.85L8.129 8.947a.5.5 0 0 1-.258 0L0 6.85z" />
                   </svg>
                 )}
-              </div>
+              </div>}
               <svg
                 className="h-6 w-6"
                 viewBox="0 0 24 24"
@@ -148,7 +150,7 @@ function Search() {
               <div className="border-t w-full"></div>
               <input
                 placeholder={"Location"}
-                className="shrink flex-grow outline-none"
+                className="shrink my-1.5 flex-grow outline-none"
                 onFocus={() => setLocationInputFocus(true)}
                 onBlur={() => setLocationInputFocus(false)}
               />
@@ -158,7 +160,7 @@ function Search() {
 
         {/* Display search results */}
         {query.length > 0 && (
-          <div className="w-full mt-4">
+          <div className="w-full mt-4 flex flex-col gap-4">
             {isLoading ? (
               // <p className="w-full text-center">
               //   Loading
@@ -201,9 +203,9 @@ function Search() {
                     onClick={() => {
                       setSelectedProfile(result._id);
 
-                      navigate(result._id);
+                      navigate("user/"+result._id);
                     }}
-                    className={`p-2 flex gap-4 items-center ${
+                    className={`p-2 flex gap-4 cursor-pointer items-center ${
                       index !== results.length - 1 && ""
                     }`}
                   >
@@ -256,9 +258,10 @@ function Search() {
                     onClick={() => {
                       setSelectedProfile(result._id);
 
-                      navigate(result._id);
+                        navigate("job/"+result._id);
+                      
                     }}
-                    className={`p-2 flex gap-4 items-center ${
+                    className={`p-2 flex gap-4  bg-gray-50 border rounded-lg ${
                       index !== results.length - 1 && ""
                     }`}
                   >
@@ -278,8 +281,9 @@ function Search() {
                           {result.location?.address}
                         </p>
                       ) : (
-                        <p className="text-sm text-gray-400 max-w-full text-wrap truncate">
-                          {result?.description || ("at "+result?.company_name)}
+                        <p className="text-sm text-gray-400 max-w-full text-wrap line-clamp-3 truncate">
+                          <p className="text-gray-700">{"at "+result?.company_name}</p>
+                          {result?.description }
                         </p>
                       )}
                     </div>
@@ -290,7 +294,7 @@ function Search() {
           </div>
         )}
       </div>
-      <Outlet atTop={atTop} />
+      <Outlet  />
     </div>
   );
 }
