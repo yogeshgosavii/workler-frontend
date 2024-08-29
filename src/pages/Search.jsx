@@ -44,7 +44,7 @@ function Search() {
         profileElement.removeEventListener("scroll", handleScroll);
       }
     };
-  }, []);
+  }, [userId]);
 
   const fetchData = async (searchQuery) => {
     setIsLoading(true);
@@ -102,7 +102,7 @@ function Search() {
               onChange={(e) => setQuery(e.target.value)}
             />
             <div className={`flex gap-4 ${user.account_type == "Employeer" && "py-1"} items-center`}>
-             {user.account_type == "Candidate"  && <div className={`p-2  border rounded-full `}>
+             {user.account_type == "Candidate"  && <div className={` p-2  border rounded-full `}>
                 {searchType == "user" ? (
                   <svg
                     onClick={() => {
@@ -110,7 +110,7 @@ function Search() {
                     }}
                     xmlns="http://www.w3.org/2000/svg"
                     fill="currentColor"
-                    class=""
+                    className={`h-4 w-4 `}
                     viewBox="0 0 16 16"
                   >
                     <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />

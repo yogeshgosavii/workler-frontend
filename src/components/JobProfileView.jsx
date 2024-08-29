@@ -6,39 +6,61 @@ import UserImageInput from "./Input/UserImageInput";
 import profileImageDefault from "../assets/user_male_icon.png";
 import { formatDistanceToNow } from "date-fns";
 import authService from "../services/authService";
+import applicationService from "../services/applicationService";
+import { useSelector } from "react-redux";
+import approachService from "../services/approachService";
+import interviewService from "../services/interviewService";
+import { updateUserDetails } from "../features/auth/authSlice";
+import { useDispatch } from "react-redux";
 
-function JobProfileView() {
-  const { jobId } = useParams();
+function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   const [showProfileImage, setShowProfileImage] = useState(false);
   const [qualification, setQualification] = useState();
-  const [settings, setSettings] = useState(false);
   const [applied, setapplied] = useState(false);
   const [saved, setSaved] = useState(false);
   const [postData, setpostData] = useState();
   const [currentTab, setCurrentTab] = useState("Job details");
   const [tabIndex, setTabIndex] = useState(0);
   const [jobDetails, setJobDetails] = useState(null);
-  const [userDetails, setuserDetails] = useState();
+  const [selectedJob, setSelectedJob] = useState();
+  const [jobApproach, setJobApproach] = useState(null);
+  const [applicantsCount, setapplicantsCount] = useState(0);
+  const [approaches, setApproaches] = useState([]);
+  const [interviews, setInterviews] = useState([]);
+  const [jobInterview, setJobInterview] = useState(null);
+  const userDetails = useSelector((state) => state.auth.user);
   const [loading, setLoading] = useState({ jobDetails: true });
   const [atTop, setAtTop] = useState(0);
   const profileService = useProfileApi();
+  const dispatch = useDispatch();
+
   const jobService = useJobApi();
   const profileRef = useRef();
-  const navigate = useNavigate();
+  useEffect(() => {
+    const fetchApproaches = async ()=>{
 
+      const approaches = await approachService.getUserApproaches(userDetails._id)
+      console.log(approaches);
+      setApproaches(approaches)
+      
+    }
+
+    const fetchInterviews  = async () =>{
+      const interviews = await interviewService.getUserInterviews(userDetails._id)
+      setInterviews(interviews)
+      console.log("jobInterviews",interviews);
+      
+    } 
+    fetchApproaches()
+    fetchInterviews()
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       setLoading((prev) => ({ ...prev, jobDetails: true }));
       try {
         const response = await jobService.job.getById(jobId);
         console.log("response:", response);
-        if (
-          response.candidates_applied.some(
-            (candidate) => candidate._id == userDetails?._id
-          )
-        ) {
-          setapplied(true);
-        }
+
         setJobDetails(response);
       } catch (error) {
         setJobDetails(null);
@@ -48,20 +70,56 @@ function JobProfileView() {
       }
     };
 
-    const fetchUserData = async () => {
-      setLoading((prev) => ({ ...prev, userDetails: true }));
+    // const fetchUserData = async () => {
+    //   setLoading((prev) => ({ ...prev, userDetails: true }));
+    //   try {
+    //     const response = await authService.fetchUserDetails();
+    //     console.log("response:", response);
+    //     if (response.saved_jobs?.some((job) => job == jobId)) {
+    //       setSaved(true);
+    //     }
+    //     setuserDetails(response);
+    //   } catch (error) {
+    //     setuserDetails(null);
+    //     console.error("Failed to fetch user details", error);
+    //   } finally {
+    //     setLoading((prev) => ({ ...prev, userDetails: false }));
+    //   }
+    // };
+
+    const checkApplied = async () => {
+      setLoading((prev) => ({ ...prev, checkApplied: true }));
       try {
-        const response = await authService.fetchUserDetails();
-        console.log("response:", response);
-        if (response.saved_jobs?.some((job) => job == jobId)) {
-          setSaved(true);
+        const application = await applicationService.checkApplied({
+          jobId: jobId,
+          userId: userDetails._id,
+        });
+        // console.log("response:", application);
+        if (application.exists) {
+          setapplied(true);
+        } else {
+          setapplied(false);
         }
-        setuserDetails(response);
       } catch (error) {
-        setuserDetails(null);
         console.error("Failed to fetch user details", error);
       } finally {
-        setLoading((prev) => ({ ...prev, userDetails: false }));
+        setLoading((prev) => ({ ...prev, checkApplied: false }));
+      }
+    };
+
+
+
+    const fetchApplicantsCount = async () => {
+      setLoading((prev) => ({ ...prev, applicantsCount: true }));
+      try {
+        const applicants =
+          await applicationService.getApplicantsCount(jobId);
+        console.log("applicants:", applicants);
+        setapplicantsCount(applicants);
+      } catch (error) {
+        console.error("Failed to fetch applicants data", error);
+      } finally {
+        setLoading((prev) => ({ ...prev, applicantsCount: false }));
       }
     };
 
@@ -93,12 +151,27 @@ function JobProfileView() {
     //   }
     // }
 
+
     if (jobId) {
       // Ensure userId exists before making requests
-      fetchUserData();
+      // fetchUserData();
+      console.log("jInter",interviews);
+      if(userDetails.saved_jobs.some(job => job == jobId)){
+        setSaved(true)
+      }
+      console.log(userDetails.saved_jobs);
+      
+      checkApplied();
       fetchData();
+      setJobApproach(approaches.filter(approach  => approach.job._id === jobId))
+      setJobInterview(interviews.find(interview  => interview.job._id === jobId))
+      console.log("jonInterview",interviews?.filter(interview  => interview.job._id == jobId));
+      
+      fetchApplicantsCount()
     }
-  }, [jobId]);
+  }, [jobId,interviews]);
+
+  
 
   const saveJob = async () => {
     setSaved(true);
@@ -106,6 +179,8 @@ function JobProfileView() {
       ...userDetails,
       saved_jobs: [...(userDetails.saved_jobs || []), jobId],
     });
+    dispatch(updateUserDetails(response))
+
 
     console.log("saved data:", response);
   };
@@ -116,17 +191,19 @@ function JobProfileView() {
       ...userDetails,
       saved_jobs: userDetails.saved_jobs.filter((job) => job._id == jobId),
     });
+    dispatch(updateUserDetails(response))
+    console.log("unsaved data:", response);
   };
 
-  const applyJob = async () => {
+  const applyJob = async (employeerId) => {
     setapplied(true);
-    const response = await jobService.job.update(jobId, {
-      ...jobDetails,
-      candidates_applied: [
-        ...(jobDetails.candidates_applied || []),
-        userDetails._id,
-      ],
+    const response = await applicationService.createApplication({
+      job: jobId,
+      user: userDetails._id,
+      employeer : employeerId
     });
+
+    console.log(response);
   };
 
   useEffect(() => {
@@ -151,6 +228,7 @@ function JobProfileView() {
       }
     };
   }, [atTop]);
+
   const renderTabContent = () => {
     if (loading.jobDetails) {
       return <div>Loading...</div>;
@@ -376,9 +454,28 @@ function JobProfileView() {
                 imageHeight="40"
               />
             )}
-            <div className="flex flex-col justify-center">
-              <p className="text-xl font-semibold">
+            <div className="flex flex-col justify-center w-full">
+              <p className="text-xl flex justify-between  w-full font-semibold">
                 {atTop > 100 ? jobDetails?.job_role : "Job profile"}
+                {crossButton && (
+                  <svg
+                    onClick={() => {
+                      onBack();
+                    }}
+                    className="h-8 w-8 text-gray-800 pointer-events-auto transition-all duration-500 ease-in-out transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12"
+                      className="transition-all duration-500 ease-in-out"
+                    />
+                  </svg>
+                )}
               </p>
               <p className="text-gray-400 text-sm">
                 {atTop > 100 && jobDetails?.company_name}
@@ -454,9 +551,8 @@ function JobProfileView() {
                 <div className="text-sm flex justify-between flex-wrap  order-1 text-gray-400 items-end">
                   <p>
                     {/* <span>{jobDetails.location?.address} · </span> */}
-                   
-                    {jobDetails?.candidates_applied.length
-                      || 0} Applicant{jobDetails?.candidates_applied.length>1 && "s"}
+                    {applicantsCount || 0} Applicant
+                    {applicantsCount > 1 && "s"}
                     {/* <span className="  font-normal"> followers</span>{" "}
                     {jobDetails.account_type == "Candidate" && (
                       <span>
@@ -528,11 +624,82 @@ function JobProfileView() {
               </div>
             </div>
           )}
+          {
+          jobInterview &&  <div className="text-sm justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
+          <div>
+            <p>
+              {" "}
+              Interview scheduled on{" "}
+              <span className="font-medium">
+                {new Date(
+                  jobInterview.interview_date
+                ).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "short",
+                })}
+              </span>{" "}
+              at <span>{jobInterview.interview_time}</span>
+            </p>
+            <p>
+              Mode of interview{" "}
+              <span className="font-medium">
+                {jobInterview.interview_mode}
+              </span>
+            </p>
+            {/* <p>Address {interview.interview_address}</p> */}
+          </div>
+          {jobInterview.interview_mode == "In-person" && (
+            <div
+              className="relative"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="currentColor"
+                className="h-14 bg-white p-2 rounded-md border"
+                viewBox="0 0 16 16"
+              >
+                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
+              </svg>
+              <a
+                className="border absolute h-full w-full top-0 rounded-md "
+                href={jobInterview.interview_location_link}
+              ></a>
+            </div>
+          )}
+          {jobInterview.interview_mode == "Online" && (
+            <div
+              className="relative"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-link-45deg"
+                viewBox="0 0 16 16"
+              >
+                <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z" />
+                <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z" />
+              </svg>
+              <a
+                className="border absolute h-full w-full top-0 rounded-md "
+                href={jobInterview.interview_meet_link}
+              ></a>
+            </div>
+          )}
+        </div>
+          }
           <div className=" transition-all flex gap-4">
-            <a
+           {!jobApproach  && <a
               target="_blank"
               onClick={() => {
-                applyJob();
+                applyJob(jobDetails.user);
               }}
               href={jobDetails?.job_url}
               className={`w-fit px-5 ${
@@ -540,7 +707,7 @@ function JobProfileView() {
               } flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 pb-1 rounded-full `}
             >
               Apply
-            </a>
+            </a>}
             {saved ? (
               <button
                 onClick={() => unsaveJob()}

@@ -15,7 +15,7 @@ const handleChange = (e) => {
   }
 };
   return (
-    <div className={`relative flex   ${className}`}>
+    <div className={`relative flex ${className}`}>
       <input
         type={type}
         name={name}
@@ -25,8 +25,8 @@ const handleChange = (e) => {
          peer `}
         placeholder=""
         value={value}
-        min={minDate}
-        max={maxDate?maxDate:todayFormatted}
+        min={minDate == "today"?todayFormatted:minDate}
+        max={maxDate}
         onChange={onChange}
         
       />

@@ -7,15 +7,17 @@ import Home from "./profileTabs/Home";
 import useProfileApi from "../services/profileService";
 import useJobApi from "../services/jobService";
 import Posts from "./profileTabs/Posts";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import About from "./profileTabs/About";
 import Jobs from "./profileTabs/Jobs";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserDetails } from "../features/auth/authSlice";
 import approachService from "../services/approachService";
+import { formatDistanceToNow } from "date-fns";
+import JobProfileView from "./JobProfileView";
 
-function UserProfileView() {
-  const { userId } = useParams();
+function UserProfileView({ userId = useParams().userId }) {
+  // const { userId } = useParams();
   const [userDetails, setUserDetails] = useState(null);
   const [showProfileImage, setShowProfileImage] = useState(false);
   const [qualification, setQualification] = useState();
@@ -26,6 +28,7 @@ function UserProfileView() {
   const [tabIndex, setTabIndex] = useState(1);
   const [jobData, setJobData] = useState(null);
   const [loading, setLoading] = useState({ userDetails: true });
+  const [selectedJob, setSelectedJob] = useState("");
   const [approached, setApproached] = useState(null);
   const [atTop, setAtTop] = useState(0);
   const profileService = useProfileApi();
@@ -33,9 +36,37 @@ function UserProfileView() {
   const currentUserDetails = useSelector((state) => state.auth.user);
   const [currentUserJobData, setcurrentUserJobData] = useState(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // const handleBackButton = () => {
+  //   console.log("Hello");
+    
+  //   if (selectedJob!=("" || null)) {
+  //     setSelectedJob(null);
+  //     console.log("Step 1");
+      
+  //   } else {
+  //     console.log("Step 2");
+      
+  //     window.history.back();  // Perform the default system back action
+  //   }
+  // };
+  
+  // useEffect(() => {
+  //   const handlePopState = (event) => {
+  //     handleBackButton();
+  //   };
+  
+  //   window.addEventListener("popstate", handlePopState);
+  
+  //   return () => {
+  //     window.removeEventListener("popstate", handlePopState);
+  //   };
+  // }, [selectedJob]);
+ 
   console.log("details", currentUserDetails, userId);
   const [saved, setSaved] = useState(
-    currentUserDetails.saved_candidates.some((candidate) => candidate == userId)
+    currentUserDetails?.saved_profies?.some((candidate) => candidate == userId)
   );
   const profileRef = useRef();
   console.log(userId);
@@ -58,11 +89,10 @@ function UserProfileView() {
     const fetchJobData = async () => {
       setLoading((prev) => ({ ...prev, jobData: true }));
       try {
-        const response = await jobService.job.getByUserIds(
-          currentUserDetails._id
-        );
+        const response = await jobService.job.getByUserIds(userId);
         console.log("job details:", response);
         setcurrentUserJobData(response);
+        console.log("jobdata", response);
       } catch (error) {
         console.error("Failed to fetch job details", error);
       } finally {
@@ -106,34 +136,44 @@ function UserProfileView() {
         });
         setApproached(response.data[0]);
         console.log("approached", response);
+        setLoading((prev) => ({ ...prev, checkApproached: false }));
       } catch (error) {}
     };
 
     if (userId) {
+      fetchJobData();
+
       // Ensure userId exists before making requests
       fetchData();
-      fetchQualificationData();
-      fetchUserJobsPosts();
-      fetchJobData();
-      checkApproached();
-    }
-  }, []);
+      if (
+        currentUserDetails?.accountType == "Employeer" &&
+        userDetails?.accountType == "Candidate"
+      ) {
+        checkApproached();
+        fetchQualificationData();
+        fetchUserJobsPosts();
+      }
 
-  const saveCandidate = async () => {
+      if (
+        currentUserDetails?.accountType == "Candidate" &&
+        userDetails?.accountType == "Employeer"
+      ) {
+      }
+    }
+  }, [userId]);
+
+  const saveProfie = async () => {
     try {
       setSaved(true);
       const response = await authService.updateUserDetails({
         ...currentUserDetails,
-        saved_candidates: [
-          ...(currentUserDetails.saved_candidates || []),
-          userId,
-        ],
+        saved_profies: [...(currentUserDetails.saved_profies || []), userId],
       });
       if (response) {
         dispatch(
           updateUserDetails({
-            saved_candidates: [
-              ...(currentUserDetails.saved_candidates || []),
+            saved_profies: [
+              ...(currentUserDetails.saved_profies || []),
               userId,
             ],
           })
@@ -157,20 +197,22 @@ function UserProfileView() {
     } catch (error) {}
   };
 
-  const unsaveCandidate = async () => {
+  const unsaveProfie = async () => {
     try {
+      console.log();
+
       setSaved(false);
       const response = await authService.updateUserDetails({
         ...currentUserDetails,
-        saved_candidates: currentUserDetails.saved_candidates.filter(
-          (candidate) => candidate._id !== userId
+        saved_profies: currentUserDetails.saved_profies.filter(
+          (candidate) => candidate._id == userId
         ),
       });
       if (response) {
         dispatch(
           updateUserDetails({
-            saved_candidates: currentUserDetails.saved_candidates.filter(
-              (candidate) => candidate._id !== userId
+            saved_profies: currentUserDetails.saved_profies.filter(
+              (candidate) => candidate._id == userId
             ),
           })
         );
@@ -240,12 +282,69 @@ function UserProfileView() {
       case "About":
         return <About isEditable={false} userDetails={userDetails} />;
       case "Jobs":
-        return <Jobs jobData={jobData} />;
+        return (
+          <div  className="px-4  py-4">
+          <p className="font-medium text-sm mb-2">Recently posted jobs</p>
+            {currentUserJobData?.map((job, index) => (
+              <div
+                onClick={() => {navigate(`/search/job/${job._id}`)}}
+                className={`flex py-2 items-start  justify-between ${
+                  index < currentUserJobData.length - 1
+                    ? "border-b cursor-pointer"
+                    : ""
+                } `}
+                key={job.id}
+              >
+                <div className="flex gap-2 ">
+                  <UserImageInput
+                    image={job.company_Logo}
+                    isEditable={false}
+                    imageHeight={40}
+                  />
+                  <div className="-mt-1">
+                    <p className="text-lg font-semibold">{job.job_role}</p>
+                    <p className="text-xs text-gray-800 text-wrap">
+                      {job.location.address}
+                    </p>
+                    {job.updatedAt ? (
+                      <p className="text-xs mt-0.5 text-gray-400">
+                        Updated{" "}
+                        {formatDistanceToNow(
+                          new Date(job.updatedAt || job.job_post_date),
+                          {
+                            addSuffix: true,
+                          }
+                        )}
+                      </p>
+                    ) : (
+                      <p className="text-xs mt-0.5 text-gray-400">
+                        Posted{" "}
+                        {formatDistanceToNow(
+                          new Date(job.createdAt || job.job_post_date),
+                          {
+                            addSuffix: true,
+                          }
+                        )}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        );
       default:
         return null;
     }
   };
 
+  if(selectedJob){
+    return(
+      <div className="w-full md:w-2/3 overflow-y-auto z-40 bg-white">
+      <JobProfileView crossButton={true} onBack={handleBackButton} jobId={selectedJob}/>
+    </div>
+    )
+  }
   return (
     <div
       ref={profileRef}
@@ -253,6 +352,7 @@ function UserProfileView() {
         approaching ? "overflow-y-hidden" : "overflow-y-auto"
       }   flex-grow ${showProfileImage && "pointer-events"}`}
     >
+     
       {approaching && currentUserJobData && (
         <div
           className={`absolute sm:w-[50%] flex flex-col gap-4 px-4 md:px-6 py-4 w-full md:w-[53%] transition-all ${
@@ -342,7 +442,7 @@ function UserProfileView() {
           </div>
         </div>
         <div className="flex border-t sm:border-t-0 pt-8 pb-6 mt-10 sm:mt-0 flex-grow sm:border-x px-4 md:px-6 gap-3 bg-white justify-center flex-col">
-          {loading.userDetails ? (
+          {loading.userDetails || !userDetails ? (
             <div className="animate-pulse mt-2">
               <div className="flex  items-center">
                 <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
@@ -394,9 +494,9 @@ function UserProfileView() {
                     <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
                       {userDetails?.account_type == "Employeer"
                         ? userDetails.company_details?.company_name
-                        : userDetails.personal_details?.firstname +
+                        : userDetails?.personal_details?.firstname +
                           " " +
-                          userDetails.personal_details?.lastname}
+                          userDetails?.personal_details?.lastname}
                     </h1>
                     <div className="flex  gap-2">
                       <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
@@ -411,11 +511,12 @@ function UserProfileView() {
                 <div className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm ">
                   <p>
                     {/* <span>{userDetails.location?.address} · </span> */}
-                    {userDetails.followers ? userDetails.followers : 0}
+                    {userDetails?.followers ? userDetails?.followers : 0}
                     <span className="  font-normal"> followers</span>{" "}
-                    {userDetails.account_type == "Candidate" && (
+                    {userDetails?.account_type == "Candidate" && (
                       <span>
-                        · {userDetails.followings ? userDetails.followings : 0}{" "}
+                        ·{" "}
+                        {userDetails?.followings ? userDetails?.followings : 0}{" "}
                         <span className="  font-normal">following</span>
                       </span>
                     )}
@@ -442,11 +543,12 @@ function UserProfileView() {
                       {userDetails.personal_details.working_at && (
                         <span>
                           Works at {userDetails.personal_details.working_at}{" "}
-                          <span className="font-extrabold ">{"·"}</span>
+                          <span className="font-extrabold "></span>
                         </span>
                       )}{" "}
                       {/* {latestEducation && (
                               <span>
+                              {"·"}
                                 {" "}
                                 Completed {latestEducation.course} from{" "}
                                 {latestEducation.university}
@@ -458,53 +560,60 @@ function UserProfileView() {
               </div>
             </div>
           )}
-          {approached != null && (
-            <div className=" border flex rounded-md w-fit border-yellow-600 text-yellow-600 bg-yellow-50 p-2 py-1">
-              <p  className="text-xs ">Approached for {approached?.job?.job_role}</p>
+          {!loading.userDetails && approached != null && (
+            <p className="  text-sm flex items-center rounded-md w-fit border-yellow-600 text-yellow-600 bg-yellow-50 px-2 py-1">
+              Approached for {approached?.job?.job_role}
               {/* <p className="text-sm text-gray-400 truncate line-clamp-2 text-wrap">{approached?.job?.description}</p> */}
+            </p>
+          )}
+          {!loading.userDetails && (
+            <div className="flex gap-4">
+              {(currentUserDetails.account_type == "Candidate" ||
+                currentUserDetails.account_type == "Explorer" ||
+                currentUserDetails.account_type ==
+                  userDetails?.account_type) && (
+                <button
+                  // href={jobDetails?.job_url}
+                  className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 py-1 rounded-full "
+                >
+                  {userDetails?.account_type == "Employeer"
+                    ? "Follow"
+                    : "Create alie"}
+                </button>
+              )}
+
+              {currentUserDetails.account_type == "Employeer" &&
+                !approached &&
+                !loading.checkApproached && (
+                  <button
+                    // href={jobDetails?.job_url}
+                    onClick={() => {
+                      setApproaching((prev) => !prev);
+                    }}
+                    className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 py-1 rounded-full "
+                  >
+                    Approach
+                  </button>
+                )}
+              {currentUserDetails.account_type == "Employeer" &&
+                !loading.userDetails &&
+                (saved ? (
+                  <button
+                    onClick={() => unsaveProfie()}
+                    className="w-fit px-5 border-2 py-1 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-gray-500  bg-gray-100 sm:hover:bg-gray-200  rounded-full"
+                  >
+                    Unsave
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => saveProfie()}
+                    className="w-fit px-5 py-1 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-blue-500 border-2 border-blue-500  sm:hover:bg-blue-50   rounded-full"
+                  >
+                    Save Profile
+                  </button>
+                ))}
             </div>
           )}
-          <div className="flex gap-4">
-            {(currentUserDetails.account_type == "Candidate" ||
-              currentUserDetails.account_type == "Explorer") && (
-              <button
-                // href={jobDetails?.job_url}
-                className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 py-1 rounded-full "
-              >
-                {userDetails.account_type == "Employeer"
-                  ? "Create alie"
-                  : "Follow"}
-              </button>
-            )}
-
-            {currentUserDetails.account_type == "Employeer" && !approached && (
-              <button
-                // href={jobDetails?.job_url}
-                onClick={() => {
-                  setApproaching((prev) => !prev);
-                }}
-                className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 py-1 rounded-full "
-              >
-                Approach
-              </button>
-            )}
-            {currentUserDetails.account_type == "Employeer" &&
-              (saved ? (
-                <button
-                  onClick={() => unsaveCandidate()}
-                  className="w-fit px-5 border-2 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-gray-500  bg-gray-100 sm:hover:bg-gray-200 pb-0.5  rounded-full"
-                >
-                  Unsave
-                </button>
-              ) : (
-                <button
-                  onClick={() => saveCandidate()}
-                  className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-blue-500 border-2 border-blue-500  sm:hover:bg-blue-50 pb-0.5  rounded-full"
-                >
-                  Save Profile
-                </button>
-              ))}
-          </div>
         </div>
       </div>
       <div
@@ -522,37 +631,55 @@ function UserProfileView() {
           <div className="flex w-full pt-1">
             {[
               ...(userDetails?.account_type === "Employeer"
-                ? ["About", "Posts", "Jobs", "People"]
+                ? [
+                    "About",
+                    "Posts",
+                    currentUserDetails.account_type != "Employeer"
+                      ? "Jobs"
+                      : null,
+                    "People",
+                  ]
                 : ["Home", "Posts", "Qualification"]),
-            ].map((tab, index, arr) => (
-              <p
-                key={tab}
-                onClick={() => {
-                  setCurrentTab(tab);
-                  setTabIndex(index);
-                }}
-                className={` text-base  md:text-lg mb-1 truncate font-medium md:font-semibold cursor-pointer ${
-                  tab === currentTab ? "z-20 text-blue-500" : ""
-                } text-center py-2`}
-                style={{
-                  width: `${100 / arr.length}%`,
-                }}
-              >
-                {tab}
-              </p>
-            ))}
+            ]
+              .filter(Boolean)
+              .map((tab, index, arr) => (
+                <p
+                  key={tab}
+                  onClick={() => {
+                    setCurrentTab(tab);
+                    setTabIndex(index);
+                  }}
+                  className={` text-base  md:text-lg mb-1 truncate font-medium md:font-semibold cursor-pointer ${
+                    tab === currentTab ? "z-20 text-blue-500" : ""
+                  } text-center py-2`}
+                  style={{
+                    width: `${100 / arr.length}%`,
+                  }}
+                >
+                  {tab}
+                </p>
+              ))}
           </div>
         </div>
         <div
           style={{
             left: `${
-              (100 / (userDetails?.account_type === "Employeer" ? 4 : 3)) *
+              (100 /
+                (userDetails?.account_type === "Employeer"
+                  ? currentUserDetails?.account_type === "Employeer"
+                    ? 3
+                    : 4
+                  : 3)) *
               tabIndex
             }%`,
             transition: "left 0.2s ease-in-out",
           }}
           className={`w-1/${
-            userDetails?.account_type === "Employeer" ? "4" : "3"
+            userDetails?.account_type === "Employeer"
+              ? currentUserDetails?.account_type === "Employeer"
+                ? "3"
+                : "4"
+              : "3"
           } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute`}
         ></div>
       </div>

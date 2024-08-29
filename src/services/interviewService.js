@@ -1,17 +1,17 @@
 import { setAuthHeaders } from "../../utility";
 
-const API_URL = "https://workler-backend.vercel.app/api/approach";
-// const API_URL = "http://localhost:5002/api/approach";
+const API_URL = "https://workler-backend.vercel.app/api/interview";
+// const API_URL = "http://localhost:5002/api/interview";
 
 const getToken = () => localStorage.getItem('token');
 
-const approachService = {
-  createApproach: async (approachData) => {
+const interviewService = {
+  createInterview: async (interviewData) => {
     try {
-      const response = await fetch(`${API_URL}/create-approach`, {
+      const response = await fetch(`${API_URL}/create-interview`, {
         method: "POST",
         headers: setAuthHeaders(getToken()),
-        body: JSON.stringify(approachData),
+        body: JSON.stringify(interviewData),
       });
       if (!response.ok) {
         throw new Error("Approach crteated failed");
@@ -44,14 +44,14 @@ const approachService = {
     }
   },
 
-  getApproachDetails: async (userId) => {
+  getUserInterviews: async (userId) => {
     try {
-      const response = await fetch(`${API_URL}/get-approach/${userId}`, {
+      const response = await fetch(`${API_URL}/get-user-interviews/${userId}`, {
         method: "GET",
         headers: setAuthHeaders(getToken()),
       });
       if (!response.ok) {
-        throw new Error("Approach check failed");
+        throw new Error("Interview check failed");
       }
       const data = await response.json();
       console.log("approached",data);
@@ -63,17 +63,17 @@ const approachService = {
     }
   },
 
-  getUserApproaches: async (userId) => {
+  getEmployeerInterviews: async (employeerId) => {
     try {
-      const response = await fetch(`${API_URL}/get-user-approach/${userId}`, {
+      const response = await fetch(`${API_URL}/get-employeer-interviews/${employeerId}`, {
         method: "GET",
         headers: setAuthHeaders(getToken()),
       });
       if (!response.ok) {
-        throw new Error("Approach check failed");
+        throw new Error("Interview check failed");
       }
       const data = await response.json();
-      console.log("approaches",data);
+      console.log("interview",data);
       
       return data; // Return any additional data from the API response if needed
     } catch (error) {
@@ -103,10 +103,6 @@ const approachService = {
     }
   },
 
-  
-  
-
- 
 };
 
-export default approachService;
+export default interviewService;

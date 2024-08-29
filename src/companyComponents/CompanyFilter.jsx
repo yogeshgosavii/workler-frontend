@@ -75,7 +75,7 @@ function CompanyFilter() {
                     }
                 </div>
             </div>
-            <div className=' '>
+            <div className=''>
                 <div className='border sticky top-24 bottom-0 hidden sm:block rounded-lg min-w-60 px-6 py-8' ref={filtersRef}>
                     <p className='border-b pb-5 text-lg font-semibold'>Filters</p>
                     {

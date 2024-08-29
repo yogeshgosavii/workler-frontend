@@ -39,6 +39,12 @@ const App = () => {
       case "/search":
         setActiveTab("search");
         break;
+      case "/manager":
+        setActiveTab("manager");
+        break;
+      case "/job-applications":
+        setActiveTab("job-applications");
+        break;
       case "/notifications":
         setActiveTab("notifications");
         break;
@@ -57,7 +63,7 @@ const App = () => {
     <div className="relative flex flex-col sm:flex-row h-screen  text-gray-700">
       <div className="sm:ml-16 w-full h-full">
         <Header />
-        <div className="flex-1  h-full w-full  overflow-y-auto flex justify-center pb-14 sm:pb-5  sm:px-10 py-5">
+        <div className="flex-1  h-full w-full  overflow-y-auto flex justify-center pb-14 sm:pb-5  sm:px-6 py-5">
           <Outlet />
         </div>
       </div>
@@ -108,24 +114,49 @@ const App = () => {
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
         </p>
-        <p
-          onClick={() => {
-            navigate("employment");
-          }}
-          className={`w-1/5 sm:w-fit   text-center flex justify-center items-center ${
-            activeTab === "search" ? "text-blue-500" : "text-gray-400"
-          }`}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-       
-            fill="currentColor"
-            className="h-6 w-6"
-            viewBox="0 0 16 16"
+        {user?.account_type == "Employeer" && (
+          <p
+            onClick={() => {
+              navigate("manager");
+            }}
+            className={`w-1/5 sm:w-fit   text-center flex justify-center items-center ${
+              activeTab === "manager" ? "text-blue-500" : "text-gray-400"
+            }`}
           >
-            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
-          </svg>
-        </p>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              className="h-6 w-6"
+              viewBox="0 0 16 16"
+            >
+              <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5" />
+            </svg>
+          </p>
+        )}
+
+        {user?.account_type == "Candidate" && (
+          <p
+            onClick={() => {
+              navigate("job-applications");
+            }}
+            className={`w-1/5 sm:w-fit   text-center flex justify-center items-center ${
+              activeTab === "job-applications"
+                ? "text-blue-500"
+                : "text-gray-400"
+            }`}
+          >
+            <svg
+             
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              className="h-6 w-6"
+              viewBox="0 0 16 16"
+            >
+              <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v1.384l7.614 2.03a1.5 1.5 0 0 0 .772 0L16 5.884V4.5A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5" />
+              <path d="M0 12.5A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5V6.85L8.129 8.947a.5.5 0 0 1-.258 0L0 6.85z" />
+            </svg>
+          </p>
+        )}
 
         {/* <p
           onClick={() => {

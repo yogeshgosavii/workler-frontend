@@ -47,7 +47,7 @@ function OptionInput({
           <option value="" disabled={!currentValue}>
             {initialValue}
           </option>
-          {options.map((option) => (
+          {options?.map((option) => (
             <option key={option?.value || option} value={option?.value || option}>
               {option?.name  || option}
             </option>

@@ -28,6 +28,8 @@ import PostForm from "./components/Forms/PostForm.jsx";
 import UserProfileView from "./components/UserProfileView.jsx";
 import JobProfileView from "./components/JobProfileView.jsx";
 import Employment from "./pages/Employment.jsx";
+import JobApplication from "./pages/JobApplication.jsx";
+import Manager from "./pages/Manager.jsx";
 
 const router = createBrowserRouter([
   {
@@ -62,10 +64,18 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/employment",
+        path: "/manager",
         element: (
           <LoginVerification>
-              <Employment />
+              <Manager />
+          </LoginVerification>
+        ),
+      },
+      {
+        path: "/job-applications",
+        element: (
+          <LoginVerification>
+              <JobApplication />
           </LoginVerification>
         ),
       },

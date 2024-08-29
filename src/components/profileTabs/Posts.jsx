@@ -71,17 +71,22 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
   return (
     <div className="w-full relative h-full">
       {postData.length === 0 ? (
-        <div className="flex w-full  flex-col items-center bg-white">
-          <p className="font-bold text-xl mt-6">Create your first post</p>
-          <p
-            onClick={() => setFormType("post")}
-            className="text-sm text-blue-500 mt-2 font-medium cursor-pointer"
-          >
-            Add post
-          </p>
-        </div>
+    
+
+       isEditable? <div className="flex w-full  flex-col items-center bg-white">
+        <p className="font-bold text-xl mt-6">Create your first post</p>
+        <p
+          onClick={() => setFormType("post")}
+          className="text-sm text-blue-500 mt-2 font-medium cursor-pointer"
+        >
+          Add post
+        </p>
+      </div>
+      :
+      <p className="w-full text-center mt-5 text-gray-400">No posts yet</p>
+      
       ) : (
-        <div className="flex flex-col sm:gap-4">
+        <div className="flex flex-col  md:border sm:gap-4">
         { isEditable && <div className="sm:flex px-4 hidden  bg-white justify-between py-4 sm:border items-center">
             <p className="font-medium">Recent posts</p>
             <button
@@ -109,7 +114,7 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>}
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 sm:gap-4">
+          <div className="grid grid-cols-1 xl:grid-cols-2 sm:gap-4">
             {postData.map((post, index) => {
               return (
                 <div

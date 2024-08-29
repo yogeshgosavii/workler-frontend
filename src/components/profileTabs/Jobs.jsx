@@ -11,30 +11,31 @@ function Jobs({
 }) {
   return (
     <div className="bg-white border-x h-full px-4 py-4 md:px-6 md:border md:-mt-0 w-full flex-1">
-      {isEditable ||
-        (jobData?.length > 0 ? (
-          <div className="flex justify-between mb-3 items-center">
-            <p className="font-medium">Recently posted jobs</p>
-            <button
-              onClick={() => {
-                setFormType("job");
-              }}
-              className="text-blue-500 bg-blue-50 text-sm py-1 px-4 border rounded-full font-medium border-blue-500"
-            >
-              Create job
-            </button>
-          </div>
-        ) : (
-          <div className="flex w-full  flex-col items-center bg-white">
-            <p className="font-bold text-xl mt-2">Create your first job</p>
-            <p
-              onClick={() => setFormType("job")}
-              className="text-sm text-blue-500 mt-2 font-medium cursor-pointer"
-            >
-              Add job
-            </p>
-          </div>
-        ))}
+      {jobData?.length > 0 ? (
+        <div className="flex justify-between mb-3 items-center">
+          <p className="font-medium">Recently posted jobs</p>
+        {isEditable &&  <button
+            onClick={() => {
+              setFormType("job");
+            }}
+            className="text-blue-500 bg-blue-50 text-sm py-1 px-4 border rounded-full font-medium border-blue-500"
+          >
+            Create job
+          </button>}
+        </div>
+      ) : (
+        isEditable ?<div className="flex w-full  flex-col items-center bg-white">
+          <p className="font-bold text-xl mt-2">Create your first job</p>
+          <p
+            onClick={() => setFormType("job")}
+            className="text-sm text-blue-500 mt-2 font-medium cursor-pointer"
+          >
+            Add job
+          </p>
+        </div>
+        :
+        <p>No jobs post yet</p>
+      )}
 
       {!isEditable && jobData.length <= 0 && (
         <div className="text-gray-400 w-full text-center mt-4">
@@ -56,26 +57,34 @@ function Jobs({
         >
           <div className="flex gap-2 ">
             <UserImageInput
-            image={job.company_Logo}
-            isEditable= {false}
-            imageHeight={40}
+              image={job.company_Logo}
+              isEditable={false}
+              imageHeight={40}
             />
             <div className="-mt-1">
               <p className="text-lg font-semibold">{job.job_role}</p>
-              <p className="text-xs text-gray-800 text-wrap">{job.location.address}</p>
+              <p className="text-xs text-gray-800 text-wrap">
+                {job.location.address}
+              </p>
               {job.updatedAt ? (
                 <p className="text-xs mt-0.5 text-gray-400">
                   Updated{" "}
-                  {formatDistanceToNow(new Date(job.updatedAt || job.job_post_date), {
-                    addSuffix: true,
-                  })}
+                  {formatDistanceToNow(
+                    new Date(job.updatedAt || job.job_post_date),
+                    {
+                      addSuffix: true,
+                    }
+                  )}
                 </p>
               ) : (
                 <p className="text-xs mt-0.5 text-gray-400">
                   Posted{" "}
-                  {formatDistanceToNow(new Date(job.createdAt || job.job_post_date), {
-                    addSuffix: true,
-                  })}
+                  {formatDistanceToNow(
+                    new Date(job.createdAt || job.job_post_date),
+                    {
+                      addSuffix: true,
+                    }
+                  )}
                 </p>
               )}
             </div>
