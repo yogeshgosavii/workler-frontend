@@ -505,7 +505,7 @@ function Employment({ job, applications, approaches }) {
 
                   <div className="flex gap-2 flex-wrap w-full  items-center justify-between">
                     <div className="flex items-center text-sm w-full gap-4 rounded-md">
-                      {interviewList.some((interview)=>(interview.job._id == application.job._id && interview.user._id == application.user._id))?
+                      {(interviewList?.some((interview)=>(interview.job._id == application.job._id && interview.user._id == application.user._id)) && approaches.some(approach=> (approach.job._id == application.job._id && approach.user._id == application.user._id)))?
                       <p className="">
 
                         Interview already setup for <span className="font-medium">{application.job.job_role}</span>

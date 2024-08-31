@@ -37,22 +37,23 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   const jobService = useJobApi();
   const profileRef = useRef();
   useEffect(() => {
-    const fetchApproaches = async ()=>{
-
-      const approaches = await approachService.getUserApproaches(userDetails._id)
+    const fetchApproaches = async () => {
+      const approaches = await approachService.getUserApproaches(
+        userDetails._id
+      );
       console.log(approaches);
-      setApproaches(approaches)
-      
-    }
+      setApproaches(approaches);
+    };
 
-    const fetchInterviews  = async () =>{
-      const interviews = await interviewService.getUserInterviews(userDetails._id)
-      setInterviews(interviews)
-      console.log("jobInterviews",interviews);
-      
-    } 
-    fetchApproaches()
-    fetchInterviews()
+    const fetchInterviews = async () => {
+      const interviews = await interviewService.getUserInterviews(
+        userDetails._id
+      );
+      setInterviews(interviews);
+      console.log("jobInterviews", interviews);
+    };
+    fetchApproaches();
+    fetchInterviews();
   }, []);
   useEffect(() => {
     const fetchData = async () => {
@@ -107,13 +108,10 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       }
     };
 
-
-
     const fetchApplicantsCount = async () => {
       setLoading((prev) => ({ ...prev, applicantsCount: true }));
       try {
-        const applicants =
-          await applicationService.getApplicantsCount(jobId);
+        const applicants = await applicationService.getApplicantsCount(jobId);
         console.log("applicants:", applicants);
         setapplicantsCount(applicants);
       } catch (error) {
@@ -151,27 +149,34 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
     //   }
     // }
 
-
     if (jobId) {
       // Ensure userId exists before making requests
       // fetchUserData();
-      console.log("jInter",interviews);
-      if(userDetails.saved_jobs.some(job => job == jobId)){
-        setSaved(true)
+      console.log("jInter", interviews);
+      if (userDetails.saved_jobs.some((job) => job == jobId)) {
+        setSaved(true);
       }
       console.log(userDetails.saved_jobs);
-      
+
       checkApplied();
       fetchData();
-      setJobApproach(approaches.filter(approach  => approach.job._id === jobId))
-      setJobInterview(interviews.find(interview  => interview.job._id === jobId))
-      console.log("jonInterview",interviews?.filter(interview  => interview.job._id == jobId));
-      
-      fetchApplicantsCount()
-    }
-  }, [jobId,interviews]);
 
-  
+      setJobApproach(
+        approaches.filter((approach) => approach.job._id === jobId)
+      );
+      setJobInterview(
+        interviews.find((interview) => interview.job._id === jobId)
+      );
+      console.log(
+        "jonInterview",
+        interviews?.filter((interview) => interview.job._id == jobId)
+      );
+      // console.log("approaches",approaches.filter(approach  => approach.job._id === jobId));
+      console.log("approaches", jobApproach);
+
+      fetchApplicantsCount();
+    }
+  }, [jobId, interviews]);
 
   const saveJob = async () => {
     setSaved(true);
@@ -179,8 +184,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       ...userDetails,
       saved_jobs: [...(userDetails.saved_jobs || []), jobId],
     });
-    dispatch(updateUserDetails(response))
-
+    dispatch(updateUserDetails(response));
 
     console.log("saved data:", response);
   };
@@ -191,16 +195,18 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       ...userDetails,
       saved_jobs: userDetails.saved_jobs.filter((job) => job._id == jobId),
     });
-    dispatch(updateUserDetails(response))
+    dispatch(updateUserDetails(response));
     console.log("unsaved data:", response);
   };
 
-  const applyJob = async (employeerId) => {
+  const applyJob = async (employeer) => {
+    console.log(employeer);
+    
     setapplied(true);
     const response = await applicationService.createApplication({
       job: jobId,
       user: userDetails._id,
-      employeer : employeerId
+      employeer: employeer._id,
     });
 
     console.log(response);
@@ -624,90 +630,94 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
               </div>
             </div>
           )}
-          {
-          jobInterview &&  <div className="text-sm justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
-          <div>
-            <p>
-              {" "}
-              Interview scheduled on{" "}
-              <span className="font-medium">
-                {new Date(
-                  jobInterview.interview_date
-                ).toLocaleDateString("en-GB", {
-                  day: "numeric",
-                  month: "short",
-                })}
-              </span>{" "}
-              at <span>{jobInterview.interview_time}</span>
-            </p>
-            <p>
-              Mode of interview{" "}
-              <span className="font-medium">
-                {jobInterview.interview_mode}
-              </span>
-            </p>
-            {/* <p>Address {interview.interview_address}</p> */}
-          </div>
-          {jobInterview.interview_mode == "In-person" && (
-            <div
-              className="relative"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                className="h-14 bg-white p-2 rounded-md border"
-                viewBox="0 0 16 16"
-              >
-                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
-              </svg>
-              <a
-                className="border absolute h-full w-full top-0 rounded-md "
-                href={jobInterview.interview_location_link}
-              ></a>
+          {jobInterview && (
+            <div className="text-sm justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
+              <div>
+                <p>
+                  {" "}
+                  Interview scheduled on{" "}
+                  <span className="font-medium">
+                    {new Date(jobInterview.interview_date).toLocaleDateString(
+                      "en-GB",
+                      {
+                        day: "numeric",
+                        month: "short",
+                      }
+                    )}
+                  </span>{" "}
+                  at <span>{jobInterview.interview_time}</span>
+                </p>
+                <p>
+                  Mode of interview{" "}
+                  <span className="font-medium">
+                    {jobInterview.interview_mode}
+                  </span>
+                </p>
+                {/* <p>Address {interview.interview_address}</p> */}
+              </div>
+              {jobInterview.interview_mode == "In-person" && (
+                <div
+                  className="relative"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    className="h-14 bg-white p-2 rounded-md border"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
+                  </svg>
+                  <a
+                    className="border absolute h-full w-full top-0 rounded-md "
+                    href={jobInterview.interview_location_link}
+                  ></a>
+                </div>
+              )}
+              {jobInterview.interview_mode == "Online" && (
+                <div
+                  className="relative"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-link-45deg"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z" />
+                    <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z" />
+                  </svg>
+                  <a
+                    className="border absolute h-full w-full top-0 rounded-md "
+                    href={jobInterview.interview_meet_link}
+                  ></a>
+                </div>
+              )}
             </div>
           )}
-          {jobInterview.interview_mode == "Online" && (
-            <div
-              className="relative"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                fill="currentColor"
-                class="bi bi-link-45deg"
-                viewBox="0 0 16 16"
-              >
-                <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z" />
-                <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z" />
-              </svg>
-              <a
-                className="border absolute h-full w-full top-0 rounded-md "
-                href={jobInterview.interview_meet_link}
-              ></a>
-            </div>
-          )}
-        </div>
-          }
+
           <div className=" transition-all flex gap-4">
-           {!jobApproach  && <a
-              target="_blank"
-              onClick={() => {
-                applyJob(jobDetails.user);
-              }}
-              href={jobDetails?.job_url}
-              className={`w-fit px-5 ${
-                applied && "hidden"
-              } flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 pb-1 rounded-full `}
-            >
-              Apply
-            </a>}
+            {(!jobApproach || jobApproach.length === 0) && (
+              <a
+                target="_blank"
+                onClick={() => {
+                  applyJob(jobDetails.user);
+                }}
+                href={jobDetails?.job_url}
+                className={`w-fit px-5 ${
+                  applied && "hidden"
+                } flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5 items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 pb-1 rounded-full`}
+              >
+                Apply
+              </a>
+            )}
             {saved ? (
               <button
                 onClick={() => unsaveJob()}

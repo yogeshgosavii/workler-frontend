@@ -15,6 +15,8 @@ import { updateUserDetails } from "../features/auth/authSlice";
 import approachService from "../services/approachService";
 import { formatDistanceToNow } from "date-fns";
 import JobProfileView from "./JobProfileView";
+import applicationService from "../services/applicationService";
+import { getPostByUserId } from "../services/postService";
 
 function UserProfileView({ userId = useParams().userId }) {
   // const { userId } = useParams();
@@ -30,6 +32,7 @@ function UserProfileView({ userId = useParams().userId }) {
   const [loading, setLoading] = useState({ userDetails: true });
   const [selectedJob, setSelectedJob] = useState("");
   const [approached, setApproached] = useState(null);
+  const [applications, setapplications] = useState([]);
   const [atTop, setAtTop] = useState(0);
   const profileService = useProfileApi();
   const jobService = useJobApi();
@@ -40,30 +43,30 @@ function UserProfileView({ userId = useParams().userId }) {
 
   // const handleBackButton = () => {
   //   console.log("Hello");
-    
+
   //   if (selectedJob!=("" || null)) {
   //     setSelectedJob(null);
   //     console.log("Step 1");
-      
+
   //   } else {
   //     console.log("Step 2");
-      
+
   //     window.history.back();  // Perform the default system back action
   //   }
   // };
-  
+
   // useEffect(() => {
   //   const handlePopState = (event) => {
   //     handleBackButton();
   //   };
-  
+
   //   window.addEventListener("popstate", handlePopState);
-  
+
   //   return () => {
   //     window.removeEventListener("popstate", handlePopState);
   //   };
   // }, [selectedJob]);
- 
+
   console.log("details", currentUserDetails, userId);
   const [saved, setSaved] = useState(
     currentUserDetails?.saved_profies?.some((candidate) => candidate == userId)
@@ -78,7 +81,6 @@ function UserProfileView({ userId = useParams().userId }) {
         const response = await authService.fetchUserDetailsById(userId);
         console.log("response:", response);
         setUserDetails(response);
-        setpostData(response.posts);
       } catch (error) {
         console.error("Failed to fetch user details", error);
       } finally {
@@ -86,10 +88,25 @@ function UserProfileView({ userId = useParams().userId }) {
       }
     };
 
+    const fetchPostData = async () => {
+      setLoading((prev) => ({ ...prev, userDetails: true }));
+      try {
+        const response = await getPostByUserId(userId);
+        console.log("userPosts:", response);
+        setpostData(response);
+      } catch (error) {
+        console.error("Failed to fetch user details", error);
+      } finally {
+        setLoading((prev) => ({ ...prev, userDetails: false }));
+      }
+    }
+
     const fetchJobData = async () => {
       setLoading((prev) => ({ ...prev, jobData: true }));
       try {
-        const response = await jobService.job.getByUserIds(userId);
+        const response = await jobService.job.getByUserIds(
+          currentUserDetails._id
+        );
         console.log("job details:", response);
         setcurrentUserJobData(response);
         console.log("jobdata", response);
@@ -100,6 +117,30 @@ function UserProfileView({ userId = useParams().userId }) {
       }
     };
 
+    if (userId) {
+      fetchJobData();
+      fetchData();
+      fetchPostData()
+
+      console.log(currentUserDetails, userDetails);
+
+      if (
+        currentUserDetails?.accountType == "Candidate" &&
+        userDetails?.accountType == "Employeer"
+      ) {
+      }
+    }
+  }, [userId]);
+
+  useEffect(() => {
+    const fetchApplications = async () => {
+      setLoading((prev) => ({ ...prev, applications: true }));
+      const applications = await applicationService.getEmployeerApplications(
+        currentUserDetails._id
+      );
+      setapplications(applications);
+      setLoading((prev) => ({ ...prev, applications: false }));
+    };
     const fetchQualificationData = async () => {
       setLoading((prev) => ({ ...prev, qualification: true }));
       try {
@@ -139,28 +180,16 @@ function UserProfileView({ userId = useParams().userId }) {
         setLoading((prev) => ({ ...prev, checkApproached: false }));
       } catch (error) {}
     };
-
-    if (userId) {
-      fetchJobData();
-
-      // Ensure userId exists before making requests
-      fetchData();
-      if (
-        currentUserDetails?.accountType == "Employeer" &&
-        userDetails?.accountType == "Candidate"
-      ) {
-        checkApproached();
-        fetchQualificationData();
-        fetchUserJobsPosts();
-      }
-
-      if (
-        currentUserDetails?.accountType == "Candidate" &&
-        userDetails?.accountType == "Employeer"
-      ) {
-      }
+    if (
+      currentUserDetails?.account_type == "Employeer" &&
+      userDetails?.account_type == "Candidate"
+    ) {
+      checkApproached();
+      fetchQualificationData();
+      fetchUserJobsPosts();
+      fetchApplications();
     }
-  }, [userId]);
+  }, [userDetails]);
 
   const saveProfie = async () => {
     try {
@@ -184,15 +213,29 @@ function UserProfileView({ userId = useParams().userId }) {
     }
   };
 
-  const createApproach = async (jobId) => {
+  const createApproach = async (job) => {
     try {
-      setApproached(true);
+      console.log(job);
+
       setApproaching(false);
-      const response = await approachService.createApproach({
-        user: userId,
-        job: jobId,
-        employeer: currentUserDetails._id,
-      });
+      console.log(approached);
+
+      if (approached.user == userDetails._id && approached.job._id == job._id) {
+        const response = await approachService.updateStatus({
+          id: approached._id,
+          status: "approached",
+        });
+
+        setApproached(response);
+      } else {
+        const response = await approachService.createApproach({
+          user: userId,
+          job: job._id,
+          employeer: currentUserDetails._id,
+        });
+        setApproached(response);
+      }
+
       console.log(response);
     } catch (error) {}
   };
@@ -283,11 +326,13 @@ function UserProfileView({ userId = useParams().userId }) {
         return <About isEditable={false} userDetails={userDetails} />;
       case "Jobs":
         return (
-          <div  className="px-4  py-4">
-          <p className="font-medium text-sm mb-2">Recently posted jobs</p>
+          <div className="px-4  py-4">
+            <p className="font-medium text-sm mb-2">Recently posted jobs</p>
             {currentUserJobData?.map((job, index) => (
               <div
-                onClick={() => {navigate(`/search/job/${job._id}`)}}
+                onClick={() => {
+                  navigate(`/search/job/${job._id}`);
+                }}
                 className={`flex py-2 items-start  justify-between ${
                   index < currentUserJobData.length - 1
                     ? "border-b cursor-pointer"
@@ -338,12 +383,16 @@ function UserProfileView({ userId = useParams().userId }) {
     }
   };
 
-  if(selectedJob){
-    return(
+  if (selectedJob) {
+    return (
       <div className="w-full md:w-2/3 overflow-y-auto z-40 bg-white">
-      <JobProfileView crossButton={true} onBack={handleBackButton} jobId={selectedJob}/>
-    </div>
-    )
+        <JobProfileView
+          crossButton={true}
+          onBack={handleBackButton}
+          jobId={selectedJob}
+        />
+      </div>
+    );
   }
   return (
     <div
@@ -352,7 +401,6 @@ function UserProfileView({ userId = useParams().userId }) {
         approaching ? "overflow-y-hidden" : "overflow-y-auto"
       }   flex-grow ${showProfileImage && "pointer-events"}`}
     >
-     
       {approaching && currentUserJobData && (
         <div
           className={`absolute sm:w-[50%] flex flex-col gap-4 px-4 md:px-6 py-4 w-full md:w-[53%] transition-all ${
@@ -399,7 +447,7 @@ function UserProfileView({ userId = useParams().userId }) {
               )}
               <button
                 onClick={() => {
-                  createApproach(job._id);
+                  createApproach(job);
                 }}
                 className="px-6 py-1 pb-1.5 mt-2 bg-blue-500 text-white font-medium rounded-full w-fit"
               >
@@ -561,11 +609,33 @@ function UserProfileView({ userId = useParams().userId }) {
             </div>
           )}
           {!loading.userDetails && approached != null && (
-            <p className="  text-sm flex items-center rounded-md w-fit border-yellow-600 text-yellow-600 bg-yellow-50 px-2 py-1">
-              Approached for {approached?.job?.job_role}
+            <p
+              className={`  text-sm flex items-center rounded-md w-fit ${
+                approached.status == "declined"
+                  ? "text-red-500"
+                  : "border-yellow-600 text-yellow-600 bg-yellow-50"
+              } px-2 py-1`}
+            >
+              Approached {approached?.status == "declined" && "declined"} for{" "}
+              <span className="font-medium ml-1">
+                {" "}
+                {approached?.job?.job_role}
+              </span>
               {/* <p className="text-sm text-gray-400 truncate line-clamp-2 text-wrap">{approached?.job?.description}</p> */}
             </p>
           )}
+          {applications?.map((application) => {
+            return (
+              application.user._id == userDetails._id && (
+                <p className="text-sm bg-blue-50 px-4 py-1 rounded-md text-blue-500 w-fit">
+                  Applied for{" "}
+                  <span className="font-medium">
+                    {application.job.job_role}
+                  </span>
+                </p>
+              )
+            );
+          })}
           {!loading.userDetails && (
             <div className="flex gap-4">
               {(currentUserDetails.account_type == "Candidate" ||
@@ -582,19 +652,35 @@ function UserProfileView({ userId = useParams().userId }) {
                 </button>
               )}
 
-              {currentUserDetails.account_type == "Employeer" &&
-                !approached &&
-                !loading.checkApproached && (
+              {currentUserDetails.account_type === "Employeer" &&
+                (approached?.status === "declined" || !approached) &&
+                !loading.checkApproached &&
+                !applications?.some(
+                  (application) => application.user._id === userDetails._id
+                ) && (
                   <button
-                    // href={jobDetails?.job_url}
                     onClick={() => {
                       setApproaching((prev) => !prev);
                     }}
-                    className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 py-1 rounded-full "
+                    className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5 items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 py-1 rounded-full"
                   >
                     Approach
                   </button>
                 )}
+              {/* {applications?.map(
+                application =>{
+                  return(
+                      <p>Applied for {application.job.job_role}</p>
+                    )
+                  )
+                }
+                  
+              )} */}
+              {/* {applications.map((application) => {
+                if (application.user._id == userDetails._id) {
+                  return <p>Applied for {application.job.job_role}</p>;
+                }
+              })} */}
               {currentUserDetails.account_type == "Employeer" &&
                 !loading.userDetails &&
                 (saved ? (

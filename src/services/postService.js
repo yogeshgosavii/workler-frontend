@@ -2,8 +2,8 @@
 
 import { setAuthHeaders } from "../../utility";
 
-const API_URL = 'https://workler-backend.vercel.app/api/posts/post';
-// const API_URL = "http://localhost:5002/api/posts/post";
+// const API_URL = 'https://workler-backend.vercel.app/api/posts';
+const API_URL = "http://localhost:5002/api/posts";
 
 const getToken = () => localStorage.getItem('token');
 
@@ -25,7 +25,7 @@ const handleRequest = async (url, options) => {
 export const createPost = async (postData) => {
   const token = getToken();
   console.log(postData);
-  const response = await handleRequest(API_URL, {
+  const response = await handleRequest(API_URL+"/post", {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -36,9 +36,18 @@ export const createPost = async (postData) => {
   return response;
 };
 
+export const getPostByUserId = async (userId) => {
+  const token = getToken();
+  const response = await handleRequest(API_URL+"/get-postby-userId/"+userId, {
+    method: 'GET',
+    headers: setAuthHeaders(getToken())
+  });
+  return response;
+};
+
 export const createJobPost = async (postData) => {
   console.log(postData);
-  const response = await handleRequest(API_URL+`/job-post`, {
+  const response = await handleRequest(API_URL+`/post/job-post`, {
     method: 'POST',
     headers: setAuthHeaders(getToken()),
     body: JSON.stringify(postData)
@@ -48,7 +57,7 @@ export const createJobPost = async (postData) => {
 
 export const addLike = async (likeData) => {
   console.log(likeData);
-  const response = await handleRequest(API_URL+`/${likeData._id}/like`, {
+  const response = await handleRequest(API_URL+`/post/${likeData._id}/like`, {
     method: 'PUT',
     headers: setAuthHeaders(getToken()),
     body: JSON.stringify(likeData)
@@ -58,7 +67,7 @@ export const addLike = async (likeData) => {
 
 export const addComment = async (commentData) => {
   console.log(commentData);
-  const response = await handleRequest(API_URL+`/${commentData._id}/comment`, {
+  const response = await handleRequest(API_URL+`/post/${commentData._id}/comment`, {
     method: 'PUT',
     headers: setAuthHeaders(getToken()),
     body: JSON.stringify(commentData)
@@ -68,7 +77,7 @@ export const addComment = async (commentData) => {
 
 // Get all posts for the logged-in user
 export const getUserPosts = async () => {
-  const response = await handleRequest(API_URL, {
+  const response = await handleRequest(API_URL+"/post", {
     method: 'GET',
     headers: setAuthHeaders(getToken()),
   });
@@ -77,7 +86,7 @@ export const getUserPosts = async () => {
 
 // Get all public posts
 export const getAllPosts = async () => {
-  const response = await handleRequest(`${API_URL}/all`, {
+  const response = await handleRequest(`${API_URL}/all-posts`, {
     method: 'GET',
   });
   return response;

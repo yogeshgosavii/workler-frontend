@@ -90,7 +90,7 @@ function Manager() {
       try {
         const applications = await applicationService.getEmployeerApplications(
           currentUser._id
-        ); // Adjusted to use jobService.application
+        ); 
         setApplications(applications);
         console.log("aplica5ions", applications);
       } catch (error) {
@@ -136,7 +136,8 @@ function Manager() {
             >
               <p className="font-medium text-lg">{job.job_role}</p>
               <p>{job.location?.address}</p>
-              <div className="bg-white mt-2 flex justify-between p-2 rounded-md border">
+              {applications
+                    .filter((application) => application.job._id == job._id).length >0  && <div className="bg-white mt-2 flex justify-between p-2 rounded-md border">
                 <div>
                   <p>Applications</p>
                   <p className="text-sm text-gray-400">
@@ -146,6 +147,7 @@ function Manager() {
                 <div className="flex -space-x-4 rtl:space-x-reverse">
                   {applications
                     .filter((application) => application.job._id == job._id)
+                    .slice(0, 3)
                     .map((application, index) => (
                       <img
                         key={index}
@@ -154,14 +156,46 @@ function Manager() {
                         alt=""
                       />
                     ))}
-                  {/* <a
-                    className="flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800"
+                    
+                 {applications
+                    .filter((application) => application.job._id == job._id) >3 && <a
+                    className="flex items-center justify-center w-10 h-10 text-xs font-medium border  text-gray-500 bg-gray-100   rounded-full "
                     href="#"
                   >
-                    +99
-                  </a> */}
+                    +{applications-3}
+                  </a>}
                 </div>
-              </div>
+              </div>}
+              {approaches
+                    .filter((approach) => approach.job._id == job._id).length >0  && <div className="bg-white mt-2 flex justify-between p-2 rounded-md border">
+                <div>
+                  <p>Approaches</p>
+                  <p className="text-sm text-gray-400">
+                    List of candidates applied
+                  </p>
+                </div>
+                <div className="flex -space-x-4 rtl:space-x-reverse">
+                  {approaches
+                    .filter((approach) => approach.job._id == job._id)
+                    .slice(0, 3)
+                    .map((approach, index) => (
+                      <img
+                        key={index}
+                        className="w-10 h-10 border  rounded-full "
+                        src={approach.user.profileImage?.compressedImage}
+                        alt=""
+                      />
+                    ))}
+                    
+                 {approaches
+                    .filter((approach) => approach.job._id == job._id) >3 && <a
+                    className="flex items-center justify-center w-10 h-10 text-xs font-medium border  text-gray-500 bg-gray-100   rounded-full "
+                    href="#"
+                  >
+                    +{approaches-3}
+                  </a>}
+                </div>
+              </div>}
             </div>
           ))}
         </div>

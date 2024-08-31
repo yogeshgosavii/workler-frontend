@@ -11,6 +11,7 @@ import TextInput from "../Input/TextInput";
 import { addComment } from "../../services/postService";
 import { comment } from "postcss";
 import useJobApi from "../../services/jobService";
+import { useSelector } from "react-redux";
 
 function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = true }) {
   const [commentButtonClicked, setCommentButtonClicked] = useState(null);
@@ -18,6 +19,7 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
   const [commentText, setcommentText] = useState("");
   const jobService = useJobApi();
   const sendBtnRef = useRef(null);
+  const currentUser = useSelector(state => state.auth.user)
   console.log(postData);
 
   const handleCommentButtonClick = (index) => {
@@ -86,7 +88,7 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
       <p className="w-full text-center mt-5 text-gray-400">No posts yet</p>
       
       ) : (
-        <div className="flex flex-col  md:border sm:gap-4">
+        <div className="flex flex-col  sm:gap-4">
         { isEditable && <div className="sm:flex px-4 hidden  bg-white justify-between py-4 sm:border items-center">
             <p className="font-medium">Recent posts</p>
             <button
@@ -119,7 +121,7 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
               return (
                 <div
                   key={index}
-                  className={`border-b sm:border  h-fit bg-white border-gray-300 py-4 px-4`}
+                  className={` sm:border  h-fit bg-white border-gray-300 py-4 px-4`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex gap-2 items-center">
@@ -128,15 +130,15 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
                         imageHeight={35}
                         imageBorder={1}
                         image={
-                          userDetails.profileImage?.compressedImage ||
+                          post?.user.profileImage?.compressedImage ||
                           profileImageDefault
                         }
-                        alt={`${post.username}'s avatar`}
+                        alt={`${post?.user.username}'s avatar`}
                         isEditable={false}
                       />
                       <div className="flex gap-2 items-center ">
                         <p className="font-medium text-sm">
-                          {userDetails.username}
+                          {post?.user.username}
                         </p>
                         <p className="text-sm text-gray-400">
                           {formatDistanceToNow(
@@ -209,7 +211,7 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
                           scrollSnapType: "x mandatory",
                           scrollBehavior: "smooth",
                         }}
-                        className="flex overflow-x-auto pl-[43px] mt-4"
+                        className={`flex overflow-x-auto ${post.jobs.length>1 && "pl-[43px]"} mt-4`}
                       >
                         {post.post_type === "job" &&
                           post.jobs.map((job) => {
@@ -282,7 +284,7 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
                           imageHeight={20}
                           imageBorder={0}
                           image={
-                            userDetails.profileImage?.compressedImage ||
+                            post.user.profileImage?.compressedImage ||
                             profileImageDefault
                           }
                           alt={`${post.username}'s avatar`}
@@ -295,7 +297,7 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
                         >
                           {
                             post.comments.find(
-                              (comment) => comment.user == userDetails._id
+                              (comment) => comment.user == post.user._id
                             )?.comment_text
                           }
                         </p>
@@ -320,7 +322,7 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
                       imageHeight={20}
                       imageBorder={0}
                       image={
-                        userDetails.profileImage?.compressedImage ||
+                        currentUser.profileImage?.compressedImage ||
                         profileImageDefault
                       }
                       alt={`${post.username}'s avatar`}
