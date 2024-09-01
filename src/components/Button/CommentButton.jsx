@@ -8,7 +8,7 @@ function CommentButton({ onClick, postData, setPostData, className }) {
   //   postData.comments[0]?.user == user._id || false
   // );
   const [comment_count, setComment_count] = useState(
-    postData.comments_count > 0 && postData.comments_count
+    postData?.comments_count > 0 && postData.comments_count
   );
   return (
     <div

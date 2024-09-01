@@ -69,14 +69,14 @@ const ImageCarousel = ({
       >
         {animatingImages.map((image, index) => (
           <div
-            className={`relative transition-all duration-300 ease-in-out ${
+            className={`relative w-full transition-all duration-300 ease-in-out ${
               removedImage === image ? "opacity-0 scale-95" : "opacity-100 scale-100"
             }`}
             key={index}
             style={scrollItemStyle}
           >
             <img
-              className={`w-full h-full ${imageClassName} object-cover max-h-60 ${edges}`}
+              className={`w-full max-w-full h-full ${imageClassName} object-cover max-h-60 ${edges}`}
               src={
                 typeof image === "string" ? image : URL.createObjectURL(image)
               }
