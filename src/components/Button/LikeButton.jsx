@@ -1,18 +1,81 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { addLike } from "../../services/postService";
 import "../../css/button.css";
 
-const LikeButton = ({ postData, setPostData }) => {
+const LikeButton = ({ postData, setPostData, likesCount, likes }) => {
   const user = useSelector((state) => state.auth.user);
-
-  const initialLiked = postData?.likes.some((like) => like.user === user._id);
-  const [liked, setLiked] = useState(initialLiked);
-  const [likesCount, setLikesCount] = useState(postData?.likes_count || 0);
+  const [liked, setLiked] = useState(
+    likes?.some((like) => like.user === user._id)
+  );
+  const [currentLikesCount, setCurrentLikesCount] = useState(likesCount);
   const [clicked, setClicked] = useState(false);
 
   const scrollReference = useRef();
   const debounceTimeout = useRef(null);
+
+  useEffect(() => {
+    setLiked(likes?.some((like) => like.user === user._id));
+    setCurrentLikesCount(likesCount);
+  }, [postData, likesCount, likes, user._id]);
+
+  const handleLike = useCallback(
+    (e) => {
+      e.stopPropagation();
+
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+
+      debounceTimeout.current = setTimeout(async () => {
+        try {
+          const isLiked = !liked; // toggle like status
+          const newLikesCount = isLiked
+            ? currentLikesCount + 1
+            : currentLikesCount - 1;
+
+          setLiked(isLiked);
+          setCurrentLikesCount(newLikesCount);
+          setClicked(true);
+
+          setTimeout(() => setClicked(false), 400);
+
+          const updatedLikes = isLiked
+            ? [...postData.likes, { post: postData._id, user: user._id }]
+            : postData.likes.filter((like) => like.user !== user._id);
+
+          const response = await addLike({
+            ...postData,
+            likes_count: newLikesCount,
+            likes: updatedLikes,
+          });
+
+          if (response) {
+            setPostData((prev) => ({
+              ...prev,
+              likes: updatedLikes,
+              likes_count: newLikesCount,
+            }));
+          } else {
+            console.log("Failed to update like status");
+            // Optionally, revert the state changes if the request fails
+            setLiked(!isLiked);
+            setCurrentLikesCount(
+              isLiked ? currentLikesCount - 1 : currentLikesCount + 1
+            );
+          }
+        } catch (error) {
+          console.error("Error occurred while updating like status:", error);
+          // Optionally, revert the state changes if the request fails
+          setLiked(!liked);
+          setCurrentLikesCount(
+            liked ? currentLikesCount - 1 : currentLikesCount + 1
+          );
+        }
+      }, 300);
+    },
+    [liked, currentLikesCount, postData, setPostData, user._id]
+  );
 
   useEffect(() => {
     if (scrollReference.current) {
@@ -23,48 +86,11 @@ const LikeButton = ({ postData, setPostData }) => {
     }
   }, [liked]);
 
-  const handleLike = async (e) => {
-    e.stopPropagation();
-
-    if (debounceTimeout.current) {
-      clearTimeout(debounceTimeout.current);
-    }
-
-    debounceTimeout.current = setTimeout(async () => {
-      try {
-        setLiked((prevLiked) => !prevLiked);
-        setClicked(true);
-
-        setTimeout(() => {
-          setClicked(false);
-        }, 400);
-
-        const updatedLikes = liked
-          ? postData.likes.filter((like) => like.user !== user._id)
-          : [...postData.likes, { post: postData._id, user: user._id }];
-
-        setLikesCount(liked ? likesCount - 1 : likesCount + 1);
-
-        const response = await addLike({
-          ...postData,
-          likes_count: liked ? likesCount - 1 : likesCount + 1,
-          likes: updatedLikes,
-        });
-
-        if (response.ok) {
-          setPostData((prev) => ({ ...prev, response }));
-        } else {
-          console.error("Failed to update like status");
-        }
-      } catch (error) {
-        console.error("Error occurred while updating like status:", error);
-      }
-    }, 300);
-  };
-
   return (
     <button
-      className={`flex items-center gap-1 h-full ${liked ? "text-red-500" : ""}`}
+      className={`flex items-center gap-1 h-full ${
+        liked ? "text-red-500" : ""
+      }`}
       onClick={handleLike}
     >
       <svg
@@ -73,7 +99,7 @@ const LikeButton = ({ postData, setPostData }) => {
         height="15"
         fill="currentColor"
         className={`w-4 h-4 transition-transform duration-200 ${
-          clicked ? (liked ? "liked-animation" : "") : ""
+          clicked ? "liked-animation" : ""
         }`}
         viewBox="0 0 16 16"
       >
@@ -92,12 +118,18 @@ const LikeButton = ({ postData, setPostData }) => {
           scrollbarWidth: "none",
           pointerEvents: "none",
         }}
-        className={`flex flex-col scroll-smooth transition-all h-6 overflow-y-auto ${
-          likesCount <= 0 ? "invisible" : ""
-        }`}
+        className="flex flex-col h-6 overflow-y-auto"
       >
-        <span>{liked ? likesCount - 1 : likesCount}</span>
-        <span>{liked ? likesCount : likesCount + 1}</span>
+        <span
+          key={currentLikesCount} // Trigger re-render on count change
+          className={`${
+           clicked && ( liked? " animate-likeCountFromTop" : "animate-likeCountFromBottom")
+          }   transition-all duration-500 ease-in-out`}
+        >
+          <span className={`${currentLikesCount <= 0 ? "opacity-0" : ""}`}>
+            {currentLikesCount}
+          </span>
+        </span>
       </div>
     </button>
   );

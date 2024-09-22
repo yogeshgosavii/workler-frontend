@@ -12,6 +12,7 @@ import approachService from "../services/approachService";
 import interviewService from "../services/interviewService";
 import { updateUserDetails } from "../features/auth/authSlice";
 import { useDispatch } from "react-redux";
+import resumeService from "../services/resumeService";
 
 function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   const [showProfileImage, setShowProfileImage] = useState(false);
@@ -30,9 +31,12 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   const [jobInterview, setJobInterview] = useState(null);
   const userDetails = useSelector((state) => state.auth.user);
   const [loading, setLoading] = useState({ jobDetails: true });
+  const [selectResume, setSelectResume] = useState(null);
   const [atTop, setAtTop] = useState(0);
+  const [userResumes, setUserResumes] = useState([]);
   const profileService = useProfileApi();
   const dispatch = useDispatch();
+  const [selectedResume, setSelectedResume] = useState(null);
 
   const jobService = useJobApi();
   const profileRef = useRef();
@@ -199,18 +203,35 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
     console.log("unsaved data:", response);
   };
 
-  const applyJob = async (employeer) => {
-    console.log(employeer);
+  const applyJob = async () => {
+    // setSelectResume(true);
+    console.log(selectedResume._id);
     
-    setapplied(true);
     const response = await applicationService.createApplication({
       job: jobId,
       user: userDetails._id,
-      employeer: employeer._id,
+      employeer: selectResume._id,
+      resume: selectedResume._id,
     });
+    setapplied(true);
+    setSelectResume(null)
 
     console.log(response);
   };
+  useEffect(() => {
+    const fetchUserResumes = async () => {
+      try {
+        const userResumes = await resumeService.getUserResumes();
+        console.log("userResumes:", userResumes);
+        setUserResumes(userResumes);
+      } catch (error) {
+        console.error("Error fetching user resumes:", error);
+      }
+    };
+
+    fetchUserResumes(); // Call the async function
+    console.log("userResumes1:", userResumes);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -439,6 +460,149 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
         showProfileImage && "pointer-events"
       }`}
     >
+      {selectResume && <div className=" fixed h-fit  w-full z-50 -mt-5">
+          <div
+            onClick={() => setSelectResume(false)}
+            className=" w-screen h-screen bg-black opacity-50"
+          ></div>
+        
+        <div
+          className={`fixed inset-x-0 w-screen  z-50 p-4 md:p-6 sm:max-w-sm transition-transform transform ${
+            selectResume ? "translate-y-0" : "translate-y-full"
+          } bottom-0 sm:top-1/2 sm:left-1/2 h-fit sm:-translate-x-1/2 sm:-translate-y-1/2 ${
+            !selectResume && "md:hidden"
+          } bg-white border rounded-t-xl sm:rounded-lg shadow-lg`}
+        >
+          <h3 className="text-lg font-medium mb-5 mt-2">Select a resume</h3>
+          <div className="mb-5 flex flex-col gap-2">
+            {userResumes?.map((resume, index) => (
+              <div
+                key={index}
+                onClick={()=>{setSelectedResume(resume)
+                  console.log(resume);
+                  
+                }}
+                className={`border ${selectedResume == resume && "border-blue-500"} px-4 py-3 flex gap-2 rounded-lg`}
+              >
+                <svg
+                  className="w-6 h-6 text-red-500 mr-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 2a1 1 0 00-1 1v14a1 1 0 001 1h12a1 1 0 001-1V7l-6-5H6z"
+                  />
+                </svg>
+                <p>{resume.fileName}</p>
+              </div>
+            ))}
+          </div>
+          {/* <form onSubmit={setupInterview} className="flex flex-col gap-6">
+            <div className="flex gap-4">
+              <DateInput
+                type={"date"}
+                value={interviewForm.interview_date}
+                onChange={(e) => {
+                  setInterviewForm((prev) => ({
+                    ...prev,
+                    interview_date: e.target.value,
+                  }));
+                }}
+                minDate={"today"}
+                name={"interview_date"}
+                placeholder={"Interview Date"}
+              />
+              <div className=" peer  flex-grow">
+                <input
+                  value={interviewForm.interview_time}
+                  type="time"
+                  onChange={(e) => {
+                    setInterviewForm((prev) => ({
+                      ...prev,
+                      interview_time: e.target.value,
+                    }));
+                  }}
+                  placeholder="Time"
+                  className=" block border rounded-sm h-full focus:border-blue-500 outline-none w-full p-2"
+                />
+              </div>
+            </div>
+
+            <OptionInput
+              name="interview_mode"
+              value={interviewForm.interview_mode}
+              onChange={(e) => {
+                setInterviewForm((prev) => ({
+                  ...prev,
+                  interview_mode: e.target.value,
+                }));
+              }}
+              options={["In-person", "Online", "Phone call"]}
+              placeholder={"Mode of Interview"}
+            />
+          
+            {interviewForm.interview_mode == "Online" && (
+              <UrlInput
+                value={interviewForm.interview_link}
+                name={"meet_link"}
+                onChange={(e) => {
+                  setInterviewForm((prev) => ({
+                    ...prev,
+                    interview_link: e.target.value,
+                  }));
+                }}
+                placeholder={"Meet link"}
+              />
+            )}
+            {interviewForm.interview_mode == "In-person" && (
+              <div className="flex flex-col gap-6">
+                <TextAreaInput
+                  placeholder={"Interview address"}
+                  name={"interview_address"}
+                  onChange={(e) => {
+                    setInterviewForm((prev) => ({
+                      ...prev,
+                      interview_address: e.target.value,
+                    }));
+                  }}
+                />
+                <TextInput
+                  placeholder={"Location link (Optional)"}
+                  name={"location_link"}
+                  onChange={(e) => {
+                    setInterviewForm((prev) => ({
+                      ...prev,
+                      interview_location_link: e.target.value,
+                    }));
+                  }}
+                />
+              </div>
+            )}
+            <div className="mt-4">
+              <button
+                type="submit"
+                className="bg-blue-500 font-medium text-white px-4 py-2 rounded-md"
+              >
+                Confirm Interview
+              </button>
+            </div>
+          </form> */}
+           <div className="mt-4 w-full">
+              <button
+              onClick={()=>{applyJob()}}
+                // type="submit"
+                className="bg-blue-500 w-full font-medium text-white px-4 py-2 rounded-md"
+              >
+                Apply
+              </button>
+            </div>
+        </div>
+      </div>}
       {showProfileImage && (
         <div
           onClick={() => setShowProfileImage(false)}
@@ -708,7 +872,9 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
               <a
                 target="_blank"
                 onClick={() => {
-                  applyJob(jobDetails.user);
+                 if(!jobDetails?.job_url){
+                   setSelectResume(jobDetails.user);
+                 }
                 }}
                 href={jobDetails?.job_url}
                 className={`w-fit px-5 ${

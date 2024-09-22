@@ -537,7 +537,7 @@ const UserProfile = () => {
                 className={`h-screen border w-full top-0 bg-white opacity-85   z-50 absolute `}
               ></div>
             )}
-            <div className="  flex gap-4  max-h-min flex-wrap ">
+            <div className="flex gap-4  max-h-min flex-wrap ">
               <div
                 className={`w-full md:hidden ${
                   formType || updateFormType ? "hidden" : ""
@@ -593,7 +593,7 @@ const UserProfile = () => {
                 </svg>
               </div>
               <div className="flex border-t pt-8 pb-6 mt-10 md:mt-0   flex-grow  sm:border-x  px-4 md:px-6 gap-3 bg-white justify-center flex-col">
-                <div className="w-full hidden md:flex   mb-4 bg-white   justify-between ">
+                <div className="w-full hidden md:flex mb-4 bg-white justify-between ">
                   <p className="text-2xl font-semibold">Profile</p>
                   <svg
                     class="h-8 w-8 text-gray-800"

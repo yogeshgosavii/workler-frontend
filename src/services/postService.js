@@ -94,7 +94,7 @@ export const getAllPosts = async () => {
 
 // Get a single post by ID
 export const getPostById = async (id) => {
-  const response = await handleRequest(`${API_URL}/${id}`, {
+  const response = await handleRequest(`${API_URL}/post/${id}`, {
     method: 'GET',
   });
   return response;

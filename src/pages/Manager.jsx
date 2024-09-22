@@ -307,6 +307,11 @@ function Manager() {
       break;
   }
 
+  // if(loading.applicationList || loading.approachList)
+  // {
+  //   return("Loading...")
+  // }
+
   return (
     <div className="flex gap-6 w-full">
       <div
@@ -323,7 +328,7 @@ function Manager() {
             Jobs
           </p>
         </div>
-        <div className="w-full">{content}</div>
+        <div className="w-full">{(loading.applicationList || loading.approachList)?"Loading...": content}</div>
       </div>
      { selectedJob && <div className="w-full ">
         <Employment

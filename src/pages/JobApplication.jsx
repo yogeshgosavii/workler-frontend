@@ -387,7 +387,7 @@ function JobApplication() {
               ))}
             </div>
           ) : (
-            <p className="text-center">Haven't approached anyone yet</p>
+            <p className="text-center mt-10 text-gray-500">No approaches yet</p>
           )}
         </div>
       );
@@ -634,7 +634,7 @@ function JobApplication() {
               ))}
             </div>
           ) : (
-            <p className="text-center">Haven't applied to any job</p>
+            <p className="text-center mt-10 text-gray-500">Haven't applied to any job</p>
           )}
         </div>
       );

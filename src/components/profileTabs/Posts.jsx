@@ -12,12 +12,14 @@ import { addComment } from "../../services/postService";
 import { comment } from "postcss";
 import useJobApi from "../../services/jobService";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = true }) {
+function Posts({ setFormType,setSelectedPost, postData,className, setPostData,columns=2, userDetails ,isEditable = true }) {
   const [commentButtonClicked, setCommentButtonClicked] = useState(null);
   const [sendClicked, setSendClicked] = useState(null);
   const [commentText, setcommentText] = useState("");
   const jobService = useJobApi();
+  const navigate = useNavigate()
   const sendBtnRef = useRef(null);
   const currentUser = useSelector(state => state.auth.user)
   console.log(postData);
@@ -25,29 +27,29 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
   const handleCommentButtonClick = (index) => {
     setCommentButtonClicked(commentButtonClicked === index ? null : index);
   };
-  useEffect(() => {
-    const fetchJobData = async () => {
-      const updatedPosts = await Promise.all(
-        postData.map(async (post) => {
-          if (post.post_type === "job") {
-            try {
-              const jobs = await jobService.job.getByIds(post.jobs);
-              return { ...post, jobs: jobs }; // Assuming `jobs` is already an array
-            } catch (error) {
-              console.error("Failed to fetch job data:", error);
-              return post; // Return the original post in case of failure
-            }
-          } else {
-            return post; // Return non-job posts unchanged
-          }
-        })
-      );
+  // useEffect(() => {
+  //   const fetchJobData = async () => {
+  //     const updatedPosts = await Promise.all(
+  //       postData.map(async (post) => {
+  //         if (post.post_type === "job") {
+  //           try {
+  //             const jobs = await jobService.job.getByIds(post.jobs);
+  //             return { ...post, jobs: jobs }; // Assuming `jobs` is already an array
+  //           } catch (error) {
+  //             console.error("Failed to fetch job data:", error);
+  //             return post; // Return the original post in case of failure
+  //           }
+  //         } else {
+  //           return post; // Return non-job posts unchanged
+  //         }
+  //       })
+  //     );
   
-      setPostData(updatedPosts);
-    };
+  //     setPostData(updatedPosts);
+  //   };
   
-    fetchJobData();
-  }, []); // Empty dependency array means this effect runs only once when the component mounts
+  //   fetchJobData();
+  // }, []); // Empty dependency array means this effect runs only once when the component mounts
   
   const handleSendClick = async (index) => {
     setSendClicked(index);
@@ -71,8 +73,8 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
   };
 
   return (
-    <div className="w-full relative h-full">
-      {postData.length === 0 ? (
+    <div className={`w-full relative h-full ${className}`}>
+      {postData?.length === 0 ? (
     
 
        isEditable? <div className="flex w-full  flex-col items-center bg-white">
@@ -116,11 +118,12 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>}
 
-          <div className="grid grid-cols-1 xl:grid-cols-2 sm:gap-4">
-            {postData.map((post, index) => {
+          <div className={`grid grid-cols-1 xl:grid-cols-[${columns}] sm:gap-4`}>
+            {postData?.map((post, index) => {
               return (
                 <div
                   key={index}
+                  onClick={()=>navigate("/post/"+post._id)}
                   className={` sm:border  h-fit bg-white border-gray-300 py-4 px-4`}
                 >
                   <div className="flex items-center justify-between">
@@ -263,7 +266,7 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
                     </div>
                   )}
                   <div className="flex gap-4 z-10 text-gray-400 font-normal items-center  mt-2">
-                    <LikeButton postData={post} setPostData={setPostData} />
+                    <LikeButton postData={post} likes={post.likes} likesCount={post.likes_count} />
                     <CommentButton
                       onClick={() => {
                         setCommentButtonClicked((prev) =>
@@ -271,7 +274,7 @@ function Posts({ setFormType, postData, setPostData, userDetails ,isEditable = t
                         );
                       }}
                       postData={post}
-                      setPostData={setPostData}
+                      // setPostData={setPostData}
                     />
                   </div>
                   {post.comments_count > 0 && (

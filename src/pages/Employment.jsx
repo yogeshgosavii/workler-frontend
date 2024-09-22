@@ -88,13 +88,12 @@ function Employment({ job, applications, approaches }) {
       employeer: currentUser._id,
     });
 
-    if(innerTab== "approach"){
+    if (innerTab == "approach") {
       const approach = await approachService.updateStatus({
         id: showInterviewForm._id,
         status: "interview_setup",
       });
-    }
-    else{
+    } else {
       const application = await applicationService.updateStatus({
         id: showInterviewForm._id,
         status: "interview_setup",
@@ -106,7 +105,6 @@ function Employment({ job, applications, approaches }) {
 
   const updateStatus = async (status) => {
     const application = await applicationService.updateStatus(status);
-
   };
 
   useEffect(() => {
@@ -182,50 +180,6 @@ function Employment({ job, applications, approaches }) {
     <div className="animate-pulse flex flex-col gap-4">Loading...</div>
   );
 
-  // if(showInterviewForm){
-  //   return(
-
-  // <div className="mt-4 p-4 border rounded-md">
-  //   <h3 className="text-lg font-medium">Set Up Interview</h3>
-  //   <form>
-  //     {/* Add your form fields here */}
-  //     <div className="mt-2">
-  //       <label className="block text-sm font-medium">Interview Date</label>
-  //       <input
-  //         type="date"
-  //         className="mt-1 block w-full border rounded-md p-2"
-  //         // Add form state management as needed
-  //       />
-  //     </div>
-  //     <div className="mt-2">
-  //       <label className="block text-sm font-medium">Time</label>
-  //       <input
-  //         type="time"
-  //         className="mt-1 block w-full border rounded-md p-2"
-  //         // Add form state management as needed
-  //       />
-  //     </div>
-  //     <div className="mt-2">
-  //       <label className="block text-sm font-medium">Interview Mode</label>
-  //       <select className="mt-1 block w-full border rounded-md p-2">
-  //         <option>In-Person</option>
-  //         <option>Video Call</option>
-  //         <option>Phone Call</option>
-  //       </select>
-  //     </div>
-  //     <div className="mt-4">
-  //       <button
-  //         type="submit"
-  //         className="bg-green-500 font-medium text-white px-4 py-2 rounded-md"
-  //       >
-  //         Confirm Interview
-  //       </button>
-  //     </div>
-  //   </form>
-  // </div>
-
-  //   )
-  // }
   let content;
 
   switch (innerTab) {
@@ -409,109 +363,45 @@ function Employment({ job, applications, approaches }) {
                     </div>
                     <p>{}</p>
                   </div>
-                  {/* {application.job.location && (
-                    <div className="flex gap-2  text-sm">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        className="h-4 w-4"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
-                        <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                      </svg>
-                      <p className="-mt-1">
-                        {" "}
-                        {application.user.location?.address}{" "}
-                      </p>
-                    </div>
-                  )} */}
-
-                  {/* {application.job.location && (
-                  <div className="flex gap-2  text-sm">
+                  <div className=" font-medium mb-2 border p-3 rounded-md flex ">
                     <svg
+                      className="w-6 h-6 text-red-500 mr-2"
                       xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      className="h-4 w-4"
-                      viewBox="0 0 16 16"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
                     >
-                      <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
-                      <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 2a1 1 0 00-1 1v14a1 1 0 001 1h12a1 1 0 001-1V7l-6-5H6z"
+                      />
                     </svg>
-                    <p className="-mt-1">
-                      {" "}
-                      {application.job.location?.address}{" "}
+                    <p className="">
+                      {application.resume.fileName}
                     </p>
                   </div>
-                )}
-                {application.job.experience_type == "Experienced" && (
-                  <div className="flex gap-2 text-sm items-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      className="h-4 w-4"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5m1.886 6.914L15 7.151V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V7.15l6.614 1.764a1.5 1.5 0 0 0 .772 0M1.5 4h13a.5.5 0 0 1 .5.5v1.616L8.129 7.948a.5.5 0 0 1-.258 0L1 6.116V4.5a.5.5 0 0 1 .5-.5" />
-                    </svg>
-                    {application.job.experience_type == "Experienced" ? (
-                      <p>
-                        {" "}
-                        {application.job.min_experience}{" "}
-                        {application.job.max_experience !=
-                          application.job.min_experience &&
-                          "-" + application.job.max_experience}{" "}
-                        years
-                      </p>
-                    ) : (
-                      <p>Not mentioned</p>
-                    )}
-                  </div>
-                )}
-                {(application.job.min_salary ||
-                  application.job.max_salary) && (
-                  <div className="flex gap-2 text-sm">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="currentColor"
-                      className="h-4 w-4"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5z" />
-                    </svg>
-                    {application.job.min_salary ||
-                    application.job.max_salary ? (
-                      <p>
-                        {" "}
-                        {application.job.min_salary}{" "}
-                        {application.job.max_salary !=
-                          application.job.min_salary &&
-                          "- " + application.job.max_salary}{" "}
-                        {application.job.max_salary?.length <= 5
-                          ? "per year"
-                          : "per year"}
-                      </p>
-                    ) : (
-                      <p className="-mt-0.5">Not mentioned</p>
-                    )}
-                  </div>
-                )}
-                <div>
-                  <p className="font-medium">Description</p>
-                  <p className="text-gray-400 text-sm truncate line-clamp-2 text-wrap">
-                    {application.job.description}
-                  </p>
-                </div> */}
 
                   <div className="flex gap-2 flex-wrap w-full  items-center justify-between">
                     <div className="flex items-center text-sm w-full gap-4 rounded-md">
-                      {(interviewList?.some((interview)=>(interview.job._id == application.job._id && interview.user._id == application.user._id)) && approaches.some(approach=> (approach.job._id == application.job._id && approach.user._id == application.user._id)))?
-                      <p className="">
-
-                        Interview already setup for <span className="font-medium">{application.job.job_role}</span>
-                      </p>
-                      
-                      : application.status === "sent" ? (
+                      {interviewList?.some(
+                        (interview) =>
+                          interview.job._id == application.job._id &&
+                          interview.user._id == application.user._id
+                      ) &&
+                      approaches.some(
+                        (approach) =>
+                          approach.job._id == application.job._id &&
+                          approach.user._id == application.user._id
+                      ) ? (
+                        <p className="">
+                          Interview already setup for{" "}
+                          <span className="font-medium">
+                            {application.job.job_role}
+                          </span>
+                        </p>
+                      ) : application.status === "sent" ? (
                         <div className="flex items-center w-full justify-between   gap-3 rounded-md">
                           {/* <p className=" font-semibold">
                             
@@ -530,7 +420,10 @@ function Employment({ job, applications, approaches }) {
                             onClick={(e) => {
                               e.stopPropagation();
                               console.log("Hello");
-                              updateStatus({id:application._id,status:"rejected"})
+                              updateStatus({
+                                id: application._id,
+                                status: "rejected",
+                              });
                             }}
                             className="bg-red-500 shadow-md hover:bg-red-600 w-full transition-colors font-medium text-white px-3 py-1.5 rounded-full"
                           >
@@ -803,175 +696,6 @@ function Employment({ job, applications, approaches }) {
 
         <div className="mt-32 min-w-full md:mt-0">{content}</div>
       </div>
-      {/* <div
-        className={`${
-          !selectedProfile && "hidden"
-        }  h-full overflow-auto w-full sm:w-2/3`}
-      >
-        <div className="border-b pb-5 md:border md:p-4">
-          <p className="text-xl font-medium">Candidate</p>
-          {loading.userDetails
-            ? renderSkeleton()
-            : selectedProfile && (
-                <div className="mt-4 flex gap-2">
-                  <UserImageInput
-                    image={userDetails?.profileImage.compressedImage}
-                    isEditable={false}
-                  />
-                  <div>
-                    <p className="font-medium">{userDetails?.username}</p>
-                    <p className="text-sm">
-                      {userDetails?.personal_details.firstname}{" "}
-                      {userDetails?.personal_details.lastname}
-                    </p>
-                  </div>
-                </div>
-              )}
-          <p className="px-2 py-0.5 rounded-md text-sm mt-2 w-fit bg-purple-50 text-purple-500">
-            Approached for{" "}
-            <span className="font-medium">
-              {approaches.map(
-                (approach) =>
-                  approach.user._id == selectedProfile && approach.job.job_role
-              )}
-            </span>
-          </p>
-          {interviewList?.map((interview) => {
-            if (interview.user._id == selectedProfile) {
-              return (
-                <div className="text-sm my-4 items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
-                  <div>
-                    <p>
-                      {" "}
-                      Interview scheduled on{" "}
-                      <span className="font-medium">
-                        {new Date(interview.interview_date).toLocaleDateString(
-                          "en-GB",
-                          {
-                            day: "numeric",
-                            month: "short",
-                          }
-                        )}
-                      </span>{" "}
-                      at <span>{interview.interview_time}</span>
-                    </p>
-                    <p>
-                      Mode of interview{" "}
-                      <span className="font-medium">
-                        {interview.interview_mode}
-                      </span>
-                    </p>
-                    <p>Address : {interview.interview_address}</p>
-                  </div>
-                  {interview.interview_mode == "In-person" && (
-                    <div
-                      className="relative"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        className="h-14 bg-white p-2 rounded-md border"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
-                      </svg>
-                      <a
-                        className="border absolute h-full w-full top-0 rounded-md "
-                        href={interview.interview_location_link}
-                      ></a>
-                    </div>
-                  )}
-                  {interview.interview_mode == "Online" && (
-                    <div
-                      className="relative"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        class="bi bi-link-45deg"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z" />
-                        <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z" />
-                      </svg>
-                      <a
-                        className="border absolute h-full w-full top-0 rounded-md "
-                        href={interview.interview_meet_link}
-                      ></a>
-                    </div>
-                  )}
-                </div>
-              );
-            }
-          })}
-          {loading.userDetails
-            ? renderSkeleton()
-            : selectedProfile && (
-                <div className="mt-3 text-sm">
-                  <p className="font-medium mb-1">Personal details</p>
-                  {userDetails?.personal_details.working_at && (
-                    <p>Works at {userDetails?.personal_details.working_at}</p>
-                  )}
-                  {userDetails?.location.address && (
-                    <p>Lives near {userDetails?.location.address}</p>
-                  )}
-                </div>
-              )}
-          <div className="mt-3 text-sm">
-            <p className="font-medium">Skills</p>
-            <div className="flex">
-              <p>
-                {qualification?.skills.map((skill) => skill.name).join(", ")}
-              </p>
-            </div>
-          </div>
-          <div className="mt-3 text-sm">
-            <p className="font-medium">Education</p>
-            <div className="flex">
-              <p>
-                {qualification?.education.map((education) => (
-                  <p key={education._id}>
-                    Completed {education.course} from {education.university}{" "}
-                    <span className="text-gray-400">
-                      ({education.end_month.split("T")[0].split("-")[0]})
-                    </span>
-                  </p>
-                ))}
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-3 text-sm">
-            <p className="font-medium">Work experience</p>
-            <div className="flex">
-              <p>
-                {qualification?.workExperience.map((experience) => (
-                  <p>
-                    {"-> "}
-                    {experience.leavingDate
-                      ? "Worked at"
-                      : "Currently working at"}{" "}
-                    <span className="font-medium">
-                      {experience.companyName}
-                    </span>
-                  </p>
-                ))}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="mt-4">
-          <p className="font-medium"> Candidates with similar skills</p>
-        </div>
-      </div> */}
     </div>
   );
 }

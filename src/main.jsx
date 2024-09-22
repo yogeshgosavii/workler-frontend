@@ -30,6 +30,7 @@ import JobProfileView from "./components/JobProfileView.jsx";
 import Employment from "./pages/Employment.jsx";
 import JobApplication from "./pages/JobApplication.jsx";
 import Manager from "./pages/Manager.jsx";
+import PostView from "./components/PostView.jsx";
 
 const router = createBrowserRouter([
   {
@@ -68,6 +69,16 @@ const router = createBrowserRouter([
         element: (
           <LoginVerification>
               <Manager />
+          </LoginVerification>
+        ),
+      },
+      {
+        path: "/post/:postId",
+        element: (
+          <LoginVerification>
+            <PageTransition>
+              <PostView />
+            </PageTransition>
           </LoginVerification>
         ),
       },
@@ -124,6 +135,7 @@ const router = createBrowserRouter([
       </LoginVerification>
     ),
   },
+ 
   {
     path: "/login",
     element: (

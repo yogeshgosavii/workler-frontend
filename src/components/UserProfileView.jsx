@@ -17,9 +17,11 @@ import { formatDistanceToNow } from "date-fns";
 import JobProfileView from "./JobProfileView";
 import applicationService from "../services/applicationService";
 import { getPostByUserId } from "../services/postService";
+import followService from "../services/followService";
 
 function UserProfileView({ userId = useParams().userId }) {
   // const { userId } = useParams();
+  
   const [userDetails, setUserDetails] = useState(null);
   const [showProfileImage, setShowProfileImage] = useState(false);
   const [qualification, setQualification] = useState();
@@ -36,6 +38,8 @@ function UserProfileView({ userId = useParams().userId }) {
   const [atTop, setAtTop] = useState(0);
   const profileService = useProfileApi();
   const jobService = useJobApi();
+  const [followers, setFollowers] = useState([]);
+  const [isFollowing, setIsFollowing] = useState(false);
   const currentUserDetails = useSelector((state) => state.auth.user);
   const [currentUserJobData, setcurrentUserJobData] = useState(null);
   const dispatch = useDispatch();
@@ -105,7 +109,7 @@ function UserProfileView({ userId = useParams().userId }) {
       setLoading((prev) => ({ ...prev, jobData: true }));
       try {
         const response = await jobService.job.getByUserIds(
-          currentUserDetails._id
+          userId
         );
         console.log("job details:", response);
         setcurrentUserJobData(response);
@@ -117,10 +121,27 @@ function UserProfileView({ userId = useParams().userId }) {
       }
     };
 
+    const fetchFollowers = async() => {
+      setLoading((prev) => ({ ...prev, followersData: true }));
+      try {
+        const response = await followService.getFollowers(
+          userId
+        );
+        setFollowers(response)
+        setIsFollowing(response.some(follow => follow.following._id === userId))
+        console.log("followData", response);
+      } catch (error) {
+        console.error("Failed to fetch follow details", error);
+      } finally {
+        setLoading((prev) => ({ ...prev, followersData: false }));
+      }
+    }
+
     if (userId) {
       fetchJobData();
       fetchData();
       fetchPostData()
+      fetchFollowers()
 
       console.log(currentUserDetails, userDetails);
 
@@ -349,7 +370,7 @@ function UserProfileView({ userId = useParams().userId }) {
                   <div className="-mt-1">
                     <p className="text-lg font-semibold">{job.job_role}</p>
                     <p className="text-xs text-gray-800 text-wrap">
-                      {job.location.address}
+                      {job?.location?.address}
                     </p>
                     {job.updatedAt ? (
                       <p className="text-xs mt-0.5 text-gray-400">
@@ -393,6 +414,24 @@ function UserProfileView({ userId = useParams().userId }) {
         />
       </div>
     );
+  }
+  const follow = async()=>{
+    const followResponse = await followService.createFollow({
+      user : currentUserDetails._id,
+      following: userId
+    })
+    setIsFollowing(true)
+    setFollowers((prev)=>[...prev,followResponse])
+    console.log(followResponse);
+    
+  }
+  const unfollow = async()=>{
+    const unfollowResponse = await followService.unfollow(currentUserDetails._id,userId)
+    setIsFollowing(false)
+    setFollowers( followers.filter(follow =>follow.user._id != currentUserDetails._id ))
+    console.log(unfollowResponse);
+    
+    
   }
   return (
     <div
@@ -559,8 +598,8 @@ function UserProfileView({ userId = useParams().userId }) {
                 <div className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm ">
                   <p>
                     {/* <span>{userDetails.location?.address} · </span> */}
-                    {userDetails?.followers ? userDetails?.followers : 0}
-                    <span className="  font-normal"> followers</span>{" "}
+                    {followers.length>0 ? followers.length : 0}
+                    <span className="  font-normal"> {followers>1?"followers":"follower"}</span>{" "}
                     {userDetails?.account_type == "Candidate" && (
                       <span>
                         ·{" "}
@@ -640,19 +679,30 @@ function UserProfileView({ userId = useParams().userId }) {
             <div className="flex gap-4">
               {(currentUserDetails.account_type == "Candidate" ||
                 currentUserDetails.account_type == "Explorer" ||
+                currentUserDetails.account_type == "Employeer" ||
+
                 currentUserDetails.account_type ==
                   userDetails?.account_type) && (
-                <button
+               isFollowing? <button
                   // href={jobDetails?.job_url}
-                  className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 py-1 rounded-full "
+                  onClick={()=>{unfollow()}}
+                  className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-whiteborder border-blue-500 text-blue-500 border py-1 rounded-full "
                 >
                   {userDetails?.account_type == "Employeer"
+                    ? "Following"
+                    : "Allied"}
+                </button>: <button
+                  // href={jobDetails?.job_url}
+                  onClick={()=>{follow()}}
+                  className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 py-1 rounded-full "
+                >
+                  {userDetails?.account_type == "Employeer" || userDetails?.account_type !== currentUserDetails?.account_type
                     ? "Follow"
                     : "Create alie"}
                 </button>
               )}
 
-              {currentUserDetails.account_type === "Employeer" &&
+              {(currentUserDetails.account_type === "Employeer" && userDetails?.account_type === "Candidate") &&
                 (approached?.status === "declined" || !approached) &&
                 !loading.checkApproached &&
                 !applications?.some(

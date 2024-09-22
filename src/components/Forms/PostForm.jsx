@@ -63,20 +63,21 @@ function PostForm({ userDetails,setData, onClose }) {
     const formDataToSend = new FormData();
     formDataToSend.append("content", formData.content);
     formData.images.forEach((image) => {
-      formDataToSend.append("images", image);
+      formDataToSend.append("files", image);
     });
 
 
     if (postType == "content") {
       try {
         const data = await createPost(formDataToSend);
-        const user = await authservice.updateUserDetails({
-          ...userDetails,
-          posts : [...userDetails.posts , data._id]
+        // const user = await authservice.updateUserDetails({
+        //   ...userDetails,
+        //   posts : [...userDetails.posts , data._id]
 
-        })
+        // })
+        console.log("data",data);
         
-        setData(prev =>([...prev,data]))
+        setData(prev =>([...prev,{...data,user : {profileImage : user.profileImage,username:user.username}}]))
         onClose()
         setFormData({ content: "", images: [] });
         setImages([]);
@@ -96,16 +97,20 @@ function PostForm({ userDetails,setData, onClose }) {
           post_type: postType,
           jobs: jobIds,
         });
-        const user = await authservice.updateUserDetails({
-          ...userDetails,
-          posts : [...userDetails.posts , data._id]
+        console.log("res",data);
+        
+        // const user = await authservice.updateUserDetails({
+        //   ...userDetails,
+        //   posts : [...userDetails.posts , data._id]
 
-        })
-        setData(prev =>([...prev,data]))
+        // })
+        // setData(prev =>([...prev,data]))
         onClose();
         setFormData({ content: "", images: [] });
         setImages([]);
       } catch (error) {
+        console.log("error",error);
+        
         setError("Failed to create post");
       } finally {
         setLoading(false);

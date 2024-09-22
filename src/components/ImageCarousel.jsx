@@ -57,26 +57,25 @@ const ImageCarousel = ({
   const scrollItemStyle = {
     flex: '0 0 auto',
     scrollSnapAlign: 'start',
-    minWidth: '100%', // Ensure each item takes up the full width of the container
   };
   return (
     <div className={`${className}`}>
       <div
         ref={imageContainerRef}
-        className={`flex ${!dots && images.length>1 && "pl-[43px]"} transition-all w-full max-h-min gap-${gap}`}
+        className={`flex ${!dots && images.length>1 && "pl-[43px]"} transition-all  max-h-min gap-${gap}`}
         style={
         scrollContainerStyle}
       >
         {animatingImages.map((image, index) => (
           <div
-            className={`relative w-full transition-all duration-300 ease-in-out ${
+            className={`relative max-w-fit transition-all duration-300 ease-in-out ${
               removedImage === image ? "opacity-0 scale-95" : "opacity-100 scale-100"
             }`}
             key={index}
             style={scrollItemStyle}
           >
             <img
-              className={`w-full max-w-full h-full ${imageClassName} object-cover max-h-60 ${edges}`}
+              className={`w-full max-w-fit h-full ${imageClassName} object-cover max-h-60 ${edges}`}
               src={
                 typeof image === "string" ? image : URL.createObjectURL(image)
               }
@@ -85,7 +84,7 @@ const ImageCarousel = ({
             {isEditable && (
               <div
                 onClick={() => handleRemoveImage(image)}
-                className="absolute top-4 right-4 border cursor-pointer"
+                className="absolute top-4 right-4  cursor-pointer"
               >
                 <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
                 <svg

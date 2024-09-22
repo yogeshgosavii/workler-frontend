@@ -64,7 +64,7 @@ function Jobs({
             <div className="-mt-1">
               <p className="text-lg font-semibold">{job.job_role}</p>
               <p className="text-xs text-gray-800 text-wrap">
-                {job.location.address}
+                {job.location?.address}
               </p>
               {job.updatedAt ? (
                 <p className="text-xs mt-0.5 text-gray-400">
