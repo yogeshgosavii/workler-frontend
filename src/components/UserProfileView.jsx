@@ -434,9 +434,10 @@ function UserProfileView({ userId = useParams().userId }) {
     
   }
   return (
-    <div
+   <div className=" flex gap-8 w-full justify-center">
+     <div
       ref={profileRef}
-      className={`${!userId && "hidden"}  w-full flex-1 transition-all ${
+      className={`${!userId && "hidden"} max-w-lg w-full flex-1 transition-all ${
         approaching ? "overflow-y-hidden" : "overflow-y-auto"
       }   flex-grow ${showProfileImage && "pointer-events"}`}
     >
@@ -822,6 +823,25 @@ function UserProfileView({ userId = useParams().userId }) {
 
       <div>{renderTabContent()}</div>
     </div>
+    <div className="hidden sticky top-20 w-full max-w-sm flex-col gap-5 md:flex">
+        <div className="border rounded-lg p-4">
+          <p className="text-xl font-semibold mb-5">Releated Accounts</p>
+          <div className="flex gap-5 justify-between items-center">
+            <div className="flex gap-2">
+              <UserImageInput isEditable={false} />
+              <div className="">
+                <p className="text-lg font-medium">Yogesh Gosavi</p>
+                <p className="text-gray-400">yogesh_gosavii</p>
+              </div>
+            </div>
+            <p className="bg-blue-500 h-fit rounded-full text-white font-medium px-3 py-1">Follow</p>
+          </div>
+        </div>
+        <div className="border p-4 rounded-lg">
+          <p className="text-xl font-semibold">Similar Jobs</p>
+        </div>
+      </div>
+   </div>
   );
 }
 

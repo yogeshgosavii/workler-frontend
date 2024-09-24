@@ -63,7 +63,7 @@ const App = () => {
     <div className="relative flex flex-col sm:flex-row h-screen  text-gray-700">
       <div className=" w-full h-full">
         <Header />
-        <div className={`flex-1  h-full w-full  overflow-y-auto flex justify-center ${isAuthenticated && "pb-14"}   sm:px-6 `}>
+        <div className={`flex-1  h-full w-full  overflow-y-auto flex justify-center  ${isAuthenticated && "pb-14 sm:pb-5 sm:pl-24"} py-5  sm:px-6 `}>
           <Outlet />
         </div>
       </div>

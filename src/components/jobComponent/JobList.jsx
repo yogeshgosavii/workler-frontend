@@ -2,36 +2,19 @@ import React, { useEffect, useState, Suspense, lazy, useMemo } from 'react';
 import companyDefaultImage from '../../assets/companyDefaultImage.png';
 import Pagination from '../..//components/Pagination';
 import JobSkeletonLoader  from './JobSkeletonLoader'; // Import the SkeletonLoader component
+import searchService from '../../services/searchService';
 
 const JobListItem = lazy(() => import('../jobComponent/JobListItem'));
 
-function JobList() {
+function JobList({jobs}) {
   const jobsPerPage = 8;
   const [currentPage, setCurrentPage] = useState(1);
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(false);
+  console.log("jobs:",jobs);
+  
 
-  useEffect(() => {
-    fetch('http://localhost:5000/api/jobs/third-party')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (Array.isArray(data)) {
-          setJobs(data);
-        } else {
-          setJobs([data]);
-        }
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching third-party jobs:', error);
-        setLoading(false);
-      });
-  }, []);
+ 
 
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
@@ -49,7 +32,7 @@ function JobList() {
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
   return (
-    <div className="flex flex-1 flex-col w-full mt-5 sm:mt-0">
+    <div className="flex flex-1 sm:ml-64 flex-col pb-10 w-full mt-20 sm:mt-0">
       {loading ? (
         <div>
           {Array.from({ length: jobsPerPage }).map((_, index) => (
@@ -61,6 +44,12 @@ function JobList() {
           {currentJobs.map((job, index) => (
             <JobListItem key={index} job={job} companyDefaultImage={companyDefaultImage} />
           ))}
+           {/* {currentJobs.map((job, index) => (
+            <JobListItem key={index} job={job} companyDefaultImage={companyDefaultImage} />
+          ))}
+           {currentJobs.map((job, index) => (
+            <JobListItem key={index} job={job} companyDefaultImage={companyDefaultImage} />
+          ))} */}
         </Suspense>
       )}
       {/* Pagination */}

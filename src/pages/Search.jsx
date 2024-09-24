@@ -84,7 +84,7 @@ function Search() {
   }, [query, searchType]);
 
   return (
-    <div className="flex gap-4 w-full ">
+    <div className="flex gap-4 justify-center w-full ">
       <div
         className={`${
           location.pathname.split("/").length > 2 && " hidden sm:block"
@@ -203,7 +203,7 @@ function Search() {
                     onClick={() => {
                       setSelectedProfile(result._id);
 
-                      navigate("user/"+result._id);
+                      navigate("/user/"+result._id);
                     }}
                     className={`p-2 flex gap-4 cursor-pointer items-center ${
                       index !== results.length - 1 && ""
@@ -258,7 +258,7 @@ function Search() {
                     onClick={() => {
                       setSelectedProfile(result._id);
 
-                        navigate("job/"+result._id);
+                        navigate("/job/"+result._id);
                       
                     }}
                     className={`p-2 flex gap-4  bg-gray-50 border rounded-lg ${
@@ -294,7 +294,7 @@ function Search() {
           </div>
         )}
       </div>
-      <Outlet  />
+      {/* <Outlet  /> */}
     </div>
   );
 }

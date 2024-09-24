@@ -15,7 +15,7 @@ function Home({
 }) {
   console.log("user", user);
   return (
-    <div className="  flex flex-col gap-4 mb-4">
+    <div className="  flex flex-col gap-4 mb-4 py-10">
       {user?.account_type == "Employeer" ? (
         <div className="flex flex-col  bg-white md:border    gap-2">
           <p className="text-xl font-bold px-4 mt-4 md:px-6">About</p>

@@ -44,9 +44,14 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: "/", element: <Home /> },
-      { path: "/jobs", element: <Jobs /> },
+      // { path: "/jobs", element: <Jobs /> },
+      { path: "/jobs/:jobQuery", element: <Jobs /> },
+      { path: "job/:jobId", element: <JobProfileView /> },
+      { path: "user/:userId", element: <UserProfileView /> },
+
+
+
       { path: "/companies", element: <Companies /> },
-      { path: "/jobs/:jobId", element: <JobProfile /> },
       { path: "/companies/:companyId", element: <CompanyProfile /> },
       {
         path: "/home",
@@ -98,8 +103,6 @@ const router = createBrowserRouter([
            </LoginVerification>
         ),
         children: [
-           { path: "user/:userId", element: <UserProfileView /> },
-           { path: "job/:jobId", element: <JobProfileView /> }
         ],
      }
       // {
@@ -114,6 +117,9 @@ const router = createBrowserRouter([
       // },
     ],
   },
+  { path: "/jobs/:jobId", element: <JobProfile /> },
+
+
   {
     path: "/profile",
     element: (

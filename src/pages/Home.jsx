@@ -15,6 +15,8 @@ function Home() {
     }
   }, [isAuthenticated, navigate]);
 
+
+
   const divRef = useRef(null);
   const [isAtTop, setIsAtTop] = useState(true);
   const [searchText, setSearchText] = useState("");
@@ -27,7 +29,7 @@ function Home() {
         const scrollTopValue = divRef.current.scrollTop;
         console.log("Scroll Top:", scrollTopValue);
 
-        if (scrollTopValue <= 200) {
+        if (scrollTopValue <= 230) {
           setIsAtTop(true);
           console.log("At top");
         } else {
@@ -67,9 +69,9 @@ function Home() {
   }, [searchText]);
 
   return (
-    <div className="w-full px-4  h-full overflow-y-auto" ref={divRef}>
+    <div className="w-full px-4  h-full py-10 overflow-y-auto" ref={divRef}>
       {/* Header section */}
-      <div className="mt-24 ">
+      <div className="mt-36 ">
         <p className="text-blue-500 font-bold text-xl">#BEST HELP</p>
         <p className="text-4xl md:text-5xl text-black font-bold mt-5 leading-[48px] md:leading-[55px]">
           Search your dream job here
@@ -80,7 +82,11 @@ function Home() {
       </div>
 
       {/* Sticky Search Input */}
-      <div className="relative">
+      <form onSubmit={(e)=>{
+        e.preventDefault()
+        navigate("/jobs/"+searchText)
+        console.log("Hello");
+      }} className=" sticky -top-9 z-40">
       <SearchInput
         onChange={(e) => {
           setSearchText(e.target.value);
@@ -88,12 +94,12 @@ function Home() {
         onFocus = {()=>{setSearchFocus(true)}}
         onBlur = {()=>{setSearchFocus(false)}}
         inputClassName="placeholder:text-xl"
-        className={`mt-8 sticky transition-all top-1 border z-40 max-w-screen-md bg-white ${
+        className={`mt-8 sticky transition-all  border  max-w-screen-md bg-white ${
           isAtTop && "shadow-xl"
         } caret-blue-500 ${isAtTop ? "scale-[100%]" : "scale-[65%]"}`}
         placeholder="Enter the job title or domain"
       />
-      <div className={`border w-full absolute rounded-md max-w-screen-md mt-5 bg-white z-40 p-4 flex flex-col  ${!searchFocus && "hidden"}`}>
+      <div className={`border w-full absolute max-h-60 overflow-y-auto rounded-md max-w-screen-md mt-5 bg-white z-40 p-4 flex flex-col  ${!searchFocus && "hidden"}`}>
         {jobList.map((job, index,arr) => (
           <div className={`py-2.5 ${(index!=arr.length-1) && "border-b"}`}>
             <p className="font-medium">{job.job_role}</p>
@@ -101,7 +107,7 @@ function Home() {
           </div>
         ))}
       </div>
-      </div>
+      </form>
 
       {/* Professions section */}
       {/* <div className='mt-32'>
@@ -149,6 +155,47 @@ function Home() {
             </div> */}
 
       <p
+        className="text-2xl font-bold mt-24
+            "
+      >
+        How it works
+      </p>
+      <div style={{scrollbarWidth:"0px",scroll}} className="overflow-x-auto  flex gap-4 mt-5">
+      <style>
+    {`
+      div::-webkit-scrollbar {
+        display: none; /* Hides scrollbar in WebKit browsers */
+      }
+    `}
+  </style>
+        <div className="border min-w-52  sm:min-w-60 text-gray-400 p-4 rounded-lg">
+          <p className="font-medium text-xl text-gray-500 mb-1">
+            Create an account
+          </p>
+          <p>Create an account with your details and motive</p>
+          <p className="text-blue-500">Create account</p>
+        </div>
+        <div className="border min-w-52  sm:min-w-60 text-gray-400 p-4 rounded-lg">
+          <p className="font-medium text-xl text-gray-500 mb-1">
+            Explore content
+          </p>
+          <p>
+            Explore jobs and create connections with people increase chances
+          </p>
+        </div>
+        <div className="border min-w-52  sm:min-w-60 text-gray-400 p-4 rounded-lg">
+          <p className="font-medium text-xl text-gray-500 mb-1">Posts</p>
+          <p>
+            Post jobs your hear about and about other achivements you achive
+          </p>
+        </div>
+        <div className="border min-w-52  sm:min-w-60 text-gray-400 p-4 rounded-lg">
+          <p className="font-medium text-xl text-gray-500 mb-1">Explorer</p>
+          <p>You can also explorer basic features with creating an account</p>
+        </div>
+      </div>
+
+      {/* <p
         className="text-2xl font-bold mt-16 
             "
       >
@@ -181,6 +228,39 @@ function Home() {
           <p>You can also explorer basic features with creating an account</p>
         </div>
       </div>
+      <p
+        className="text-2xl font-bold mt-16 
+            "
+      >
+        How it works
+      </p>
+      <div className="overflow-x-auto flex gap-4 mt-5">
+        <div className="border min-w-52  sm:min-w-60 text-gray-400 p-4 rounded-lg">
+          <p className="font-medium text-xl text-gray-500 mb-1">
+            Create an account
+          </p>
+          <p>Create an account with your details and motive</p>
+          <p className="text-blue-500">Create account</p>
+        </div>
+        <div className="border min-w-52  sm:min-w-60 text-gray-400 p-4 rounded-lg">
+          <p className="font-medium text-xl text-gray-500 mb-1">
+            Explore content
+          </p>
+          <p>
+            Explore jobs and create connections with people increase chances
+          </p>
+        </div>
+        <div className="border min-w-52  sm:min-w-60 text-gray-400 p-4 rounded-lg">
+          <p className="font-medium text-xl text-gray-500 mb-1">Posts</p>
+          <p>
+            Post jobs your hear about and about other achivements you achive
+          </p>
+        </div>
+        <div className="border min-w-52  sm:min-w-60 text-gray-400 p-4 rounded-lg">
+          <p className="font-medium text-xl text-gray-500 mb-1">Explorer</p>
+          <p>You can also explorer basic features with creating an account</p>
+        </div>
+      </div> */}
     </div>
   );
 }

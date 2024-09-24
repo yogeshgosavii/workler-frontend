@@ -206,7 +206,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   const applyJob = async () => {
     // setSelectResume(true);
     console.log(selectedResume._id);
-    
+
     const response = await applicationService.createApplication({
       job: jobId,
       user: userDetails._id,
@@ -214,7 +214,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       resume: selectedResume._id,
     });
     setapplied(true);
-    setSelectResume(null)
+    setSelectResume(null);
 
     console.log(response);
   };
@@ -452,57 +452,61 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
     );
   }
   return (
-    <div
-      ref={profileRef}
-      className={`${
-        !jobId && "hidden"
-      } overflow-y-auto w-full flex-1   flex-grow ${
-        showProfileImage && "pointer-events"
-      }`}
-    >
-      {selectResume && <div className=" fixed h-fit  w-full z-50 -mt-5">
-          <div
-            onClick={() => setSelectResume(false)}
-            className=" w-screen h-screen bg-black opacity-50"
-          ></div>
-        
-        <div
-          className={`fixed inset-x-0 w-screen  z-50 p-4 md:p-6 sm:max-w-sm transition-transform transform ${
-            selectResume ? "translate-y-0" : "translate-y-full"
-          } bottom-0 sm:top-1/2 sm:left-1/2 h-fit sm:-translate-x-1/2 sm:-translate-y-1/2 ${
-            !selectResume && "md:hidden"
-          } bg-white border rounded-t-xl sm:rounded-lg shadow-lg`}
-        >
-          <h3 className="text-lg font-medium mb-5 mt-2">Select a resume</h3>
-          <div className="mb-5 flex flex-col gap-2">
-            {userResumes?.map((resume, index) => (
-              <div
-                key={index}
-                onClick={()=>{setSelectedResume(resume)
-                  console.log(resume);
-                  
-                }}
-                className={`border ${selectedResume == resume && "border-blue-500"} px-4 py-3 flex gap-2 rounded-lg`}
-              >
-                <svg
-                  className="w-6 h-6 text-red-500 mr-2"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 2a1 1 0 00-1 1v14a1 1 0 001 1h12a1 1 0 001-1V7l-6-5H6z"
-                  />
-                </svg>
-                <p>{resume.fileName}</p>
+    <div className=" w-full flex justify-center overflow-y-auto gap-8">
+      <div
+        ref={profileRef}
+        className={`${
+          !jobId && "hidden"
+        } overflow-y-auto w-full flex-1  max-w-lg  flex-grow ${
+          showProfileImage && "pointer-events"
+        }`}
+      >
+        {selectResume && (
+          <div className=" fixed h-fit  w-full z-50 -mt-5">
+            <div
+              onClick={() => setSelectResume(false)}
+              className=" w-screen h-screen bg-black opacity-50"
+            ></div>
+
+            <div
+              className={`fixed inset-x-0 w-screen  z-50 p-4 md:p-6 sm:max-w-sm transition-transform transform ${
+                selectResume ? "translate-y-0" : "translate-y-full"
+              } bottom-0 sm:top-1/2 sm:left-1/2 h-fit sm:-translate-x-1/2 sm:-translate-y-1/2 ${
+                !selectResume && "md:hidden"
+              } bg-white border rounded-t-xl sm:rounded-lg shadow-lg`}
+            >
+              <h3 className="text-lg font-medium mb-5 mt-2">Select a resume</h3>
+              <div className="mb-5 flex flex-col gap-2">
+                {userResumes?.map((resume, index) => (
+                  <div
+                    key={index}
+                    onClick={() => {
+                      setSelectedResume(resume);
+                      console.log(resume);
+                    }}
+                    className={`border ${
+                      selectedResume == resume && "border-blue-500"
+                    } px-4 py-3 flex gap-2 rounded-lg`}
+                  >
+                    <svg
+                      className="w-6 h-6 text-red-500 mr-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 2a1 1 0 00-1 1v14a1 1 0 001 1h12a1 1 0 001-1V7l-6-5H6z"
+                      />
+                    </svg>
+                    <p>{resume.fileName}</p>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          {/* <form onSubmit={setupInterview} className="flex flex-col gap-6">
+              {/* <form onSubmit={setupInterview} className="flex flex-col gap-6">
             <div className="flex gap-4">
               <DateInput
                 type={"date"}
@@ -592,369 +596,391 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
               </button>
             </div>
           </form> */}
-           <div className="mt-4 w-full">
-              <button
-              onClick={()=>{applyJob()}}
-                // type="submit"
-                className="bg-blue-500 w-full font-medium text-white px-4 py-2 rounded-md"
-              >
-                Apply
-              </button>
-            </div>
-        </div>
-      </div>}
-      {showProfileImage && (
-        <div
-          onClick={() => setShowProfileImage(false)}
-          className="h-screen  w-full top-0 bg-white opacity-85 z-50 fixed"
-        ></div>
-      )}
-      <div className="flex relative  flex-wrap">
-        <div
-          className={` w-full border-t  fixed sm:sticky  sm:border-x  z-20 top-0   px-4 py-4 bg-white flex `}
-        >
-          <div className="flex w-full items-center gap-4">
-            {atTop >= 100 && (
-              <UserImageInput
-                isEditable={false}
-                image={
-                  jobDetails?.profileImage?.compressedImage ||
-                  profileImageDefault
-                }
-                imageHeight="40"
-              />
-            )}
-            <div className="flex flex-col justify-center w-full">
-              <p className="text-xl flex justify-between  w-full font-semibold">
-                {atTop > 100 ? jobDetails?.job_role : "Job profile"}
-                {crossButton && (
-                  <svg
-                    onClick={() => {
-                      onBack();
-                    }}
-                    className="h-8 w-8 text-gray-800 pointer-events-auto transition-all duration-500 ease-in-out transform"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M6 18L18 6M6 6l12 12"
-                      className="transition-all duration-500 ease-in-out"
-                    />
-                  </svg>
-                )}
-              </p>
-              <p className="text-gray-400 text-sm">
-                {atTop > 100 && jobDetails?.company_name}
-              </p>
+              <div className="mt-4 w-full">
+                <button
+                  onClick={() => {
+                    applyJob();
+                  }}
+                  // type="submit"
+                  className="bg-blue-500 w-full font-medium text-white px-4 py-2 rounded-md"
+                >
+                  Apply
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="flex border-t sm:border-t-0 pt-8 pb-6 mt-10 sm:mt-0 flex-grow sm:border-x px-4 md:px-6 gap-3 bg-white justify-center flex-col">
-          {loading.jobDetails ? (
-            <div className="animate-pulse mt-2">
-              <div className="flex  items-center">
-                <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
-                <div className=" w-32 ml-2">
-                  <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
-                </div>
-              </div>
-              <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
-              <div className="h-3 bg-gray-200 rounded-md mt-1"></div>
-              <div className="flex  items-center mt-4">
-                <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
-                <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
-              </div>
-              <div className="flex  items-center mt-1">
-                <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
-                <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
-              </div>
-
-              <div className="flex mt-4">
-                <div className="h-3 w-20 bg-gray-200 rounded-md "></div>
-                <div className="h-3 w-20 bg-gray-200 rounded-md ml-2"></div>
-              </div>
-            </div>
-          ) : (
-            <div className="mt-2 flex relative  flex-col ">
-              <div className="flex mb-4 mt-1  w-full gap-4  items-center">
+        )}
+        {showProfileImage && (
+          <div
+            onClick={() => setShowProfileImage(false)}
+            className="h-screen  w-full top-0 bg-white opacity-85 z-50 fixed"
+          ></div>
+        )}
+        <div className="flex relative  flex-wrap">
+          <div
+            className={` w-full border-t  fixed sm:sticky  sm:border-x  z-20 top-0   px-4 py-4 bg-white flex `}
+          >
+            <div className="flex w-full items-center gap-4">
+              {atTop >= 100 && (
                 <UserImageInput
-                  onClick={() => {
-                    if (jobDetails.compony_logo) {
-                      setShowProfileImage(true);
-                    }
-                  }}
-                  imageBorder={showProfileImage ? "none" : "2"}
-                  className={`transition-all ease-in-out absolute  blur-none  duration-300 ${
-                    showProfileImage
-                      ? " ml-[40%] md:ml-[45%]  z-50 translate-y-[200%] scale-[3.5] "
-                      : ""
-                  }`}
-                  imageClassName={showProfileImage ? "shadow-3xl" : ""}
                   isEditable={false}
                   image={
-                    jobDetails?.profileImage?.originalImage ||
-                    jobDetails?.profileImage ||
+                    jobDetails?.profileImage?.compressedImage ||
                     profileImageDefault
                   }
-                  imageHeight="70"
+                  imageHeight="40"
                 />
-                <div className="flex w-full ml-20  justify-between items-center">
-                  <div>
-                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-                      {jobDetails?.job_role}
-                    </h1>
-                    <div className="flex  gap-2">
-                      <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
-                        {jobDetails?.company_name}
-                      </p>
+              )}
+              <div className="flex flex-col justify-center w-full">
+                <p className="text-xl flex justify-between  w-full font-semibold">
+                  {atTop > 100 ? jobDetails?.job_role : "Job profile"}
+                  {crossButton && (
+                    <svg
+                      onClick={() => {
+                        onBack();
+                      }}
+                      className="h-8 w-8 text-gray-800 pointer-events-auto transition-all duration-500 ease-in-out transform"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
+                        className="transition-all duration-500 ease-in-out"
+                      />
+                    </svg>
+                  )}
+                </p>
+                <p className="text-gray-400 text-sm">
+                  {atTop > 100 && jobDetails?.company_name}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="flex border-t sm:border-t-0 pt-8 pb-6 mt-10 sm:mt-0 flex-grow sm:border-x px-4 md:px-6 gap-3 bg-white justify-center flex-col">
+            {loading.jobDetails ? (
+              <div className="animate-pulse mt-2">
+                <div className="flex  items-center">
+                  <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
+                  <div className=" w-32 ml-2">
+                    <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
+                  </div>
+                </div>
+                <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
+                <div className="h-3 bg-gray-200 rounded-md mt-1"></div>
+                <div className="flex  items-center mt-4">
+                  <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
+                  <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
+                </div>
+                <div className="flex  items-center mt-1">
+                  <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
+                  <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
+                </div>
+
+                <div className="flex mt-4">
+                  <div className="h-3 w-20 bg-gray-200 rounded-md "></div>
+                  <div className="h-3 w-20 bg-gray-200 rounded-md ml-2"></div>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-2 flex relative  flex-col ">
+                <div className="flex mb-4 mt-1  w-full gap-4  items-center">
+                  <UserImageInput
+                    onClick={() => {
+                      if (jobDetails.compony_logo) {
+                        setShowProfileImage(true);
+                      }
+                    }}
+                    imageBorder={showProfileImage ? "none" : "2"}
+                    className={`transition-all ease-in-out absolute  blur-none  duration-300 ${
+                      showProfileImage
+                        ? " ml-[40%] md:ml-[45%]  z-50 translate-y-[200%] scale-[3.5] "
+                        : ""
+                    }`}
+                    imageClassName={showProfileImage ? "shadow-3xl" : ""}
+                    isEditable={false}
+                    image={
+                      jobDetails?.profileImage?.originalImage ||
+                      jobDetails?.profileImage ||
+                      profileImageDefault
+                    }
+                    imageHeight="70"
+                  />
+                  <div className="flex w-full ml-20  justify-between items-center">
+                    <div>
+                      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+                        {jobDetails?.job_role}
+                      </h1>
+                      <div className="flex  gap-2">
+                        <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
+                          {jobDetails?.company_name}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="order-3 flex flex-col gap-2">
-                <div className="text-sm flex justify-between flex-wrap  order-1 text-gray-400 items-end">
-                  <p>
-                    {/* <span>{jobDetails.location?.address} · </span> */}
-                    {applicantsCount || 0} Applicant
-                    {applicantsCount > 1 && "s"}
-                    {/* <span className="  font-normal"> followers</span>{" "}
+                <div className="order-3 flex flex-col gap-2">
+                  <div className="text-sm flex justify-between flex-wrap  order-1 text-gray-400 items-end">
+                    <p>
+                      {/* <span>{jobDetails.location?.address} · </span> */}
+                      {applicantsCount || 0} Applicant
+                      {applicantsCount > 1 && "s"}
+                      {/* <span className="  font-normal"> followers</span>{" "}
                     {jobDetails.account_type == "Candidate" && (
                       <span>
                         · {jobDetails.followings ? jobDetails.followings : 0}{" "}
                         <span className="  font-normal">following</span>
                       </span>
                     )} */}
-                  </p>
-                  {jobDetails.updatedAt ? (
-                    <p className=" mt-0.5 text-gray-400">
-                      Posted{" "}
-                      {formatDistanceToNow(
-                        new Date(
-                          jobDetails.updatedAt || jobDetails.job_post_date
-                        ),
-                        {
-                          addSuffix: true,
-                        }
-                      )}
                     </p>
-                  ) : (
-                    <p className=" mt-0.5 text-gray-400">
-                      Posted{" "}
-                      {formatDistanceToNow(
-                        new Date(
-                          jobDetails.createdAt || jobDetails.job_post_date
-                        ),
-                        {
-                          addSuffix: true,
-                        }
-                      )}
-                    </p>
-                  )}
-                </div>
-                {
-                  jobDetails.bio && (
-                    <div onClick={() => setFormType("jobDetails")}>
-                      {jobDetails.bio}
-                    </div>
-                  )
-                  // : (
-                  //   <div
-                  //     onClick={() => setFormType("jobDetails")}
-                  //     className=" text-sm font-normal text-gray-300 px-2 py-1 rounded-lg border w-fit  border-dashed"
-                  //   >
-                  //     Add a bio +
-                  //   </div>
-                  // )
-                }
-                {jobDetails.account_type == "Candidate" && (
-                  <div className="order-2 text-sm -mt-1">
-                    <p className=" text-wrap truncate">
-                      {jobDetails.personal_details.working_at && (
-                        <span>
-                          Works at {jobDetails.personal_details.working_at}{" "}
-                          <span className="font-extrabold ">{"·"}</span>
-                        </span>
-                      )}{" "}
-                      {/* {latestEducation && (
+                    {jobDetails.updatedAt ? (
+                      <p className=" mt-0.5 text-gray-400">
+                        Posted{" "}
+                        {formatDistanceToNow(
+                          new Date(
+                            jobDetails.updatedAt || jobDetails.job_post_date
+                          ),
+                          {
+                            addSuffix: true,
+                          }
+                        )}
+                      </p>
+                    ) : (
+                      <p className=" mt-0.5 text-gray-400">
+                        Posted{" "}
+                        {formatDistanceToNow(
+                          new Date(
+                            jobDetails.createdAt || jobDetails.job_post_date
+                          ),
+                          {
+                            addSuffix: true,
+                          }
+                        )}
+                      </p>
+                    )}
+                  </div>
+                  {
+                    jobDetails.bio && (
+                      <div onClick={() => setFormType("jobDetails")}>
+                        {jobDetails.bio}
+                      </div>
+                    )
+                    // : (
+                    //   <div
+                    //     onClick={() => setFormType("jobDetails")}
+                    //     className=" text-sm font-normal text-gray-300 px-2 py-1 rounded-lg border w-fit  border-dashed"
+                    //   >
+                    //     Add a bio +
+                    //   </div>
+                    // )
+                  }
+                  {jobDetails.account_type == "Candidate" && (
+                    <div className="order-2 text-sm -mt-1">
+                      <p className=" text-wrap truncate">
+                        {jobDetails.personal_details.working_at && (
+                          <span>
+                            Works at {jobDetails.personal_details.working_at}{" "}
+                            <span className="font-extrabold ">{"·"}</span>
+                          </span>
+                        )}{" "}
+                        {/* {latestEducation && (
                             <span>
                               {" "}
                               Completed {latestEducation.course} from{" "}
                               {latestEducation.university}
                             </span>
                           )} */}
-                    </p>
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+            {jobInterview && (
+              <div className="text-sm justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
+                <div>
+                  <p>
+                    {" "}
+                    Interview scheduled on{" "}
+                    <span className="font-medium">
+                      {new Date(jobInterview.interview_date).toLocaleDateString(
+                        "en-GB",
+                        {
+                          day: "numeric",
+                          month: "short",
+                        }
+                      )}
+                    </span>{" "}
+                    at <span>{jobInterview.interview_time}</span>
+                  </p>
+                  <p>
+                    Mode of interview{" "}
+                    <span className="font-medium">
+                      {jobInterview.interview_mode}
+                    </span>
+                  </p>
+                  {/* <p>Address {interview.interview_address}</p> */}
+                </div>
+                {jobInterview.interview_mode == "In-person" && (
+                  <div
+                    className="relative"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      className="h-14 bg-white p-2 rounded-md border"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
+                    </svg>
+                    <a
+                      className="border absolute h-full w-full top-0 rounded-md "
+                      href={jobInterview.interview_location_link}
+                    ></a>
+                  </div>
+                )}
+                {jobInterview.interview_mode == "Online" && (
+                  <div
+                    className="relative"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-link-45deg"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z" />
+                      <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z" />
+                    </svg>
+                    <a
+                      className="border absolute h-full w-full top-0 rounded-md "
+                      href={jobInterview.interview_meet_link}
+                    ></a>
                   </div>
                 )}
               </div>
-            </div>
-          )}
-          {jobInterview && (
-            <div className="text-sm justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
-              <div>
-                <p>
-                  {" "}
-                  Interview scheduled on{" "}
-                  <span className="font-medium">
-                    {new Date(jobInterview.interview_date).toLocaleDateString(
-                      "en-GB",
-                      {
-                        day: "numeric",
-                        month: "short",
-                      }
-                    )}
-                  </span>{" "}
-                  at <span>{jobInterview.interview_time}</span>
-                </p>
-                <p>
-                  Mode of interview{" "}
-                  <span className="font-medium">
-                    {jobInterview.interview_mode}
-                  </span>
-                </p>
-                {/* <p>Address {interview.interview_address}</p> */}
-              </div>
-              {jobInterview.interview_mode == "In-person" && (
-                <div
-                  className="relative"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="currentColor"
-                    className="h-14 bg-white p-2 rounded-md border"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
-                  </svg>
-                  <a
-                    className="border absolute h-full w-full top-0 rounded-md "
-                    href={jobInterview.interview_location_link}
-                  ></a>
-                </div>
-              )}
-              {jobInterview.interview_mode == "Online" && (
-                <div
-                  className="relative"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    class="bi bi-link-45deg"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z" />
-                    <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z" />
-                  </svg>
-                  <a
-                    className="border absolute h-full w-full top-0 rounded-md "
-                    href={jobInterview.interview_meet_link}
-                  ></a>
-                </div>
-              )}
-            </div>
-          )}
+            )}
 
-          <div className=" transition-all flex gap-4">
-            {(!jobApproach || jobApproach.length === 0) && (
-              <a
-                target="_blank"
-                onClick={() => {
-                 if(!jobDetails?.job_url){
-                   setSelectResume(jobDetails.user);
-                 }
-                }}
-                href={jobDetails?.job_url}
-                className={`w-fit px-5 ${
-                  applied && "hidden"
-                } flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5 items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 pb-1 rounded-full`}
-              >
-                Apply
-              </a>
-            )}
-            {saved ? (
-              <button
-                onClick={() => unsaveJob()}
-                className="w-fit px-5 border-2 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-gray-500  bg-gray-100 sm:hover:bg-gray-200 pb-0.5  rounded-full"
-              >
-                Unsave
-              </button>
-            ) : (
-              <button
-                onClick={() => saveJob()}
-                className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-blue-500 border-2 border-blue-500  sm:hover:bg-blue-50 pb-0.5  rounded-full"
-              >
-                Save
-              </button>
-            )}
-          </div>
-          {applied && (
-            <p className="text-sm text-red-500 mt-2">
-              Application already sent
-            </p>
-          )}
-        </div>
-      </div>
-      <div
-        className={`md:border-t sticky md:top-0 top-12  bg-white md:mb-4 z-20 transition-all ease-in-out `}
-      >
-        <div
-          style={{
-            overflowX: "auto",
-            scrollbarWidth: "none",
-          }}
-          className={`flex-grow z-20  max-w-full overflow-x-auto border-b sm:border-x ${
-            atTop > 340 ? "" : ""
-          } w-full   sm:top-0 gap-3 bg-white font-medium flex`}
-        >
-          <div className="flex w-full pt-1">
-            {[
-              "Job details",
-              jobDetails?.job_source == "job_post"
-                ? "About user"
-                : "About company",
-              "Related jobs",
-            ].map((tab, index, arr) => (
-              <p
-                key={tab}
-                onClick={() => {
-                  setCurrentTab(tab);
-                  setTabIndex(index);
-                }}
-                className={` text-base  md:text-lg mb-1 truncate font-medium md:font-semibold cursor-pointer ${
-                  tab === currentTab ? "z-20 text-blue-500" : ""
-                } text-center py-2`}
-                style={{
-                  width: `${100 / arr.length}%`,
-                }}
-              >
-                {tab}
+            <div className=" transition-all flex gap-4">
+              {(!jobApproach || jobApproach.length === 0) && (
+                <a
+                  target="_blank"
+                  onClick={() => {
+                    if (!jobDetails?.job_url) {
+                      setSelectResume(jobDetails.user);
+                    }
+                  }}
+                  href={jobDetails?.job_url}
+                  className={`w-fit px-5 ${
+                    applied && "hidden"
+                  } flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5 items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 pb-1 rounded-full`}
+                >
+                  Apply
+                </a>
+              )}
+              {saved ? (
+                <button
+                  onClick={() => unsaveJob()}
+                  className="w-fit px-5 border-2 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-gray-500  bg-gray-100 sm:hover:bg-gray-200 pb-0.5  rounded-full"
+                >
+                  Unsave
+                </button>
+              ) : (
+                <button
+                  onClick={() => saveJob()}
+                  className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-blue-500 border-2 border-blue-500  sm:hover:bg-blue-50 pb-0.5  rounded-full"
+                >
+                  Save
+                </button>
+              )}
+            </div>
+            {applied && (
+              <p className="text-sm text-red-500 mt-2">
+                Application already sent
               </p>
-            ))}
+            )}
           </div>
         </div>
         <div
-          style={{
-            left: `${(100 / 3) * tabIndex}%`,
-            transition: "left 0.2s ease-in-out",
-          }}
-          className={`w-1/3 h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute`}
-        ></div>
-      </div>
+          className={`md:border-t sticky md:top-0 top-12  bg-white md:mb-4 z-20 transition-all ease-in-out `}
+        >
+          <div
+            style={{
+              overflowX: "auto",
+              scrollbarWidth: "none",
+            }}
+            className={`flex-grow z-20  max-w-full overflow-x-auto border-b sm:border-x ${
+              atTop > 340 ? "" : ""
+            } w-full   sm:top-0 gap-3 bg-white font-medium flex`}
+          >
+            <div className="flex w-full pt-1">
+              {[
+                "Job details",
+                jobDetails?.job_source == "job_post"
+                  ? "About user"
+                  : "About company",
+                "Related jobs",
+              ].map((tab, index, arr) => (
+                <p
+                  key={tab}
+                  onClick={() => {
+                    setCurrentTab(tab);
+                    setTabIndex(index);
+                  }}
+                  className={` text-base  md:text-lg mb-1 truncate font-medium md:font-semibold cursor-pointer ${
+                    tab === currentTab ? "z-20 text-blue-500" : ""
+                  } text-center py-2`}
+                  style={{
+                    width: `${100 / arr.length}%`,
+                  }}
+                >
+                  {tab}
+                </p>
+              ))}
+            </div>
+          </div>
+          <div
+            style={{
+              left: `${(100 / 3) * tabIndex}%`,
+              transition: "left 0.2s ease-in-out",
+            }}
+            className={`w-1/3 h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute`}
+          ></div>
+        </div>
 
-      <div>{renderTabContent()}</div>
+        <div>{renderTabContent()}</div>
+      </div>
+      <div className="hidden sticky top-20 w-full max-w-sm flex-col gap-5 md:flex">
+        <div className="border rounded-lg p-4">
+          <p className="text-xl font-semibold mb-5">Releated Accounts</p>
+          <div className="flex gap-5 justify-between items-center">
+            <div className="flex gap-2">
+              <UserImageInput isEditable={false} />
+              <div className="">
+                <p className="text-lg font-medium">Yogesh Gosavi</p>
+                <p className="text-gray-400">yogesh_gosavii</p>
+              </div>
+            </div>
+            <p className="bg-blue-500 h-fit rounded-full text-white font-medium px-3 py-1">Follow</p>
+          </div>
+        </div>
+        <div className="border p-4 rounded-lg">
+          <p className="text-xl font-semibold">Similar Jobs</p>
+        </div>
+      </div>
     </div>
   );
 }

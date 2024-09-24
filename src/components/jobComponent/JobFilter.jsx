@@ -1,181 +1,144 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import Button from '../Button/Button';
 
 function JobFilter() {
-    // State for company type filter
-    const [companyTypeFilter, setCompanyTypeFilter] = useState([
+    const [currentSelectedFilter, setcurrentSelectedFilter] = useState(null);
+    const [filters, setFilters] = useState([
         {
-            name: "Foreign MNC",
-            selected: false,
-            opportunities: 120
+            filterName : "Company Type",
+            filterList: [
+            { name: "Foreign MNC", selected: false, opportunities: 120 },
+            { name: "Indian MNC", selected: false, opportunities: 400 },
+            { name: "Govt/PUS", selected: false, opportunities: 200 },
+            { name: "MNC", selected: false, opportunities: 600 },
+            { name: "Others", selected: false, opportunities: 20 }
+            ],
         },
         {
-            name: "Indian MNC",
-            selected: false,
-            opportunities: 400
+            filterName : "Location",
+            filterList : [
+                { name: "Bangalore", selected: false, opportunities: 300 },
+                { name: "Mumbai", selected: false, opportunities: 250 },
+                { name: "Delhi", selected: false, opportunities: 180 }
+            ]
         },
         {
-            name: "Govt/PUS",
-            selected: false,
-            opportunities: 200
-        },
-        {
-            name: "MNC",
-            selected: false,
-            opportunities: 600
-        },
-        {
-            name: "Others",
-            selected: false,
-            opportunities: 20
-        },
+            filterName : "Industry",
+            filterList : [
+                { name: "Technology", selected: false, opportunities: 700 },
+                { name: "Finance", selected: false, opportunities: 500 },
+                { name: "Healthcare", selected: false, opportunities: 300 }
+            ]
+        }
     ]);
 
-    // State for location filter
-    const [locationFilter, setLocationFilter] = useState([
-        {
-            name: "Bangalore",
-            selected: false,
-            opportunities: 300
-        },
-        {
-            name: "Mumbai",
-            selected: false,
-            opportunities: 250
-        },
-        {
-            name: "Delhi",
-            selected: false,
-            opportunities: 180
-        },
-        // Add more locations as needed
-    ]);
+    const [showFilter, setShowFilter] = useState(false);
+    const filtersRef = useRef(null);
 
-    // State for experience filter
-    const [experienceFilter, setExperienceFilter] = useState([
-        {
-            name: "0-2 years",
-            selected: false,
-            opportunities: 400
-        },
-        {
-            name: "2-5 years",
-            selected: false,
-            opportunities: 600
-        },
-        {
-            name: "5+ years",
-            selected: false,
-            opportunities: 800
-        },
-        // Add more experience ranges as needed
-    ]);
+    const toggleFilter = () => {
+        setShowFilter(!showFilter);
+    };
 
-    // State for industry filter
-    const [industryFilter, setIndustryFilter] = useState([
-        {
-            name: "Technology",
-            selected: false,
-            opportunities: 700
-        },
-        {
-            name: "Finance",
-            selected: false,
-            opportunities: 500
-        },
-        {
-            name: "Healthcare",
-            selected: false,
-            opportunities: 300
-        },
-        // Add more industries as needed
-    ]);
+    const clearFilters = ()=>{
+        const currentfilters = [...filters]
+        currentfilters.map((filter)=>{
+            filter.filterList.map((filterItem)=>{
+                filterItem.selected = false
+            })
+        })
+        setFilters(currentfilters)
+    }
+
+    const handleCheckboxChange = (filterName, index) => {
+        const updatedFilters = [...filters];
+        const filterToUpdate = updatedFilters.find(filter => filter.filterName === filterName);
+        console.log(filterToUpdate,index);
+        if (filterToUpdate) {
+            filterToUpdate.filterList[index].selected = !filterToUpdate.filterList[index].selected;
+        }
+        setFilters(updatedFilters);
+    };
 
     return (
-        <div className='border sticky top-24 hidden h-fit sm:block rounded-lg  px-6 py-8'>
-            <p className='border-b pb-5 text-lg font-semibold'>Filters</p>
-            {/* Company type filter */}
-            <div className='mt-5 pb-8 border-b'>
-                <p className='text-lg font-semibold '>Company type</p>
-                <div className='space-y-2 mt-5'>
-                    {companyTypeFilter.map((companyType, index) => (
-                        <div key={index} className='flex gap-3'>
-                            <input
-                                id={index}
-                                type='checkbox'
-                                onChange={() => {
-                                    const updatedCompanyTypeFilter = [...companyTypeFilter];
-                                    updatedCompanyTypeFilter[index].selected = !updatedCompanyTypeFilter[index].selected;
-                                    setCompanyTypeFilter(updatedCompanyTypeFilter);
-                                }}
-                                checked={companyType.selected}
-                            />
-                            <label htmlFor={index} className='font-medium text-nowrap'>{companyType.name}</label>
-                            <p className='text-gray-400'>({companyType.opportunities})</p>
-                        </div>
-                    ))}
+        <div>
+            <div className='flex gap-3 px-4 py-3 items-center bg-white border-b  sm:hidden'>
+                <svg onClick={toggleFilter} className="h-6 w-6 text-gray-500" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+                </svg>
+                <div className='flex gap-3  overflow-auto' style={{ scrollbarWidth: "none" }}>
+                    {
+                        filters.map((filter)=>{
+                            return(
+                                <p onClick={()=>{setcurrentSelectedFilter(filter);toggleFilter()}} className='border rounded-full px-2 py-1 w-fit text-nowrap'>{filter.filterName}</p>
+                            )
+                        })
+                    }
                 </div>
             </div>
-            {/* Location filter */}
-            <div className='mt-8 pb-8 border-b'>
-                <p className='text-lg font-semibold'>Location</p>
-                <div className='space-y-2 mt-5'>
-                    {locationFilter.map((location, index) => (
-                        <div key={index} className='flex gap-3'>
-                            <input
-                                type='checkbox'
-                                onChange={() => {
-                                    const updatedLocationFilter = [...locationFilter];
-                                    updatedLocationFilter[index].selected = !updatedLocationFilter[index].selected;
-                                    setLocationFilter(updatedLocationFilter);
-                                }}
-                                checked={location.selected}
-                            />
-                            <p className='font-medium'>{location.name}</p>
-                            <p className='text-gray-400'>({location.opportunities})</p>
-                        </div>
-                    ))}
+            <div className=''>
+                <div className='border sticky top-24 bottom-0 hidden sm:block rounded-lg min-w-60 px-6 py-8' ref={filtersRef}>
+                    <p className='border-b pb-5 text-lg font-semibold'>Filters</p>
+                    {
+                        filters.map((filter)=>{
+                           return(
+                            <div className='mt-5 pb-8 border-b'>
+                                <p className='text-lg font-semibold'>{filter.filterName}</p>
+                                <div className='space-y-2 mt-5'>
+                                    {filter.filterList.map((filterItem, index) => (
+                                        <div key={index} className='flex gap-3'>
+                                          <input
+                                            id={`${filter.filterName}-${index}`}
+                                            type='checkbox'
+                                            onChange={() => handleCheckboxChange(filter.filterName, index)} // Pass filterName instead of filterItem
+                                            checked={filterItem.selected}
+                                            />
+                                            <label htmlFor={`${filterItem+index}`} className='font-medium text-nowrap'>{filterItem.name}</label>
+                                            <p className='text-gray-400'>({filterItem.opportunities})</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                           )
+                        })
+                    }
+                   
                 </div>
             </div>
-            {/* Experience filter */}
-            <div className='mt-8 pb-8 border-b'>
-                <p className='text-lg font-semibold'>Experience</p>
-                <div className='space-y-2 mt-5'>
-                    {experienceFilter.map((experience, index) => (
-                        <div key={index} className='flex gap-3'>
-                            <input
-                                type='checkbox'
-                                onChange={() => {
-                                    const updatedExperienceFilter = [...experienceFilter];
-                                    updatedExperienceFilter[index].selected = !updatedExperienceFilter[index].selected;
-                                    setExperienceFilter(updatedExperienceFilter);
-                                }}
-                                checked={experience.selected}
-                            />
-                            <p className='font-medium'>{experience.name}</p>
-                            <p className='text-gray-400'>({experience.opportunities})</p>
+            <div className="sm:hidden ">
+                
+                {showFilter && (
+                    <div onClick={toggleFilter} className="fixed bottom-0 left-0 w-full h-full bg-black opacity-50 z-10"></div>
+                )}
+                <div className={`fixed bottom-0 left-0 w-full h-3/4 bg-white shadow-md transition-transform transform ${showFilter ? 'translate-y-0' : 'translate-y-full'} z-20`}>
+                    <div className='flex px-5 border-b py-4 justify-between items-center'>
+                        <p className=' text-xl font-semibold'>Filters</p>
+                        <Button onClick={clearFilters} className={"bg-blue-500 text-white"}>Clear filter</Button>
+                    </div>
+                    <div className='flex h-full'>
+                        <div className='border-r h-full'>
+                        {
+                            filters.map((filter)=>{
+                                return(
+                                    <p onClick={()=>{setcurrentSelectedFilter(filter)}} className={`px-5 py-3 ${filter.filterName == currentSelectedFilter?.filterName?"bg-gray-100":null}`}>{filter.filterName}</p>
+                                )
+                            })
+                        }
                         </div>
-                    ))}
-                </div>
-            </div>
-            {/* Industry filter */}
-            <div className='mt-8'>
-                <p className='text-lg font-semibold'>Industry</p>
-                <div className='space-y-2 mt-5'>
-                    {industryFilter.map((industry, index) => (
-                        <div key={index} className='flex gap-3'>
-                            <input
-                                type='checkbox'
-                                onChange={() => {
-                                    const updatedIndustryFilter = [...industryFilter];
-                                    updatedIndustryFilter[index].selected = !updatedIndustryFilter[index].selected;
-                                    setIndustryFilter(updatedIndustryFilter);
-                                }}
-                                checked={industry.selected}
-                            />
-                            <p className='font-medium'>{industry.name}</p>
-                            <p className='text-gray-400'>({industry.opportunities})</p>
+                        <div className='space-y-2 mt-5'>
+                            {currentSelectedFilter?.filterList.map((filter, index) => (
+                                <div key={index} className='flex gap-3 w-full pl-5'>
+                                    <input
+                                        id={`${filter.filterName}-${index}`}
+                                        type='checkbox'
+                                        onChange={() => handleCheckboxChange(currentSelectedFilter.filterName, index)} // Pass filter name instead of the filter object
+                                        checked={filter.selected}
+                                    />
+                                        <label htmlFor={`${currentSelectedFilter.filterName}-${index}`} className='font-medium text-nowrap'>{filter.name}</label>
+                                    <p className='text-gray-400'>({filter.opportunities})</p>
+                                </div>
+                            ))}
                         </div>
-                    ))}
+                    </div>
                 </div>
             </div>
         </div>
