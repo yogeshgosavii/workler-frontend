@@ -91,7 +91,7 @@ function Search() {
         } px-4 sm:px-0 w-full sm:w-2/5 md:1/2`}
       >
         <div className="relative flex flex-col w-full border rounded-xl gap-2 h-fit px-4 py-2">
-          <div className="flex gap-2 z-10 bg-white items-center w-full justify-between rounded-xl mb-px">
+          <form onSubmit={()=>{navigate("/jobs/"+query)}} className="flex gap-2 z-10 bg-white items-center w-full justify-between rounded-xl mb-px">
             <input
               autoFocus
               onFocus={() => setSearchInputFocus(true)}
@@ -143,7 +143,7 @@ function Search() {
                 <line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
             </div>
-          </div>
+          </form>
           {/* Uncomment and modify this if you need the location input */}
           {/* {(searchInputFocus || locationInputFocus) && (
             <div className="transition-all -mt-px flex flex-col gap-2 w-full">

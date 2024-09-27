@@ -61,7 +61,7 @@ function JobFilter() {
 
     return (
         <div>
-            <div className='flex gap-3 px-4 py-3 items-center bg-white border-b  sm:hidden'>
+            <div className='flex gap-3 px-4 py-3   items-center bg-white border-b  sm:hidden'>
                 <svg onClick={toggleFilter} className="h-6 w-6 text-gray-500" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
                 </svg>
@@ -107,9 +107,9 @@ function JobFilter() {
             <div className="sm:hidden ">
                 
                 {showFilter && (
-                    <div onClick={toggleFilter} className="fixed bottom-0 left-0 w-full h-full bg-black opacity-50 z-10"></div>
+                    <div onClick={toggleFilter} className="fixed top-0 border border-red-500 bottom-0 left-0 w-full h-full bg-black opacity-50 z-30"></div>
                 )}
-                <div className={`fixed bottom-0 left-0 w-full h-3/4 bg-white shadow-md transition-transform transform ${showFilter ? 'translate-y-0' : 'translate-y-full'} z-20`}>
+                <div className={`fixed bottom-0 left-0 w-full h-3/4 z-30 bg-white shadow-md transition-transform transform ${showFilter ? 'translate-y-0' : 'translate-y-full'} z-20`}>
                     <div className='flex px-5 border-b py-4 justify-between items-center'>
                         <p className=' text-xl font-semibold'>Filters</p>
                         <Button onClick={clearFilters} className={"bg-blue-500 text-white"}>Clear filter</Button>

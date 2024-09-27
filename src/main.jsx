@@ -31,6 +31,10 @@ import Employment from "./pages/Employment.jsx";
 import JobApplication from "./pages/JobApplication.jsx";
 import Manager from "./pages/Manager.jsx";
 import PostView from "./components/PostView.jsx";
+import Saved from "./pages/settings/Saved.jsx";
+import Preferences from "./pages/settings/Preferences.jsx";
+import AccountSettings from "./pages/settings/AccountSettings";
+import Settings from "./pages/settings/Settings.jsx";
 
 const router = createBrowserRouter([
   {
@@ -38,7 +42,7 @@ const router = createBrowserRouter([
     element: (
       <LoginVerification loginRequired={false}>
         {/* <PageTransition> */}
-          <App />
+        <App />
         {/* </PageTransition> */}
       </LoginVerification>
     ),
@@ -49,15 +53,13 @@ const router = createBrowserRouter([
       { path: "job/:jobId", element: <JobProfileView /> },
       { path: "user/:userId", element: <UserProfileView /> },
 
-
-
       { path: "/companies", element: <Companies /> },
       { path: "/companies/:companyId", element: <CompanyProfile /> },
       {
         path: "/home",
         element: (
           <LoginVerification>
-              <UserHome />
+            <UserHome />
           </LoginVerification>
         ),
       },
@@ -65,7 +67,7 @@ const router = createBrowserRouter([
         path: "/notifications",
         element: (
           <LoginVerification>
-              <Notification />
+            <Notification />
           </LoginVerification>
         ),
       },
@@ -73,7 +75,7 @@ const router = createBrowserRouter([
         path: "/manager",
         element: (
           <LoginVerification>
-              <Manager />
+            <Manager />
           </LoginVerification>
         ),
       },
@@ -91,20 +93,19 @@ const router = createBrowserRouter([
         path: "/job-applications",
         element: (
           <LoginVerification>
-              <JobApplication />
+            <JobApplication />
           </LoginVerification>
         ),
       },
       {
         path: "/search",
         element: (
-           <LoginVerification>
-              <Search />
-           </LoginVerification>
+          <LoginVerification>
+            <Search />
+          </LoginVerification>
         ),
-        children: [
-        ],
-     }
+        children: [],
+      },
       // {
       //   path: "/post",
       //   element: (
@@ -119,18 +120,53 @@ const router = createBrowserRouter([
   },
   { path: "/jobs/:jobId", element: <JobProfile /> },
 
-
   {
     path: "/profile",
     element: (
       <LoginVerification>
-        <PageTransition>
           <UserProfile />
-        </PageTransition>
       </LoginVerification>
     ),
+    children: [
+      {
+        path: "settings/preferences",
+        element: (
+          <LoginVerification>
+              <Preferences />
+          </LoginVerification>
+        ),
+      },
+      {
+        path: "settings/account-settings",
+        element: (
+          <LoginVerification>
+              <AccountSettings />
+          </LoginVerification>
+        ),
+      },
+      {
+        path: "settings",
+        element: (
+          <LoginVerification>
+              <Settings />
+          </LoginVerification>
+        ),
+        
+      },
+
+      {
+        path: "settings/saveds",
+        element: (
+          <LoginVerification>
+            <PageTransition>
+              <Saved />
+            </PageTransition>
+          </LoginVerification>
+        ),
+      },
+    ],
   },
- 
+
   {
     path: "/post",
     element: (
@@ -141,7 +177,7 @@ const router = createBrowserRouter([
       </LoginVerification>
     ),
   },
- 
+
   {
     path: "/login",
     element: (
@@ -162,7 +198,7 @@ const router = createBrowserRouter([
       </LoginVerification>
     ),
   },
-  { path: "*", element: <NotFound /> }, 
+  { path: "*", element: <NotFound /> },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

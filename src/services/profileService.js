@@ -75,11 +75,11 @@ const createApiMethods = (endpoint) => {
 const useProfileApi = () => {
   const user = useSelector((state) => state.auth.user);
 
-  if (!user || !user._id) {
-    throw new Error('User is not logged in or user ID is missing');
-  }
+  // if (!user || !user._id) {
+  //   throw new Error('User is not logged in or user ID is missing');
+  // }
 
-  const userId = user._id; // Ensure consistency in user ID field
+  // const userId = user._id; // Ensure consistency in user ID field
 
   const apiMethods = useMemo(() => ({
     skills: createApiMethods('skills'),
@@ -90,7 +90,7 @@ const useProfileApi = () => {
     description: createApiMethods('description'),
     job: createApiMethods('job'),
     qualification: createApiMethods('getQualification'),
-  }), [userId]);
+  }), []);
 
   return apiMethods;
 };

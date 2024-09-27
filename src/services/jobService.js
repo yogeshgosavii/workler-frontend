@@ -107,14 +107,14 @@ const useJobApi = () => {
   const user = useSelector((state) => state.auth.user);
   console.log(user);
 
-  if (!user || !user._id) {
-    throw new Error('User is not logged in or user ID is missing');
-  }
+  // if (!user || !user._id) {
+  //   throw new Error('User is not logged in or user ID is missing');
+  // }
 
-  const userId = user._id; // Assuming user._id is the correct field
+  // const userId = user?._id; // Assuming user._id is the correct field
 
   return {
-    job: createApiMethods('job', userId),
+    job: createApiMethods('job'),
   };
 }
 

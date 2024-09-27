@@ -5,6 +5,7 @@ import News from "../components/jobComponent/News";
 import SearchInput from "../components/Input/SearchInput";
 import searchService from "../services/searchService";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function Jobs() {
   const { jobQuery } = useParams(); // Grabbing job query from params
@@ -15,6 +16,7 @@ function Jobs() {
   const [submitJobList, setSubmitJobList] = useState([]);
   const [searchFocus, setSearchFocus] = useState(false);
   const navigate = useNavigate();
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   // Fetch jobs based on search text
   useEffect(() => {
@@ -51,16 +53,16 @@ function Jobs() {
   };
 
   return (
-    <div className="flex flex-col  w-full gap-10">
+    <div className={`flex flex-col  w-full  gap-10`}>
       {searchFocus && (
-        <div className="bg-black opacity-30 h-full sm:-ml-6 w-full absolute"></div>
+        <div className="bg-black z-10 opacity-30 h-full sm:-ml-6 w-full absolute"></div>
       )}
 
       {/* Search Input Section */}
       <div className="fixed z-40">
         <form
           onSubmit={handleSearchSubmit}
-          className="flex w-screen sm:ml-8 px-10 justify-center sm:justify-start left-0 relative -mt-4"
+          className={`flex w-screen justify-center sm:justify-start py-3 ${isAuthenticated ?"bg-white":"bg-transparent"} px-4 sm:px-0 ${!isAuthenticated ?"sm:ml-36":"ml-0"}   left-0 relative -mt-5`}
         >
           <SearchInput
             value={searchText}
@@ -69,7 +71,7 @@ function Jobs() {
             onBlur={() => setSearchFocus(false)}
             ref={searchRef}
             inputClassName="placeholder:text-xl"
-            className="sticky transition-all w-full sm:max-w-md z-40 bg-white caret-blue-500 scale-[65%]"
+            className={`sticky transition-all  sm:max-w-[250px] flex items-center md:max-w-[350px] lg:max-w-md z-10 bg-white w-full ${!isAuthenticated && "w-[61%]"} caret-blue-500 h-12  `}
             placeholder="Enter the job title or domain"
           />
           <div
@@ -88,17 +90,17 @@ function Jobs() {
       </div>
 
       {/* Main Content Section */}
-      <div className="flex gap-6">
+      <div className="flex gap-6 ">
         {/* Left Sidebar (JobFilter) */}
-        <div className="flex justify-center px-4 sm:px-0 w-full pt-20 sm:pt-24 pb-10 sm:gap-10">
-          <div className=" pb-10 fixed max-h-[85%] w-full sm:w-fit overflow-y-auto  sm:left-5 top-[58px] sm:top-24 pt-4">
+        <div className={`flex justify-center px-4 sm:px-0 w-full ${isAuthenticated?" pt-16":"pt-16 sm:pt-24"} pb-10 sm:gap-10`}>
+          <div className={` pb-10 fixed max-h-[85%] w-full sm:w-fit overflow-y-auto  ${isAuthenticated ? "sm:left-24 top-[45px] sm:top-16 ":"left-0 sm:left-8 top-[52px] sm:top-24"} pt-5 `}>
             <JobFilter />
           </div>
           <JobList jobs={submitJobList} />
         </div>
 
         {/* Right News Section */}
-        <div className="hidden md:block">
+        <div className={`hidden md:block ${!isAuthenticated && "mt-24"}`}>
           <News />
         </div>
       </div>

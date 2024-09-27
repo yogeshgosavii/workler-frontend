@@ -56,8 +56,10 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       setInterviews(interviews);
       console.log("jobInterviews", interviews);
     };
-    fetchApproaches();
-    fetchInterviews();
+    if (userDetails) {
+      fetchApproaches();
+      fetchInterviews();
+    }
   }, []);
   useEffect(() => {
     const fetchData = async () => {
@@ -157,10 +159,12 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       // Ensure userId exists before making requests
       // fetchUserData();
       console.log("jInter", interviews);
-      if (userDetails.saved_jobs.some((job) => job == jobId)) {
-        setSaved(true);
+      if (userDetails) {
+        if (userDetails?.saved_jobs.some((job) => job == jobId)) {
+          setSaved(true);
+        }
       }
-      console.log(userDetails.saved_jobs);
+      // console.log(userDetails.saved_jobs);
 
       checkApplied();
       fetchData();
@@ -452,12 +456,16 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
     );
   }
   return (
-    <div className=" w-full flex justify-center overflow-y-auto gap-8">
+    <div
+      className={` w-full flex justify-center overflow-y-auto gap-8 ${
+        !userDetails && "sm:mt-20"
+      }`}
+    >
       <div
         ref={profileRef}
         className={`${
           !jobId && "hidden"
-        } overflow-y-auto w-full flex-1  max-w-lg  flex-grow ${
+        } overflow-y-auto w-full flex-1  sm:max-w-lg  flex-grow ${
           showProfileImage && "pointer-events"
         }`}
       >
@@ -875,7 +883,17 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
             )}
 
             <div className=" transition-all flex gap-4">
-              {(!jobApproach || jobApproach.length === 0) && (
+              {!userDetails && (
+                <a
+                  href={"/login"}
+                  className={`w-fit px-5 ${
+                    applied && "hidden"
+                  } flex cursor-pointer py-1 md:order-2 text-center order-last gap-2 font-medium mt-3.5 items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 pb-1 rounded-full`}
+                >
+                  Login / Sign up
+                </a>
+              )}
+              {(!jobApproach || jobApproach.length === 0) && userDetails && (
                 <a
                   target="_blank"
                   onClick={() => {
@@ -891,21 +909,22 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                   Apply
                 </a>
               )}
-              {saved ? (
-                <button
-                  onClick={() => unsaveJob()}
-                  className="w-fit px-5 border-2 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-gray-500  bg-gray-100 sm:hover:bg-gray-200 pb-0.5  rounded-full"
-                >
-                  Unsave
-                </button>
-              ) : (
-                <button
-                  onClick={() => saveJob()}
-                  className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-blue-500 border-2 border-blue-500  sm:hover:bg-blue-50 pb-0.5  rounded-full"
-                >
-                  Save
-                </button>
-              )}
+              {userDetails &&
+                (saved ? (
+                  <button
+                    onClick={() => unsaveJob()}
+                    className="w-fit px-5 border-2 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-gray-500  bg-gray-100 sm:hover:bg-gray-200 pb-0.5  rounded-full"
+                  >
+                    Unsave
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => saveJob()}
+                    className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-blue-500 border-2 border-blue-500  sm:hover:bg-blue-50 pb-0.5  rounded-full"
+                  >
+                    Save
+                  </button>
+                ))}
             </div>
             {applied && (
               <p className="text-sm text-red-500 mt-2">
@@ -929,54 +948,62 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
             <div className="flex w-full pt-1">
               {[
                 "Job details",
-                jobDetails?.job_source == "job_post"
-                  ? "About user"
-                  : "About company",
+                userDetails
+                  ? jobDetails?.job_source === "job_post"
+                    ? "About user"
+                    : "About company"
+                  : null,
                 "Related jobs",
-              ].map((tab, index, arr) => (
-                <p
-                  key={tab}
-                  onClick={() => {
-                    setCurrentTab(tab);
-                    setTabIndex(index);
-                  }}
-                  className={` text-base  md:text-lg mb-1 truncate font-medium md:font-semibold cursor-pointer ${
-                    tab === currentTab ? "z-20 text-blue-500" : ""
-                  } text-center py-2`}
-                  style={{
-                    width: `${100 / arr.length}%`,
-                  }}
-                >
-                  {tab}
-                </p>
-              ))}
+              ]
+                .filter(Boolean)
+                .map((tab, index, arr) => (
+                  <p
+                    key={tab}
+                    onClick={() => {
+                      setCurrentTab(tab);
+                      setTabIndex(index);
+                    }}
+                    className={` text-base  md:text-lg mb-1 truncate font-medium md:font-semibold cursor-pointer ${
+                      tab === currentTab ? "z-20 text-blue-500" : ""
+                    } text-center py-2`}
+                    style={{
+                      width: `${100 / arr.length}%`,
+                    }}
+                  >
+                    {tab}
+                  </p>
+                ))}
             </div>
           </div>
           <div
             style={{
-              left: `${(100 / 3) * tabIndex}%`,
+              left: `${(100 / (userDetails?3:2)) * tabIndex}%`,
               transition: "left 0.2s ease-in-out",
             }}
-            className={`w-1/3 h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute`}
+            className={`${userDetails?"w-1/3":"w-1/2"} h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute`}
           ></div>
         </div>
 
         <div>{renderTabContent()}</div>
       </div>
       <div className="hidden sticky top-20 w-full max-w-sm flex-col gap-5 md:flex">
-        <div className="border rounded-lg p-4">
-          <p className="text-xl font-semibold mb-5">Releated Accounts</p>
-          <div className="flex gap-5 justify-between items-center">
-            <div className="flex gap-2">
-              <UserImageInput isEditable={false} />
-              <div className="">
-                <p className="text-lg font-medium">Yogesh Gosavi</p>
-                <p className="text-gray-400">yogesh_gosavii</p>
+        {userDetails && (
+          <div className="border rounded-lg p-4">
+            <p className="text-xl font-semibold mb-5">Releated Accounts</p>
+            <div className="flex gap-5 justify-between items-center">
+              <div className="flex gap-2">
+                <UserImageInput isEditable={false} />
+                <div className="">
+                  <p className="text-lg font-medium">Yogesh Gosavi</p>
+                  <p className="text-gray-400">yogesh_gosavii</p>
+                </div>
               </div>
+              <p className="bg-blue-500 h-fit rounded-full text-white font-medium px-3 py-1">
+                Follow
+              </p>
             </div>
-            <p className="bg-blue-500 h-fit rounded-full text-white font-medium px-3 py-1">Follow</p>
           </div>
-        </div>
+        )}
         <div className="border p-4 rounded-lg">
           <p className="text-xl font-semibold">Similar Jobs</p>
         </div>

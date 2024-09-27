@@ -1,8 +1,10 @@
 import React from "react";
 import Logo from "../../assets/Logo";
 import LogoCircle from "../../assets/LogoCircle";
+import { useNavigate } from "react-router-dom";
 
 const JobListItem = React.memo(({ job, companyDefaultImage }) => {
+  const navigate = useNavigate()
   return (
     <div>
       {job.header ? (
@@ -163,7 +165,7 @@ const JobListItem = React.memo(({ job, companyDefaultImage }) => {
       ) : (
         <div
           onClick={() => {
-            window.location.href = job.header.jobLink;
+            navigate("/job/"+job._id)
           }}
           className="border p-5 cursor-pointer hover:bg-gray-50 rounded-xl mb-4"
         >

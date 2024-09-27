@@ -15,7 +15,7 @@ import useProfileApi from "../services/profileService"; // Adjust the import pat
 import { logout } from "../features/auth/authSlice";
 import useJobApi from "../services/jobService"; // Adjust the import path
 
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Outlet } from "react-router-dom";
 
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
 import ProjectUpdateForm from "../components/Forms/ProjectUpdateForm";
@@ -432,7 +432,15 @@ const UserProfile = () => {
 
   return (
     <FreezeScroll
-      freezeScroll={formType || updateFormType || settings}
+      freezeScroll={
+        formType ||
+        updateFormType ||
+        settings ||
+        location.pathname === "/profile/settings" ||
+        location.pathname === "/profile/settings/preferences" ||
+        location.pathname === "/profile/settings/account-settings" ||
+        location.pathname === "/profile/settings/saved"  
+      }
       className={`w-full flex justify-center gap-5 bg-gray-100 sm:py-5 md:px-5`}
     >
       {pageLoading ? (
@@ -524,7 +532,11 @@ const UserProfile = () => {
           ) : null}
           {/* Profile page */}
           <div
-            className={`w-full ${settings ? "-ml-[60%]" : "-ml-0"} ${
+            className={`w-full ${
+              location.pathname === "/profile/settings"
+                ? "-ml-[60%] sm:-ml-0"
+                : "-ml-0"
+            } ${
               (formType || settings || showProfileImage || updateFormType) &&
               "fixed"
             }   md:flex-row transition-all duration-300 relative md:min-w-full flex-1 h-full `}
@@ -571,9 +583,14 @@ const UserProfile = () => {
                   onClick={() => {
                     console.log("Hello");
                     setsettings(!settings);
+                    if (!settings) {
+                      navigate("settings");
+                    } else {
+                      navigate("/profile");
+                    }
                   }}
                 >
-                  {settings ? (
+                  { location.pathname === "/profile/settings"  ?  (
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -596,17 +613,37 @@ const UserProfile = () => {
                 <div className="w-full hidden md:flex mb-4 bg-white justify-between ">
                   <p className="text-2xl font-semibold">Profile</p>
                   <svg
-                    class="h-8 w-8 text-gray-800"
+                    className="h-8 w-8 text-gray-800 pointer-events-auto transition-all duration-500 ease-in-out transform"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
+                    onClick={() => {
+                      console.log("Hello");
+                      setsettings(!settings);
+                      if (!settings) {
+                        navigate("settings");
+                      } else {
+                        navigate("/profile");
+                      }
+                    }}
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M4 6h16M4 12h16m-7 6h7"
-                    />
+                    {location.pathname === "/profile/settings" ? (
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
+                        className="transition-all duration-500 ease-in-out"
+                      />
+                    ) : (
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M4 6h16M4 12h16m-7 6h7"
+                        className="transition-all duration-500 ease-in-out"
+                      />
+                    )}
                   </svg>
                 </div>
                 {loading.userDetails ? (
@@ -639,7 +676,7 @@ const UserProfile = () => {
                     <div className="flex mb-4 mt-1  w-full gap-4  items-center">
                       <UserImageInput
                         onClick={() => {
-                          if(userDetails?.profileImage){
+                          if (userDetails?.profileImage) {
                             setshowProfileImage(true);
                           }
                         }}
@@ -768,10 +805,9 @@ const UserProfile = () => {
                 >
                   <div className="flex w-screen md:w-full pt-1">
                     {[
-                   
                       ...(user.account_type === "Employeer"
                         ? ["About", "Posts", "Jobs", "People"]
-                        : ["Home","Posts", "Qualification"]),
+                        : ["Home", "Posts", "Qualification"]),
                     ].map((tab, index, arr) => (
                       <p
                         key={tab}
@@ -783,7 +819,9 @@ const UserProfile = () => {
                           tab === currentTab ? "z-20 text-blue-500" : ""
                         } text-center py-2`}
                         style={{
-                          width: `${100 / (user.account_type === "Employeer"?4:3)}%`,
+                          width: `${
+                            100 / (user.account_type === "Employeer" ? 4 : 3)
+                          }%`,
                         }}
                       >
                         {tab}
@@ -793,10 +831,15 @@ const UserProfile = () => {
                 </div>
                 <div
                   style={{
-                    left: `${(100 / (user.account_type === "Employeer"?4:3)) * tabIndex}%`,
+                    left: `${
+                      (100 / (user.account_type === "Employeer" ? 4 : 3)) *
+                      tabIndex
+                    }%`,
                     transition: "left 0.2s ease-in-out",
                   }}
-                  className={`w-1/${user.account_type === "Employeer"?"4":"3"} h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute`}
+                  className={`w-1/${
+                    user.account_type === "Employeer" ? "4" : "3"
+                  } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute`}
                 ></div>
               </div>
             </div>
@@ -867,27 +910,6 @@ const UserProfile = () => {
         </div>
       )}
 
-      <div
-        className={`fixed top-0 border-l  z-40 h-full w-[60%] bg-white transition-all duration-300 ease-in-out 
-          ${settings ? " right-0" : "-right-[60%]"}
-          `}
-      >
-        <div className="p-4 flex h-full flex-col">
-          <h2 className="text-xl font-semibold">Settings</h2>
-          <div className="flex-1 "></div>
-          <a
-            onClick={() => {
-              console.log("logout");
-              dispatch(logout());
-              navigate("/", { replace: true });
-            }}
-            className="mt-2 bg-red-50 font-bold w-fit py-1 px-3 rounded-md border border-red-500 text-red-500"
-          >
-            Sign out
-          </a>
-        </div>
-      </div>
-
       <div className=" min-w-[35%] hidden lg:flex flex-col gap-4">
         <div
           className={`border  h-fit px-6 sticky ${
@@ -907,6 +929,9 @@ const UserProfile = () => {
         >
           <p className="text-xl font-medium">Candidates</p>
         </div>
+      </div>
+      <div className="fixed z-40">
+        <Outlet />
       </div>
     </FreezeScroll>
   );

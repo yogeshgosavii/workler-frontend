@@ -3,6 +3,7 @@ import companyDefaultImage from '../../assets/companyDefaultImage.png';
 import Pagination from '../..//components/Pagination';
 import JobSkeletonLoader  from './JobSkeletonLoader'; // Import the SkeletonLoader component
 import searchService from '../../services/searchService';
+import { useNavigate } from 'react-router-dom';
 
 const JobListItem = lazy(() => import('../jobComponent/JobListItem'));
 
@@ -12,6 +13,7 @@ function JobList({jobs}) {
   // const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
   console.log("jobs:",jobs);
+  const navigate = useNavigate()
   
 
  
@@ -32,7 +34,7 @@ function JobList({jobs}) {
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
   return (
-    <div className="flex flex-1 sm:ml-64 flex-col pb-10 w-full mt-20 sm:mt-0">
+    <div className="flex flex-1 sm:ml-[270px] flex-col pb-10 w-full mt-20 sm:mt-0">
       {loading ? (
         <div>
           {Array.from({ length: jobsPerPage }).map((_, index) => (
@@ -42,7 +44,7 @@ function JobList({jobs}) {
       ) : (
         <Suspense fallback={<div>Loading...</div>}>
           {currentJobs.map((job, index) => (
-            <JobListItem key={index} job={job} companyDefaultImage={companyDefaultImage} />
+            <JobListItem onCl key={index} job={job} companyDefaultImage={companyDefaultImage} />
           ))}
            {/* {currentJobs.map((job, index) => (
             <JobListItem key={index} job={job} companyDefaultImage={companyDefaultImage} />
