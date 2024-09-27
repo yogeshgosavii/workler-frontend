@@ -33,7 +33,6 @@ function Preferences() {
     }
   }, []);
   console.log(location);
-  
 
   const handleSavePreferences = () => {
     const preferences = {
@@ -72,8 +71,8 @@ function Preferences() {
           value={location}
           onChange={(e) => {
             console.log(e.target.value);
-            
-            setLocation(e.target.value)}}
+            setLocation(e.target.value);
+          }}
         />
 
         <OptionInput
