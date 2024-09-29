@@ -1,5 +1,5 @@
-const API_URL = "https://workler-backend.vercel.app/api/auth";
-// const API_URL = "http://localhost:5002/api/auth";
+// const API_URL = "https://workler-backend.vercel.app/api/auth";
+const API_URL = "http://localhost:5002/api/auth";
 
 const getToken = () => localStorage.getItem("token");
 
@@ -23,6 +23,40 @@ const authService = {
       throw error; // Throw the error to handle it in the component
     }
   },
+
+  updatePassword: async (passwordDetails, userToken = getToken()) => {
+    try {
+        const response = await fetch(`${API_URL}/update-password`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${userToken}`,
+            },
+            body: JSON.stringify(passwordDetails),
+        });
+
+        // console.log(response.body);
+        
+        if (!response.ok) {
+            // Try to extract the error message from the response body
+            const errorData = await response.json();
+            const errorMessage = errorData.error || "Password change failed"; // Check for custom error message
+            throw new Error(errorMessage); // Throw error to be handled later
+        }
+
+        // If successful, parse and return the response data
+        const data = await response.json();
+        return data;
+
+    } catch (error) {
+        console.log("Error in changing password:", error.message);
+        throw error;
+    }
+},
+
+
+  
+  
 
   checkUsername: async (username) => {
     try {
@@ -103,7 +137,7 @@ const authService = {
     let response;
     try {
       if (data.files) {
-      response = await fetch(`${API_URL}/update-user`, {
+        response = await fetch(`${API_URL}/update-user`, {
           method: "PUT", // Ensure method is set correctly
           headers: {
             Authorization: `Bearer ${getToken()}`,
@@ -111,7 +145,7 @@ const authService = {
           body: data, // Send the cleaned data
         });
       } else {
-         response = await fetch(`${API_URL}/update-user`, {
+        response = await fetch(`${API_URL}/update-user`, {
           method: "PUT", // Ensure method is set correctly
           headers: {
             "Content-Type": "application/json",

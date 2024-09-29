@@ -441,7 +441,7 @@ const UserProfile = () => {
         location.pathname === "/profile/settings/account-settings" ||
         location.pathname === "/profile/settings/saved"  
       }
-      className={`w-full flex justify-center gap-5 bg-gray-100 sm:py-5 md:px-5`}
+      className={`w-full flex justify-center gap-5`}
     >
       {pageLoading ? (
         <div>Loading...</div>
@@ -532,14 +532,14 @@ const UserProfile = () => {
           ) : null}
           {/* Profile page */}
           <div
-            className={`w-full ${
+            className={` w-full  lg:max-w-[62%]  ${
               location.pathname === "/profile/settings"
                 ? "-ml-[60%] sm:-ml-0"
                 : "-ml-0"
             } ${
               (formType || settings || showProfileImage || updateFormType) &&
               "fixed"
-            }   md:flex-row transition-all duration-300 relative md:min-w-full flex-1 h-full `}
+            }   md:flex-row transition-all md:p-6 duration-300 relative  flex-1 h-full `}
           >
             {showProfileImage && (
               <div
@@ -789,8 +789,8 @@ const UserProfile = () => {
               </div>
             </div>
             <div
-              className={`sticky w-full top-16 md:top-0 md:mb-4 z-20 transition-all ease-in-out bg-gray-100 ${
-                atTop < 340 ? "pt-0" : "md:pt-5"
+              className={`sticky w-full top-16 md:top-0 md:mb-4 z-20 transition-all ease-in-out bg-white ${
+                atTop < 340 ? "pt-0" : "md:pt-[25px]"
               }`}
             >
               <div className=" transition-all ease-in-out">
@@ -910,21 +910,14 @@ const UserProfile = () => {
         </div>
       )}
 
-      <div className=" min-w-[35%] hidden lg:flex flex-col gap-4">
+      <div className=" min-w-[35%] hidden lg:flex fixed top-6 right-10 flex-col gap-4">
         <div
-          className={`border  h-fit px-6 sticky ${
-            atTop <= 500 ? "-mt-8" : null
-          } -top-3 bg-white sm:px-8 py-5 flex w-full transition-transform duration-300   ${
-            scrollDirection === "down" ? "-translate-y-full" : "translate-y-8"
-          }`}
+          className={`border  h-fit px-6   bg-white sm:px-8 py-5 flex w-full transition-transform duration-300  `}
         >
           <p className="text-xl font-medium">Recomendations</p>
         </div>
         <div
-          className={`border transition-all ${
-            atTop <= 500 ? "-mt-40" : null
-          }  ease-in-out h-fit px-6 sticky top-4 
-          ${scrollDirection === "down" ? "translate-y-0" : "translate-y-[85px]"}
+          className={`border transition-all  ease-in-out h-fit px-6  top-4 
            bg-white sm:px-8 py-5  flex w-full `}
         >
           <p className="text-xl font-medium">Candidates</p>

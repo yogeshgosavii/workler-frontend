@@ -50,15 +50,7 @@ function Signup() {
     console.log("File uploaded:", file.name);
   };
 
-  useEffect(() => {
-    const locationIcon = document.getElementById("locationIcon");
-    if (locationIcon) {
-      locationIcon.addEventListener("click", () => {
-        document.getElementById("userAddress").value =
-          "Kandivali West,Mumbai India";
-      });
-    }
-  }, []);
+ 
   const [userData, setuserData] = useState({});
 
   const [personal_details, setpersonal_details] = useState({});

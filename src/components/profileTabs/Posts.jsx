@@ -91,7 +91,7 @@ function Posts({ setFormType,setSelectedPost, postData,className, setPostData,co
       
       ) : (
         <div className="flex flex-col  sm:gap-4">
-        { isEditable && <div className="sm:flex px-4 hidden  bg-white justify-between py-4 sm:border items-center">
+        { isEditable && <div className="flex px-4   bg-white justify-between py-4 sm:border items-center">
             <p className="font-medium">Recent posts</p>
             <button
               onClick={() => setFormType("post")}
@@ -100,7 +100,7 @@ function Posts({ setFormType,setSelectedPost, postData,className, setPostData,co
               Add post
             </button>
           </div>}
-       {  isEditable && <svg
+       {/* {  isEditable && <svg
             onClick={() => setFormType("post")}
             class="h-14 w-14 fixed bottom-8 sm:hidden right-5 bg-blue-500 p-4  z-20 rounded-full text-white shadow-lg"
             width="24"
@@ -116,7 +116,7 @@ function Posts({ setFormType,setSelectedPost, postData,className, setPostData,co
             <path stroke="none" d="M0 0h24v24H0z" />{" "}
             <line x1="12" y1="5" x2="12" y2="19" />{" "}
             <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>}
+          </svg>} */}
 
           <div className={`grid grid-cols-1 xl:grid-cols-[${columns}] sm:gap-4`}>
             {postData?.map((post, index) => {
