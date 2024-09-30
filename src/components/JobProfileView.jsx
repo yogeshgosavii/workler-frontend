@@ -13,6 +13,10 @@ import interviewService from "../services/interviewService";
 import { updateUserDetails } from "../features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import resumeService from "../services/resumeService";
+import searchService from "../services/searchService";
+import JobListItem from "./jobComponent/JobListItem";
+import companyDefaultImage from '../assets/companyDefaultImage.png';
+
 
 function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   const [showProfileImage, setShowProfileImage] = useState(false);
@@ -37,6 +41,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   const profileService = useProfileApi();
   const dispatch = useDispatch();
   const [selectedResume, setSelectedResume] = useState(null);
+  const [relatedJobs, setrelatedJobs] = useState([]);
 
   const jobService = useJobApi();
   const profileRef = useRef();
@@ -56,6 +61,8 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       setInterviews(interviews);
       console.log("jobInterviews", interviews);
     };
+
+  
     if (userDetails) {
       fetchApproaches();
       fetchInterviews();
@@ -76,6 +83,8 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
         setLoading((prev) => ({ ...prev, jobDetails: false }));
       }
     };
+
+   
 
     // const fetchUserData = async () => {
     //   setLoading((prev) => ({ ...prev, userDetails: true }));
@@ -186,6 +195,16 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
     }
   }, [jobId, interviews]);
 
+  useEffect(() => {
+    const fetchRelatedJobs =  async ()=>{
+      const relatedJobs = await searchService.secrchJobByKeyword(jobDetails?.job_role)
+      console.log("related jobs",relatedJobs);
+      setrelatedJobs(relatedJobs.filter(job =>job._id != jobDetails?._id))
+      
+    }
+    fetchRelatedJobs()
+  }, [jobDetails]);
+
   const saveJob = async () => {
     setSaved(true);
     const response = await authService.updateUserDetails({
@@ -201,7 +220,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
     setSaved(false);
     const response = await authService.updateUserDetails({
       ...userDetails,
-      saved_jobs: userDetails.saved_jobs.filter((job) => job._id == jobId),
+      saved_jobs: userDetails.saved_jobs.filter((job) => job._id != jobId),
     });
     dispatch(updateUserDetails(response));
     console.log("unsaved data:", response);
@@ -437,7 +456,15 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
           )
         );
       case "Related jobs":
-        return "Related jobs";
+        return <div className="p-4 sm:px-0 sm:py-0">
+          {
+            relatedJobs.length<=0?
+            <div className="w-full text-center text-lg text-gray-500"> No related jobs</div>:
+            relatedJobs.map((job)=>(
+                <JobListItem job = {job} companyDefaultImage={companyDefaultImage} className="border p-5 rounded-lg"/>
+            ))
+          }
+        </div>;
 
       default:
         return null;
@@ -1004,8 +1031,17 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
             </div>
           </div>
         )}
-        <div className="border p-4 rounded-lg">
-          <p className="text-xl font-semibold">Similar Jobs</p>
+        <div className="border p-6 rounded-lg">
+          <p className="text-xl font-semibold mb-5">Similar Jobs</p>
+          <div className="p-4 sm:px-0 sm:py-0">
+          {
+            relatedJobs.length<=0?
+            <div className="w-full text-center text-lg text-gray-500"> No related jobs</div>:
+            relatedJobs.map((job)=>(
+                <JobListItem job = {job} companyDefaultImage={companyDefaultImage}/>
+            ))
+          }
+        </div>
         </div>
       </div>
     </div>

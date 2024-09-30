@@ -3,7 +3,7 @@ import Logo from "../../assets/Logo";
 import LogoCircle from "../../assets/LogoCircle";
 import { useNavigate } from "react-router-dom";
 
-const JobListItem = React.memo(({ job, companyDefaultImage }) => {
+const JobListItem = React.memo(({ job, companyDefaultImage ,className}) => {
   const navigate = useNavigate()
   return (
     <div>
@@ -12,7 +12,7 @@ const JobListItem = React.memo(({ job, companyDefaultImage }) => {
           onClick={() => {
             window.location.href = job.header.jobLink;
           }}
-          className="border p-4 px-6 cursor-pointer hover:bg-gray-50 rounded-xl mb-4"
+          className={`border p-4 px-6 cursor-pointer hover:bg-gray-50 rounded-xl mb-4 ${className}`}
         >
           <div className="flex gap-3">
             <img
@@ -167,15 +167,12 @@ const JobListItem = React.memo(({ job, companyDefaultImage }) => {
           onClick={() => {
             navigate("/job/"+job._id)
           }}
-          className="border p-5 cursor-pointer hover:bg-gray-50 rounded-xl mb-4"
+          className={` cursor-pointer hover:bg-gray-50  mb-4 ${className}`}
         >
           <div className="flex gap-3">
             <img
               className="border p-2 rounded-lg h-20"
-              src={
-                job.company_details
-                  ? job.company_details.logo
-                  : companyDefaultImage
+              src={job.user.company_details?(job.user.profileImage ||companyDefaultImage) : (companyDefaultImage)
               }
             />
             <div className="w-full">

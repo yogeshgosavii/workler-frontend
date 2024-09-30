@@ -62,7 +62,7 @@ const ImageCarousel = ({
     <div className={`${className}`}>
       <div
         ref={imageContainerRef}
-        className={`flex ${!dots && images.length>1 && "pl-[43px]"} transition-all  max-h-min gap-${gap}`}
+    className={`flex ${!dots && images.length > 1 && "pl-[43px]"} border w-fit transition-all max-h-min max-w-full gap-${gap}`}
         style={
         scrollContainerStyle}
       >

@@ -923,9 +923,9 @@ const UserProfile = () => {
           <p className="text-xl font-medium">Candidates</p>
         </div>
       </div>
-      <div className="fixed z-40">
+      {/* <div className=" z-40"> */}
         <Outlet />
-      </div>
+      {/* </div> */}
     </FreezeScroll>
   );
 };

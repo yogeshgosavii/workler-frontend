@@ -8,7 +8,7 @@ function Settings() {
   const dispatch = useDispatch();
 
   return (
-    <div>
+    <div className="absolute">
       <div
         onClick={() => {
           window.history.back();

@@ -118,13 +118,13 @@ function Posts({ setFormType,setSelectedPost, postData,className, setPostData,co
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>} */}
 
-          <div className={`grid grid-cols-1 xl:grid-cols-[${columns}] sm:gap-4`}>
+          <div className={`flex flex-wrap gap-4`}>
             {postData?.map((post, index) => {
               return (
                 <div
                   key={index}
                   onClick={()=>navigate("/post/"+post._id)}
-                  className={` sm:border  h-fit bg-white border-gray-300 py-4 px-4`}
+                  className={` sm:border bg-white  sm:rounded-xl flex-grow   h-fit  border-gray-300 py-4 px-4`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex gap-2 items-center">
@@ -182,13 +182,13 @@ function Posts({ setFormType,setSelectedPost, postData,className, setPostData,co
                   {post.post_type !== "job" && (
                     <div
                       style={{ overflowX: "auto", scrollbarWidth: "none" }}
-                      className="mt-2 flex flex-col transition-all duration-300 overflow-x-auto flex-1"
+                      className="mt-2 flex flex-col transition-all  duration-300 overflow-x-auto flex-1"
                     >
                       {post.images && (
                         <ImageCarousel
                           dots={false}
                           edges="rounded-lg"
-                          className="h-full flex-1 "
+                          className="h-full flex-1  "
                           gap={2}
                           images={post.images?.originalImage}
                         />

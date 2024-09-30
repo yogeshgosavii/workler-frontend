@@ -44,7 +44,7 @@ function JobList({jobs}) {
       ) : (
         <Suspense fallback={<div>Loading...</div>}>
           {currentJobs.map((job, index) => (
-            <JobListItem onCl key={index} job={job} companyDefaultImage={companyDefaultImage} />
+            <JobListItem onCl key={index} job={job} companyDefaultImage={companyDefaultImage} className="border p-5 rounded-lg" />
           ))}
            {/* {currentJobs.map((job, index) => (
             <JobListItem key={index} job={job} companyDefaultImage={companyDefaultImage} />
