@@ -13,44 +13,65 @@ import { comment } from "postcss";
 import useJobApi from "../../services/jobService";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import savedService from "../../services/savedService";
 
-function Posts({ setFormType,setSelectedPost, postData,className, setPostData,columns=2, userDetails ,isEditable = true }) {
+function Posts({
+  setFormType,
+  setSelectedPost,
+  postData,
+  className,
+  setPostData,
+  columns = 2,
+  userDetails,
+  isEditable = true,
+}) {
   const [commentButtonClicked, setCommentButtonClicked] = useState(null);
   const [sendClicked, setSendClicked] = useState(null);
   const [commentText, setcommentText] = useState("");
+  const [savedList, setSavedList] = useState([]);
   const jobService = useJobApi();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const sendBtnRef = useRef(null);
-  const currentUser = useSelector(state => state.auth.user)
+  const currentUser = useSelector((state) => state.auth.user);
+
   console.log(postData);
 
   const handleCommentButtonClick = (index) => {
     setCommentButtonClicked(commentButtonClicked === index ? null : index);
   };
-  // useEffect(() => {
-  //   const fetchJobData = async () => {
-  //     const updatedPosts = await Promise.all(
-  //       postData.map(async (post) => {
-  //         if (post.post_type === "job") {
-  //           try {
-  //             const jobs = await jobService.job.getByIds(post.jobs);
-  //             return { ...post, jobs: jobs }; // Assuming `jobs` is already an array
-  //           } catch (error) {
-  //             console.error("Failed to fetch job data:", error);
-  //             return post; // Return the original post in case of failure
-  //           }
-  //         } else {
-  //           return post; // Return non-job posts unchanged
-  //         }
-  //       })
-  //     );
-  
-  //     setPostData(updatedPosts);
-  //   };
-  
-  //   fetchJobData();
-  // }, []); // Empty dependency array means this effect runs only once when the component mounts
-  
+  useEffect(() => {
+    const getSaveds = async () => {
+      const savedResponse = await savedService.getSpecificSaved("post");
+      console.log("saveds", savedResponse);
+      setSavedList(savedResponse);
+    };
+
+    getSaveds();
+  }, []); // Empty dependency array means this effect runs only once when the component mounts
+
+  const savePost = async (postId) => {
+    setSavedList((prev) => [
+      ...prev,
+      {
+        user: currentUser._id,
+        contentType: "post",
+        saved_content: {_id:postId},
+      },
+    ]);
+    const response = await savedService.save({
+      user: currentUser._id,
+      contentType: "post",
+      saved_content: postId,
+    });
+    console.log("saved data:", response);
+  };
+
+  const unsavePost = async (postId) => {
+    setSavedList(savedList.filter((post) => post.saved_content._id != postId));
+    const response = await savedService.unsave(postId);
+    console.log("unsaved data:", response);
+  };
+
   const handleSendClick = async (index) => {
     setSendClicked(index);
     console.log(postData[index]);
@@ -75,32 +96,33 @@ function Posts({ setFormType,setSelectedPost, postData,className, setPostData,co
   return (
     <div className={`w-full relative h-full ${className}`}>
       {postData?.length === 0 ? (
-    
-
-       isEditable? <div className="flex w-full  flex-col items-center bg-white">
-        <p className="font-bold text-xl mt-6">Create your first post</p>
-        <p
-          onClick={() => setFormType("post")}
-          className="text-sm text-blue-500 mt-2 font-medium cursor-pointer"
-        >
-          Add post
-        </p>
-      </div>
-      :
-      <p className="w-full text-center mt-5 text-gray-400">No posts yet</p>
-      
-      ) : (
-        <div className="flex flex-col  sm:gap-4">
-        { isEditable && <div className="flex px-4   bg-white justify-between py-4 sm:border items-center">
-            <p className="font-medium">Recent posts</p>
-            <button
+        isEditable ? (
+          <div className="flex w-full  flex-col items-center bg-white">
+            <p className="font-bold text-xl mt-6">Create your first post</p>
+            <p
               onClick={() => setFormType("post")}
-              className=" text-sm text-blue-500 px-4 py-1 bg-blue-50  rounded-full font-medium border-blue-500"
+              className="text-sm text-blue-500 mt-2 font-medium cursor-pointer"
             >
               Add post
-            </button>
-          </div>}
-       {/* {  isEditable && <svg
+            </p>
+          </div>
+        ) : (
+          <p className="w-full text-center mt-5 text-gray-400">No posts yet</p>
+        )
+      ) : (
+        <div className="flex flex-col  sm:gap-4">
+          {isEditable && (
+            <div className="flex px-4   bg-white justify-between py-4 sm:border items-center">
+              <p className="font-medium">Recent posts</p>
+              <button
+                onClick={() => setFormType("post")}
+                className=" text-sm text-blue-500 px-4 py-1 bg-blue-50  rounded-full font-medium border-blue-500"
+              >
+                Add post
+              </button>
+            </div>
+          )}
+          {/* {  isEditable && <svg
             onClick={() => setFormType("post")}
             class="h-14 w-14 fixed bottom-8 sm:hidden right-5 bg-blue-500 p-4  z-20 rounded-full text-white shadow-lg"
             width="24"
@@ -123,7 +145,7 @@ function Posts({ setFormType,setSelectedPost, postData,className, setPostData,co
               return (
                 <div
                   key={index}
-                  onClick={()=>navigate("/post/"+post._id)}
+                  onClick={() => navigate("/post/" + post._id)}
                   className={` sm:border bg-white  sm:rounded-xl flex-grow   h-fit  border-gray-300 py-4 px-4`}
                 >
                   <div className="flex items-center justify-between">
@@ -161,34 +183,68 @@ function Posts({ setFormType,setSelectedPost, postData,className, setPostData,co
                         </p>
                       </div>
                     </div>
-                    <svg
-                      className="h-6 w-6 text-gray-500"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      strokeWidth="2"
-                      stroke="currentColor"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path stroke="none" d="M0 0h24v24H0z" />
-                      <circle cx="12" cy="12" r="1" />
-                      <circle cx="12" cy="19" r="1" />
-                      <circle cx="12" cy="5" r="1" />
-                    </svg>
+                    <div className="flex gap-2 items-center">
+                      {savedList.some(item => item.saved_content?._id == post._id) ? (
+                       <svg
+                       onClick={(e)=>{
+                       unsavePost(post._id)
+                       e.stopPropagation()
+                       }}
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          fill="currentColor"
+                          class="bi bi-bookmark-fill"
+                          viewBox="0 0 16 16"
+                        >
+                          <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
+                        </svg>
+                       
+                      ) : (
+                        <svg
+                        onClick={(e)=>{
+                        savePost(post._id)
+                        e.stopPropagation()
+                        }}
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          fill="currentColor"
+                          class="bi bi-bookmark"
+                          viewBox="0 0 16 16"
+                        >
+                          <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z" />
+                        </svg>
+                      )}
+                      <svg
+                        className="h-6 w-6 text-gray-500"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        strokeWidth="2"
+                        stroke="currentColor"
+                        fill="none"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path stroke="none" d="M0 0h24v24H0z" />
+                        <circle cx="12" cy="12" r="1" />
+                        <circle cx="12" cy="19" r="1" />
+                        <circle cx="12" cy="5" r="1" />
+                      </svg>
+                    </div>
                   </div>
                   <p className="mt-4 text-sm flex-1">{post.content}</p>
                   {post.post_type !== "job" && (
                     <div
                       style={{ overflowX: "auto", scrollbarWidth: "none" }}
-                      className="mt-2 flex flex-col transition-all  duration-300 overflow-x-auto flex-1"
+                      className="mt-2 flex flex-col w-full  transition-all  duration-300 overflow-x-auto flex-1"
                     >
                       {post.images && (
                         <ImageCarousel
                           dots={false}
                           edges="rounded-lg"
-                          className="h-full flex-1  "
+                          className="h-full  flex-grow w-full "
                           gap={2}
                           images={post.images?.originalImage}
                         />
@@ -214,7 +270,9 @@ function Posts({ setFormType,setSelectedPost, postData,className, setPostData,co
                           scrollSnapType: "x mandatory",
                           scrollBehavior: "smooth",
                         }}
-                        className={`flex overflow-x-auto ${post.jobs.length>1 && "pl-[43px]"} mt-4`}
+                        className={`flex overflow-x-auto ${
+                          post.jobs.length > 1 && "pl-[43px]"
+                        } mt-4`}
                       >
                         {post.post_type === "job" &&
                           post.jobs.map((job) => {
@@ -266,9 +324,14 @@ function Posts({ setFormType,setSelectedPost, postData,className, setPostData,co
                     </div>
                   )}
                   <div className="flex gap-4 z-10 text-gray-400 font-normal items-center  mt-2">
-                    <LikeButton postData={post} likes={post.likes} likesCount={post.likes_count} />
+                    <LikeButton
+                      postData={post}
+                      likes={post.likes}
+                      likesCount={post.likes_count}
+                    />
                     <CommentButton
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation()
                         setCommentButtonClicked((prev) =>
                           prev == index ? null : index
                         );

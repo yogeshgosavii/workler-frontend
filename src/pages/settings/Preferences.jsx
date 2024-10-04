@@ -62,7 +62,7 @@ function Preferences() {
         className="fixed w-full h-full bg-black opacity-30 z-20 top-0 left-0"
       ></div>
       <div className="fixed w-full left-0 flex flex-col gap-6 sm:left-[15%] md:left-[20%] lg:left-[30%] sm:h-fit sm:max-h-96 sm:max-w-lg px-4 py-4 sm:p-8 border sm:rounded-lg top-0 sm:top-[20%] overflow-y-auto z-30 bg-white rounded-lg h-full">
-        <p className="text-3xl font-bold  text-gray-800 sticky -top-5 sm:-top-8 -ml-px bg-white z-20 py-4 -mt-5">
+        <p className="text-2xl font-bold  text-gray-800 sticky -top-5 sm:-top-8 -ml-px bg-white z-20 py-4 -mt-5">
           Preferences
         </p>
 

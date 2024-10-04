@@ -1,13 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { getCommentsByPostId, getReplies } from "../../services/postService";
 
-function CommentButton({ onClick, postData, className }) {
+function CommentButton({ onClick, postData, className ,state ="post"}) {
   const user = useSelector((state) => state.auth.user);
-  const [commentCount, setCommentCount] = useState(postData?.comments_count || 0);
+  const [commentCount, setCommentCount] = useState("");
 
   useEffect(() => {
     // Update the comment count whenever postData changes
-    setCommentCount(postData?.comments_count || 0);
+    setCommentCount(postData?.comments_count || "");
+
+    const fetchComments = async () => {
+      const response =  await getCommentsByPostId(postData._id)
+      setCommentCount(response.length>0?response.length:"")
+    }
+    const fetchReplies = async () => {
+      console.log("commentId",postData._id);
+      
+      const response =  await getReplies(postData._id)
+      console.log("replies",response);
+      
+      setCommentCount(response.length>0?response.length:"")
+    }
+   if(state == "post"){
+    fetchComments()
+   }else{
+    fetchReplies()
+
+   }
   }, [postData]);
 
   return (
@@ -30,7 +50,7 @@ function CommentButton({ onClick, postData, className }) {
           scrollbarWidth: "none",
           pointerEvents: "none",
         }}
-        className="flex flex-col scroll-smooth transition-all h-6 overflow-y-auto"
+        className="flex flex-col items-center justify-center scroll-smooth transition-all h-6 overflow-y-auto"
       >
         <span>{commentCount}</span>
       </div>

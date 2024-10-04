@@ -6,28 +6,51 @@ import ImageCarousel from "./ImageCarousel";
 import LikeButton from "./Button/LikeButton";
 import CommentButton from "./Button/CommentButton";
 import { useSelector } from "react-redux";
-import { addComment, getPostById } from "../services/postService";
+import {
+  addComment,
+  addReply,
+  getCommentsByPostId,
+  getLikesByPostId,
+  getPostById,
+} from "../services/postService";
 import { useParams } from "react-router-dom";
+import savedService from "../services/savedService";
 
 function PostView({ postId = useParams().postId, index, className }) {
   const [commentButtonClicked, setCommentButtonClicked] = useState(null);
   const [sendClicked, setSendClicked] = useState(null);
   const [commentText, setcommentText] = useState("");
+  const [replyText, setReplyText] = useState("");
+  const [comments, setcomments] = useState([]);
+  const [likes, setLikes] = useState([]);
+  const [savedList, setSavedList] = useState([]);
   const [post, setPost] = useState();
   const sendBtnRef = useRef(null);
   const currentUser = useSelector((state) => state.auth.user);
   console.log(post);
 
-  const handleCommentButtonClick = (index) => {
-    setCommentButtonClicked(commentButtonClicked === index ? null : index);
-  };
+
   useEffect(() => {
     const fetchPostData = async () => {
       const updatedPosts = await getPostById(postId);
       setPost(updatedPosts);
     };
 
+    const fetchComments = async () => {
+      const comments = await getCommentsByPostId(postId);
+      console.log("comments", comments);
+
+      setcomments(comments);
+    };
+
+    const fetchLikes = async () => {
+      const likes = await getLikesByPostId(postId);
+      setLikes(likes);
+    };
+
     fetchPostData();
+    fetchComments();
+    fetchLikes();
   }, [postId]); // Empty dependency array means this effect runs only once when the component mounts
 
   const handleSendClick = async (index) => {
@@ -35,31 +58,63 @@ function PostView({ postId = useParams().postId, index, className }) {
     // console.log(postData[index]);
     setcommentText("");
     const response = await addComment({
-      ...post,
-      comments_count: post.comments_count + 1,
-      comments: [
-        ...post?.comments,
-        {
-          user: currentUser._id,
-          comment_text: commentText.text,
-        },
-      ],
+      post: postId,
+      user: currentUser._id,
+      content: commentText,
     });
     console.log("commentRes:", response);
 
-    setPost((prev) => ({
+    setcomments((prev) => ({
       ...prev,
-      comments: [
-        ...prev.comments,
-        {
-          user: currentUser._id,
-          comment_text: commentText,
-        },
-      ],
+      response,
     }));
+    // setPost((prev) => ({
+    //   ...prev,
+    //   comments: [
+    //     ...prev.comments,
+    //     {
+    //       user: currentUser._id,
+    //       comment_text: commentText,
+    //     },
+    //   ],
+    // }));
 
     setcommentText("");
   };
+
+  useEffect(() => {
+    const getSaveds = async () => {
+      const savedResponse = await savedService.getSpecificSaved("post");
+      console.log("saveds", savedResponse);
+      setSavedList(savedResponse);
+    };
+
+    getSaveds();
+  }, [postId]); // Empty dependency array means this effect runs only once when the component mounts
+
+  const savePost = async (postId) => {
+    setSavedList((prev) => [
+      ...prev,
+      {
+        user: currentUser._id,
+        contentType: "post",
+        saved_content: {_id:postId},
+      },
+    ]);
+    const response = await savedService.save({
+      user: currentUser._id,
+      contentType: "post",
+      saved_content: postId,
+    });
+    console.log("saved data:", response);
+  };
+
+  const unsavePost = async (postId) => {
+    setSavedList(savedList.filter((post) => post.saved_content._id != postId));
+    const response = await savedService.unsave(postId);
+    console.log("unsaved data:", response);
+  };
+
 
   const handleAnimationEnd = () => {
     document.getElementById("sendBtn").classList.add("hidden");
@@ -71,9 +126,9 @@ function PostView({ postId = useParams().postId, index, className }) {
       {post && (
         <div
           key={index}
-          className="w-full sm:w-1/2 relative border h-fit bg-white border-gray-300 py-4"
+          className="w-full sm:w-1/2 relative sm:border-x h-fit bg-white border-gray-300 py-4"
         >
-          <p className="py-3 px-4 sticky -top-5 -mt-5 mb-5 left-0 right-0 bg-white z-40 font-semibold text-lg border-b border-gray-300">
+          <p className="py-3 px-4 sticky -top-5 -mt-5 mb-5 left-0 right-0 bg-white z-40 font-bold text-2xl  border-gray-300">
             Post
           </p>{" "}
           <div className="flex items-center px-4 justify-between">
@@ -107,22 +162,56 @@ function PostView({ postId = useParams().postId, index, className }) {
                 </p>
               </div>
             </div>
-            <svg
-              className="h-6 w-6 text-gray-500"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              strokeWidth="2"
-              stroke="currentColor"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" />
-              <circle cx="12" cy="12" r="1" />
-              <circle cx="12" cy="19" r="1" />
-              <circle cx="12" cy="5" r="1" />
-            </svg>
+            <div className="flex gap-2 items-center">
+              {savedList.some((item) => item.saved_content?._id == post._id) ? (
+                <svg
+                  onClick={(e) => {
+                    unsavePost(post._id);
+                    e.stopPropagation();
+                  }}
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  class="bi bi-bookmark-fill"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
+                </svg>
+              ) : (
+                <svg
+                  onClick={(e) => {
+                    savePost(post._id);
+                    e.stopPropagation();
+                  }}
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  class="bi bi-bookmark"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z" />
+                </svg>
+              )}
+              <svg
+                className="h-6 w-6 text-gray-500"
+                width="26"
+                height="26"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                stroke="currentColor"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" />
+                <circle cx="12" cy="12" r="1" />
+                <circle cx="12" cy="19" r="1" />
+                <circle cx="12" cy="5" r="1" />
+              </svg>
+            </div>
+           
           </div>
           <p className="mt-4 px-4 text-sm flex-1">{post.content}</p>
           {post.post_type !== "job" && (
@@ -214,7 +303,7 @@ function PostView({ postId = useParams().postId, index, className }) {
           <div className="flex gap-4 z-10 px-4 text-gray-400 font-normal items-center  mt-2">
             <LikeButton
               postData={post}
-              likes={post.likes}
+              likes={likes}
               likesCount={post.likes_count}
             />
             <CommentButton
@@ -320,8 +409,15 @@ function PostView({ postId = useParams().postId, index, className }) {
             </div>
           </div>
           <div className="pb-10 sm:pb-0">
-            {post.comments.map((comment) => (
-              <div className=" text-sm px-4 border-t py-5 z-10">
+            {comments?.map((comment, index, arr) => (
+              <div
+                className={` text-sm px-4 ${index > 0 && "border-t"} py-5 z-10`}
+              >
+                {comment.parentComment && (
+                  <p className="text-gray-400">
+                    Replied to {comment.parentComment.user.username}
+                  </p>
+                )}
                 <div
                   className={`relative  gap-2  transition-all items-center rounded-xl  overflow-hidden mt-2 `}
                 >
@@ -340,12 +436,137 @@ function PostView({ postId = useParams().postId, index, className }) {
                     <p className="font-medium">{post.user.username}</p>
                   </div>
                   <p
-                    value={comment.comment_text}
+                    value={comment.content}
                     // onBlur={() => setCommentButtonClicked(null)}
                     className={`rounded-xl ml-5 mt-2  outline-none  flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
                   >
-                    {comment.comment_text}
+                    {comment.content}
                   </p>
+                </div>
+                <div className="flex gap-4 z-10 px-4 ml-2 text-gray-400 font-normal items-center  mt-2">
+                  <LikeButton
+                    postData={comment}
+                    likes={comment}
+                    likesCount={post.likes_count}
+                  />
+                  <CommentButton
+                    onClick={() => {
+                      setCommentButtonClicked((prev) =>
+                        prev == index ? null : index
+                      );
+                    }}
+                    state="comment"
+                    postData={comment}
+                    // setPostData={setPostData}
+                  />
+                </div>
+                <div
+                  id="commentInput"
+                  className={`relative flex gap-2 transition-all items-center overflow-hidden ${
+                    commentButtonClicked === index
+                      ? " opacity-100"
+                      : "-mt-8 opacity-0 pointer-events-none "
+                  } `}
+                >
+                  <UserImageInput
+                    className=" rounded-full"
+                    imageHeight={20}
+                    imageBorder={0}
+                    image={
+                      currentUser.profileImage?.compressedImage ||
+                      profileImageDefault
+                    }
+                    alt={`${post.username}'s avatar`}
+                    isEditable={false}
+                  />
+                  <div className="flex w-full">
+                    <input
+                      id={comment._id + "replyText"}
+                      key={comment._id + "replyText"}
+                      autoFocus={commentButtonClicked === index}
+                      value={replyText?.index == index ? replyText?.text : ""}
+                      onChange={(e) => {
+                        setReplyText({
+                          index: index,
+                          text: e.target.value,
+                        });
+                      }}
+                      style={{
+                        WebkitAutofill: "number",
+                        WebkitBoxShadow: "0 0 0px 1000px white inset",
+                      }}
+                      disabled={sendClicked}
+                      // onBlur={() => setCommentButtonClicked(null)}
+                      className={`rounded-xl text-sm bg-white placeholder:text-sm outline-none py-2 flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
+                      placeholder={`Reply on @${comment.user.username}`}
+                    />
+                    <svg
+                      id="sendBtn"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      fill="currentColor"
+                      ref={sendBtnRef}
+                      className={`bi bi-send-fill  text-blue-500 absolute top-1/4 rotate-45 right-1 ${
+                        sendClicked === index ? "send-animation" : ""
+                      }`}
+                      viewBox="0 0 16 16"
+                      onAnimationEnd={() => {
+                        setcommentText(null);
+                        setSendClicked(false);
+                        handleAnimationEnd();
+                        // if (
+                        //   post.comments.some(
+                        //     (comment) => comment.user == userDetails._id
+                        //   )
+                        // ) {
+
+                        //   const commentInput =
+                        //     document.getElementById("commentInput");
+
+                        //   if (commentInput) {
+                        //     commentInput.classList.add(
+                        //       "-mt-8",
+                        //       "opacity-0"
+                        //     ); // Hide the input field
+                        //   }
+                        // }
+                      }}
+                      onClick={async () => {
+                        if (replyText?.text.length > 0) {
+                          setSendClicked(index);
+                          // console.log(postData[index]);
+                          setcommentText("");
+                          const response = await addReply({
+                            post: postId,
+                            user: currentUser._id,
+                            parentComment: comment._id,
+                            content: replyText.text,
+                          });
+                          console.log("commentRes:", response);
+
+                          setcomments((prev) => ({
+                            ...prev,
+                            response,
+                          }));
+                          // setPost((prev) => ({
+                          //   ...prev,
+                          //   comments: [
+                          //     ...prev.comments,
+                          //     {
+                          //       user: currentUser._id,
+                          //       comment_text: commentText,
+                          //     },
+                          //   ],
+                          // }));
+
+                          setcommentText("");
+                        }
+                      }}
+                    >
+                      <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
+                    </svg>
+                  </div>
                 </div>
               </div>
             ))}

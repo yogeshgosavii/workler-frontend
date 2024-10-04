@@ -16,6 +16,7 @@ import resumeService from "../services/resumeService";
 import searchService from "../services/searchService";
 import JobListItem from "./jobComponent/JobListItem";
 import companyDefaultImage from '../assets/companyDefaultImage.png';
+import savedService from "../services/savedService";
 
 
 function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
@@ -164,18 +165,33 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
     //   }
     // }
 
+    const checkSaved = async () => {
+
+      setLoading((prev) => ({ ...prev, checkSaved: true }));
+      try {
+        const saveData = await savedService.checkSaved({
+          userId: userDetails._id,
+          saved_content: jobDetails._id,
+        });
+        console.log("saved:", saveData);
+        setSaved(saveData.exists);
+      } catch (error) {
+        console.error("Failed to fetch saved data", error);
+      } finally {
+        setLoading((prev) => ({ ...prev, checkSaved: false }));
+      }
+    };
+
+
     if (jobId) {
       // Ensure userId exists before making requests
       // fetchUserData();
       console.log("jInter", interviews);
-      if (userDetails) {
-        if (userDetails?.saved_jobs.some((job) => job == jobId)) {
-          setSaved(true);
-        }
-      }
+     
       // console.log(userDetails.saved_jobs);
 
       checkApplied();
+      checkSaved()
       fetchData();
 
       setJobApproach(
@@ -207,22 +223,17 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
 
   const saveJob = async () => {
     setSaved(true);
-    const response = await authService.updateUserDetails({
-      ...userDetails,
-      saved_jobs: [...(userDetails.saved_jobs || []), jobId],
+    const response = await savedService.save({
+      user:userDetails._id,
+      contentType:"job",
+      saved_content : jobDetails._id
     });
-    dispatch(updateUserDetails(response));
-
     console.log("saved data:", response);
   };
 
   const unsaveJob = async () => {
     setSaved(false);
-    const response = await authService.updateUserDetails({
-      ...userDetails,
-      saved_jobs: userDetails.saved_jobs.filter((job) => job._id != jobId),
-    });
-    dispatch(updateUserDetails(response));
+    const response = await savedService.unsave(jobDetails._id);
     console.log("unsaved data:", response);
   };
 

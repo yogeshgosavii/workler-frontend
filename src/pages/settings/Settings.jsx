@@ -38,7 +38,12 @@ function Settings() {
               >
                 Preferences
               </p>
-              <p>Saveds</p>
+              <p
+               onClick={(e) => {
+                e.preventDefault();
+                navigate("/profile/settings/saveds");
+              }}
+              >Saveds</p>
             </div>
           </div>
           <a
@@ -58,7 +63,12 @@ function Settings() {
         <div className="p-6 flex h-full flex-col">
           <h2 className="text-2xl font-bold ">Settings</h2>
           <div className="flex-1 mt-6 flex flex-col text-lg gap-4">
-            <p>Account settings</p>
+            <p
+             onClick={(e) => {
+              e.preventDefault();
+              navigate("/profile/settings/account-settings");
+            }}
+            >Account settings</p>
             <p
               onClick={(e) => {
                 e.preventDefault();
@@ -67,7 +77,11 @@ function Settings() {
             >
               Preferences
             </p>
-            <p>Saveds</p>
+            <p 
+             onClick={(e) => {
+              e.preventDefault();
+              navigate("/profile/settings/saveds");
+            }}>Saveds</p>
           </div>
           <a
             onClick={() => {

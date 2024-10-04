@@ -31,4 +31,46 @@
     animation: fadeIn 0.3s ease-in-out;
   }
   
-  
+  .fade-out {
+    opacity: 0;
+    transition: opacity 0.5s ease-out;
+  }
+
+  /* Add this to your CSS file */
+.animate-unsave {
+  animation: unsaveAnimation 0.2s ease forwards;
+}
+
+@keyframes unsaveAnimation {
+  0% {
+    opacity: 1;
+    transform: scale(1); /* Start at normal scale */
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.8); /* Move up and scale down */
+  }
+}
+
+.unsave-animation {
+  animation: unsaveAnimation 0.5s forwards; /* Adjust duration as needed */
+}
+
+@keyframes scatter {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate(calc(100px * var(--x)), calc(100px * var(--y)));
+    opacity: 0;
+  }
+}
+
+.scatter {
+  animation: scatter 0.5s forwards;
+}
+
