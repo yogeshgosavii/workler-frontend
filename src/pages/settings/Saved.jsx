@@ -143,17 +143,17 @@ function Saved() {
               />
 
               <div className="absolute bottom-2 left-0 right-0 flex items-center space-x-2">
-                <div className="relative w-full  left-0">
+                <div className={`relative flex items-center   ${
+                      post.saved_content.images.compressedImage.length > 1
+                        ? "justify-start pl-3"
+                        : "justify-center"
+                    } w-full  left-0`}>
                   {/* Background with opacity */}
                   <div className="absolute h-10 w-[95%] rounded-full bg-black opacity-50 bottom-0 right-1 left-1"></div>
 
                   {/* Unsave button */}
                   <button
-                    className={`relative bottom-2 ${
-                      post.saved_content.images.compressedImage.length > 1
-                        ? "left-2"
-                        : "left-1/4"
-                    } font-medium z-10 px-3  text-white bg-transparent `}
+                    className={`relative bottom-2 font-medium z-10 px-3  text-white bg-transparent `}
                   >
                     Unsave
                   </button>
@@ -166,7 +166,7 @@ function Saved() {
                     width="22"
                     height="22"
                     fill="currentColor"
-                    className="absolute bottom-2 right-4 z-10 text-white"
+                    className="absolute bottom-2 right-5 z-10 text-white"
                     viewBox="0 0 16 16"
                   >
                     <path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
@@ -389,28 +389,30 @@ function Saved() {
       ></div>
 
       {/* Main Content */}
-      <div className="fixed w-full  left-0 sm:left-[15%] md:left-[20%] lg:left-[30%] sm:max-w-lg px-4 py-4 sm:p-8 border sm:rounded-xl top-0 sm:top-[20%] overflow-y-auto z-30 bg-white rounded-lg h-full  sm:h-fit">
-        <p className="text-2xl font-bold text-gray-800 mb-5">Saved</p>
+      <div className="fixed w-full  right-0 sm:max-w-lg px-4 py-4 sm:p-6   top-0  overflow-y-auto z-30 bg-white h-full  ">
+      <div className=" sticky -top-5 -ml-px bg-white z-20 py-4 -mt-5">
+      <p className="text-2xl font-bold text-gray-800 mb-5">Saved</p>
 
-        {/* Tab Navigation */}
-        <div className="flex w-full gap-3">
-          {["Posts", "Profiles", "Jobs"].map((tab) => (
-            <p
-              key={tab}
-              onClick={() => setSelectedTab(tab)}
-              className={`w-1/3 border cursor-pointer px-2 py-1 rounded-lg font-semibold text-center ${
-                selectedTab === tab
-                  ? "border-blue-500 bg-blue-50 text-blue-500"
-                  : ""
-              }`}
-            >
-              {tab}
-            </p>
-          ))}
+          {/* Tab Navigation */}
+          <div className="flex w-full gap-3">
+            {["Posts", "Profiles", "Jobs"].map((tab) => (
+              <p
+                key={tab}
+                onClick={() => setSelectedTab(tab)}
+                className={`w-1/3 border cursor-pointer px-2 py-1 rounded-lg font-medium text-center ${
+                  selectedTab === tab
+                    ? "border-blue-500 bg-blue-50 text-blue-500"
+                    : ""
+                }`}
+              >
+                {tab}
+              </p>
+            ))}
+          </div>
         </div>
 
         {/* Tab Content */}
-        <div className="mt-5 overflow-y-auto sm:max-h-80">
+        <div className="mt-2 overflow-y-auto max-h-full">
           {renderTabContent()}
         </div>
       </div>

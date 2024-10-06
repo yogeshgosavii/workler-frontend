@@ -70,7 +70,7 @@ function Jobs() {
             onFocus={() => setSearchFocus(true)}
             onBlur={() => setSearchFocus(false)}
             ref={searchRef}
-            inputClassName="placeholder:text-xl"
+            inputClassName=""
             className={`sticky transition-all  sm:max-w-[250px] flex items-center md:max-w-[350px] lg:max-w-md z-10 bg-white w-full ${!isAuthenticated && "w-[61%]"} caret-blue-500 h-12  `}
             placeholder="Enter the job title or domain"
           />

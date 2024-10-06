@@ -51,8 +51,8 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       const approaches = await approachService.getUserApproaches(
         userDetails._id
       );
-      console.log(approaches);
-      setApproaches(approaches);
+      console.log("approaches",approaches.filter((approach) => approach.job._id == jobId));
+      setApproaches(approaches.filter((approach) => approach.job._id == jobId));
     };
 
     const fetchInterviews = async () => {
@@ -195,7 +195,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       fetchData();
 
       setJobApproach(
-        approaches.filter((approach) => approach.job._id === jobId)
+        approaches.filter((approach) => approach.job._id == jobId)
       );
       setJobInterview(
         interviews.find((interview) => interview.job._id === jobId)
@@ -205,7 +205,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
         interviews?.filter((interview) => interview.job._id == jobId)
       );
       // console.log("approaches",approaches.filter(approach  => approach.job._id === jobId));
-      console.log("approaches", jobApproach);
+      console.log("jobapproaches", jobApproach);
 
       fetchApplicantsCount();
     }
@@ -642,6 +642,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
               </button>
             </div>
           </form> */}
+         
               <div className="mt-4 w-full">
                 <button
                   onClick={() => {
@@ -847,6 +848,125 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                 </div>
               </div>
             )}
+             {approaches[0]?.status === "approached" ? (
+                    <div className="bg-blue-50 text-blue-500 shadow-md font-medium text-sm flex gap-2 flex-wrap justify-between items-center p-4 rounded-lg">
+                      <p className="">Select response </p>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            updateApproach({
+                              id: approaches._id,
+                              status: "accepted",
+                            });
+                          }}
+                          className="bg-blue-500 hover:bg-blue-600 transition-colors text-white px-4 py-2 rounded-full "
+                        >
+                          Accept
+                        </button>
+                        <button
+                          onClick={() => {
+                            updateApproach({
+                              id: approaches._id,
+                              status: "declined",
+                            });
+                          }}
+                          className="bg-red-500 hover:bg-red-600 transition-colors text-white px-4 py-2 rounded-full "
+                        >
+                          Decline
+                        </button>
+                      </div>
+                    </div>
+                  ) : approaches.status === "accepted" ? (
+                    <div className=" w-fit bg-gray-50 text-sm gap-2 flex flex-wrap justify-between items-center p-3 py-1 rounded-md ">
+                      <p>Approach accepted you will be notified about the next step</p>
+                    
+                    </div>
+                  ) : approaches.status === "interview_setup" ? (
+                    <p>
+                      {interviews?.map((interview) => {
+                        if (interview.job._id == approaches.job._id) {
+                          return (
+                            <div className="text-sm justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
+                              <div>
+                                <p>
+                                  {" "}
+                                  Interview scheduled on{" "}
+                                  <span className="font-medium">
+                                    {new Date(
+                                      interview.interview_date
+                                    ).toLocaleDateString("en-GB", {
+                                      day: "numeric",
+                                      month: "short",
+                                    })}
+                                  </span>{" "}
+                                  at <span>{interview.interview_time}</span>
+                                </p>
+                                <p>
+                                  Mode of interview{" "}
+                                  <span className="font-medium">
+                                    {interview.interview_mode}
+                                  </span>
+                                </p>
+                                {/* <p>Address {interview.interview_address}</p> */}
+                              </div>
+                              {interview.interview_mode == "In-person" && (
+                                <div
+                                  className="relative"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                  }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="currentColor"
+                                    className="h-14 bg-white p-2 rounded-md border"
+                                    viewBox="0 0 16 16"
+                                  >
+                                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
+                                  </svg>
+                                  <a
+                                    className="border absolute h-full w-full top-0 rounded-md "
+                                    href={interview.interview_location_link}
+                                  ></a>
+                                </div>
+                              )}
+                              {interview.interview_mode == "Online" && (
+                                <div
+                                  className="relative"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                  }}
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    fill="currentColor"
+                                    class="bi bi-link-45deg"
+                                    viewBox="0 0 16 16"
+                                  >
+                                    <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z" />
+                                    <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z" />
+                                  </svg>
+                                  <a
+                                    className="border absolute h-full w-full top-0 rounded-md "
+                                    href={interview.interview_meet_link}
+                                  ></a>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        }
+                      })}
+                      {approaches.createdAt && (
+                        <p className="mt-2 text-sm text-gray-400">
+                          Approached ${approaches.createdAt}
+                        </p>
+                      )}
+                    </p>
+                  ) : (
+                    <p className="text-red-500 text-sm">Approach declined</p>
+                  )}
             {jobInterview && (
               <div className="text-sm justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
                 <div>

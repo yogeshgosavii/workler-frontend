@@ -85,35 +85,36 @@ function AccountSettings() {
 
   const updatePassword = async () => {
     setPasswordLoading(true);
-    setPasswordError("")
+    setPasswordError("");
     const passwordCheck = verifyPassword(newPassword, currentPassword);
-    
+
     if (passwordCheck.valid) {
-        console.log("Password is valid, proceeding with update...");
+      console.log("Password is valid, proceeding with update...");
 
-        try {
-            const passwordResponse = await authService.updatePassword({
-                currentPassword,
-                newPassword,
-            });
+      try {
+        const passwordResponse = await authService.updatePassword({
+          currentPassword,
+          newPassword,
+        });
 
-            setCurrentPassword("")
-            setNewPassword("")
+        setCurrentPassword("");
+        setNewPassword("");
 
-            console.log("Password updated successfully:", passwordResponse);
-        } catch (error) {
-            // Show specific error message from the response
-            setPasswordError(error.message || "An error occurred while updating the password.");
-            console.log("Error:", error);
-        } finally {
-            setPasswordLoading(false);
-        }
-    } else {
-        setPasswordError(passwordCheck.message);
+        console.log("Password updated successfully:", passwordResponse);
+      } catch (error) {
+        // Show specific error message from the response
+        setPasswordError(
+          error.message || "An error occurred while updating the password."
+        );
+        console.log("Error:", error);
+      } finally {
         setPasswordLoading(false);
+      }
+    } else {
+      setPasswordError(passwordCheck.message);
+      setPasswordLoading(false);
     }
-};
-
+  };
 
   const verifyUserName = async (value) => {
     setusernameChecking(true);
@@ -162,7 +163,7 @@ function AccountSettings() {
   };
 
   return (
-    <div>
+    <div className="h-full">
       {/* Overlay */}
       <div
         onClick={() => {
@@ -172,7 +173,7 @@ function AccountSettings() {
       ></div>
 
       {/* Modal for Account Settings */}
-      <div className="fixed w-full sm:max-w-lg left-0 sm:left-[15%] md:left-[20%] lg:left-[30%] h-full sm:h-auto  px-4 sm:px-6 py-6 sm:py-8 bg-white rounded-lg z-30 top-0 sm:top-[20%] shadow-lg overflow-y-auto">
+      <div className="fixed w-full sm:max-w-lg right-0   h-full  px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
         <h2 className="text-2xl font-bold mb-10 ">Account Settings</h2>
 
         <div className="space-y-4 mb-3">
@@ -180,7 +181,22 @@ function AccountSettings() {
             onClick={() => toggleSection("username")}
             className={`w-full pb-4 flex justify-between items-center border-b`}
           >
-            <p className="font-medium">Username</p>
+            <div className="flex gap-4 items-center">
+              <svg
+                class="h-6 w-6 "
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                {" "}
+                <circle cx="12" cy="12" r="4" />{" "}
+                <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94" />
+              </svg>
+              <p className="font-medium">Username</p>
+            </div>
             <span>
               {activeSection === "username" ? (
                 <svg
@@ -215,13 +231,13 @@ function AccountSettings() {
           </button>
 
           <div
-            className={`overflow-hidden transition-all duration-300 ${
+            className={`overflow-hidden  transition-all duration-300 ${
               activeSection === "username"
                 ? "max-h-40 opacity-100"
                 : "max-h-0 opacity-0"
             }`}
           >
-            <div className="flex-grow">
+            <div className="flex-grow mt-3">
               <div className="relative flex mt-2 items-center">
                 <input
                   type="text"
@@ -328,7 +344,7 @@ function AccountSettings() {
                 !userNameAvailable
                   ? "bg-blue-300"
                   : "bg-blue-500"
-              } w-full mt-5 text-lg rounded-md py-2 text-white font-medium`}
+              } w-full mt-5 text-lg mb-5 rounded-md py-2 text-white font-medium`}
             >
               Change
             </button>
@@ -341,7 +357,22 @@ function AccountSettings() {
             onClick={() => toggleSection("password")}
             className={`w-full pb-4 flex justify-between items-center border-b`}
           >
-            <p className="font-medium">Password</p>
+            <div className="flex gap-4 items-center">
+              <svg
+                class="h-6 w-6 "
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                {" "}
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />{" "}
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+              <p className="font-medium">Password</p>
+            </div>
             <span>
               {activeSection === "password" ? (
                 <svg
@@ -382,7 +413,7 @@ function AccountSettings() {
                 : "max-h-0 opacity-0"
             }`}
           >
-            <div className="flex flex-col gap-4 mt-2">
+            <div className="flex flex-col gap-4 mt-6">
               <PasswordInput
                 name={"current_password"}
                 className={`transition-transform flex-grow duration-300 ease-in-out `}
@@ -418,7 +449,9 @@ function AccountSettings() {
               Change password
             </button> */}
             <Button
-            onClick={()=>{updatePassword()}}
+              onClick={() => {
+                updatePassword();
+              }}
               type="submit"
               className={`flex items-center text-lg justify-center bg-blue-500  disabled:bg-blue-300  text-white py-3  w-full mt-5`}
               disabled={

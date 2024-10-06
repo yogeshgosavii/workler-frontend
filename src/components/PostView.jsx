@@ -427,13 +427,13 @@ function PostView({ postId = useParams().postId, index, className }) {
                       imageHeight={20}
                       imageBorder={0}
                       image={
-                        post.user.profileImage?.compressedImage ||
+                        comment.user.profileImage?.compressedImage ||
                         profileImageDefault
                       }
                       alt={`${post.username}'s avatar`}
                       isEditable={false}
                     />
-                    <p className="font-medium">{post.user.username}</p>
+                    <p className="font-medium">{comment.user.username}</p>
                   </div>
                   <p
                     value={comment.content}

@@ -439,7 +439,7 @@ const UserProfile = () => {
         location.pathname === "/profile/settings" ||
         location.pathname === "/profile/settings/preferences" ||
         location.pathname === "/profile/settings/account-settings" ||
-        location.pathname === "/profile/settings/saved"  
+        location.pathname === "/profile/settings/saveds"  
       }
       className={`w-full flex justify-center gap-5`}
     >
@@ -532,11 +532,7 @@ const UserProfile = () => {
           ) : null}
           {/* Profile page */}
           <div
-            className={` w-full  lg:max-w-[62%]  ${
-              location.pathname === "/profile/settings"
-                ? "-ml-[60%] sm:-ml-0"
-                : "-ml-0"
-            } ${
+            className={` w-full  lg:max-w-[62%]   ${
               (formType || settings || showProfileImage || updateFormType) &&
               "fixed"
             }   md:flex-row transition-all md:p-6 duration-300 relative  flex-1 h-full `}

@@ -158,9 +158,7 @@ const router = createBrowserRouter([
         path: "settings/saveds",
         element: (
           <LoginVerification>
-            <PageTransition>
               <Saved />
-            </PageTransition>
           </LoginVerification>
         ),
       },

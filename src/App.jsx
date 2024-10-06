@@ -6,10 +6,12 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom"; // Import u
 import UserImageInput from "./components/Input/UserImageInput";
 import authService from "./services/authService";
 import { useSelector } from "react-redux";
+import { getUserNotificationCount } from "./services/notificationService";
 
 const App = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [activeTab, setActiveTab] = useState(""); // State to manage active tab
+  const [notificationCount, setNotificationCount] = useState();
   const location = useLocation(); // Get the current location
   const navigate = useNavigate(); // Create a navigate function
 
@@ -25,8 +27,18 @@ const App = () => {
         console.error("Error fetching user details:", error);
       }
     };
+    const fetchNotificationCount = async () => {
+      try {
+        const response = await getUserNotificationCount();
+        setNotificationCount(response.unreadCount);
+        console.log("count", response);
+      } catch (error) {
+        console.error("Error fetching notification count:", error);
+      }
+    };
 
     fetchUserDetails();
+    fetchNotificationCount();
   }, []);
 
   // Update active tab based on current location
@@ -63,7 +75,11 @@ const App = () => {
     <div className="relative flex flex-col sm:flex-row h-screen  text-gray-700">
       <div className=" w-full h-full">
         <Header />
-        <div className={`flex-1  h-full w-full  overflow-y-auto flex justify-center  ${isAuthenticated && "pb-14 sm:pb-5 sm:pl-24"} py-5  sm:px-6 `}>
+        <div
+          className={`flex-1  h-full w-full  overflow-y-auto flex justify-center  ${
+            isAuthenticated && "pb-14 sm:pb-5 sm:pl-24"
+          } py-5  sm:px-6 `}
+        >
           <Outlet />
         </div>
       </div>
@@ -146,7 +162,6 @@ const App = () => {
             }`}
           >
             <svg
-             
               xmlns="http://www.w3.org/2000/svg"
               fill="currentColor"
               className="h-6 w-6"
@@ -184,10 +199,20 @@ const App = () => {
           onClick={() => {
             navigate("notifications");
           }}
-          className={`w-1/5 sm:w-fit   text-center flex justify-center items-center ${
+          className={`w-1/5 sm:w-fit relative   text-center flex justify-center items-center ${
             activeTab === "notifications" ? "text-blue-500" : "text-gray-400"
           }`}
         >
+          <div className="">
+            <div className={`absolute -top-1.5 ${activeTab!="notifications" ? "animate-ping":"animate-none"} right-4 p-0.5 pt-0  font-medium bg-red-500 text-white rounded-full text-xs h-5 w-5 flex items-center justify-center`}>
+
+            </div>
+            <div className="absolute -top-1.5 right-4 p-0.5 pt-0  font-medium bg-red-500 text-white rounded-full text-xs h-5 w-5 flex items-center justify-center">
+              <p>{notificationCount}</p>
+            </div>
+            {/* Add the icon or bell here for notifications */}
+            <i className="fas fa-bell text-gray-700"></i>
+          </div>
           <svg
             className="h-6 w-6 "
             viewBox="0 0 24 24"

@@ -54,26 +54,28 @@ function Preferences() {
   };
 
   return (
-    <div>
+    <div className="max-h-screen h-full -top-10 overflow-y-auto border border-red-500">
       <div
         onClick={() => {
           window.history.back();
         }}
         className="fixed w-full h-full bg-black opacity-30 z-20 top-0 left-0"
       ></div>
-      <div className="fixed w-full left-0 flex flex-col gap-6 sm:left-[15%] md:left-[20%] lg:left-[30%] sm:h-fit sm:max-h-96 sm:max-w-lg px-4 py-4 sm:p-8 border sm:rounded-lg top-0 sm:top-[20%] overflow-y-auto z-30 bg-white rounded-lg h-full">
+      <div className="fixed flex flex-col gap-5 w-full   right-0 top-0  h-full  sm:max-w-lg px-4 py-4 sm:p-6   overflow-y-auto    z-30 bg-white  max-h-full  ">
         <p className="text-2xl font-bold  text-gray-800 sticky -top-5 sm:-top-8 -ml-px bg-white z-20 py-4 -mt-5">
           Preferences
         </p>
 
-        <LocationInput
-          placeholder={"Location"}
-          value={location}
-          onChange={(e) => {
-            console.log(e.target.value);
-            setLocation(e.target.value);
-          }}
-        />
+        <div className="">
+          <LocationInput
+            placeholder={"Location"}
+            value={location}
+            onChange={(e) => {
+              console.log(e.target.value);
+              setLocation(e.target.value);
+            }}
+          />
+        </div>
 
         <OptionInput
           value={jobType}
@@ -120,7 +122,7 @@ function Preferences() {
 
         <button
           onClick={handleSavePreferences}
-          className="w-full py-2 px-4 font-medium text-lg bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full py-2 px-4 mt-5 font-medium text-lg bg-blue-500 text-white rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           Save Preferences
         </button>

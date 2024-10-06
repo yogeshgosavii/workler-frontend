@@ -107,7 +107,7 @@ function UserProfileView({ userId = useParams().userId }) {
     const fetchJobData = async () => {
       setLoading((prev) => ({ ...prev, jobData: true }));
       try {
-        const response = await jobService.job.getByUserIds(userId);
+        const response = await jobService.job.getByUserIds(currentUserDetails._id);
         console.log("job details:", response);
         setcurrentUserJobData(response);
         console.log("jobdata", response);
@@ -260,7 +260,7 @@ function UserProfileView({ userId = useParams().userId }) {
       setApproaching(false);
       console.log(approached);
 
-      if (approached.user == userDetails._id && approached.job._id == job._id) {
+      if (approached &&(approached.user == userDetails._id && approached.job._id == job._id)) {
         const response = await approachService.updateStatus({
           id: approached._id,
           status: "approached",
@@ -695,7 +695,7 @@ function UserProfileView({ userId = useParams().userId }) {
               );
             })}
             {!loading.userDetails && (
-              <div className="flex gap-4">
+              <div className="flex gap-4 flex-wrap">
                 {(currentUserDetails.account_type == "Candidate" ||
                   currentUserDetails.account_type == "Explorer" ||
                   currentUserDetails.account_type == "Employeer" ||
@@ -707,11 +707,9 @@ function UserProfileView({ userId = useParams().userId }) {
                       onClick={() => {
                         unfollow();
                       }}
-                      className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-whiteborder border-blue-500 text-blue-500 border py-1 rounded-full "
+                      className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center  border-blue-500 text-blue-500 border-2 py-1 rounded-full "
                     >
-                      {userDetails?.account_type == "Employeer"
-                        ? "Following"
-                        : "Allied"}
+                    Following
                     </button>
                   ) : (
                     <button
@@ -721,11 +719,7 @@ function UserProfileView({ userId = useParams().userId }) {
                       }}
                       className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 py-1 rounded-full "
                     >
-                      {userDetails?.account_type == "Employeer" ||
-                      userDetails?.account_type !==
-                        currentUserDetails?.account_type
-                        ? "Follow"
-                        : "Create alie"}
+                     Follow
                     </button>
                   ))}
 
@@ -770,9 +764,9 @@ function UserProfileView({ userId = useParams().userId }) {
                   ) : (
                     <button
                       onClick={() => saveProfie()}
-                      className="w-fit px-5 py-1 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-blue-500 border-2 border-blue-500  sm:hover:bg-blue-50   rounded-full"
+                      className="w-fit px-5 py-1 text-nowrap flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-blue-500 border-2 border-blue-500  sm:hover:bg-blue-50   rounded-full"
                     >
-                      Save Profile
+                      Save 
                     </button>
                   ))}
               </div>

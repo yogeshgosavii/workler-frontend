@@ -91,7 +91,14 @@ function Search() {
         } px-4 sm:px-0 w-full sm:w-2/5 md:1/2`}
       >
         <div className="relative flex flex-col w-full border rounded-xl gap-2 h-fit px-4 py-2">
-          <form onSubmit={()=>{navigate("/jobs/"+query)}} className="flex gap-2 z-10 bg-white items-center w-full justify-between rounded-xl mb-px">
+          <form onSubmit={(e)=>{
+            if(searchType != "user"){
+              navigate("/jobs/"+query)
+            }
+            else{
+              e.preventDefault()
+            }
+          }} className="flex gap-2 z-10 bg-white items-center w-full justify-between rounded-xl mb-px">
             <input
               autoFocus
               onFocus={() => setSearchInputFocus(true)}
