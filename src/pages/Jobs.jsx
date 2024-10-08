@@ -105,7 +105,7 @@ function Jobs() {
           <div className={` pb-10 fixed max-h-[85%] w-full sm:w-fit overflow-y-auto  ${isAuthenticated ? "sm:left-24 top-[45px] sm:top-16 ":"left-0 sm:left-8 top-[52px] sm:top-24"} pt-5 `}>
             <JobFilter />
           </div>
-          <JobList jobs={submitJobList} />
+          <JobList  jobs={submitJobList} />
         </div>
 
         {/* Right News Section */}

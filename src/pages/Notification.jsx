@@ -70,7 +70,7 @@ function Notification({ userId }) {
       {loading ? (
         <p className="px-4 md:px-6">Loading notifications...</p>
       ) : error ? (
-        <p className="text-red-500">{error}</p>
+        <p className="text-red-500 px-4 md:px-6">{error}</p>
       ) : notifications.length === 0 ? (
         <p className="text-gray-400 mt-4 px-4 md:px-6">No notifications yet</p>
       ) : (
