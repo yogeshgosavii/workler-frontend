@@ -1,10 +1,18 @@
 import React from "react";
 import Logo from "../../assets/Logo";
 import LogoCircle from "../../assets/LogoCircle";
+import remotiveLogo from "../../assets/wordmark_H_orange.svg";
+
 import { useNavigate } from "react-router-dom";
 
-const JobListItem = React.memo(({ job, companyDefaultImage ,className}) => {
-  const navigate = useNavigate()
+const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
+  const navigate = useNavigate();
+  const cleanLogoUrl = (urlString) => {
+    if (!urlString) return null;
+
+    // Remove any leading or trailing quotes from the URL string
+    return urlString.replace(/^"(.*)"$/, "$1");
+  };
   return (
     <div>
       {job.header ? (
@@ -165,16 +173,29 @@ const JobListItem = React.memo(({ job, companyDefaultImage ,className}) => {
       ) : (
         <div
           onClick={() => {
-            navigate("/job/"+job._id)
+            if (job.user) {
+              // Navigate to the job details page within your app
+              navigate("/job/" + job._id);
+            } else {
+              // Open the external job URL in a new tab/window
+              window.open(`${job.job_url}`, "_blank", "noopener,noreferrer");
+            }
           }}
-          className={` cursor-pointer hover:bg-gray-50  mb-4 ${className}`}
+          className={`cursor-pointer hover:bg-gray-50 mb-4 ${className}`}
         >
           <div className="flex gap-3">
             <img
               className="border p-2 rounded-lg h-20"
-              src={job.user.company_details?(job.user.profileImage ||companyDefaultImage) : (companyDefaultImage)
-              }
+              src={`http://localhost:5002/proxy-image?url=${encodeURIComponent(
+                job.company_logo
+              )}`} // Use the proxy URL
+              alt={`${job.company_name} logo`}
+              onError={(e) => {
+                e.target.onerror = null; // Prevents an infinite loop
+                e.target.src = companyDefaultImage; // Fallback image on error
+              }}
             />
+
             <div className="w-full">
               <div className="flex items-center gap-4">
                 <h2 className="text-xl font-bold text-black max-w-[700px] ">
@@ -189,10 +210,17 @@ const JobListItem = React.memo(({ job, companyDefaultImage ,className}) => {
               </div>
             </div>
           </div>
-          {/* <div className="flex px-2 gap-1 py-1 max-h-10 w-fit rounded-md items-center mt-2 text-sm border text-black">
-            <LogoCircle/>
-            <p>Workler</p>
-          </div> */}
+          <div className="flex px-2 gap-1 py-0.5 max-h-10 w-fit rounded-lg items-center mt-2 text-sm border text-black">
+            <img
+              src={
+                job.job_source == "Remotive" ? (
+                 remotiveLogo
+                ) : null
+              }
+              className=" w-28 "
+            />
+            <p className="">{job.job_source!="Remotive"&&job.job_source}</p>
+          </div>
           <div className="flex flex-wrap gap-2 flex-row text-nowrap mt-5">
             <div className="flex gap-2   items-center">
               <svg
@@ -209,7 +237,9 @@ const JobListItem = React.memo(({ job, companyDefaultImage ,className}) => {
                 />
               </svg>
               <p className="text-nowrap text-lg sm:text-base sm:font-normal font-semibold">
-                {job.min_salary ? ` ${job.min_salary}` : "Not disclosed"}
+                {job.min_salary || job.max_salary
+                  ? ` ${job.min_salary} - ${job.max_salary}`
+                  : "Not disclosed"}
               </p>
             </div>
             <div className="min-h-full border-l mx-1 w-px"></div>
@@ -232,7 +262,9 @@ const JobListItem = React.memo(({ job, companyDefaultImage ,className}) => {
                 <path d="M3 13a20 20 0 0 0 18 0" />
               </svg>
               <p className="text-nowrap">
-                {job.min_experience || "Experience not specified"}
+                {job.min_experience || job.max_experience
+                  ? `${job.min_experience} - ${job.max_experience}`
+                  : "Experience not specified"}
               </p>
             </div>
             {job.location && (
@@ -259,7 +291,9 @@ const JobListItem = React.memo(({ job, companyDefaultImage ,className}) => {
                     d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                   />
                 </svg>
-                <p className="text-wrap">{job.location?.address}</p>
+                <p className="text-wrap">
+                  {job.location?.address || job.location?.country}
+                </p>
               </div>
             )}
           </div>

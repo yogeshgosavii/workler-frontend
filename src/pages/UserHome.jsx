@@ -42,7 +42,7 @@ function UserHome() {
 
   return (
     <div className='w-full flex flex-col'>
-      <div className={`px-4  flex  w-full sm:w-[100%] -mt-5 py-4  z-50 bg-white   top-0  ${selectedPost && "hidden sm:block"}`}>
+      <div className={`px-4  flex  w-full sm:w-[100%]  py-4  z-50 bg-white   top-0  ${selectedPost && "hidden sm:block"}`}>
         {["All", "Posts", "Jobs"].map((type) => (
           <p
             key={type}

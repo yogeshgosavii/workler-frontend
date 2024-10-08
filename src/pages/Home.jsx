@@ -69,7 +69,7 @@ function Home() {
   }, [searchText]);
 
   return (
-    <div className="w-full px-4  h-full py-10 overflow-y-auto" ref={divRef}>
+    <div className="w-full px-4 sm:px-8  h-full py-10 overflow-y-auto" ref={divRef}>
       {/* Header section */}
       <div className="mt-36 ">
         <p className="text-blue-500 font-bold text-xl">#BEST HELP</p>

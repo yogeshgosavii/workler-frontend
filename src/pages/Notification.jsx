@@ -64,17 +64,17 @@ function Notification({ userId }) {
   };
 
   return (
-    <div className="text-start w-full overflow-y-auto">
-      <p className="text-2xl font-bold px-4 md:px-6 sticky -mt-4 -top-4 bg-white z-40 py-4 ">Notifications</p>
+    <div className="text-start w-full h-full   mt-4 max-w-lg">
+      <p className="text-2xl font-bold px-4 md:px-6 sticky sm:border-x  -mt-4 -top-0 bg-white z-40 py-4 ">Notifications</p>
 
       {loading ? (
-        <p>Loading notifications...</p>
+        <p className="px-4 md:px-6">Loading notifications...</p>
       ) : error ? (
         <p className="text-red-500">{error}</p>
       ) : notifications.length === 0 ? (
         <p className="text-gray-400 mt-4 px-4 md:px-6">No notifications yet</p>
       ) : (
-        <ul className=" overflow-y-auto ">
+        <ul className=" overflow-y-auto h-full sm:border-x  pb-20 sm:pb-0">
           {notifications.map((notification, index, arr) => (
             <li
               key={notification._id}
@@ -93,10 +93,10 @@ function Notification({ userId }) {
                 }
               }}
               className={`p-3 px-4 md:px-6 ${
-                index <= 0 ? "border-y" : "border-b"
+                index <= 0 ? index == arr.length-1?"border-t":"border-y" : "border-b"
               } ${notification.read ? "bg-white" : "bg-gray-50"}`}
             >
-              <div className="flex gap-4  h-full ">
+              <div className="flex gap-4  h-full  ">
                 <UserImageInput
                   imageHeight={40}
                   className={"mt-0.5 justify-self-start"}

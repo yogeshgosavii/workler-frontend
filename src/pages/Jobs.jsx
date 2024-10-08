@@ -6,6 +6,7 @@ import SearchInput from "../components/Input/SearchInput";
 import searchService from "../services/searchService";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import useJobApi from "../services/jobService";
 
 function Jobs() {
   const { jobQuery } = useParams(); // Grabbing job query from params
@@ -16,6 +17,7 @@ function Jobs() {
   const [submitJobList, setSubmitJobList] = useState([]);
   const [searchFocus, setSearchFocus] = useState(false);
   const navigate = useNavigate();
+  const jobService = useJobApi()
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   // Fetch jobs based on search text
@@ -35,15 +37,21 @@ function Jobs() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const jobs = await searchService.secrchJobByKeyword(searchText);
-        setSubmitJobList(jobs);
+        if(searchText){
+          const jobs = await searchService.secrchJobByKeyword(searchText);
+          setSubmitJobList(jobs);
+        }else{
+          const jobs = await jobService.job.getAll();
+          console.log("logo",jobs[0].company_logo);
+          
+          setSubmitJobList(jobs);
+        }
       } catch (error) {
         console.error("Error fetching jobs: ", error);
       }
     };
-    if (searchText) {
       fetchJobs();
-    }
+    
   }, []);
 
   // Handle search submission
@@ -71,7 +79,7 @@ function Jobs() {
             onBlur={() => setSearchFocus(false)}
             ref={searchRef}
             inputClassName=""
-            className={`sticky transition-all  sm:max-w-[250px] flex items-center md:max-w-[350px] lg:max-w-md z-10 bg-white w-full ${!isAuthenticated && "w-[61%]"} caret-blue-500 h-12  `}
+            className={`sticky transition-all mt-5 sm:ml-10  sm:max-w-[250px] flex items-center md:max-w-[350px] lg:max-w-md z-10 bg-white w-full ${!isAuthenticated && "w-[60%]"} caret-blue-500 h-12  `}
             placeholder="Enter the job title or domain"
           />
           <div
@@ -88,6 +96,7 @@ function Jobs() {
           </div>
         </form>
       </div>
+     
 
       {/* Main Content Section */}
       <div className="flex gap-6 ">

@@ -50,6 +50,8 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       // { path: "/jobs", element: <Jobs /> },
       { path: "/jobs/:jobQuery", element: <Jobs /> },
+      { path: "/jobs/", element: <Jobs /> },
+
       { path: "job/:jobId", element: <JobProfileView /> },
       { path: "user/:userId", element: <UserProfileView /> },
 

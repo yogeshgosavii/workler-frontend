@@ -88,7 +88,7 @@ function Search() {
       <div
         className={`${
           location.pathname.split("/").length > 2 && " hidden sm:block"
-        } px-4 sm:px-0 w-full sm:w-2/5 md:1/2`}
+        } px-4 sm:px-0 w-full sm:w-2/5 mt-5 md:1/2`}
       >
         <div className="relative flex flex-col w-full border rounded-xl gap-2 h-fit px-4 py-2">
           <form onSubmit={(e)=>{

@@ -34,7 +34,7 @@ function JobList({jobs}) {
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
   return (
-    <div className="flex flex-1 sm:ml-[270px] flex-col pb-10 w-full mt-20 sm:mt-0">
+    <div className="flex flex-1 sm:ml-[300px] flex-col pb-10 w-full mt-20 sm:mt-0">
       {loading ? (
         <div>
           {Array.from({ length: jobsPerPage }).map((_, index) => (
@@ -43,6 +43,7 @@ function JobList({jobs}) {
         </div>
       ) : (
         <Suspense fallback={<div>Loading...</div>}>
+         
           {currentJobs.map((job, index) => (
             <JobListItem onCl key={index} job={job} companyDefaultImage={companyDefaultImage} className="border p-5 rounded-lg" />
           ))}

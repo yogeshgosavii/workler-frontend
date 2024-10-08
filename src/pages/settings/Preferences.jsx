@@ -61,12 +61,11 @@ function Preferences() {
         }}
         className="fixed w-full h-full bg-black opacity-30 z-20 top-0 left-0"
       ></div>
-      <div className="fixed flex flex-col gap-5 w-full   right-0 top-0  h-full  sm:max-w-lg px-4 py-4 sm:p-6   overflow-y-auto    z-30 bg-white  max-h-full  ">
-        <p className="text-2xl font-bold  text-gray-800 sticky -top-5 sm:-top-8 -ml-px bg-white z-20 py-4 -mt-5">
-          Preferences
-        </p>
+      <div className="fixed w-full sm:max-w-lg right-0 flex flex-col gap-5 border   h-full  px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
+      <h2 className="text-2xl font-bold mb-10 ">Preference</h2>
 
-        <div className="">
+
+        <div className=" -mt-3">
           <LocationInput
             placeholder={"Location"}
             value={location}

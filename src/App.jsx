@@ -7,11 +7,13 @@ import UserImageInput from "./components/Input/UserImageInput";
 import authService from "./services/authService";
 import { useSelector } from "react-redux";
 import { getUserNotificationCount } from "./services/notificationService";
+import useJobApi from "./services/jobService";
 
 const App = () => {
   const [userDetails, setUserDetails] = useState(null);
   const [activeTab, setActiveTab] = useState(""); // State to manage active tab
   const [notificationCount, setNotificationCount] = useState();
+  const jobService = useJobApi()
   const location = useLocation(); // Get the current location
   const navigate = useNavigate(); // Create a navigate function
 
@@ -36,6 +38,16 @@ const App = () => {
         console.error("Error fetching notification count:", error);
       }
     };
+    const fetchAllJobs = async () => {
+      try {
+        const response = await jobService.job.getAll();
+        console.log("All jobs", response);
+      } catch (error) {
+        console.error("Error fetching notification count:", error);
+      }
+    };
+
+
 
     fetchUserDetails();
     fetchNotificationCount();
@@ -78,7 +90,7 @@ const App = () => {
         <div
           className={`flex-1  h-full w-full  overflow-y-auto flex justify-center  ${
             isAuthenticated && "pb-14 sm:pb-5 sm:pl-24"
-          } py-5  sm:px-6 `}
+          } `}
         >
           <Outlet />
         </div>
@@ -199,20 +211,20 @@ const App = () => {
           onClick={() => {
             navigate("notifications");
           }}
-          className={`w-1/5 sm:w-fit relative   text-center flex justify-center items-center ${
+          className={`w-1/5 sm:w-fit  relative   text-center flex justify-center items-center ${
             activeTab === "notifications" ? "text-blue-500" : "text-gray-400"
           }`}
         >
-          <div className="">
-            <div className={`absolute -top-1.5 ${activeTab!="notifications" ? "animate-ping":"animate-none"} right-4 p-0.5 pt-0  font-medium bg-red-500 text-white rounded-full text-xs h-5 w-5 flex items-center justify-center`}>
+       {notificationCount>0 &&   <div className="  top-0 right-0">
+            <div className={`absolute -top-2 ${activeTab!="notifications" ? "animate-ping":"animate-none"} right-1/2 p-0.5 pt-0  font-medium bg-red-500 text-white rounded-full text-xs h-5 w-5 flex items-center justify-center`}>
 
             </div>
-            <div className="absolute -top-1.5 right-4 p-0.5 pt-0  font-medium bg-red-500 text-white rounded-full text-xs h-5 w-5 flex items-center justify-center">
+            <div className="absolute text-center -top-2 right-1/2  p-0.5 pt-0  font-medium bg-red-500 text-white rounded-full text-xs h-5 w-5 flex items-center justify-center">
               <p>{notificationCount}</p>
             </div>
             {/* Add the icon or bell here for notifications */}
             <i className="fas fa-bell text-gray-700"></i>
-          </div>
+          </div>}
           <svg
             className="h-6 w-6 "
             viewBox="0 0 24 24"

@@ -389,9 +389,9 @@ function Saved() {
       ></div>
 
       {/* Main Content */}
-      <div className="fixed w-full  right-0 sm:max-w-lg px-4 py-4 sm:p-6   top-0  overflow-y-auto z-30 bg-white h-full  ">
-      <div className=" sticky -top-5 -ml-px bg-white z-20 py-4 -mt-5">
-      <p className="text-2xl font-bold text-gray-800 mb-5">Saved</p>
+      <div className="fixed w-full sm:max-w-lg right-0 flex flex-col gap-5 border   h-full  px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
+      <div className=" ">
+      <h2 className="text-2xl font-bold mb-5 -mt-px ">Saved</h2>
 
           {/* Tab Navigation */}
           <div className="flex w-full gap-3">

@@ -646,7 +646,7 @@ function JobApplication() {
 
   return (
     <div className="w-full flex gap-4 px-4 py-2">
-      <div className={`w-full sm:w-1/2 ${selectedJob && "hidden sm:block"}`}>
+      <div className={`w-full mt-3 sm:w-1/2 ${selectedJob && "hidden sm:block"}`}>
         <div className="flex gap-4 mb-5">
           <p
             onClick={() => setInnerTab("applications")}
