@@ -183,7 +183,7 @@ function Settings() {
                     {" "}
                     <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
                   </svg>
-                  <p className="font-medium -mt-px">Saveds</p>
+                  <p className="font-medium -mt-px">Bookmarks</p>
                 </div>
                 <span>
                   <svg

@@ -70,7 +70,7 @@ function Jobs() {
       <div className="fixed z-40">
         <form
           onSubmit={handleSearchSubmit}
-          className={`flex w-screen justify-center sm:justify-start py-3 ${isAuthenticated ?"bg-white":"bg-transparent"} px-4 sm:px-0 ${!isAuthenticated ?"sm:ml-36":"ml-0"}   left-0 relative -mt-5`}
+          className={`flex w-screen ${!isAuthenticated &&"sm:max-w-lg"} bg-blue-50   justify-center  sm:justify-start py-3 ${isAuthenticated ?"bg-white":"bg-transparent"} px-4 sm:px-0 ${!isAuthenticated ?"sm:ml-44":"ml-0"}   left-0 relative -mt-6`}
         >
           <SearchInput
             value={searchText}
@@ -79,7 +79,7 @@ function Jobs() {
             onBlur={() => setSearchFocus(false)}
             ref={searchRef}
             inputClassName=""
-            className={`sticky transition-all mt-5 sm:ml-10  sm:max-w-[250px] flex items-center md:max-w-[350px] lg:max-w-md z-10 bg-white w-full ${!isAuthenticated && "w-[60%]"} caret-blue-500 h-12  `}
+            className={`sticky transition-all mt-6 sm:ml-0   sm:max-w-[250px] flex items-center md:max-w-[350px] lg:max-w-md z-10 bg-white w-full ${!isAuthenticated ? "w-[100%]":""} caret-blue-500 h-12  `}
             placeholder="Enter the job title or domain"
           />
           <div
@@ -101,15 +101,15 @@ function Jobs() {
       {/* Main Content Section */}
       <div className="flex gap-6 ">
         {/* Left Sidebar (JobFilter) */}
-        <div className={`flex justify-center px-4 sm:px-0 w-full ${isAuthenticated?" pt-16":"pt-16 sm:pt-24"} pb-10 sm:gap-10`}>
-          <div className={` pb-10 fixed max-h-[85%] w-full sm:w-fit overflow-y-auto  ${isAuthenticated ? "sm:left-24 top-[45px] sm:top-16 ":"left-0 sm:left-8 top-[52px] sm:top-24"} pt-5 `}>
+        <div className={`flex justify-center mr-0 sm:mr-6 md:mr-0 px-4 sm:px-0 w-full mt-4 ${isAuthenticated?" pt-16":"pt-16 sm:pt-24"} pb-10 sm:gap-10`}>
+          <div style={{scrollbarWidth:"none"}} className={` pb-10 fixed max-h-[85%] w-full sm:w-fit overflow-y-auto  ${isAuthenticated ? "sm:left-24 top-[45px] sm:top-16 ":"left-0 sm:left-8 top-[40px] sm:top-24"} pt-4 `}>
             <JobFilter />
           </div>
           <JobList  jobs={submitJobList} />
         </div>
 
         {/* Right News Section */}
-        <div className={`hidden md:block ${!isAuthenticated && "mt-24"}`}>
+        <div className={`hidden md:block mr-6 mt-5 ${!isAuthenticated && "mt-28"}`}>
           <News />
         </div>
       </div>

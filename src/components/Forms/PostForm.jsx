@@ -13,6 +13,7 @@ import useJobApi from "../../services/jobService.js";
 import JobPost from "../JobList.jsx";
 import authservice from  "../../services/authService.js"
 import JobList from "../JobList.jsx";
+import DOMPurify from "dompurify";
 
 function PostForm({ userDetails,setData, onClose }) {
   const [images, setImages] = useState([]);
@@ -46,7 +47,8 @@ function PostForm({ userDetails,setData, onClose }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({ ...prevState, [name]: value }));
+    const sanitizedValue = DOMPurify.sanitize(value); // Sanitize input
+    setFormData((prevState) => ({ ...prevState, [name]: sanitizedValue }));
   };
 
   const handleImageChange = (e) => {
@@ -61,7 +63,9 @@ function PostForm({ userDetails,setData, onClose }) {
     setError(null);
 
     const formDataToSend = new FormData();
-    formDataToSend.append("content", formData.content);
+    formDataToSend.append("content", formData.content
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Convert **bold text** to <strong>
+      .replace(/(?:\r\n|\r|\n)/g, '<br />'));
     formData.images.forEach((image) => {
       formDataToSend.append("files", image);
     });
@@ -119,17 +123,22 @@ function PostForm({ userDetails,setData, onClose }) {
   };
 
   return (
-    <div className="w-full  flex justify-center">
-      <div className="h-full w-full md:max-w-[400px]  md:mt-10  border  rounded-xl  flex   flex-col gap-6 pt-4  overflow-auto bg-white">
+   <div>
+     <div
+    onClick={() => window.history.back()}
+    className="fixed w-full h-full bg-black opacity-30 z-20 top-0 left-0"
+  ></div>
+    <div className="fixed w-full sm:max-w-lg right-0 h-full   pt-4   bg-white top-0 z-30  overflow-y-auto">
+      
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col min-w-full  gap-4 h-full"
+        className="flex flex-col justify-between h-full  min-w-full  gap-4 "
         encType="multipart/form-data"
       >
         <div className=" flex-1">
-          <div className="flex px-4 md:px-6 justify-between">
+          <div className="flex px-4 sm:px-6    justify-between">
             <svg
-              class="h-8 w-8 text-gray-700"
+              class="h-8 w-8 text-gray-700 -ml-[1px]"
               onClick={()=>{onClose()}}
               width="24"
               height="24"
@@ -287,7 +296,7 @@ function PostForm({ userDetails,setData, onClose }) {
             )}
           </div>
         </div>
-        <div className="flex gap-4 text-blue-500 border-t py-4 px-4 md:px-6 items-center">
+        <div className="flex gap-4 text-blue-500  py-4 px-4 md:px-6 items-center">
           <div className="disabled:text-blue-300">
             <svg
               className="h-8 w-8 z-20  cursor-pointer"
@@ -315,30 +324,24 @@ function PostForm({ userDetails,setData, onClose }) {
           </div>
 
           <svg
-            class="h-8 w-8 "
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-            />
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-            />
-          </svg>
+                class="h-7 w-7 "
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                {" "}
+                <circle cx="12" cy="12" r="4" />{" "}
+                <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94" />
+              </svg>
         </div>
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
       </form>
     </div>
-    </div>
+   </div>
   );
 }
 

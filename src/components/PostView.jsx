@@ -29,7 +29,6 @@ function PostView({ postId = useParams().postId, index, className }) {
   const currentUser = useSelector((state) => state.auth.user);
   console.log(post);
 
-
   useEffect(() => {
     const fetchPostData = async () => {
       const updatedPosts = await getPostById(postId);
@@ -98,7 +97,7 @@ function PostView({ postId = useParams().postId, index, className }) {
       {
         user: currentUser._id,
         contentType: "post",
-        saved_content: {_id:postId},
+        saved_content: { _id: postId },
       },
     ]);
     const response = await savedService.save({
@@ -115,20 +114,19 @@ function PostView({ postId = useParams().postId, index, className }) {
     console.log("unsaved data:", response);
   };
 
-
   const handleAnimationEnd = () => {
     document.getElementById("sendBtn").classList.add("hidden");
   };
   return (
     <div
-      className={`${className}  flex justify-center w-screen max-w-screen-lg  gap-8 -mt-5`}
+      className={`${className}  flex justify-center  h-screen w-screen max-w-screen-lg  gap-8 `}
     >
       {post && (
         <div
           key={index}
-          className="w-full sm:w-1/2 relative sm:border-x h-fit bg-white border-gray-300 py-4"
+          className="w-full sm:w-1/2 relative sm:border-x h-fit bg-white border-gray-300 "
         >
-          <p className="py-3 px-4 sticky -top-5 -mt-5 mb-5 left-0 right-0 bg-white z-40 font-bold text-2xl  border-gray-300">
+          <p className="py-3 px-4 sticky top-0 mb-5 left-0 right-0 bg-white z-40 font-bold text-2xl  border-gray-300">
             Post
           </p>{" "}
           <div className="flex items-center px-4 justify-between">
@@ -211,9 +209,12 @@ function PostView({ postId = useParams().postId, index, className }) {
                 <circle cx="12" cy="5" r="1" />
               </svg>
             </div>
-           
           </div>
-          <p className="mt-4 px-4 text-sm flex-1">{post.content}</p>
+          <p
+            className="mt-4 px-4 text-sm flex-1"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
+          
           {post.post_type !== "job" && (
             <div
               style={{ overflowX: "auto", scrollbarWidth: "none" }}
@@ -318,7 +319,7 @@ function PostView({ postId = useParams().postId, index, className }) {
           </div>
           <div
             id="commentInput"
-            className={` bg-white z-40 px-4  py-2 sticky top-[31px] border-b flex gap-2 transition-all items-center overflow-hidden ${" opacity-100"} `}
+            className={` bg-white z-40 px-4  py-2 sticky top-[42px] border-b flex gap-2 transition-all items-center overflow-hidden ${" opacity-100"} `}
           >
             <UserImageInput
               className=" rounded-full"
@@ -573,7 +574,26 @@ function PostView({ postId = useParams().postId, index, className }) {
           </div>
         </div>
       )}
-      <div className="hidden sm:block">Releted Posts</div>
+      <div className="hidden sticky top-20 w-full mt-5 max-w-sm flex-col gap-5 md:flex">
+        <div className="border rounded-lg p-4">
+          <p className="text-xl font-semibold mb-5">Releated Accounts</p>
+          <div className="flex gap-5 justify-between items-center">
+            <div className="flex gap-2">
+              <UserImageInput isEditable={false} />
+              <div className="">
+                <p className="text-lg font-medium">Yogesh Gosavi</p>
+                <p className="text-gray-400">yogesh_gosavii</p>
+              </div>
+            </div>
+            <p className="bg-blue-500 h-fit rounded-full text-white font-medium px-3 py-1">
+              Follow
+            </p>
+          </div>
+        </div>
+        <div className="border p-4 rounded-lg">
+          <p className="text-xl font-semibold">Similar Jobs</p>
+        </div>
+      </div>
     </div>
   );
 }

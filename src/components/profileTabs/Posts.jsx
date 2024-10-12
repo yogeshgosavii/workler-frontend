@@ -16,7 +16,6 @@ import { useNavigate } from "react-router-dom";
 import savedService from "../../services/savedService";
 
 function Posts({
-  setFormType,
   setSelectedPost,
   postData,
   className,
@@ -32,6 +31,7 @@ function Posts({
   const jobService = useJobApi();
   const navigate = useNavigate();
   const sendBtnRef = useRef(null);
+  const [loading, setLoading] = useState(true);
   const currentUser = useSelector((state) => state.auth.user);
 
   console.log(postData);
@@ -55,7 +55,7 @@ function Posts({
       {
         user: currentUser._id,
         contentType: "post",
-        saved_content: {_id:postId},
+        saved_content: { _id: postId },
       },
     ]);
     const response = await savedService.save({
@@ -95,12 +95,14 @@ function Posts({
 
   return (
     <div className={`w-full relative h-full ${className}`}>
-      {postData?.length === 0 ? (
+      {postData && postData?.length === 0 ? (
         isEditable ? (
           <div className="flex w-full  flex-col items-center bg-white">
             <p className="font-bold text-xl mt-6">Create your first post</p>
             <p
-              onClick={() => setFormType("post")}
+              onClick={() => {
+                navigate("post");
+              }}
               className="text-sm text-blue-500 mt-2 font-medium cursor-pointer"
             >
               Add post
@@ -115,7 +117,9 @@ function Posts({
             <div className="flex px-4   bg-white justify-between py-4 sm:border items-center">
               <p className="font-medium">Recent posts</p>
               <button
-                onClick={() => setFormType("post")}
+                onClick={() => {
+                  navigate("post");
+                }}
                 className=" text-sm text-blue-500 px-4 py-1 bg-blue-50  rounded-full font-medium border-blue-500"
               >
                 Add post
@@ -184,33 +188,34 @@ function Posts({
                       </div>
                     </div>
                     <div className="flex gap-2 items-center">
-                      {savedList.some(item => item.saved_content?._id == post._id) ? (
-                       <svg
-                       onClick={(e)=>{
-                       unsavePost(post._id)
-                       e.stopPropagation()
-                       }}
+                      {savedList.some(
+                        (item) => item.saved_content?._id == post._id
+                      ) ? (
+                        <svg
+                          onClick={(e) => {
+                            unsavePost(post._id);
+                            e.stopPropagation();
+                          }}
                           xmlns="http://www.w3.org/2000/svg"
                           width="20"
                           height="20"
                           fill="currentColor"
-                          class="bi bi-bookmark-fill"
+                          class={`bi bi-bookmark-fill liked-animation`}
                           viewBox="0 0 16 16"
                         >
                           <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
                         </svg>
-                       
                       ) : (
                         <svg
-                        onClick={(e)=>{
-                        savePost(post._id)
-                        e.stopPropagation()
-                        }}
+                          onClick={(e) => {
+                            savePost(post._id);
+                            e.stopPropagation();
+                          }}
                           xmlns="http://www.w3.org/2000/svg"
                           width="20"
                           height="20"
                           fill="currentColor"
-                          class="bi bi-bookmark"
+                          class="bi bi-bookmark unliked-animation"
                           viewBox="0 0 16 16"
                         >
                           <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z" />
@@ -234,7 +239,10 @@ function Posts({
                       </svg>
                     </div>
                   </div>
-                  <p className="mt-4 text-sm flex-1">{post.content}</p>
+                  <p
+                    className="mt-4 text-sm flex-1"
+                    dangerouslySetInnerHTML={{ __html: post.content }}
+                  />
                   {post.post_type !== "job" && (
                     <div
                       style={{ overflowX: "auto", scrollbarWidth: "none" }}
@@ -331,7 +339,7 @@ function Posts({
                     />
                     <CommentButton
                       onClick={(e) => {
-                        e.stopPropagation()
+                        e.stopPropagation();
                         setCommentButtonClicked((prev) =>
                           prev == index ? null : index
                         );

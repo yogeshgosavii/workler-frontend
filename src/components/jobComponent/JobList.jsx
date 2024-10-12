@@ -4,6 +4,7 @@ import Pagination from '../..//components/Pagination';
 import JobSkeletonLoader  from './JobSkeletonLoader'; // Import the SkeletonLoader component
 import searchService from '../../services/searchService';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const JobListItem = lazy(() => import('../jobComponent/JobListItem'));
 
@@ -14,6 +15,8 @@ function JobList({jobs}) {
   const [loading, setLoading] = useState(false);
   console.log("jobs:",jobs);
   const navigate = useNavigate()
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+
   
 
  
@@ -34,7 +37,7 @@ function JobList({jobs}) {
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
   return (
-    <div className="flex flex-1 sm:ml-[300px] flex-col pb-10 w-full mt-20 sm:mt-0">
+    <div className={`flex flex-1  ${isAuthenticated?"sm:ml-[270px]":"sm:ml-[300px]"} flex-col pb-10 w-full mt-20 sm:mt-0 `}>
       {loading ? (
         <div>
           {Array.from({ length: jobsPerPage }).map((_, index) => (

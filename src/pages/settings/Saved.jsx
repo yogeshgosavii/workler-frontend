@@ -3,6 +3,7 @@ import savedService from "../../services/savedService";
 import useJobApi from "../../services/jobService";
 import UserImageInput from "../../components/Input/UserImageInput";
 import Button from "../../components/Button/Button";
+import { useNavigate } from "react-router-dom";
 
 function Saved() {
   const [selectedTab, setSelectedTab] = useState("Posts");
@@ -12,10 +13,13 @@ function Saved() {
     profiles: [],
     jobs: [],
   });
+  const navigate = useNavigate()
+  const [loading, setLoading] = useState(true);
   const [unsavedItems, setUnsavedItems] = useState([]); // Track unsaved items
 
   // Fetch saved data based on the selected tab
   useEffect(() => {
+    setLoading(true);
     const fetchSavedData = async () => {
       try {
         const contentType = selectedTab.toLowerCase().slice(0, -1);
@@ -24,8 +28,11 @@ function Saved() {
           ...prev,
           [`${contentType}s`]: savedContent,
         }));
+        console.log("saved", savedContent);
       } catch (error) {
         console.error("Error fetching saved data:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchSavedData();
@@ -91,6 +98,9 @@ function Saved() {
     savedItems.posts.map((post) => (
       <div
         key={post._id}
+        onClick={()=>{
+          navigate("/post/"+post.saved_content._id)
+        }}
         className={`col-span-1 flex flex-col h-full  rounded-xl ${
           unsavedItems.includes(post._id) ? "animate-unsave" : ""
         }`} // Add animation class
@@ -143,11 +153,13 @@ function Saved() {
               />
 
               <div className="absolute bottom-2 left-0 right-0 flex items-center space-x-2">
-                <div className={`relative flex items-center   ${
-                      post.saved_content.images.compressedImage.length > 1
-                        ? "justify-start pl-3"
-                        : "justify-center"
-                    } w-full  left-0`}>
+                <div
+                  className={`relative flex items-center   ${
+                    post.saved_content.images.compressedImage.length > 1
+                      ? "justify-start pl-3"
+                      : "justify-center"
+                  } w-full  left-0`}
+                >
                   {/* Background with opacity */}
                   <div className="absolute h-10 w-[95%] rounded-full bg-black opacity-50 bottom-0 right-1 left-1"></div>
 
@@ -194,19 +206,29 @@ function Saved() {
     savedItems.profiles.map((profile) => (
       <div
         key={profile._id}
-        className={`border w-1/2 p-3  rounded-xl ${
+        onClick={()=>{
+          navigate("/user/"+profile.saved_content._id)
+        }}
+        className={`border flex flex-col justify-between  p-3  rounded-xl ${
           unsavedItems.includes(profile._id) ? "animate-unsave" : ""
         }`}
       >
-        <div className="flex gap-2 items-center">
+        <div className=" gap-2 flex flex-col  w-full items-center">
           <UserImageInput
-            image={profile.saved_content.profileImage}
+            image={profile.saved_content.profileImage?.compressedImage[0]}
             isEditable={false}
           />
           <div>
-            <p className="font-semibold">
-              {profile.saved_content.company_details?.company_name}
-            </p>
+            {profile.saved_content.company_details && (
+              <p className="font-semibold">
+                {profile.saved_content.company_details?.company_name}
+              </p>
+            )}
+            {profile.saved_content.personal_details && (
+              <p className="font-semibold">
+                {`${profile.saved_content.personal_details?.firstname} ${profile.saved_content.personal_details?.lastname}`}
+              </p>
+            )}
             <p className="text-gray-400">{profile.saved_content.username}</p>
           </div>
         </div>
@@ -370,11 +392,99 @@ function Saved() {
   const renderTabContent = () => {
     switch (selectedTab) {
       case "Posts":
-        return <div className="grid grid-cols-2 gap-2">{renderPosts()}</div>;
+        return loading ? (
+          <div class="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+            <svg
+              class="text-white animate-spin"
+              viewBox="0 0 64 64"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              width="50"
+              height="50"
+            >
+              <path
+                d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+                stroke="currentColor"
+                stroke-width="5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+              <path
+                d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-gray-400"
+              ></path>
+            </svg>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-2">{renderPosts()}</div>
+        );
+
       case "Profiles":
-        return <div>{renderProfiles()}</div>;
+        return loading ? (
+          <div class="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+            <svg
+              class="text-white animate-spin"
+              viewBox="0 0 64 64"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              width="50"
+              height="50"
+            >
+              <path
+                d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+                stroke="currentColor"
+                stroke-width="5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+              <path
+                d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-gray-400"
+              ></path>
+            </svg>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-2">{renderProfiles()}</div>
+        );
       case "Jobs":
-        return <div>{renderJobs()}</div>;
+        return loading ? (
+          <div class="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+            <svg
+              class="text-white animate-spin"
+              viewBox="0 0 64 64"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              width="50"
+              height="50"
+            >
+              <path
+                d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+                stroke="currentColor"
+                stroke-width="5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+              <path
+                d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-gray-400"
+              ></path>
+            </svg>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-2">{renderJobs()}</div>
+        );
       default:
         return <div>Select a tab to view content.</div>;
     }
@@ -390,8 +500,8 @@ function Saved() {
 
       {/* Main Content */}
       <div className="fixed w-full sm:max-w-lg right-0 flex flex-col gap-5 border   h-full  px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
-      <div className=" ">
-      <h2 className="text-2xl font-bold mb-5 -mt-px ">Saved</h2>
+        <div className=" ">
+          <h2 className="text-2xl font-bold mb-5 -mt-px ">Bookmarks</h2>
 
           {/* Tab Navigation */}
           <div className="flex w-full gap-3">

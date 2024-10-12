@@ -131,6 +131,14 @@ const router = createBrowserRouter([
     ),
     children: [
       {
+        path: "post",
+        element: (
+          <LoginVerification>
+              <PostForm />
+          </LoginVerification>
+        ),
+      },
+      {
         path: "settings/preferences",
         element: (
           <LoginVerification>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "../../assets/Logo";
 import LogoCircle from "../../assets/LogoCircle";
 import remotiveLogo from "../../assets/wordmark_H_orange.svg";
@@ -7,8 +7,19 @@ import { useNavigate } from "react-router-dom";
 
 const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
   const navigate = useNavigate();
+  const [savedList, setSavedList] = useState();
+  useEffect(() => {
+    const getSaveds = async () => {
+      const savedResponse = await savedService.getSpecificSaved("job");
+      console.log("saveds", savedResponse);
+      setSavedList(savedResponse);
+    };
+
+    getSaveds();
+  }, []);
   const cleanLogoUrl = (urlString) => {
     if (!urlString) return null;
+   
 
     // Remove any leading or trailing quotes from the URL string
     return urlString.replace(/^"(.*)"$/, "$1");
@@ -196,31 +207,69 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
               }}
             />
 
-            <div className="w-full">
-              <div className="flex items-center gap-4">
-                <h2 className="text-xl font-bold text-black max-w-[700px] ">
-                  {job.job_role}
-                </h2>
-                {/* Add other job details */}
+            <div className="flex gap-4 justify-between w-full">
+              <div className="w-full">
+                <div className="flex items-center gap-4">
+                  <h2 className="text-xl font-bold text-black max-w-[700px] ">
+                    {job.job_role}
+                  </h2>
+                  {/* Add other job details */}
+                </div>
+                <div className="flex items-center justify-between gap-2 ">
+                  <p className="text-gray-600 font-medium text-lg">
+                    {job.company_name}
+                  </p>
+                </div>
               </div>
-              <div className="flex items-center justify-between gap-2 ">
-                <p className="text-gray-600 font-medium text-lg">
-                  {job.company_name}
-                </p>
+              <div className="flex gap-2 mt-2 z-10">
+                {savedList?.some(
+                  (item) => item.saved_content?._id == post._id
+                ) ? (
+                  <svg
+                    onClick={(e) => {
+                      unsavePost(post._id);
+                      e.stopPropagation();
+                    }}
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    class={`bi bi-bookmark-fill liked-animation`}
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
+                  </svg>
+                ) : (
+                  <svg
+                    onClick={(e) => {
+                      savePost(post._id);
+                      e.stopPropagation();
+                    }}
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    class="bi bi-bookmark unliked-animation"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z" />
+                  </svg>
+                )}
+               
               </div>
             </div>
           </div>
-          <div className="flex px-2 gap-1 py-0.5 max-h-10 w-fit rounded-lg items-center mt-2 text-sm border text-black">
-            <img
-              src={
-                job.job_source == "Remotive" ? (
-                 remotiveLogo
-                ) : null
-              }
-              className=" w-28 "
-            />
-            <p className="">{job.job_source!="Remotive"&&job.job_source}</p>
-          </div>
+          {job?.job_source && job?.job_source != "job_post" && (
+            <div className="flex px-2 gap-1 py-0.5 max-h-10 w-fit rounded-lg items-center mt-2 text-sm border text-black">
+              <img
+                src={job.job_source == "Remotive" ? remotiveLogo : null}
+                className=" w-28 "
+              />
+              <p className="">
+                {job.job_source != "Remotive" && job.job_source}
+              </p>
+            </div>
+          )}
           <div className="flex flex-wrap gap-2 flex-row text-nowrap mt-5">
             <div className="flex gap-2   items-center">
               <svg
