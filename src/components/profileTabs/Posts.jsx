@@ -150,10 +150,10 @@ function Posts({
                 <div
                   key={index}
                   onClick={() => navigate("/post/" + post._id)}
-                  className={` sm:border bg-white  sm:rounded-xl flex-grow   h-fit  border-gray-300 py-4 px-4`}
+                  className={` sm:border bg-white  sm:rounded-3xl flex-grow   h-fit  border-gray-300 p-4 sm:p-7`}
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex gap-2 items-center">
+                    <div className="flex gap-2 ">
                       <UserImageInput
                         className="w-[35px] h-[35px] rounded-full"
                         imageHeight={35}
@@ -166,9 +166,16 @@ function Posts({
                         isEditable={false}
                       />
                       <div className="flex gap-2 items-center ">
-                        <p className="font-medium text-sm">
+                       <div>
+                       <p className="font-medium text-sm">
+                          {post?.user.personal_details.firstname}{" "}{post?.user.personal_details.lastname}
+                        </p>
+                        <p className=" text-gray-400 -mt-[3px] text-xs">
                           {post?.user.username}
                         </p>
+                        </div>
+                        <span className="font-bold text-gray-500">·</span>{" "}
+
                         <p className="text-sm text-gray-400">
                           {formatDistanceToNow(
                             new Date(post.createdAt),
@@ -385,15 +392,15 @@ function Posts({
                   )}
                   <div
                     id="commentInput"
-                    className={`relative flex gap-2 transition-all items-center overflow-hidden ${
+                    className={`relative flex border gap-2 px-2 py-1.5 mt-4 rounded-full transition-all items-center overflow-hidden ${
                       commentButtonClicked === index
                         ? " opacity-100"
-                        : "-mt-8 opacity-0 pointer-events-none "
+                        : "-mt-14 opacity-0 pointer-events-none "
                     } `}
                   >
                     <UserImageInput
-                      className=" rounded-full"
-                      imageHeight={20}
+                      className=" rounded-full -mt-px"
+                      imageHeight={35}
                       imageBorder={0}
                       image={
                         currentUser.profileImage?.compressedImage ||
@@ -428,11 +435,11 @@ function Posts({
                       <svg
                         id="sendBtn"
                         xmlns="http://www.w3.org/2000/svg"
-                        width="18"
-                        height="18"
+                        width="20"
+                        height="20"
                         fill="currentColor"
                         ref={sendBtnRef}
-                        className={`bi bi-send-fill  text-blue-500 absolute top-1/4 rotate-45 right-1 ${
+                        className={`bi bi-send-fill  text-blue-500 absolute top-[30%] rotate-45 right-5 ${
                           sendClicked === index ? "send-animation" : ""
                         }`}
                         viewBox="0 0 16 16"

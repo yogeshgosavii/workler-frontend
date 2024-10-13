@@ -9,6 +9,7 @@ import applicationService from "../services/applicationService";
 import JobProfileView from "../components/JobProfileView";
 import { formatDistanceToNow } from "date-fns";
 import interviewService from "../services/interviewService";
+import { useNavigate } from "react-router-dom";
 
 function JobApplication() {
   const currentUser = useSelector((state) => state.auth.user);
@@ -19,6 +20,7 @@ function JobApplication() {
     userDetails: false,
     qualification: false,
   });
+  const navigate = useNavigate()
   const [selectedProfile, setSelectedProfile] = useState("");
   const [applications, setApplications] = useState([]);
   const [applicantsCount, setApplicantsCount] = useState(null);
@@ -181,8 +183,8 @@ function JobApplication() {
               {approaches.map((approach) => (
                 <div
                   key={approach._id}
-                  onClick={() => handleJobSelect(approach.job)}
-                  className="border rounded-lg p-3 flex flex-col gap-4"
+                  onClick={() => {navigate("/job/"+approach.job._id)}}
+                  className="border rounded-lg p-5 cursor-pointer flex flex-col gap-4"
                 >
                   <div className="flex gap-4">
                     <UserImageInput
@@ -403,7 +405,7 @@ function JobApplication() {
                 <div
                   key={applications._id}
                   onClick={() => handleJobSelect(application.job)}
-                  className="border rounded-lg p-3 flex flex-col gap-2 "
+                  className="border rounded-lg cursor-pointer p-3 flex flex-col gap-2 "
                 >
                   <div>
                     <div className="flex gap-4 mb-2">
@@ -645,21 +647,21 @@ function JobApplication() {
   }
 
   return (
-    <div className="w-full flex gap-4 px-4 py-2">
-      <div className={`w-full mt-3 sm:w-1/2 ${selectedJob && "hidden sm:block"}`}>
-        <div className="flex gap-4 mb-5">
+    <div className="w-full flex justify-center gap-4 px-4 py-2">
+      <div className={`w-full max-w-lg  mt-3 sm:w-1/2 ${selectedJob && "hidden sm:block"}`}>
+        <div className="flex gap-4 mb-5 text-sm">
           <p
             onClick={() => setInnerTab("applications")}
-            className={`px-2 py-1 rounded-md ${
-              innerTab === "applications" && "bg-blue-50 text-blue-500"
+            className={`px-3 py-1 cursor-pointer rounded-md font-medium border ${
+              innerTab === "applications" && "bg-blue-50 border-blue-500 text-blue-500"
             }`}
           >
             Applications
           </p>
           <p
             onClick={() => setInnerTab("approach")}
-            className={`px-2 py-1 rounded-md ${
-              innerTab === "approach" && "bg-blue-50 text-blue-500"
+            className={`px-3 py-1 cursor-pointer rounded-md font-medium border ${
+              innerTab === "approach" && "bg-blue-50 border-blue-500 text-blue-500"
             }`}
           >
             Approaches

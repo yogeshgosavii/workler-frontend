@@ -43,7 +43,7 @@ function UserHome() {
   return (
     <div className="w-full flex flex-col">
       <div
-        className={`px-4  flex  w-full sm:w-[100%]  py-4  z-50 bg-white   top-0  ${
+        className={`px-4  flex gap-4  w-full sm:w-[100%]  py-4  z-50 bg-white   top-0  ${
           selectedPost && "hidden sm:block"
         }`}
       >
@@ -52,8 +52,8 @@ function UserHome() {
             key={type}
             onClick={() => setSelectedType(type)}
             className={`${
-              selectedType === type ? "bg-blue-50 text-blue-500 rounded-md" : ""
-            } px-4 py-1 cursor-pointer`}
+              selectedType === type ? "bg-blue-50  border-blue-500 text-blue-500 " : ""
+            } px-4 py-1 border cursor-pointer text-sm rounded-lg font-medium`}
           >
             {type}
           </p>

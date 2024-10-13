@@ -271,7 +271,10 @@ function Home({
                     <circle cx="12" cy="5" r="1" />
                   </svg>
                 </div>
-                <p className="mt-1 text-sm ">{post.content}</p>
+                <p
+                  className="mt-1 text-sm "
+                  dangerouslySetInnerHTML={{ __html: post.content }}
+                />
                 {post.images && (
                   <div
                     style={{

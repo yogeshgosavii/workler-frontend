@@ -64,11 +64,11 @@ function Notification({ userId }) {
   };
 
   return (
-    <div className="text-start w-full h-full   mt-4 max-w-lg">
-      <p className="text-2xl font-bold px-4 md:px-6 sticky sm:border-x  -mt-4 -top-0 bg-white z-40 py-4 ">Notifications</p>
+    <div className="text-start w-full h-full relative  max-w-lg">
+      <p className="text-2xl w-full font-bold px-4 md:px-6 absolute sm:border-x  -top-0 bg-white z-40 py-4 ">Notifications</p>
 
       {loading ? (
-        <div class="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg  lg:overflow-visible">
+        <div class="grid min-h-[140px]  border-x h-full w-full justify-center pt-16 overflow-x-scroll   lg:overflow-visible">
         <svg
           class="text-white animate-spin"
           viewBox="0 0 64 64"
@@ -97,7 +97,7 @@ function Notification({ userId }) {
       ) : error ? (
         <p className="text-red-500 px-4 md:px-6">{error}</p>
       ) : notifications.length === 0 ? (
-        <p className="text-gray-400 mt-4 px-4 md:px-6">No notifications yet</p>
+        <p className="text-gray-400 sm:border-x pt-16 sm:h-full px-4 md:px-6">No notifications yet</p>
       ) : (
         <ul className=" overflow-y-auto h-full sm:border-x  pb-20 sm:pb-0">
           {notifications.map((notification, index, arr) => (

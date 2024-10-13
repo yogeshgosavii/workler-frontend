@@ -189,9 +189,12 @@ function Saved() {
             </div>
           )
         ) : (
-          <p className="p-3 border text-sm h-full bg-gray-50 shadow-inner">
-            {post?.saved_content.content}
-          </p>
+          <p className="p-3 border text-sm h-full bg-gray-50 truncate shadow-inner"
+          dangerouslySetInnerHTML={{ __html: post?.saved_content.content }}
+
+          />
+          //   {post?.saved_content.content}
+          // </p>
         )}
         {/* <button
           className=" w-full rounded-b-2xl border py-3 font-semibold bg-gray-100 text-gray-500"

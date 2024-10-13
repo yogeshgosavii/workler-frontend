@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
-import { addLike, getLikesByPostId, getCommentsByPostId, deleteLike } from "../../services/postService"; // Import new functions
+import { addLike, getLikesByPostId, getCommentsByPostId, deleteLike } from "../../services/postService";
 import "../../css/button.css";
 
 const LikeButton = ({ postData, setPostData }) => {
@@ -11,7 +11,6 @@ const LikeButton = ({ postData, setPostData }) => {
   const [comments, setComments] = useState([]);
   const [clicked, setClicked] = useState(false);
   
-  const scrollReference = useRef();
   const debounceTimeout = useRef(null);
 
   useEffect(() => {
@@ -19,14 +18,11 @@ const LikeButton = ({ postData, setPostData }) => {
       try {
         const likesResponse = await getLikesByPostId(postData._id);
         setLikes(likesResponse);
-        console.log("likes:",likesResponse);
-        
         setCurrentLikesCount(likesResponse.length);
-        
+
         const commentsResponse = await getCommentsByPostId(postData._id);
         setComments(commentsResponse.comments || []);
-        
-        // Check if the user has already liked the post
+
         const hasLiked = likesResponse.some((like) => like.user._id === user._id);
         setLiked(hasLiked);
       } catch (error) {
@@ -37,7 +33,7 @@ const LikeButton = ({ postData, setPostData }) => {
     fetchLikesAndComments();
   }, [postData, user._id]);
 
-  const handleLike = useCallback(
+  const handleLikeToggle = useCallback(
     async (e) => {
       e.stopPropagation();
 
@@ -53,93 +49,33 @@ const LikeButton = ({ postData, setPostData }) => {
           setLiked(isLiked);
           setCurrentLikesCount(newLikesCount);
           setClicked(true);
-
           setTimeout(() => setClicked(false), 400);
 
-          const updatedLikes = isLiked 
-            ? [...likes, { post: postData._id, user: user._id }] 
-            : likes.filter((like) => like.user !== user._id);
-
-          const response = await addLike({
-            post: postData._id,
-            user: user._id,
-          });
-
-          if (response) {
-            setLikes((prev) => ({
-              ...prev,
-             response,
-            }));
+          let updatedLikes;
+          if (isLiked) {
+            updatedLikes = [...likes, { post: postData._id, user: user._id }];
+            await addLike({ post: postData._id, user: user._id });
           } else {
-            console.log("Failed to update like status");
-            // Revert changes if request fails
-            setLiked(!isLiked);
-            setCurrentLikesCount(newLikesCount);
+            updatedLikes = likes.filter((like) => like.user._id !== user._id);
+            await deleteLike({ post: postData._id, user: user._id });
           }
+
+          setLikes(updatedLikes);
         } catch (error) {
           console.error("Error occurred while updating like status:", error);
-          // Revert changes if request fails
+          // Revert like status in case of failure
           setLiked(!liked);
-          setCurrentLikesCount(newLikesCount);
+          setCurrentLikesCount(liked ? currentLikesCount - 1 : currentLikesCount + 1);
         }
       }, 300);
     },
     [liked, currentLikesCount, postData, likes, user._id]
   );
 
-  const handleUnlike = useCallback(
-    async (e) => {
-      e.stopPropagation();
-
-      if (debounceTimeout.current) {
-        clearTimeout(debounceTimeout.current);
-      }
-
-      debounceTimeout.current = setTimeout(async () => {
-        try {
-          const isLiked = !liked;
-          const newLikesCount = currentLikesCount - 1;
-
-          setLiked(isLiked);
-          setCurrentLikesCount(newLikesCount);
-          setClicked(true);
-
-          setTimeout(() => setClicked(false), 400);
-
-          const updatedLikes = likes.filter((like) => like.user._id !== user._id);
-
-          const response = await deleteLike({
-            post: postData._id,
-            user: user._id,
-          });
-
-          if (response) {
-            setLikes(updatedLikes);
-          } else {
-            console.log("Failed to update unlike status");
-            // Revert changes if request fails
-            setLiked(true);
-            setCurrentLikesCount(currentLikesCount);
-          }
-        } catch (error) {
-          console.error("Error occurred while updating unlike status:", error);
-          // Revert changes if request fails
-          setLiked(true);
-          setCurrentLikesCount(currentLikesCount);
-        }
-      }, 300);
-    },
-    [liked, currentLikesCount, postData, likes, user._id]
-  );
   return (
     <button
       className={`flex items-center gap-1 h-full ${liked ? "text-red-500" : ""}`}
-      onClick={(e)=>{
-        liked?
-        handleUnlike(e)
-        :
-        handleLike(e)
-      }}
+      onClick={handleLikeToggle}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -156,11 +92,15 @@ const LikeButton = ({ postData, setPostData }) => {
         )}
       </svg>
       <div
-        ref={scrollReference}
         style={{ scrollbarWidth: "none", pointerEvents: "none" }}
-        className="flex flex-col h-6 items-center justify-center overflow-y-auto"
+        className="flex flex-col h-6 -mt-px items-center justify-center overflow-y-auto"
       >
-        <span key={currentLikesCount} className={`${clicked && (liked ? "animate-likeCountFromTop" : "animate-likeCountFromBottom")} transition-all duration-500 ease-in-out`}>
+        <span
+          key={currentLikesCount}
+          className={`${
+            clicked && (liked ? "animate-likeCountFromTop" : "animate-likeCountFromBottom")
+          } transition-all duration-500 ease-in-out`}
+        >
           <span className={`${currentLikesCount <= 0 ? "opacity-0" : ""}`}>
             {currentLikesCount}
           </span>

@@ -495,7 +495,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   }
   return (
     <div
-      className={` w-full flex justify-center overflow-y-auto gap-8 ${
+      className={` w-full mt-5 flex justify-center overflow-y-auto gap-8 ${
         !userDetails && "sm:mt-20"
       }`}
     >
@@ -1144,7 +1144,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
 
         <div>{renderTabContent()}</div>
       </div>
-      <div className="hidden sticky top-20 w-full max-w-sm flex-col gap-5 md:flex">
+      <div className="hidden sticky top-20 w-full max-w-sm flex-col gap-5 lg:flex">
         {userDetails && (
           <div className="border rounded-lg p-4">
             <p className="text-xl font-semibold mb-5">Releated Accounts</p>

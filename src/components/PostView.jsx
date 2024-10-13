@@ -62,11 +62,11 @@ function PostView({ postId = useParams().postId, index, className }) {
       content: commentText,
     });
     console.log("commentRes:", response);
-
-    setcomments((prev) => ({
+    response.user = currentUser
+    setcomments((prev) => ([
       ...prev,
       response,
-    }));
+    ]));
     // setPost((prev) => ({
     //   ...prev,
     //   comments: [
@@ -546,10 +546,10 @@ function PostView({ postId = useParams().postId, index, className }) {
                           });
                           console.log("commentRes:", response);
 
-                          setcomments((prev) => ({
+                          setcomments((prev) => ([
                             ...prev,
                             response,
-                          }));
+                          ]));
                           // setPost((prev) => ({
                           //   ...prev,
                           //   comments: [
@@ -574,7 +574,7 @@ function PostView({ postId = useParams().postId, index, className }) {
           </div>
         </div>
       )}
-      <div className="hidden sticky top-20 w-full mt-5 max-w-sm flex-col gap-5 md:flex">
+      <div className="hidden sticky top-20 w-full mt-5 max-w-sm flex-col gap-5 lg:flex">
         <div className="border rounded-lg p-4">
           <p className="text-xl font-semibold mb-5">Releated Accounts</p>
           <div className="flex gap-5 justify-between items-center">
