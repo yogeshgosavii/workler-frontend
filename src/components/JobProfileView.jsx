@@ -15,9 +15,8 @@ import { useDispatch } from "react-redux";
 import resumeService from "../services/resumeService";
 import searchService from "../services/searchService";
 import JobListItem from "./jobComponent/JobListItem";
-import companyDefaultImage from '../assets/companyDefaultImage.png';
+import companyDefaultImage from "../assets/companyDefaultImage.png";
 import savedService from "../services/savedService";
-
 
 function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   const [showProfileImage, setShowProfileImage] = useState(false);
@@ -51,7 +50,10 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       const approaches = await approachService.getUserApproaches(
         userDetails._id
       );
-      console.log("approaches",approaches.filter((approach) => approach.job._id == jobId));
+      console.log(
+        "approaches1",
+        approaches.filter((approach) => approach.job._id == jobId)
+      );
       setApproaches(approaches.filter((approach) => approach.job._id == jobId));
     };
 
@@ -63,7 +65,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       console.log("jobInterviews", interviews);
     };
 
-  
     if (userDetails) {
       fetchApproaches();
       fetchInterviews();
@@ -84,8 +85,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
         setLoading((prev) => ({ ...prev, jobDetails: false }));
       }
     };
-
-   
 
     // const fetchUserData = async () => {
     //   setLoading((prev) => ({ ...prev, userDetails: true }));
@@ -166,7 +165,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
     // }
 
     const checkSaved = async () => {
-
       setLoading((prev) => ({ ...prev, checkSaved: true }));
       try {
         const saveData = await savedService.checkSaved({
@@ -182,16 +180,15 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       }
     };
 
-
     if (jobId) {
       // Ensure userId exists before making requests
       // fetchUserData();
       console.log("jInter", interviews);
-     
+
       // console.log(userDetails.saved_jobs);
 
       checkApplied();
-      checkSaved()
+      checkSaved();
       fetchData();
 
       setJobApproach(
@@ -212,21 +209,22 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   }, [jobId, interviews]);
 
   useEffect(() => {
-    const fetchRelatedJobs =  async ()=>{
-      const relatedJobs = await searchService.secrchJobByKeyword(jobDetails?.job_role)
-      console.log("related jobs",relatedJobs);
-      setrelatedJobs(relatedJobs.filter(job =>job._id != jobDetails?._id))
-      
-    }
-    fetchRelatedJobs()
+    const fetchRelatedJobs = async () => {
+      const relatedJobs = await searchService.secrchJobByKeyword(
+        jobDetails?.job_role
+      );
+      console.log("related jobs", relatedJobs);
+      setrelatedJobs(relatedJobs.filter((job) => job._id != jobDetails?._id));
+    };
+    fetchRelatedJobs();
   }, [jobDetails]);
 
   const saveJob = async () => {
     setSaved(true);
     const response = await savedService.save({
-      user:userDetails._id,
-      contentType:"job",
-      saved_content : jobDetails._id
+      user: userDetails._id,
+      contentType: "job",
+      saved_content: jobDetails._id,
     });
     console.log("saved data:", response);
   };
@@ -299,8 +297,8 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       case "Job details":
         return (
           !loading.jobDetails && (
-            <div className="flex flex-col sm:gap-4">
-              <div className="border  px-4 flex flex-col gap-4 md:px-6 py-6">
+            <div className="flex flex-col px-4 sm:px-0 sm:gap-4 pb-[100px]">
+              {/* <div className="border  px-4 flex flex-col gap-4 md:px-6 py-6">
                 {jobDetails.location && (
                   <div className="flex gap-2  ">
                     <svg
@@ -359,21 +357,19 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                     <p className="-mt-0.5">Not mentioned</p>
                   )}
                 </div>
-              </div>
-              <div className="border-t flex flex-col gap-4 sm:border px-4 sm:px-6 py-6 ">
+              </div> */}
+              <div className=" flex flex-col sm:px-6 gap-6 sm:border  py-6 ">
                 <div>
                   <p className="font-medium text-lg">Description</p>
-                  <p className=" text-gray-400 mt-2">
-                    {jobDetails.description}
-                  </p>
+                  <p className=" text-gray-400">{jobDetails.description}</p>
                 </div>
                 {jobDetails.skills_required.length > 0 && (
                   <div>
-                    <p className="mb-1 font-medium">Skills required</p>
+                    <p className="mb-1 text-lg font-medium">Skills required</p>
                     <div className="flex gap-2 text-sm">
                       {jobDetails.skills_required?.map((skill, index) => (
                         <p
-                          className="bg-gray-100 px-2 py-1 rounded-md"
+                          className="bg-gray-100 px-3 py-1.5 font-medium text-gray-500 border rounded-md"
                           key={index}
                         >
                           {skill}
@@ -389,7 +385,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       case "About company":
         return (
           !loading.jobDetails && (
-            <div className="py-4 px-4 md:px-6 flex md:border flex-col gap-4">
+            <div className="py-4 px-4 md:px-6 pb-[100px] flex md:border flex-col gap-4">
               <div className=" ">
                 <p className="font-medium">Company name</p>
                 <p className="text-sm text-gray-400">
@@ -420,7 +416,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       case "About user":
         return (
           !loading.jobDetails && (
-            <div className=" px-4 md:px-6 flex flex-col gap-4 md:border py-4">
+            <div className=" px-4 md:px-6 flex flex-col pb-[100px] gap-4 md:border py-4">
               <div className="">
                 <p className="font-medium">Posted by user</p>
                 <p className="text-sm text-gray-400">
@@ -467,15 +463,24 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
           )
         );
       case "Related jobs":
-        return <div className="p-4 sm:px-0 sm:py-0">
-          {
-            relatedJobs.length<=0?
-            <div className="w-full text-center text-lg text-gray-500"> No related jobs</div>:
-            relatedJobs.map((job)=>(
-                <JobListItem job = {job} companyDefaultImage={companyDefaultImage} className="border p-5 rounded-lg"/>
-            ))
-          }
-        </div>;
+        return (
+          <div className="p-4 sm:px-0 pb-[100px] sm:py-0">
+            {relatedJobs.length <= 0 ? (
+              <div className="w-full text-center text-lg text-gray-500">
+                {" "}
+                No related jobs
+              </div>
+            ) : (
+              relatedJobs.map((job) => (
+                <JobListItem
+                  job={job}
+                  companyDefaultImage={companyDefaultImage}
+                  className="border p-5 rounded-lg"
+                />
+              ))
+            )}
+          </div>
+        );
 
       default:
         return null;
@@ -642,14 +647,14 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
               </button>
             </div>
           </form> */}
-         
+
               <div className="mt-4 w-full">
                 <button
                   onClick={() => {
                     applyJob();
                   }}
                   // type="submit"
-                  className="bg-blue-500 w-full font-medium text-white px-4 py-2 rounded-md"
+                  className="bg-blue-500 w-full font-medium text-white px-4 py-3 text-xl  rounded-lg"
                 >
                   Apply
                 </button>
@@ -664,8 +669,11 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
           ></div>
         )}
         <div className="flex relative  flex-wrap">
+          <div className="bg-gray-50 absolute top-0 w-full h-32"></div>
           <div
-            className={` w-full border-t  fixed sm:sticky  sm:border-x  z-20 top-0   px-4 py-4 bg-white flex `}
+            className={` w-full border-t  fixed sm:sticky  ${
+              atTop > 100 ? "bg-white" : "bg-gray-50"
+            }  sm:border-x  z-20 top-0   px-4 py-4  flex `}
           >
             <div className="flex w-full items-center gap-4">
               {atTop >= 100 && (
@@ -673,14 +681,18 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                   isEditable={false}
                   image={
                     jobDetails?.profileImage?.compressedImage ||
-                    profileImageDefault
+                    companyDefaultImage
                   }
                   imageHeight="40"
                 />
               )}
               <div className="flex flex-col justify-center w-full">
                 <p className="text-xl flex justify-between  w-full font-semibold">
-                  {atTop > 100 ? jobDetails?.job_role : "Job profile"}
+                  {atTop > 100 ? (
+                    jobDetails?.job_role
+                  ) : (
+                    <p className="text-2xl">Job profile</p>
+                  )}
                   {crossButton && (
                     <svg
                       onClick={() => {
@@ -743,7 +755,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                       }
                     }}
                     imageBorder={showProfileImage ? "none" : "2"}
-                    className={`transition-all ease-in-out absolute  blur-none  duration-300 ${
+                    className={`transition-all ease-in-out absolute  blur-none  bg-white p-2 rounded-full duration-300 ${
                       showProfileImage
                         ? " ml-[40%] md:ml-[45%]  z-50 translate-y-[200%] scale-[3.5] "
                         : ""
@@ -753,37 +765,160 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                     image={
                       jobDetails?.profileImage?.originalImage ||
                       jobDetails?.profileImage ||
-                      profileImageDefault
+                      companyDefaultImage
                     }
-                    imageHeight="70"
+                    imageHeight="100"
                   />
-                  <div className="flex w-full ml-20  justify-between items-center">
+                  <div className="flex w-full ml-32 mt-2  gap-2 justify-between items-center">
                     <div>
-                      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+                      <h1 className="text-2xl md:text-3xl leading-[32px] font-semibold text-gray-900">
                         {jobDetails?.job_role}
                       </h1>
-                      <div className="flex  gap-2">
-                        <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
+                      <div className="flex  gap-2 mt-2">
+                        <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-400">
                           {jobDetails?.company_name}
                         </p>
                       </div>
                     </div>
+                    {saved ? (
+                      <svg
+                        onClick={(e) => {
+                          unsaveJob();
+                          e.stopPropagation();
+                        }}
+                        xmlns="http://www.w3.org/2000/svg "
+                        width="24"
+                        height="24"
+                        fill="currentColor"
+                        class={`bi bi-bookmark-fill mt-1 self-start unliked-animation`}
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
+                      </svg>
+                    ) : (
+                      <svg
+                        onClick={(e) => {
+                          saveJob();
+                          e.stopPropagation();
+                        }}
+                        xmlns="http://www.w3.org/2000/svg "
+                        width="24"
+                        height="24"
+                        fill="currentColor"
+                        class={`bi bi-bookmark-fill mt-1 self-start liked-animation`}
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-wrap justify-center text-gray-700 font-medium  gap-3 flex-row text-nowrap mt-5">
+                  {/* <div className="flex gap-2 border px-3 py-1.5 bg-gray-50 rounded-lg items-center">
+          <svg
+            className="h-6 w-6 "
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <p className="text-nowrap  sm:text-base  ">
+            {job.min_salary || job.max_salary
+              ? ` ${job.min_salary>1000?job.min_salary/1000+"K":job.min_salary}  - ${job.max_salary>1000?job.max_salary/1000+"K":job.max_salary}`
+              : "Not disclosed"}
+          </p>
+        </div> */}
+                  {/* <div className="min-h-full border-l mx-1 w-px"></div> */}
+                  <div className="flex gap-2 font-medium  items-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      fill="currentColor"
+                      class="bi bi-briefcase-fill text-gray-400"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v1.384l7.614 2.03a1.5 1.5 0 0 0 .772 0L16 5.884V4.5A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5" />
+                      <path d="M0 12.5A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5V6.85L8.129 8.947a.5.5 0 0 1-.258 0L0 6.85z" />
+                    </svg>
+                    <p className="text-nowrap">
+                      {jobDetails.min_experience || jobDetails.max_experience
+                        ? `${jobDetails.min_experience} - ${jobDetails.max_experience}`
+                        : "Experience not specified"}
+                    </p>
+                  </div>
+                  {/* {job.location && (
+              <div className="min-h-full border-l mx-1 w-px"></div>
+            )} */}
+                  {jobDetails.location && (
+                    <div className="flex gap-2 px-3  items-center border-x">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        fill="currentColor"
+                        class="bi bi-geo-alt-fill text-gray-400"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
+                      </svg>
+                      <p className="text-wrap">
+                        {jobDetails.location?.city ||
+                          jobDetails.location?.state ||
+                          jobDetails.location?.country ||
+                          jobDetails.location?.address}
+                      </p>
+                    </div>
+                  )}
+                  <div className="flex gap-2 items-center">
+                    <svg
+                      className="h-6 w-6  text-gray-400"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <p className="text-nowrap  sm:text-base  ">
+                      {jobDetails.min_salary || jobDetails.max_salary
+                        ? ` ${
+                            jobDetails.min_salary > 1000
+                              ? jobDetails.min_salary / 1000 + "K"
+                              : jobDetails.min_salary
+                          }  - ${
+                            jobDetails.max_salary > 1000
+                              ? jobDetails.max_salary / 1000 + "K"
+                              : jobDetails.max_salary
+                          }`
+                        : "Not disclosed"}
+                    </p>
                   </div>
                 </div>
 
-                <div className="order-3 flex flex-col gap-2">
+                {/* <div className="order-3 flex flex-col gap-2">
                   <div className="text-sm flex justify-between flex-wrap  order-1 text-gray-400 items-end">
                     <p>
-                      {/* <span>{jobDetails.location?.address} · </span> */}
+                      <span>{jobDetails.location?.address} · </span>
                       {applicantsCount || 0} Applicant
                       {applicantsCount > 1 && "s"}
-                      {/* <span className="  font-normal"> followers</span>{" "}
+                      <span className="  font-normal"> followers</span>{" "}
                     {jobDetails.account_type == "Candidate" && (
                       <span>
                         · {jobDetails.followings ? jobDetails.followings : 0}{" "}
                         <span className="  font-normal">following</span>
                       </span>
-                    )} */}
+                    )}
                     </p>
                     {jobDetails.updatedAt ? (
                       <p className=" mt-0.5 text-gray-400">
@@ -835,138 +970,140 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                             <span className="font-extrabold ">{"·"}</span>
                           </span>
                         )}{" "}
-                        {/* {latestEducation && (
+                        {latestEducation && (
                             <span>
                               {" "}
                               Completed {latestEducation.course} from{" "}
                               {latestEducation.university}
                             </span>
-                          )} */}
+                          )}
                       </p>
                     </div>
                   )}
-                </div>
+                </div> */}
               </div>
             )}
-             {approaches[0]?.status === "approached" ? (
-                    <div className="bg-blue-50 text-blue-500 shadow-md font-medium text-sm flex gap-2 flex-wrap justify-between items-center p-4 rounded-lg">
-                      <p className="">Select response </p>
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => {
-                            updateApproach({
-                              id: approaches._id,
-                              status: "accepted",
-                            });
-                          }}
-                          className="bg-blue-500 hover:bg-blue-600 transition-colors text-white px-4 py-2 rounded-full "
-                        >
-                          Accept
-                        </button>
-                        <button
-                          onClick={() => {
-                            updateApproach({
-                              id: approaches._id,
-                              status: "declined",
-                            });
-                          }}
-                          className="bg-red-500 hover:bg-red-600 transition-colors text-white px-4 py-2 rounded-full "
-                        >
-                          Decline
-                        </button>
+            {approaches?.status === "approached" ? (
+              <div className="bg-blue-50 text-blue-500 shadow-md font-medium text-sm flex gap-2 flex-wrap justify-between items-center p-4 rounded-lg">
+                <p className="">Select response </p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      updateApproach({
+                        id: approaches._id,
+                        status: "accepted",
+                      });
+                    }}
+                    className="bg-blue-500 hover:bg-blue-600 transition-colors text-white px-4 py-2 rounded-full "
+                  >
+                    Accept
+                  </button>
+                  <button
+                    onClick={() => {
+                      updateApproach({
+                        id: approaches._id,
+                        status: "declined",
+                      });
+                    }}
+                    className="bg-red-500 hover:bg-red-600 transition-colors text-white px-4 py-2 rounded-full "
+                  >
+                    Decline
+                  </button>
+                </div>
+              </div>
+            ) : approaches[0]?.status === "accepted" ? (
+              <div className=" w-fit bg-gray-50 border mt-2 text-sm gap-2 flex flex-wrap justify-between items-center p-3 py-1.5 self-center rounded-md ">
+                <p>
+                  <span className="font-medium">Approach accepted</span>, you
+                  will be notified about the next step
+                </p>
+              </div>
+            ) : approaches[0]?.status === "interview_setup" ? (
+              <p>
+                {interviews?.map((interview) => {
+                  if (interview.job._id == approaches.job._id) {
+                    return (
+                      <div className="text-sm justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
+                        <div>
+                          <p>
+                            {" "}
+                            Interview scheduled on{" "}
+                            <span className="font-medium">
+                              {new Date(
+                                interview.interview_date
+                              ).toLocaleDateString("en-GB", {
+                                day: "numeric",
+                                month: "short",
+                              })}
+                            </span>{" "}
+                            at <span>{interview.interview_time}</span>
+                          </p>
+                          <p>
+                            Mode of interview{" "}
+                            <span className="font-medium">
+                              {interview.interview_mode}
+                            </span>
+                          </p>
+                          {/* <p>Address {interview.interview_address}</p> */}
+                        </div>
+                        {interview.interview_mode == "In-person" && (
+                          <div
+                            className="relative"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="currentColor"
+                              className="h-14 bg-white p-2 rounded-md border"
+                              viewBox="0 0 16 16"
+                            >
+                              <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
+                            </svg>
+                            <a
+                              className="border absolute h-full w-full top-0 rounded-md "
+                              href={interview.interview_location_link}
+                            ></a>
+                          </div>
+                        )}
+                        {interview.interview_mode == "Online" && (
+                          <div
+                            className="relative"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="16"
+                              height="16"
+                              fill="currentColor"
+                              class="bi bi-link-45deg"
+                              viewBox="0 0 16 16"
+                            >
+                              <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z" />
+                              <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z" />
+                            </svg>
+                            <a
+                              className="border absolute h-full w-full top-0 rounded-md "
+                              href={interview.interview_meet_link}
+                            ></a>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  ) : approaches.status === "accepted" ? (
-                    <div className=" w-fit bg-gray-50 text-sm gap-2 flex flex-wrap justify-between items-center p-3 py-1 rounded-md ">
-                      <p>Approach accepted you will be notified about the next step</p>
-                    
-                    </div>
-                  ) : approaches.status === "interview_setup" ? (
-                    <p>
-                      {interviews?.map((interview) => {
-                        if (interview.job._id == approaches.job._id) {
-                          return (
-                            <div className="text-sm justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
-                              <div>
-                                <p>
-                                  {" "}
-                                  Interview scheduled on{" "}
-                                  <span className="font-medium">
-                                    {new Date(
-                                      interview.interview_date
-                                    ).toLocaleDateString("en-GB", {
-                                      day: "numeric",
-                                      month: "short",
-                                    })}
-                                  </span>{" "}
-                                  at <span>{interview.interview_time}</span>
-                                </p>
-                                <p>
-                                  Mode of interview{" "}
-                                  <span className="font-medium">
-                                    {interview.interview_mode}
-                                  </span>
-                                </p>
-                                {/* <p>Address {interview.interview_address}</p> */}
-                              </div>
-                              {interview.interview_mode == "In-person" && (
-                                <div
-                                  className="relative"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                  }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="currentColor"
-                                    className="h-14 bg-white p-2 rounded-md border"
-                                    viewBox="0 0 16 16"
-                                  >
-                                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
-                                  </svg>
-                                  <a
-                                    className="border absolute h-full w-full top-0 rounded-md "
-                                    href={interview.interview_location_link}
-                                  ></a>
-                                </div>
-                              )}
-                              {interview.interview_mode == "Online" && (
-                                <div
-                                  className="relative"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                  }}
-                                >
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="16"
-                                    height="16"
-                                    fill="currentColor"
-                                    class="bi bi-link-45deg"
-                                    viewBox="0 0 16 16"
-                                  >
-                                    <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z" />
-                                    <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z" />
-                                  </svg>
-                                  <a
-                                    className="border absolute h-full w-full top-0 rounded-md "
-                                    href={interview.interview_meet_link}
-                                  ></a>
-                                </div>
-                              )}
-                            </div>
-                          );
-                        }
-                      })}
-                      {approaches.createdAt && (
-                        <p className="mt-2 text-sm text-gray-400">
-                          Approached ${approaches.createdAt}
-                        </p>
-                      )}
-                    </p>
-                  ) : (
-                    <p className="text-red-500 text-sm">Approach declined</p>
-                  )}
+                    );
+                  }
+                })}
+                {approaches.createdAt && (
+                  <p className="mt-2 text-sm text-gray-400">
+                    Approached ${approaches.createdAt}
+                  </p>
+                )}
+              </p>
+            ) : (
+              <p className="text-red-500 text-sm">Approach declined</p>
+            )}
             {jobInterview && (
               <div className="text-sm justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
                 <div>
@@ -1051,7 +1188,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                   Login / Sign up
                 </a>
               )}
-              {(!jobApproach || jobApproach.length === 0) && userDetails && (
+              {/* {(!jobApproach || jobApproach.length === 0) && userDetails && (
                 <a
                   target="_blank"
                   onClick={() => {
@@ -1066,8 +1203,8 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                 >
                   Apply
                 </a>
-              )}
-              {userDetails &&
+              )} */}
+              {/* {userDetails &&
                 (saved ? (
                   <button
                     onClick={() => unsaveJob()}
@@ -1082,7 +1219,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                   >
                     Save
                   </button>
-                ))}
+                ))} */}
             </div>
             {applied && (
               <p className="text-sm text-red-500 mt-2">
@@ -1135,16 +1272,56 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
           </div>
           <div
             style={{
-              left: `${(100 / (userDetails?3:2)) * tabIndex}%`,
+              left: `${(100 / (userDetails ? 3 : 2)) * tabIndex}%`,
               transition: "left 0.2s ease-in-out",
             }}
-            className={`${userDetails?"w-1/3":"w-1/2"} h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute`}
+            className={`${
+              userDetails ? "w-1/3" : "w-1/2"
+            } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute`}
           ></div>
+          <div className="fixed sm:left-[187px] sm:rounded-2xl sm:shadow-xl w-full sm:max-w-lg flex gap-3 bottom-[56px] sm:bottom-6 z-30 bg-white border px-4 py-5 items-center">
+            <svg
+              class="h-12 w-[70px]  p-2 px-2.5 border text-gray-400 rounded-lg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              {" "}
+              <path stroke="none" d="M0 0h24v24H0z" />{" "}
+              <rect x="8" y="8" width="12" height="12" rx="2" />{" "}
+              <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2" />
+            </svg>
+            <a
+              target="_blank"
+              onClick={() => {
+                if (!jobDetails?.job_url) {
+                  setSelectResume(jobDetails.user);
+                }
+              }}
+              href={jobDetails?.job_url}
+              className={`${
+                applied ||
+                approaches[0]?.status == "accepted" ||
+                approaches[0]?.status == "approached"
+                  ? "bg-gray-50 text-gray-400 border "
+                  : "bg-blue-500 text-white"
+              } text-center flex items-center justify-center -mt-1 py-2.5 font-medium  w-full rounded-lg  text-xl`}
+            >
+              {applied?"Applied" :approaches[0]?.status === "accepted"||approaches[0]?.status === "approached"
+                ? "Approached"
+                : "Apply"}
+            </a>
+          </div>
         </div>
 
         <div>{renderTabContent()}</div>
       </div>
-      <div className="hidden sticky top-20 w-full max-w-sm flex-col gap-5 lg:flex">
+      <div className="hidden sticky overflow-y-auto w-full max-w-sm flex-col gap-5 lg:flex">
         {userDetails && (
           <div className="border rounded-lg p-4">
             <p className="text-xl font-semibold mb-5">Releated Accounts</p>
@@ -1165,14 +1342,20 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
         <div className="border p-6 rounded-lg">
           <p className="text-xl font-semibold mb-5">Similar Jobs</p>
           <div className="p-4 sm:px-0 sm:py-0">
-          {
-            relatedJobs.length<=0?
-            <div className="w-full text-center text-lg text-gray-500"> No related jobs</div>:
-            relatedJobs.map((job)=>(
-                <JobListItem job = {job} companyDefaultImage={companyDefaultImage}/>
-            ))
-          }
-        </div>
+            {relatedJobs.length <= 0 ? (
+              <div className="w-full text-center text-lg text-gray-500">
+                {" "}
+                No related jobs
+              </div>
+            ) : (
+              relatedJobs.map((job) => (
+                <JobListItem
+                  job={job}
+                  companyDefaultImage={companyDefaultImage}
+                />
+              ))
+            )}
+          </div>
         </div>
       </div>
     </div>

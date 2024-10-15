@@ -61,7 +61,7 @@ function JobFilter() {
 
     return (
         <div>
-            <div className='flex gap-3 px-4 py-3 mt-2    items-center bg-white border-b  sm:hidden'>
+            <div className='flex gap-3 px-4 py-3 mt-2 items-center bg-white border-b  sm:hidden'>
                 <svg onClick={toggleFilter} className="h-6 w-6 text-gray-500" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
                 </svg>
@@ -69,7 +69,7 @@ function JobFilter() {
                     {
                         filters.map((filter)=>{
                             return(
-                                <p onClick={()=>{setcurrentSelectedFilter(filter);toggleFilter()}} className='border rounded-full px-2 py-1 w-fit text-nowrap'>{filter.filterName}</p>
+                                <p onClick={()=>{setcurrentSelectedFilter(filter);toggleFilter()}} className='border rounded-lg font-medium px-2 py-1 w-fit text-nowrap'>{filter.filterName}</p>
                             )
                         })
                     }

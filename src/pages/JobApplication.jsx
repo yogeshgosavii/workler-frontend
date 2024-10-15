@@ -8,8 +8,11 @@ import authService from "../services/authService";
 import applicationService from "../services/applicationService";
 import JobProfileView from "../components/JobProfileView";
 import { formatDistanceToNow } from "date-fns";
+import companyDefaultImage from '../assets/companyDefaultImage.png';
+
 import interviewService from "../services/interviewService";
 import { useNavigate } from "react-router-dom";
+import JobListItem from "../components/jobComponent/JobListItem";
 
 function JobApplication() {
   const currentUser = useSelector((state) => state.auth.user);
@@ -184,18 +187,23 @@ function JobApplication() {
                 <div
                   key={approach._id}
                   onClick={() => {navigate("/job/"+approach.job._id)}}
-                  className="border rounded-lg p-5 cursor-pointer flex flex-col gap-4"
+                  className="border sm:rounded-3xl p-6  cursor-pointer flex flex-col gap-4"
                 >
-                  <div className="flex gap-4">
+                  <JobListItem 
+                  job={approach.job}
+                  companyDefaultImage={companyDefaultImage}
+                  className="rounded-2xl shadow-lg"
+                  />
+                  {/* <div className="flex gap-4">
                     <UserImageInput
                       isEditable={false}
                       image={approach.job.companyLogo}
                     />
                     <div className="flex flex-col justify-center">
                       <p className="font-medium">{approach.job.job_role}</p>
-                      <p className="text-sm">{approach.job.company_name}</p>
+                      <p className="text-sm text-gray-400">{approach.job.company_name}</p>
                     </div>
-                  </div>
+                  </div> */}
                   {/* {approach.job?.experience_type == "Experienced" && (
                     <div className="flex gap-2 text-sm items-center">
                       <svg
@@ -220,7 +228,7 @@ function JobApplication() {
                       )}
                     </div>
                   )} */}
-                  {(approach.job.min_salary || approach.job.max_salary) && (
+                  {/* {(approach.job.min_salary || approach.job.max_salary) && (
                     <div className="flex gap-2 text-sm">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -261,7 +269,7 @@ function JobApplication() {
                         {approach.job.location?.address}{" "}
                       </p>
                     </div>
-                  )}
+                  )} */}
                   {/* <p className="mt-3 mb-2 text-purple-500 w-fit text-sm rounded-md">
                     Approached for{" "}
                     <span className="font-medium">{approach.job.job_role}</span>
@@ -295,8 +303,8 @@ function JobApplication() {
                       </div>
                     </div>
                   ) : approach.status === "accepted" ? (
-                    <div className=" w-fit bg-gray-50 text-sm gap-2 flex flex-wrap justify-between items-center p-3 py-1 rounded-md ">
-                      <p>Approach accepted you will be notified about the next step</p>
+                    <div className="  bg-gray-50 border text-gray-600 text-sm gap-2 mt-2 flex flex-wrap justify-between items-center p-3 px-4 w-full rounded-lg ">
+                      <p><span className="font-medium">Approach accepted</span> ,you will be notified about the next step</p>
                     
                     </div>
                   ) : approach.status === "interview_setup" ? (
@@ -647,9 +655,9 @@ function JobApplication() {
   }
 
   return (
-    <div className="w-full flex justify-center gap-4 px-4 py-2">
-      <div className={`w-full max-w-lg  mt-3 sm:w-1/2 ${selectedJob && "hidden sm:block"}`}>
-        <div className="flex gap-4 mb-5 text-sm">
+    <div className="w-full flex justify-center gap-4  ">
+      <div className={`w-full sm:max-w-md  mt-3 sm:w-1/2 ${selectedJob && "hidden sm:block"}`}>
+        <div className="flex gap-4 mb-5  px-4 py-1">
           <p
             onClick={() => setInnerTab("applications")}
             className={`px-3 py-1 cursor-pointer rounded-md font-medium border ${

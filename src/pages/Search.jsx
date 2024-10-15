@@ -138,6 +138,14 @@ function Search() {
                 )}
               </div>}
               <svg
+              onClick={()=>{
+                if(searchType != "user"){
+                  navigate("/jobs/"+query)
+                }
+                else{
+                  e.preventDefault()
+                }
+              }}
                 className="h-6 w-6"
                 viewBox="0 0 24 24"
                 fill="none"

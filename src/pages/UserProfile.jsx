@@ -502,6 +502,7 @@ const UserProfile = () => {
           <Posts
             setFormType={setFormType}
             postData={postData}
+            className={"pb-5"}
             userDetails={userDetails}
             setPostData={setPostData}
           />

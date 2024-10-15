@@ -33,7 +33,7 @@ function CommentButton({ onClick, postData, className ,state ="post"}) {
   return (
     <div
       onClick={onClick}
-      className={`flex gap-1 -mt-px items-center ${className}`}
+      className={`flex gap-[5px] -mt-px items-center ${className}`}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

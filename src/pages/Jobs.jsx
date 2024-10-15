@@ -83,7 +83,7 @@ function Jobs() {
             placeholder="Enter the job title or domain"
           />
           <div
-            className={`border max-w-[90%] absolute rounded-md w-full sm:max-w-md mx-10 mt-20 bg-white z-40 p-4 flex flex-col ${
+            className={`border max-w-[90%] absolute rounded-md w-full sm:max-w-md mx-10 mt-20 bg-white z-40  flex flex-col ${
               !searchFocus && "hidden"
             }`}
           >
@@ -101,15 +101,15 @@ function Jobs() {
       {/* Main Content Section */}
       <div className="flex gap-6 ">
         {/* Left Sidebar (JobFilter) */}
-        <div className={`flex justify-center mr-0 sm:mr-6 md:mr-0 px-4 sm:px-0 w-full mt-4 ${isAuthenticated?" pt-16":"pt-16 sm:pt-24"} pb-10 sm:gap-10`}>
-          <div style={{scrollbarWidth:"none"}} className={` pb-10 fixed max-h-[85%] w-full sm:w-fit overflow-y-auto  ${isAuthenticated ? "sm:left-24 top-[45px] sm:top-16 ":"left-0 sm:left-8 top-[40px] sm:top-24"} pt-4 `}>
+        <div className={`flex justify-center mr- sm:mr-6 md:mr-0 sm:px-0 w-full mt-4 ${isAuthenticated?" pt-16":"pt-16 sm:pt-24"} sm:pr-10 pb-10 sm:gap-10`}>
+          <div style={{scrollbarWidth:"none"}} className={` pb-10 fixed max-h-[85%] w-full sm:w-fit overflow-y-auto z-20  ${isAuthenticated ? "sm:left-24 top-[45px] sm:top-16 ":"left-0 sm:left-8 top-[40px] sm:top-24"} pt-4 `}>
             <JobFilter />
           </div>
           <JobList  jobs={submitJobList} />
         </div>
 
         {/* Right News Section */}
-        <div className={`hidden md:block mr-6 mt-5 ${!isAuthenticated && "mt-28"}`}>
+        <div className={`hidden lg:block mr-6 mt-5 ${!isAuthenticated && "mt-28"}`}>
           <News />
         </div>
       </div>

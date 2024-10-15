@@ -392,9 +392,9 @@ function Posts({
                   )}
                   <div
                     id="commentInput"
-                    className={`relative flex border gap-2 px-2 py-1.5 mt-4 rounded-full transition-all items-center overflow-hidden ${
+                    className={`relative flex border gap-2 px-2 py-1.5  rounded-full transition-all items-center overflow-hidden ${
                       commentButtonClicked === index
-                        ? " opacity-100"
+                        ? " opacity-100 mt-4"
                         : "-mt-14 opacity-0 pointer-events-none "
                     } `}
                   >

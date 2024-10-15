@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import savedService from "../../services/savedService";
 import useJobApi from "../../services/jobService";
 import UserImageInput from "../../components/Input/UserImageInput";
-import Button from "../../components/Button/Button";
 import { useNavigate } from "react-router-dom";
+import LikeButton from "../../components/Button/LikeButton";
+import CommentButton from "../../components/Button/CommentButton";
+import JobListItem from "../../components/jobComponent/JobListItem";
+import companyDefaultImage from "../../assets/companyDefaultImage.png";
 
 function Saved() {
   const [selectedTab, setSelectedTab] = useState("Posts");
@@ -13,7 +16,7 @@ function Saved() {
     profiles: [],
     jobs: [],
   });
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [unsavedItems, setUnsavedItems] = useState([]); // Track unsaved items
 
@@ -98,10 +101,10 @@ function Saved() {
     savedItems.posts.map((post) => (
       <div
         key={post._id}
-        onClick={()=>{
-          navigate("/post/"+post.saved_content._id)
+        onClick={() => {
+          navigate("/post/" + post.saved_content._id);
         }}
-        className={`col-span-1 flex flex-col h-full  rounded-xl ${
+        className={`col-span-1 flex flex-col border py-3 h-full  sm:rounded-xl ${
           unsavedItems.includes(post._id) ? "animate-unsave" : ""
         }`} // Add animation class
       >
@@ -163,7 +166,6 @@ function Saved() {
                   {/* Background with opacity */}
                   <div className="absolute h-10 w-[95%] rounded-full bg-black opacity-50 bottom-0 right-1 left-1"></div>
 
-                  {/* Unsave button */}
                   <button
                     className={`relative bottom-2 font-medium z-10 px-3  text-white bg-transparent `}
                   >
@@ -171,7 +173,6 @@ function Saved() {
                   </button>
                 </div>
 
-                {/* Image icon */}
                 {post.saved_content.images.compressedImage.length > 1 && (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -189,13 +190,62 @@ function Saved() {
             </div>
           )
         ) : (
-          <p className="p-3 border text-sm h-full bg-gray-50 truncate shadow-inner"
-          dangerouslySetInnerHTML={{ __html: post?.saved_content.content }}
-
+          <p
+            className="p-3  text-sm h-full "
+            dangerouslySetInnerHTML={{ __html: post?.saved_content.content }}
           />
           //   {post?.saved_content.content}
           // </p>
         )}
+        <div className="flex justify-between w-full gap-4 px-4 items-center border-t pt-3 pb-1">
+          <div className="flex gap-4  z-10 text-gray-400 font-normal items-center  mt-2">
+            <LikeButton
+              postData={post.saved_content}
+              likes={post.saved_content.likes}
+              likesCount={post.saved_content.likes_count}
+            />
+            <CommentButton
+              onClick={(e) => {
+                e.stopPropagation();
+                setCommentButtonClicked((prev) =>
+                  prev == index ? null : index
+                );
+              }}
+              postData={post.saved_content}
+              // setPostData={setPostData}
+            />
+          </div>
+          {true ? (
+            <svg
+              onClick={(e) => {
+                e.stopPropagation()
+                handleUnsave(post, "posts")}}
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              fill="currentColor"
+              class="bi bi-bookmark-fill"
+              viewBox="0 0 16 16"
+            >
+              <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
+            </svg>
+          ) : (
+            <svg
+              onClick={(e) => {
+                savePost(post._id);
+                e.stopPropagation();
+              }}
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              fill="currentColor"
+              class="bi bi-bookmark"
+              viewBox="0 0 16 16"
+            >
+              <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z" />
+            </svg>
+          )}
+        </div>
         {/* <button
           className=" w-full rounded-b-2xl border py-3 font-semibold bg-gray-100 text-gray-500"
           onClick={() => handleUnsave(post, "posts")}
@@ -209,8 +259,8 @@ function Saved() {
     savedItems.profiles.map((profile) => (
       <div
         key={profile._id}
-        onClick={()=>{
-          navigate("/user/"+profile.saved_content._id)
+        onClick={() => {
+          navigate("/user/" + profile.saved_content._id);
         }}
         className={`border flex flex-col justify-between  p-3  rounded-xl ${
           unsavedItems.includes(profile._id) ? "animate-unsave" : ""
@@ -248,145 +298,149 @@ function Saved() {
     return (
       <div className="flex flex-col gap-4">
         {savedItems.jobs.map((job) => (
-          <div
-            key={job._id}
-            className={`border w-full p-4   rounded-xl ${
-              unsavedItems.includes(job._id) ? "animate-unsave" : ""
-            }`}
-          >
-            <div className="flex justify-between items-center">
-              <div className="flex gap-2">
-                <UserImageInput image={job.comlogo} isEditable={false} />
-                <div>
-                  <p className="font-semibold">{job.saved_content.job_role}</p>
-                  <p className="text-gray-400">
-                    {job.saved_content.company_name}
-                  </p>
-                </div>
-              </div>
-              <svg
-                onClick={(e) => {
-                  handleUnsave(job, "jobs");
-                  e.stopPropagation();
-                }}
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="currentColor"
-                className="bi bi-bookmark-fill"
-                viewBox="0 0 16 16"
-              >
-                <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
-              </svg>
-            </div>
-            <div className="flex flex-wrap gap-2 flex-row text-nowrap mt-5">
-              <div className="flex gap-2   items-center">
-                <svg
-                  className="h-6 w-6 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <p className="text-nowrap text-lg sm:text-base sm:font-normal font-semibold">
-                  {job.saved_content.min_salary
-                    ? ` ${job.saved_content.min_salary}`
-                    : "Not disclosed"}
-                </p>
-              </div>
-              <div className="min-h-full border-l mx-1 w-px"></div>
-              <div className="flex gap-2   items-center">
-                <svg
-                  className="h-6 w-6 text-gray-400"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path stroke="none" d="M0 0h24v24H0z" />
-                  <rect x="3" y="7" width="18" height="13" rx="2" />
-                  <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" />
-                  <line x1="12" y1="12" x2="12" y2="12.01" />
-                  <path d="M3 13a20 20 0 0 0 18 0" />
-                </svg>
-                <p className="text-nowrap">
-                  {job.saved_content.min_experience ||
-                    "Experience not specified"}
-                </p>
-              </div>
-              {job.saved_content.location && (
-                <div className="min-h-full border-l mx-1 w-px"></div>
-              )}
-              {job.saved_content.location && (
-                <div className="flex gap-2 ">
-                  <svg
-                    className="h-6 w-6 text-gray-400"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                  <p className="text-wrap">
-                    {job.saved_content.location?.address}
-                  </p>
-                </div>
-              )}
-            </div>
-            {job.saved_content.description &&
-              job.saved_content.description != "" && (
-                <div className="flex gap-2 mt-4">
-                  <svg
-                    className="h-6 w-6 shrink-0 text-gray-400"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                    stroke="currentColor"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path stroke="none" d="M0 0h24h24H0z" />
-                    <rect x="5" y="3" width="14" height="18" rx="2" />
-                    <line x1="9" y1="7" x2="15" y2="7" />
-                    <line x1="9" y1="11" x2="15" y2="11" />
-                    <line x1="9" y1="15" x2="13" y2="15" />
-                  </svg>
-                  <p
-                    className="text-gray-700 line-clamp-1 truncate text-wrap"
-                    dangerouslySetInnerHTML={{
-                      __html: job.saved_content.description,
-                    }}
-                  ></p>
-                </div>
-              )}
-            {/* <Button
-          className="border w-full mt-3 bg-gray-100 text-gray-500"
-          onClick={() => handleUnsave(job, "jobs")}
-        >
-          Unsave
-        </Button> */}
-          </div>
+          <JobListItem
+            job={job.saved_content}
+            companyDefaultImage={companyDefaultImage}
+          />
+          //   <div
+          //     key={job._id}
+          //     className={`border w-full p-4   rounded-xl ${
+          //       unsavedItems.includes(job._id) ? "animate-unsave" : ""
+          //     }`}
+          //   >
+          //     <div className="flex justify-between items-center">
+          //       <div className="flex gap-2">
+          //         <UserImageInput image={job.comlogo} isEditable={false} />
+          //         <div>
+          //           <p className="font-semibold">{job.saved_content.job_role}</p>
+          //           <p className="text-gray-400">
+          //             {job.saved_content.company_name}
+          //           </p>
+          //         </div>
+          //       </div>
+          //       <svg
+          //         onClick={(e) => {
+          //           handleUnsave(job, "jobs");
+          //           e.stopPropagation();
+          //         }}
+          //         xmlns="http://www.w3.org/2000/svg"
+          //         width="24"
+          //         height="24"
+          //         fill="currentColor"
+          //         className="bi bi-bookmark-fill"
+          //         viewBox="0 0 16 16"
+          //       >
+          //         <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
+          //       </svg>
+          //     </div>
+          //     <div className="flex flex-wrap gap-2 flex-row text-nowrap mt-5">
+          //       <div className="flex gap-2   items-center">
+          //         <svg
+          //           className="h-6 w-6 text-gray-400"
+          //           fill="none"
+          //           viewBox="0 0 24 24"
+          //           stroke="currentColor"
+          //         >
+          //           <path
+          //             strokeLinecap="round"
+          //             strokeLinejoin="round"
+          //             strokeWidth="2"
+          //             d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"
+          //           />
+          //         </svg>
+          //         <p className="text-nowrap text-lg sm:text-base sm:font-normal font-semibold">
+          //           {job.saved_content.min_salary
+          //             ? ` ${job.saved_content.min_salary}`
+          //             : "Not disclosed"}
+          //         </p>
+          //       </div>
+          //       <div className="min-h-full border-l mx-1 w-px"></div>
+          //       <div className="flex gap-2   items-center">
+          //         <svg
+          //           className="h-6 w-6 text-gray-400"
+          //           width="24"
+          //           height="24"
+          //           viewBox="0 0 24 24"
+          //           strokeWidth="2"
+          //           stroke="currentColor"
+          //           fill="none"
+          //           strokeLinecap="round"
+          //           strokeLinejoin="round"
+          //         >
+          //           <path stroke="none" d="M0 0h24v24H0z" />
+          //           <rect x="3" y="7" width="18" height="13" rx="2" />
+          //           <path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2" />
+          //           <line x1="12" y1="12" x2="12" y2="12.01" />
+          //           <path d="M3 13a20 20 0 0 0 18 0" />
+          //         </svg>
+          //         <p className="text-nowrap">
+          //           {job.saved_content.min_experience ||
+          //             "Experience not specified"}
+          //         </p>
+          //       </div>
+          //       {job.saved_content.location && (
+          //         <div className="min-h-full border-l mx-1 w-px"></div>
+          //       )}
+          //       {job.saved_content.location && (
+          //         <div className="flex gap-2 ">
+          //           <svg
+          //             className="h-6 w-6 text-gray-400"
+          //             fill="none"
+          //             viewBox="0 0 24 24"
+          //             stroke="currentColor"
+          //           >
+          //             <path
+          //               strokeLinecap="round"
+          //               strokeLinejoin="round"
+          //               strokeWidth="2"
+          //               d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+          //             />
+          //             <path
+          //               strokeLinecap="round"
+          //               strokeLinejoin="round"
+          //               strokeWidth="2"
+          //               d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+          //             />
+          //           </svg>
+          //           <p className="text-wrap">
+          //             {job.saved_content.location?.address}
+          //           </p>
+          //         </div>
+          //       )}
+          //     </div>
+          //     {job.saved_content.description &&
+          //       job.saved_content.description != "" && (
+          //         <div className="flex gap-2 mt-4">
+          //           <svg
+          //             className="h-6 w-6 shrink-0 text-gray-400"
+          //             viewBox="0 0 24 24"
+          //             strokeWidth="2"
+          //             stroke="currentColor"
+          //             fill="none"
+          //             strokeLinecap="round"
+          //             strokeLinejoin="round"
+          //           >
+          //             <path stroke="none" d="M0 0h24h24H0z" />
+          //             <rect x="5" y="3" width="14" height="18" rx="2" />
+          //             <line x1="9" y1="7" x2="15" y2="7" />
+          //             <line x1="9" y1="11" x2="15" y2="11" />
+          //             <line x1="9" y1="15" x2="13" y2="15" />
+          //           </svg>
+          //           <p
+          //             className="text-gray-700 line-clamp-1 truncate text-wrap"
+          //             dangerouslySetInnerHTML={{
+          //               __html: job.saved_content.description,
+          //             }}
+          //           ></p>
+          //         </div>
+          //       )}
+          //     {/* <Button
+          //   className="border w-full mt-3 bg-gray-100 text-gray-500"
+          //   onClick={() => handleUnsave(job, "jobs")}
+          // >
+          //   Unsave
+          // </Button> */}
+          //   </div>
         ))}
       </div>
     );
@@ -423,7 +477,7 @@ function Saved() {
             </svg>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-2">{renderPosts()}</div>
+          <div className=" gap-2">{renderPosts()}</div>
         );
 
       case "Profiles":
@@ -486,7 +540,7 @@ function Saved() {
             </svg>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-2">{renderJobs()}</div>
+          <div className=" gap-2">{renderJobs()}</div>
         );
       default:
         return <div>Select a tab to view content.</div>;
@@ -502,12 +556,14 @@ function Saved() {
       ></div>
 
       {/* Main Content */}
-      <div className="fixed w-full sm:max-w-lg right-0 flex flex-col gap-5 border   h-full  px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
+      <div className="fixed w-full sm:max-w-lg right-0 flex flex-col gap-5 border   h-full   sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
         <div className=" ">
-          <h2 className="text-2xl font-bold mb-5 -mt-px ">Bookmarks</h2>
+          <h2 className="text-2xl font-bold mb-5 -mt-px px-4 sm:px-6">
+            Bookmarks
+          </h2>
 
           {/* Tab Navigation */}
-          <div className="flex w-full gap-3">
+          <div className="flex w-full gap-3 px-4 sm:px-6">
             {["Posts", "Profiles", "Jobs"].map((tab) => (
               <p
                 key={tab}
