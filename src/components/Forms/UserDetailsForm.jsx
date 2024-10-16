@@ -101,20 +101,19 @@ function UserDetailsForm({ onClose, setData, data }) {
   const handleUpdateUserDetails = async () => {
     let newFormData = new FormData();
     const flattenedData = flattenObject(formData);
-
+  
     Object.keys(flattenedData).forEach((key) => {
-      if (key === "profileImage" && flattenedData[key]) {
-        newFormData.append("images", flattenedData[key]);
-      } else if (
-        flattenedData[key] !== null &&
-        flattenedData[key] !== undefined
-      ) {
+      if (key === "profileImage") {
+        // Wrap the image in an array for consistency with multiple image uploads
+        newFormData.append("files", formData.profileImage);
+      } else {
         newFormData.append(key, flattenedData[key]);
       }
     });
+  
     setLoading(true);
     try {
-      console.log(formData)
+      console.log(formData);
       await authService.updateUserDetails(newFormData);
       setData(formData);
       onClose();
@@ -124,6 +123,7 @@ function UserDetailsForm({ onClose, setData, data }) {
       setLoading(false);
     }
   };
+  
 
   const handleAddTags = () => {
     if (

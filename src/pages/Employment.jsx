@@ -202,14 +202,15 @@ function Employment({ job, applications, approaches }) {
                       image={approach.user.profileImage?.compressedImage}
                     />
                     <div className="flex flex-col justify-center">
-                      <p className="font-medium">{approach.user.username}</p>
-                      <p className="text-sm">
+                      <p className=" font-medium text-lg">
                         {approach.user.personal_details.firstname}{" "}
                         {approach.user.personal_details.lastname}
                       </p>
-                      <p className="text-sm text-gray-400 truncate w-full text-wrap">
+                      <p className="text-sm -mt-1 text-gray-400">{approach.user.username}</p>
+
+                      {/* <p className="text-sm text-gray-400 truncate w-full text-wrap">
                         {approach.user.location.address}
-                      </p>
+                      </p> */}
                     </div>
                   </div>
                   {/* <p className="mt-3 mb-2 text-purple-500 w-fit text-sm rounded-md">
@@ -221,15 +222,15 @@ function Employment({ job, applications, approaches }) {
                       Haven't replied yet
                     </p>
                   ) : approach.status === "accepted" ? (
-                    <div className="bg-blue-50 gap-2 flex flex-wrap justify-between items-center text-sm p-3 rounded-md text-green-500">
-                      <p>Approach accepted</p>
+                    <div className="bg-gray-50 border gap-2 flex  justify-between items-center text-sm  rounded-lg text-gray-500">
+                      <p className=" px-4 font-medium truncate">Approach accepted</p>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           console.log("Hello");
                           setShowInterviewForm(approach);
                         }}
-                        className="bg-blue-500 font-medium text-white px-4 py-1 text-sm rounded-full"
+                        className="bg-blue-500 border border-blue-500 h-full font-medium  truncate text-white px-3 py-2.5  rounded-e-lg"
                       >
                         Step up interview
                       </button>

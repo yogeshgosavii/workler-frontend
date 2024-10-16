@@ -88,7 +88,7 @@ const App = () => {
         <Header />
         <div
           className={`flex-1  h-full w-full  overflow-y-auto flex justify-center  ${
-            isAuthenticated && "pb-14 sm:pb-5 sm:pl-24"
+            isAuthenticated && "pb-14 sm:pb-0 sm:pl-24"
           } `}
         >
           <Outlet />

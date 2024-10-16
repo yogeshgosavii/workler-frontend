@@ -19,7 +19,32 @@ function JobList({jobs}) {
 
   
 
- 
+  const joblistSkeleton = () => {
+    return (
+      <div className=" flex flex-col gap-6 w-full mb-10 animate-pulse">
+        {[1,2,3].map((job) => (
+          <div className="py-6 border-y">
+            <div className="px-6 flex gap-2">
+              <div className="h-14 w-16 rounded-md bg-gray-100"></div>
+              <div className=" w-full justify-center flex flex-col gap-2">
+                <div className="h-5 w-1/2 bg-gray-100 rounded-full"></div>
+                <div className="h-4 w-1/3 bg-gray-100 rounded-full"></div>
+              </div>
+            </div>
+            <div className="flex w-full gap-3 mt-5 px-6">
+              <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
+              <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
+            </div>
+            <div className=" w-full border-t mt-5"></div>
+            <div className="mt-6 flex px-6 justify-between">
+              <div className="h-7 w-1/3 bg-gray-100 rounded-full"></div>
+              <div className="h-8 w-8 rounded-full bg-gray-100"></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
 
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
@@ -37,7 +62,7 @@ function JobList({jobs}) {
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
   return (
-    <div className={`flex flex-1  ${isAuthenticated?"sm:ml-[270px]":"sm:ml-[300px]"} flex-col gap-8 pb-10 w-full mt-20 sm:mt-0 `}>
+    <div className={`flex flex-1  ${isAuthenticated?"sm:ml-[300px]":"sm:ml-[300px]"} flex-col gap-8 pb-10 w-full mt-20 sm:mt-0 `}>
       {loading ? (
         <div>
           {Array.from({ length: jobsPerPage }).map((_, index) => (
@@ -45,10 +70,10 @@ function JobList({jobs}) {
           ))}
         </div>
       ) : (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<div>{joblistSkeleton()}</div>}>
          
           {currentJobs.map((job, index) => (
-            <JobListItem onCl key={index} job={job} companyDefaultImage={companyDefaultImage} className="border p-5 hover:bg-gray-50" />
+            <JobListItem onCl key={index} job={job} companyDefaultImage={companyDefaultImage} className="border  hover:scale-105" />
           ))}
            {/* {currentJobs.map((job, index) => (
             <JobListItem key={index} job={job} companyDefaultImage={companyDefaultImage} />

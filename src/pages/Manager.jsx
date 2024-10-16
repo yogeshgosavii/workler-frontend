@@ -132,10 +132,10 @@ function Manager() {
               onClick={() => {
                 setSelectedJob(job);
               }}
-              className="text-sm bg-gray-50 p-3 px-4 rounded-md"
+              className="text-sm bg-gray-50 border p-3 px-4 rounded-lg"
             >
               <p className="font-medium text-lg">{job.job_role}</p>
-              <p>{job.location?.address}</p>
+              <p className="text-gray-500">{job.location?.address}</p>
               {applications
                     .filter((application) => application.job._id == job._id).length >0  && <div className="bg-white mt-2 flex justify-between p-2 rounded-md border">
                 <div>
@@ -167,9 +167,9 @@ function Manager() {
                 </div>
               </div>}
               {approaches
-                    .filter((approach) => approach.job._id == job._id).length >0  && <div className="bg-white mt-2 flex justify-between p-2 rounded-md border">
+                    .filter((approach) => approach.job._id == job._id).length >0  && <div className="bg-white mt-2 flex justify-between p-2 px-3 rounded-lg border">
                 <div>
-                  <p>Approaches</p>
+                  <p className="font-medium">Approaches</p>
                   <p className="text-sm text-gray-400">
                     List of candidates applied
                   </p>
@@ -315,22 +315,22 @@ function Manager() {
   return (
     <div className="flex gap-6 w-full">
       <div
-        className={`flex px-4 md:px-6 flex-col w-full ${
+        className={`flex px-4 md:px-6 mt-3 flex-col w-full ${
           selectedJob && "hidden md:block"
         }`}
       >
         <div className="mb-5">
           <p
             className={`${
-              innerTab == "jobs" && "bg-blue-50 w-fit rounded-md text-blue-500"
-            } px-3 py-1`}
+              innerTab == "jobs" && "bg-blue-50 border-blue-500 w-fit rounded-md text-blue-500"
+            } px-3 border font-medium text-sm py-1`}
           >
             Jobs
           </p>
         </div>
         <div className="w-full">{(loading.applicationList || loading.approachList)?"Loading...": content}</div>
       </div>
-     { selectedJob && <div className="w-full ">
+     { selectedJob && <div className="w-full mt-5 ">
         <Employment
           job={selectedJob}
           applications={applications.filter(

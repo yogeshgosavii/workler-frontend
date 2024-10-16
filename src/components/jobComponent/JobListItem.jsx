@@ -50,13 +50,13 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
   return (
     <div
       onClick={() => navigate(`/job/${job._id}`)}
-      className={`border sm:rounded-2xl sm:shadow-lg p-6 transition-all cursor-pointer ${className}`}
+      className={` sm:rounded-2xl sm:shadow-lg py-6  transition-all cursor-pointer ${className}`}
     >
-      <div className="flex gap-4">
+      <div className="flex gap-4 px-6">
         {/* Company Logo */}
         <img
-          className="w-14 h-14 object-contain border p-2 rounded-md"
-          src={job.company_logo || companyDefaultImage}
+          className="w-14 h-14 object-contain border bg-gray-50 p-2 rounded-lg"
+          src={job.company_logo || (job.user.company_details && job.user?.profileImage.compressedImage )|| companyDefaultImage}
           alt={`${job.company_name} logo`}
           onError={(e) => {
             e.target.onerror = null;
@@ -96,13 +96,13 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
       {/* Job Description */}
       {job.description && (
         <p
-          className="mt-4 text-gray-400 leading-tight line-clamp-3"
+          className="mt-4 px-6 text-gray-400 leading-tight line-clamp-3"
           dangerouslySetInnerHTML={{ __html: job.description }}
         />
       )}
       {/* <div className="border-t w-full mt-5"></div> */}
 
-      <div className="flex flex-wrap text-gray-700 font-medium  gap-3 flex-row text-nowrap mt-5">
+      <div className="flex flex-wrap px-6 text-gray-700 font-medium  gap-3 flex-row text-nowrap mt-5">
         {/* <div className="flex gap-2 border px-3 py-1.5 bg-gray-50 rounded-lg items-center">
           <svg
             className="h-6 w-6 "
@@ -124,9 +124,9 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
           </p>
         </div> */}
         {/* <div className="min-h-full border-l mx-1 w-px"></div> */}
-        <div className="flex gap-2  border rounded-lg bg-gray-100  px-3 py-1.5  items-center">
+        <div className="flex gap-2  border rounded-lg bg-gray-50  px-3 py-1.5  items-center">
           <svg
-            className="h-6 w-6 "
+            className="h-6 w-6 text-gray-400"
             width="24"
             height="24"
             viewBox="0 0 24 24"
@@ -152,9 +152,9 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
               <div className="min-h-full border-l mx-1 w-px"></div>
             )} */}
         {job.location && (
-          <div className="flex gap-2 px-3 py-1.5 border rounded-lg bg-gray-100 ">
+          <div className="flex gap-2 px-3 py-1.5 border rounded-lg bg-gray-50 ">
             <svg
-              className="h-6 w-6 "
+              className="h-6 w-6 text-gray-400"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -182,7 +182,7 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
         )}
       </div>
       <div className="border-t w-full mt-5"></div>
-      <div onClick={(e)=>{e.stopPropagation()}} className="flex justify-between gap-4 mt-5  items-center">
+      <div onClick={(e)=>{e.stopPropagation()}} className="flex  px-6 justify-between gap-4 mt-5  items-center">
         <div className="flex gap-2   font-medium text-lg rounded-lg items-center">
           <svg
             className="h-7 w-7 text-blue-500 "

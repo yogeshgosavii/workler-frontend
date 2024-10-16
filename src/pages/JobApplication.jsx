@@ -192,7 +192,7 @@ function JobApplication() {
                   <JobListItem 
                   job={approach.job}
                   companyDefaultImage={companyDefaultImage}
-                  className="rounded-2xl shadow-lg"
+                  className="rounded-2xl shadow-lg border"
                   />
                   {/* <div className="flex gap-4">
                     <UserImageInput
@@ -303,7 +303,7 @@ function JobApplication() {
                       </div>
                     </div>
                   ) : approach.status === "accepted" ? (
-                    <div className="  bg-gray-50 border text-gray-600 text-sm gap-2 mt-2 flex flex-wrap justify-between items-center p-3 px-4 w-full rounded-lg ">
+                    <div className="  bg-yellow-50 border text-yellow-600 border-yellow-500 text-sm gap-2 mt-2 flex flex-wrap justify-between items-center p-3 px-4 w-full rounded-lg ">
                       <p><span className="font-medium">Approach accepted</span> ,you will be notified about the next step</p>
                     
                     </div>
