@@ -51,22 +51,22 @@ function Home() {
       }
     };
   }, []);
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const jobs = await searchService.secrchJobByKeyword(searchText);
-        console.log(jobs);
-        setjobList(jobs);
-      } catch (error) {
-        console.error("Error fetching jobs: ", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchJobs = async () => {
+  //     try {
+  //       const jobs = await searchService.secrchJobByKeyword(searchText);
+  //       console.log(jobs);
+  //       setjobList(jobs);
+  //     } catch (error) {
+  //       console.error("Error fetching jobs: ", error);
+  //     }
+  //   };
 
-    if (searchText) {
-      fetchJobs();
-    }
+  //   if (searchText) {
+  //     fetchJobs();
+  //   }
    
-  }, [searchText]);
+  // }, [searchText]);
 
   return (
     <div className="w-full px-4 sm:px-8  h-full py-10 overflow-y-auto" ref={divRef}>
@@ -99,14 +99,14 @@ function Home() {
         } caret-blue-500 ${isAtTop ? "scale-[100%]" : "scale-[65%]"}`}
         placeholder="Enter the job title or domain"
       />
-      <div className={`border w-full absolute max-h-60 overflow-y-auto rounded-md max-w-screen-md mt-5 bg-white z-40 p-4 flex flex-col  ${!searchFocus && "hidden"}`}>
+      {/* <div className={`border w-full absolute max-h-60 overflow-y-auto rounded-md max-w-screen-md mt-5 bg-white z-40 p-4 flex flex-col  ${!searchFocus && "hidden"}`}>
         {jobList.map((job, index,arr) => (
           <div className={`py-2.5 ${(index!=arr.length-1) && "border-b"}`}>
             <p className="font-medium">{job.job_role}</p>
             <p className="text-gray-400">{job.company_name}</p>
           </div>
         ))}
-      </div>
+      </div> */}
       </form>
 
       {/* Professions section */}

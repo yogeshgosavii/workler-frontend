@@ -96,7 +96,7 @@ const App = () => {
       <div
         className={`${
           !isAuthenticated && "hidden"
-        } fixed flex border-t z-40 justify-between sm:justify-evenly sm:border-r-2 sm:border-t-0 bottom-0  sm:flex-col left-0 sm:top-0  w-full sm:w-fit bg-white`}
+        } fixed flex border-t z-40 justify-between sm:justify-evenly sm:border-r sm:border-t-0 bottom-0  sm:flex-col left-0 sm:top-0  w-full sm:w-fit bg-white`}
       >
         <p
           onClick={() => {

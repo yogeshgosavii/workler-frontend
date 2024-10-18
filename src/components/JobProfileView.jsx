@@ -27,8 +27,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   const [postData, setpostData] = useState();
   const [currentTab, setCurrentTab] = useState("Job details");
   const [tabIndex, setTabIndex] = useState(0);
-  const location = useLocation();
-  console.log("state", location.state?.jobDetails);
 
   // Access the passed data
   // const jobDetails = location.state?.jobDetails;
@@ -346,7 +344,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   const renderTabContent = () => {
     if (loading.jobDetails) {
       return (
-        <div>
+        <div className="h-full">
           <div class="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
             <svg
               class="text-white animate-spin"
@@ -442,7 +440,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                   )}
                 </div>
               </div> */}
-              <div className=" flex flex-col sm:px-6 gap-6 sm:border  py-6 ">
+              <div className=" flex flex-col sm:px-6 gap-6 sm:border mb-20  py-6 ">
                 <div>
                   <p className="font-medium text-xl mb-3 border-b pb-3 ">
                     Description
@@ -591,7 +589,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
         );
       case "Related jobs":
         return (
-          <div className="p-4 sm:px-0 pb-8 ">
+          <div className="p-4 sm:px-0 pb-8 flex flex-col gap-5  mb-20">
             {relatedJobs.length <= 0 ? (
               <div className="w-full text-center text-lg text-gray-500">
                 {" "}
@@ -628,7 +626,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   return (
     <div
       className={` w-full h-full  flex justify-center overflow-y-auto gap-8 ${
-        !userDetails && "sm:mt-20"
+        !userDetails && ""
       }`}
     >
       <div
@@ -808,6 +806,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                 <UserImageInput
                   isEditable={false}
                   className={""}
+                  
                   image={
                     jobDetails?.profileImage?.originalImage ||
                     (jobDetails?.user?.company_details &&
@@ -905,17 +904,10 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
               <div className="mt-2 flex relative  flex-col ">
                 <div className="flex mb-4 mt-1  w-full gap-4  items-center">
                   <UserImageInput
-                    onClick={() => {
-                      if (jobDetails.company_logo) {
-                        setShowProfileImage(true);
-                      }
-                    }}
+                    
                     imageBorder={showProfileImage ? "none" : "2"}
-                    className={`transition-all ease-in-out absolute blur-none bg-white p-2 rounded-full duration-300 ${
-                      showProfileImage
-                        ? " ml-[40%] md:ml-[45%]  z-50 translate-y-[200%] scale-[3.5] "
-                        : ""
-                    }`}
+                    className={`transition-all ease-in-out absolute blur-none bg-white p-2 rounded-full duration-300 
+                     `}
                     imageClassName={showProfileImage ? "shadow-3xl" : ""}
                     isEditable={false}
                     image={
@@ -1257,7 +1249,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                 </div>
               </div>
             ) : approaches[0]?.status === "accepted" ? (
-              <div className=" w-fit bg-yellow-50 border border-yellow-500 text-yellow-600 mt-2 text-sm gap-2 flex flex-wrap justify-between items-center p-3 py-1.5 self-center rounded-md ">
+              <div className=" w-fit bg-yellow-50  text-yellow-600 mt-2 text-sm gap-2 flex flex-wrap justify-between items-center p-3 py-2 self-center rounded-md ">
                 <p>
                   <span className="font-medium">Approach accepted</span>, you
                   will be notified about the next step
@@ -1423,7 +1415,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
             )}
 
             <div className=" transition-all flex gap-4">
-              {!userDetails && (
+              {/* {!userDetails && (
                 <a
                   href={"/login"}
                   className={`w-fit px-5 ${
@@ -1432,7 +1424,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                 >
                   Login / Sign up
                 </a>
-              )}
+              )} */}
               {/* {(!jobApproach || jobApproach.length === 0) && userDetails && (
                 <a
                   target="_blank"
@@ -1648,7 +1640,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
         </div>
 
         <div>{renderTabContent()}</div>
-        <div className="sticky   w-full self-center flex gap-3  bottom-0 z-30 bg-white border px-4 py-5 items-center">
+        <div className="fixed sm:sticky   w-full self-center flex gap-3  bottom-0 z-30 bg-white border px-4 py-5 items-center">
           {copied && (
             <p
               className={`absolute -top-16   bg-black opacity-85 text-white font-medium rounded-xl px-6 py-2.5 shadow-lg border  
@@ -1681,14 +1673,21 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
             disabled={
               applied ||
               approaches[0]?.status === "accepted" ||
-              approaches[0]?.status === "approached"
+              approaches[0]?.status === "approached" ||
+              loading.jobDetails
             }
             onClick={() => {
-              if (!jobDetails?.job_url) {
-                setSelectResume(jobDetails.user);
-              } else {
-                window.open(jobDetails?.job_url, "_blank");
+              if(userDetails){
+                if (!jobDetails?.job_url) {
+                  setSelectResume(jobDetails.user);
+                } else {
+                  window.open(jobDetails?.job_url, "_blank");
+                }
               }
+              else{
+                navigate("/login")
+              }
+            
             }}
             href={jobDetails?.job_url}
             className={`disabled:bg-blue-300 bg-blue-500 text-white text-center flex items-center justify-center py-2.5 font-medium w-full rounded-lg text-xl transition-all duration-300 ease-in-out ${
@@ -1699,7 +1698,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                 : "hover:bg-blue-600"
             }`}
           >
-            {applied ? (
+            { userDetails?(applied ? (
               "Applied"
             ) : approaches[0]?.status === "accepted" ||
               approaches[0]?.status === "approached" ? (
@@ -1721,10 +1720,10 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                   />
                 </svg>
               </span>
-            )}
+            )):"Login / Signup"}
           </button>
 
-          {(jobDetails?.user || jobDetails?.job_source == "job_post") &&
+          {(jobDetails?.user || jobDetails?.job_source == "job_post") && userDetails &&
             (loading.checkSaved ? (
               <svg
                 className="inline h-14 w-[60px] rounded-lg  px-2.5 p-3 text-transparent animate-spin fill-blue-500 "
@@ -1789,9 +1788,9 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
             </div>
           </div>
         )}
-        <div className="border mt-5">
-          <p className="text-xl font-semibold border-b  py-4 px-6">Similar Jobs</p>
-          <div className="p-4 ">
+        <div className="border">
+          <p className="text-xl font-semibold border-b sticky top-0 bg-white  py-4 px-6">Similar Jobs</p>
+          <div className="p-4 flex flex-col gap-4 ">
             {relatedJobs.length <= 0 ? (
               <div className="w-full text-center text-lg text-gray-500">
                 {" "}

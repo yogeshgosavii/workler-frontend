@@ -16,8 +16,8 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
       // setLoading((prev) => ({ ...prev, checkSaved: true }));
       try {
         const saveData = await savedService.checkSaved({
-          userId: currentUser._id,
-          saved_content: job._id,
+          userId: currentUser?._id,
+          saved_content: job?._id,
         });
         console.log("saved:", saveData);
         setSaved(saveData.exists);
@@ -28,7 +28,9 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
       }
     };
 
+   if(job.user){
     checkSaved()
+   }
   }, []);
 
   const saveJob = async () => {

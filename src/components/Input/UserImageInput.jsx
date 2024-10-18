@@ -32,7 +32,7 @@ function UserImageInput({
   const handleImageClick = () => {
     if (isEditable) {
       fileInputRef.current.click();
-    } else {
+    } else if (onClick) {
       onClick();
     }
   };

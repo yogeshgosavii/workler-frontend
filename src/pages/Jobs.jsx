@@ -123,7 +123,7 @@ function Jobs() {
             } caret-blue-500 h-12  `}
             placeholder="Enter the job title or domain"
           />
-          <div
+          {/* <div
             className={`border max-w-[90%] absolute rounded-md w-full sm:max-w-md mx-10 mt-20 bg-white z-40  flex flex-col ${
               !searchFocus && "hidden"
             }`}
@@ -137,7 +137,7 @@ function Jobs() {
                 <p className="text-gray-400">{job.company_name}</p>
               </div>
             ))}
-          </div>
+          </div> */}
         </form>
       </div>
 
