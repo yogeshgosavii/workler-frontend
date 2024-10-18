@@ -1640,7 +1640,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
         </div>
 
         <div>{renderTabContent()}</div>
-        <div className="fixed sm:sticky   w-full self-center flex gap-3  bottom-0 z-30 bg-white border px-4 py-5 items-center">
+        <div className={`fixed ${userDetails &&"mb-[55px] sm:mb-0"} sm:sticky   w-full self-center flex gap-3  bottom-0 z-30 bg-white border px-4 py-5 items-center`}>
           {copied && (
             <p
               className={`absolute -top-16   bg-black opacity-85 text-white font-medium rounded-xl px-6 py-2.5 shadow-lg border  
