@@ -49,7 +49,10 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
 
   return (
     <div
-      onClick={() => navigate(`/job/${job._id}`)}
+    onClick={() => {
+      console.log("Navigating with job:", job);
+      navigate(`/job/${job._id}`, { state: { jobDetails : job } });
+    }}
       className={` sm:rounded-2xl sm:shadow-lg py-6  transition-all cursor-pointer ${className}`}
     >
       <div className="flex gap-4 px-6">
@@ -212,7 +215,7 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
           </p>
         </div>
           {/* <p>Save</p> */}
-          {saved ? (
+          {(job?.user || job.source =="job_post") &&(saved ? (
             <svg
               onClick={(e) => {
                 unsaveJob(job._id);
@@ -242,7 +245,7 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
             >
               <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z" />
             </svg>
-          )}
+          ))}
       </div>
     </div>
   );

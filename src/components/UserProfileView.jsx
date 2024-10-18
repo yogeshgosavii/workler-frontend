@@ -19,6 +19,8 @@ import applicationService from "../services/applicationService";
 import { getPostByUserId } from "../services/postService";
 import followService from "../services/followService";
 import savedService from "../services/savedService";
+import companyDefaultImage from "../assets/companyDefaultImage.png";
+
 
 function UserProfileView({ userId = useParams().userId }) {
   // const { userId } = useParams();
@@ -106,7 +108,7 @@ function UserProfileView({ userId = useParams().userId }) {
     const fetchJobData = async () => {
       setLoading((prev) => ({ ...prev, jobData: true }));
       try {
-        const response = await jobService.job.getByUserIds(currentUserDetails._id);
+        const response = await jobService.job.getByUserIds(userId);
         console.log("job details:", response);
         setcurrentUserJobData(response);
         console.log("jobdata", response);
@@ -222,9 +224,13 @@ function UserProfileView({ userId = useParams().userId }) {
       userDetails?.account_type == "Candidate"
     ) {
       checkApproached();
-      fetchQualificationData();
       fetchUserJobsPosts();
       fetchApplications();
+    }
+    else if( currentUserDetails?.account_type == "Candidate" &&
+      userDetails?.account_type == "Candidate"){
+      fetchQualificationData();
+
     }
   }, [userDetails]);
 
@@ -359,15 +365,16 @@ function UserProfileView({ userId = useParams().userId }) {
           <Qualification
             isEditable={false}
             loading={loading}
-            educationData={qualification.education}
-            skillData={qualification.skills}
-            workExperienceData={qualification.workExperience}
-            projectData={qualification.projectDetails}
+            educationData={qualification?.education}
+            skillData={qualification?.skills}
+            workExperienceData={qualification?.workExperience}
+            projectData={qualification?.projectDetails}
           />
         );
       case "Posts":
         return (
           <Posts
+          className={"pb-8"}
             postData={postData}
             setPostData={setpostData}
             userDetails={userDetails}
@@ -383,7 +390,7 @@ function UserProfileView({ userId = useParams().userId }) {
             {currentUserJobData?.map((job, index) => (
               <div
                 onClick={() => {
-                  navigate(`/search/job/${job._id}`);
+                  navigate(`/job/${job._id}`);
                 }}
                 className={`flex py-2 items-start  justify-between ${
                   index < currentUserJobData.length - 1
@@ -394,7 +401,7 @@ function UserProfileView({ userId = useParams().userId }) {
               >
                 <div className="flex gap-2 ">
                   <UserImageInput
-                    image={job.company_Logo}
+                    image={userDetails.profileImage.compressedImage ||companyDefaultImage}
                     isEditable={false}
                     imageHeight={40}
                   />
@@ -467,7 +474,7 @@ function UserProfileView({ userId = useParams().userId }) {
     console.log(unfollowResponse);
   };
   return (
-    <div className=" flex gap-8 mt-5 w-full justify-center">
+    <div className=" flex gap-8  w-full justify-center">
       <div
         ref={profileRef}
         style={{
@@ -475,7 +482,7 @@ function UserProfileView({ userId = useParams().userId }) {
         }}
         className={`${
           !userId && "hidden"
-        } max-w-lg w-full flex-1 transition-all  ${
+        }  w-full flex-1 transition-all  ${
           approaching ? "overflow-y-hidden" : "overflow-y-auto"
         }   flex-grow ${showProfileImage && "pointer-events"}`}
       >
@@ -560,41 +567,42 @@ function UserProfileView({ userId = useParams().userId }) {
                 <p className="text-xl font-semibold">
                   {atTop > 100 ? userDetails?.username : "Profile"}
                 </p>
-                <div className="flex gap-1 mt-0.5 items-center">
+                {/* <div className="flex gap-1 mt-0.5 items-center">
                   <span className="h-2 w-2 rounded-full shadow-lg bg-green-500"></span>
                   <p className="text-xs text-gray-400 -mt-px">
                     Currently active
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
           <div className="flex border-t sm:border-t-0 pt-8 pb-6 mt-10 sm:mt-0 flex-grow sm:border-x px-4 md:px-6 gap-3 bg-white justify-center flex-col">
             {loading.userDetails || !userDetails ? (
               <div className="animate-pulse mt-2">
-                <div className="flex  items-center">
-                  <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
-                  <div className=" w-32 ml-2">
-                    <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
-                    <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
-                  </div>
-                </div>
-                <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
-                <div className="h-3 bg-gray-200 rounded-md mt-1"></div>
-                <div className="flex  items-center mt-4">
-                  <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
-                  <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
-                </div>
-                <div className="flex  items-center mt-1">
-                  <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
-                  <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
-                </div>
-
-                <div className="flex mt-4">
-                  <div className="h-3 w-20 bg-gray-200 rounded-md "></div>
-                  <div className="h-3 w-20 bg-gray-200 rounded-md ml-2"></div>
+              <div className="flex  items-center">
+                <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
+                <div className=" w-32 ml-2">
+                  <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded-md mb-2 w-1/2"></div>
                 </div>
               </div>
+              <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
+              <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
+              <div className="h-3 bg-gray-200 rounded-md mt-2 w-1/2"></div>
+              {/* <div className="flex  items-center mt-4">
+                <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
+                <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
+              </div>
+              <div className="flex  items-center mt-1">
+                <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
+                <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
+              </div> */}
+
+              <div className="flex mt-5">
+                <div className="h-3 w-20 bg-gray-200 rounded-md "></div>
+                <div className="h-3 w-20 bg-gray-200 rounded-md ml-2"></div>
+              </div>
+            </div>
             ) : (
               <div className="mt-2 flex relative  flex-col ">
                 <div className="flex mb-4 mt-1  w-full gap-4  items-center">
@@ -870,8 +878,8 @@ function UserProfileView({ userId = useParams().userId }) {
 
         <div>{renderTabContent()}</div>
       </div>
-      <div className="hidden sticky top-20 w-full max-w-sm flex-col gap-5 md:flex">
-        <div className="border rounded-lg p-4">
+      <div className="hidden sticky top-20 w-full max-w-lg flex-col gap-5 md:flex">
+        <div className="border  p-4">
           <p className="text-xl font-semibold mb-5">Releated Accounts</p>
           <div className="flex gap-5 justify-between items-center">
             <div className="flex gap-2">
@@ -886,9 +894,7 @@ function UserProfileView({ userId = useParams().userId }) {
             </p>
           </div>
         </div>
-        <div className="border p-4 rounded-lg">
-          <p className="text-xl font-semibold">Similar Jobs</p>
-        </div>
+       
       </div>
     </div>
   );

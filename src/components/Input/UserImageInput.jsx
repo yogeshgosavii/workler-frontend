@@ -9,6 +9,7 @@ function UserImageInput({
   imageBorder = 2,
   onClick,
   imageClassName,
+  onError,
   onImageChange, // callback to handle image change
 }) {
   const fileInputRef = useRef(null);
@@ -66,6 +67,7 @@ function UserImageInput({
           className={`object-cover rounded-full ${imageClassName}`}
           src={currentImage || profileImageDefault}
           alt="Profile"
+          onError={onError}
           style={{ height: "100%", width: "100%" }}
         />
         {isEditable && (

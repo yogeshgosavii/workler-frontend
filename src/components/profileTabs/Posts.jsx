@@ -19,6 +19,7 @@ function Posts({
   setSelectedPost,
   postData,
   className,
+  postClassName,
   setPostData,
   columns = 2,
   userDetails,
@@ -150,7 +151,7 @@ function Posts({
                 <div
                   key={index}
                   onClick={() => navigate("/post/" + post._id)}
-                  className={` sm:border bg-white  sm:rounded-3xl flex-grow   h-fit  border-gray-300 p-4 sm:p-7`}
+                  className={` sm:border bg-white  ${postClassName} flex-grow   h-fit   p-4 sm:p-7`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex gap-2 ">

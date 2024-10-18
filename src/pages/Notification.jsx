@@ -64,7 +64,7 @@ function Notification({ userId }) {
   };
 
   return (
-    <div className="text-start w-full h-full relative  max-w-lg">
+    <div className="text-start w-full h-full relative  max-w-3xl">
       <p className="text-2xl w-full font-bold px-4 md:px-6 absolute sm:border-x  -top-0 bg-white z-40 py-4 ">Notifications</p>
 
       {loading ? (

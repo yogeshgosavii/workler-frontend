@@ -666,12 +666,12 @@ const UserProfile = () => {
                     <p className="text-xl font-semibold">
                       {atTop >= 100 ? user.username : "Profile"}
                     </p>
-                    <div className="flex gap-1 mt-0.5 items-center">
+                    {/* <div className="flex gap-1 mt-0.5 items-center">
                       <span className="h-2 w-2 rounded-full shadow-lg bg-green-500"></span>
                       <p className="text-xs text-gray-400 -mt-px">
                         Currently active
                       </p>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
                 <svg
@@ -751,21 +751,22 @@ const UserProfile = () => {
                       <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
                       <div className=" w-32 ml-2">
                         <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
-                        <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
+                        <div className="h-4 bg-gray-200 rounded-md mb-2 w-1/2"></div>
                       </div>
                     </div>
                     <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
-                    <div className="h-3 bg-gray-200 rounded-md mt-1"></div>
-                    <div className="flex  items-center mt-4">
+                    <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
+                    <div className="h-3 bg-gray-200 rounded-md mt-2 w-1/2"></div>
+                    {/* <div className="flex  items-center mt-4">
                       <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
                       <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
                     </div>
                     <div className="flex  items-center mt-1">
                       <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
                       <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
-                    </div>
+                    </div> */}
 
-                    <div className="flex mt-4">
+                    <div className="flex mt-5">
                       <div className="h-3 w-20 bg-gray-200 rounded-md "></div>
                       <div className="h-3 w-20 bg-gray-200 rounded-md ml-2"></div>
                     </div>

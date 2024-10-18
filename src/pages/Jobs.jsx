@@ -70,7 +70,7 @@ function Jobs() {
     return (
       <div className=" flex flex-col gap-6 w-full mb-10 animate-pulse">
         {[1,2,3].map((job) => (
-          <div className="py-6 border-y">
+          <div className="py-6 border-y sm:border sm:rounded-xl">
             <div className="px-6 flex gap-2">
               <div className="h-14 w-16 rounded-md bg-gray-100"></div>
               <div className=" w-full justify-center flex flex-col gap-2">
@@ -100,7 +100,7 @@ function Jobs() {
       )}
 
       {/* Search Input Section */}
-      <div className="fixed z-40">
+      <div className="fixed  z-40">
         <form
           onSubmit={handleSearchSubmit}
           className={`flex w-screen ${
@@ -108,7 +108,7 @@ function Jobs() {
           } bg-blue-50   justify-center  sm:justify-start py-3 ${
             isAuthenticated ? "bg-white" : "bg-transparent"
           } px-4 sm:px-0 ${
-            !isAuthenticated ? "sm:ml-44" : "ml-0"
+            !isAuthenticated ? "sm:ml-44" : "sm:ml-8 ml-0"
           }   left-0 relative -mt-6`}
         >
           <SearchInput
@@ -118,7 +118,7 @@ function Jobs() {
             onBlur={() => setSearchFocus(false)}
             ref={searchRef}
             inputClassName=""
-            className={`sticky transition-all mt-6 sm:ml-0   sm:max-w-[250px] flex items-center md:max-w-[350px] lg:max-w-md z-10 bg-white w-full ${
+            className={`sticky transition-all sm:shadow-md mt-6 sm:ml-0   sm:max-w-[250px] flex items-center md:max-w-[350px] lg:max-w-md z-10 bg-white w-full ${
               !isAuthenticated ? "w-[100%]" : ""
             } caret-blue-500 h-12  `}
             placeholder="Enter the job title or domain"
@@ -146,7 +146,7 @@ function Jobs() {
       <div className="flex gap-6 ">
         {/* Left Sidebar (JobFilter) */}
         <div
-          className={`flex justify-center mr- sm:mr-6 md:mr-0 sm:px-0 w-full mt-4 ${
+          className={`flex justify-center overflow-x-hidden  mr- sm:mr-6 md:mr-0 sm:px-0 w-full mt-4 ${
             isAuthenticated ? " pt-16" : "pt-16 sm:pt-24"
           } sm:pr-10 pb-10 sm:gap-10`}
         >
@@ -162,7 +162,7 @@ function Jobs() {
           </div>
 
           {loading ? (
-            <div className="mt-20 w-full">{joblistSkeleton()}</div>
+            <div className=" sm:ml-[330px] mt-20 sm:mt-0 w-full">{joblistSkeleton()}</div>
           ) : (
             <JobList jobs={submitJobList} />
           )}

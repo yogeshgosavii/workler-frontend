@@ -300,6 +300,7 @@ function Saved() {
         {savedItems.jobs.map((job) => (
           <JobListItem
             job={job.saved_content}
+            className = {"border-y"}
             companyDefaultImage={companyDefaultImage}
           />
           //   <div

@@ -80,15 +80,14 @@ const App = () => {
       default:
         setActiveTab("");
     }
-  }, [location.pathname]); // Re-run effect when location changes
-
+  }, [location.pathname]); 
   return (
     <div className="relative flex flex-col sm:flex-row h-screen  text-gray-700">
       <div className=" w-full h-full">
         <Header />
         <div
-          className={`flex-1  h-full w-full  overflow-y-auto flex justify-center  ${
-            isAuthenticated && "pb-14 sm:pb-0 sm:pl-24"
+          className={`flex-1  h-full w-full  overflow-y-auto  flex justify-center  ${
+            isAuthenticated && "pb-14 sm:pb-0 sm:pl-[63px]"
           } `}
         >
           <Outlet />
@@ -97,7 +96,7 @@ const App = () => {
       <div
         className={`${
           !isAuthenticated && "hidden"
-        } fixed flex border-t-2 z-40 justify-between sm:justify-evenly sm:border-r sm:border-t-0 bottom-0  sm:flex-col left-0 sm:top-0  w-full sm:w-fit bg-white`}
+        } fixed flex border-t z-40 justify-between sm:justify-evenly sm:border-r-2 sm:border-t-0 bottom-0  sm:flex-col left-0 sm:top-0  w-full sm:w-fit bg-white`}
       >
         <p
           onClick={() => {

@@ -409,7 +409,7 @@ function PostView({ postId = useParams().postId, index, className }) {
               </svg>
             </div>
           </div>
-          <div className="pb-10 sm:pb-0">
+          <div className="pb-14 sm:pb-0">
             {comments?.map((comment, index, arr) => (
               <div
                 className={` text-sm px-4 ${index > 0 && "border-t"} py-5 z-10`}

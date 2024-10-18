@@ -1,6 +1,8 @@
 import { formatDistanceToNow } from "date-fns";
 import React from "react";
 import UserImageInput from "../Input/UserImageInput";
+import companyDefaultImage from "../../assets/companyDefaultImage.png";
+
 
 function Jobs({
   setFormType,
@@ -57,7 +59,7 @@ function Jobs({
         >
           <div className="flex gap-2 ">
             <UserImageInput
-              image={job.company_Logo}
+              image={job.company_Logo || companyDefaultImage}
               isEditable={false}
               imageHeight={40}
             />
