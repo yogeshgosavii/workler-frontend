@@ -212,7 +212,7 @@ function JobApplication() {
                 <div
                   key={approach._id}
                   onClick={() => {navigate("/job/"+approach.job._id)}}
-                  className="border-y p-6  cursor-pointer flex flex-col gap-4"
+                  className="border-y p-4  cursor-pointer flex flex-col gap-4"
                 >
                   <JobListItem 
                   job={approach.job}

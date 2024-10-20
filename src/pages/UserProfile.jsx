@@ -489,6 +489,7 @@ const UserProfile = () => {
             workExperienceData={workExperienceData}
             setWorkExperienceData={setWorkExperienceData}
             projectData={projectData}
+            user={user}
             setProjectData={setprojectData}
             loading={loading}
             setFormType={setFormType}
@@ -583,6 +584,8 @@ const UserProfile = () => {
                       ? setuserDetails
                       : formType === "job"
                       ? setjobData
+                      : formType == "post"
+                      ? setPostData
                       : null,
                   data:
                     formType === "skills"
@@ -597,6 +600,8 @@ const UserProfile = () => {
                       ? userDetails
                       : formType == "job"
                       ? jobData
+                      : formType == "post"
+                      ? setPostData
                       : null,
                 })}
               </div>

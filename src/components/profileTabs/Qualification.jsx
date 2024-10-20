@@ -14,9 +14,13 @@ function Qualification({
   setUpdateFormType,
   setUpdateData,
   className,
+  user,
+
   isEditable = true,
 }) {
-  const user = useSelector((state) => state.auth.user);
+  const currentUser = useSelector((state) => state.auth.user);
+  console.log(currentUser._id, user._id);
+
   const [selectedResume, setSelectedResume] = useState(null);
   const [userResumes, setUserResumes] = useState([]);
   const [uploading, setUploading] = useState(false);
@@ -35,35 +39,34 @@ function Qualification({
   };
   console.log(educationData, skillData, workExperienceData, projectData);
 
-  const Section = ({ id, title, content, loading, onAdd }) => (
-    <div className="flex bg-white flex-col pb-6  sm:mt-3">
-      <div className="flex justify-between items-center px-4 py-3 bg-gray-50 shadow-inner border w-full">
-        <p className="text-xl font-medium   ">
-          {title}
-        </p>
-        {onAdd && isEditable && (
-          <p
-            className="text-blue-500 font-medium cursor-pointer"
-            onClick={() => {
-              console.log("onAdd called for", id); // Debug log
-              onAdd(id);
-            }}
-          >
-            Add
-          </p>
+  const Section = ({ id, title, content, loading, onAdd }) =>
+    (isEditable || (!isEditable && content != "")) && (
+      <div className={`flex  bg-white flex-col pb-6  sm:mt-3 `}>
+        <div className="flex justify-between items-center px-4 py-3 bg-gray-50 shadow-inner border w-full">
+          <p className="text-xl font-medium   ">{title}</p>
+          {onAdd && isEditable && (
+            <p
+              className="text-blue-500 font-medium cursor-pointer"
+              onClick={() => {
+                console.log("onAdd called for", id); // Debug log
+                onAdd(id);
+              }}
+            >
+              Add
+            </p>
+          )}
+        </div>
+        {loading ? (
+          <div className="animate-pulse z-10 mt-2">
+            <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
+            <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
+            <div className="h-2 bg-gray-200 w-1/4 rounded-md mb-2"></div>
+          </div>
+        ) : (
+          <div className="px-4">{content}</div>
         )}
       </div>
-      {loading ? (
-        <div className="animate-pulse z-10 mt-2">
-          <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
-          <div className="h-2 bg-gray-200 rounded-md mb-2"></div>
-          <div className="h-2 bg-gray-200 w-1/4 rounded-md mb-2"></div>
-        </div>
-      ) : (
-        <div className="px-4">{content}</div>
-      )}
-    </div>
-  );
+    );
 
   const userDetailsList = useMemo(
     () => [
@@ -72,7 +75,7 @@ function Qualification({
         title: "Skills",
         content:
           skillData?.length === 0 ? (
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-sm text-gray-400 mt-4">
               Adding the skills helps recruiters know your most useful work
             </p>
           ) : (
@@ -106,7 +109,7 @@ function Qualification({
         title: "Education",
         content:
           educationData?.length === 0 ? (
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-sm text-gray-400 mt-4">
               Adding education or course type helps recruiters know your
               educational background
             </p>
@@ -188,10 +191,14 @@ function Qualification({
         title: "Work experience",
         content:
           workExperienceData?.length === 0 ? (
-            <p className="text-sm text-gray-400 mt-1">
-              Adding work experience helps recruiters know about your previous
-              work experience
-            </p>
+            isEditable ? (
+              <p className="text-sm text-gray-400 mt-4">
+                Adding work experience helps recruiters know about your previous
+                work experience
+              </p>
+            ) : (
+              []
+            )
           ) : (
             workExperienceData?.map((data, index) => {
               const formattedJoiningDate = data.joiningDate
@@ -233,7 +240,7 @@ function Qualification({
         title: "Projects",
         content:
           projectData?.length === 0 ? (
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-sm text-gray-400 mt-4">
               Adding projects helps recruiters know about your previous projects
             </p>
           ) : (
@@ -258,11 +265,13 @@ function Qualification({
                       index === projectData.length - 1 ? null : "border"
                     }`}
                   >
-                  <img
-                  className="h-10 w-10 rounded-md border"
-                  src={"https://avatars.githubusercontent.com/u/43775498?v=4"}
-                  />
-                    <div  className="-mt-1">
+                    <img
+                      className="h-10 w-10 rounded-md border"
+                      src={
+                        "https://avatars.githubusercontent.com/u/43775498?v=4"
+                      }
+                    />
+                    <div className="-mt-1">
                       <a href={data.url} className="text-xl font-semibold">
                         {data.project_name}
                       </a>

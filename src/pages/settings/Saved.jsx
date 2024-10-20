@@ -7,6 +7,7 @@ import LikeButton from "../../components/Button/LikeButton";
 import CommentButton from "../../components/Button/CommentButton";
 import JobListItem from "../../components/jobComponent/JobListItem";
 import companyDefaultImage from "../../assets/companyDefaultImage.png";
+import Button from "../../components/Button/Button";
 
 function Saved() {
   const [selectedTab, setSelectedTab] = useState("Posts");
@@ -256,7 +257,8 @@ function Saved() {
     ));
 
   const renderProfiles = () =>
-    savedItems.profiles.map((profile) => (
+    <div className="px-4">
+     { savedItems.profiles.map((profile) => (
       <div
         key={profile._id}
         onClick={() => {
@@ -292,7 +294,8 @@ function Saved() {
           Unsave
         </Button>
       </div>
-    ));
+    ))}
+    </div>
 
   const renderJobs = () => {
     return (

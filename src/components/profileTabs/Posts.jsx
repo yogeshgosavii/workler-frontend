@@ -14,6 +14,8 @@ import useJobApi from "../../services/jobService";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import savedService from "../../services/savedService";
+import UserPostUpdateSettings from "../UserPostUpdateSettings";
+import PostMentionList from "../PostMentionList";
 
 function Posts({
   setSelectedPost,
@@ -34,6 +36,8 @@ function Posts({
   const sendBtnRef = useRef(null);
   const [loading, setLoading] = useState(true);
   const currentUser = useSelector((state) => state.auth.user);
+  const [postSettings, setPostSettings] = useState(null);
+  const [postMentions, setPostMentions] = useState(null);
 
   console.log(postData);
 
@@ -144,6 +148,14 @@ function Posts({
             <line x1="12" y1="5" x2="12" y2="19" />{" "}
             <line x1="5" y1="12" x2="19" y2="12" />
           </svg>} */}
+          <UserPostUpdateSettings
+            setPostSetting={setPostSettings}
+            postSettings={postSettings}
+          />
+          <PostMentionList
+          showMentions={postMentions}
+          setShowMentions={setPostMentions}
+          />
 
           <div className={`flex flex-wrap gap-4`}>
             {postData?.map((post, index) => {
@@ -153,7 +165,7 @@ function Posts({
                   onClick={() => navigate("/post/" + post._id)}
                   className={` sm:border bg-white  ${postClassName} flex-grow   h-fit   p-4 sm:p-7`}
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center   justify-between">
                     <div className="flex gap-2 ">
                       <UserImageInput
                         className="w-[35px] h-[35px] rounded-full"
@@ -167,16 +179,16 @@ function Posts({
                         isEditable={false}
                       />
                       <div className="flex gap-2 items-center ">
-                       <div>
-                       <p className="font-medium text-sm">
-                          {post?.user.personal_details.firstname}{" "}{post?.user.personal_details.lastname}
-                        </p>
-                        <p className=" text-gray-400 -mt-[3px] text-xs">
-                          {post?.user.username}
-                        </p>
+                        <div>
+                          <p className="font-medium text-sm">
+                            {post?.user.personal_details.firstname}{" "}
+                            {post?.user.personal_details.lastname}
+                          </p>
+                          <p className=" text-gray-400 -mt-[3px] text-xs">
+                            {post?.user.username}
+                          </p>
                         </div>
                         <span className="font-bold text-gray-500">·</span>{" "}
-
                         <p className="text-sm text-gray-400">
                           {formatDistanceToNow(
                             new Date(post.createdAt),
@@ -230,6 +242,10 @@ function Posts({
                         </svg>
                       )}
                       <svg
+                        onClick={(e) => {
+                          setPostSettings(post);
+                          e.stopPropagation();
+                        }}
                         className="h-6 w-6 text-gray-500"
                         width="24"
                         height="24"
@@ -248,7 +264,7 @@ function Posts({
                     </div>
                   </div>
                   <p
-                    className="mt-4 text-sm flex-1"
+                    className={`mt-4 text-sm flex-1 ${!post.images && ""}`}
                     dangerouslySetInnerHTML={{ __html: post.content }}
                   />
                   {post.post_type !== "job" && (
@@ -339,22 +355,38 @@ function Posts({
                   </div> */}
                     </div>
                   )}
-                  <div className="flex gap-4 z-10 text-gray-400 font-normal items-center  mt-2">
-                    <LikeButton
-                      postData={post}
-                      likes={post.likes}
-                      likesCount={post.likes_count}
-                    />
-                    <CommentButton
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setCommentButtonClicked((prev) =>
-                          prev == index ? null : index
-                        );
+                  <div className="flex gap-4 z-10  justify-between text-gray-400 font-normal items-center  mt-2">
+                    <div className="flex gap-4">
+                      <LikeButton
+                        postData={post}
+                        likes={post.likes}
+                        likesCount={post.likes_count}
+                      />
+                      <CommentButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCommentButtonClicked((prev) =>
+                            prev == index ? null : index
+                          );
+                        }}
+                        postData={post}
+                        // setPostData={setPostData}
+                      />
+                    </div>
+                    {post.mentions.length >0&&<svg
+                      onClick={(e)=>{
+                        e.stopPropagation()
+                        setPostMentions(post.mentions)
                       }}
-                      postData={post}
-                      // setPostData={setPostData}
-                    />
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="30"
+                      height="30"
+                      fill="currentColor"
+                      class="bi bi-person-fill border rounded-full p-1.5"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                    </svg>}
                   </div>
                   {post.comments_count > 0 && (
                     <div className=" text-sm z-10">

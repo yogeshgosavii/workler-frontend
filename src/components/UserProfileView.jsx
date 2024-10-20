@@ -47,6 +47,8 @@ function UserProfileView({ userId = useParams().userId }) {
   const [currentUserJobData, setcurrentUserJobData] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [worksAt, setWorksAt] = useState("");
+  const [latestEducation, setLatestEducation] = useState("");
 
   // const handleBackButton = () => {
   //   console.log("Hello");
@@ -167,6 +169,23 @@ function UserProfileView({ userId = useParams().userId }) {
           await profileService.qualification.getQualificationById(userId);
         console.log("qualification:", qualificationData);
         setQualification(qualificationData);
+
+        qualificationData.workExperience.map((item) => {
+          if (item.joiningDate && !item.leavingDate) {
+            setWorksAt(item);
+          }
+        });
+        const latestEducationData = qualificationData.education.reduce((closest, item) => {
+          const itemDate = new Date(item.end_month);
+          const closestDate = new Date(closest.end_month);
+  
+          return Math.abs(itemDate - currentDate) <
+            Math.abs(closestDate - currentDate)
+            ? item
+            : closest;
+        });
+
+        setLatestEducation(latestEducationData)
       } catch (error) {
         console.error("Failed to fetch qualification data", error);
       } finally {
@@ -365,6 +384,7 @@ function UserProfileView({ userId = useParams().userId }) {
           <Qualification
             isEditable={false}
             loading={loading}
+            user={userDetails}
             educationData={qualification?.education}
             skillData={qualification?.skills}
             workExperienceData={qualification?.workExperience}
@@ -681,20 +701,20 @@ function UserProfileView({ userId = useParams().userId }) {
                   {userDetails.account_type == "Candidate" && (
                     <div className="order-2 text-sm -mt-1">
                       <p className=" text-wrap truncate">
-                        {userDetails.personal_details.working_at && (
+                        {worksAt && (
                           <span>
-                            Works at {userDetails.personal_details.working_at}{" "}
+                            Works at {worksAt}{" "}
                             <span className="font-extrabold "></span>
                           </span>
                         )}{" "}
-                        {/* {latestEducation && (
+                        {latestEducation && (
                               <span>
-                              {"·"}
+                              {worksAt && "·"}
                                 {" "}
                                 Completed {latestEducation.course} from{" "}
                                 {latestEducation.university}
                               </span>
-                            )} */}
+                            )}
                       </p>
                     </div>
                   )}

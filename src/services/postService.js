@@ -125,7 +125,7 @@ export const getPostById = async (id) => {
 
 // Update a post by ID
 export const updatePost = async (id, postData) => {
-  const response = await handleRequest(`${API_URL}/${id}`, {
+  const response = await handleRequest(`${API_URL}/post/${id}`, {
     method: 'PUT',
     headers: {
       ...setAuthHeaders(getToken()),
@@ -138,7 +138,7 @@ export const updatePost = async (id, postData) => {
 
 // Delete a post by ID
 export const deletePost = async (id) => {
-  const response = await handleRequest(`${API_URL}/${id}`, {
+  const response = await handleRequest(`${API_URL}/post/${id}`, {
     method: 'DELETE',
     headers: setAuthHeaders(getToken()),
   });
