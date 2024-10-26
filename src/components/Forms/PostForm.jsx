@@ -24,6 +24,7 @@ function PostForm({ userDetails, setData, onClose }) {
   const [postType, setPostType] = useState("content");
   const [jobs, setJobs] = useState([]);
   const [selectMentions, setSelectMentions] = useState(false);
+  const [showSelectMention, setShowSelectMention] = useState(false);
   const [mentionSecrchText, setMentionSecrchText] = useState("");
   const [mentionList, setmentionList] = useState([]);
   const [mentionSearchList, setMentionSearchList] = useState([]);
@@ -85,13 +86,17 @@ function PostForm({ userDetails, setData, onClose }) {
         .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Convert **bold text** to <strong>
         .replace(/(?:\r\n|\r|\n)/g, "<br />")
     );
-    formDataToSend.append(
-      "mentions",
-      mentionList.map((user)=>(user._id))
-    )
-    formData.images.forEach((image) => {
+    if(mentionList.length >0){
+      formDataToSend.append(
+        "mentions",
+        mentionList.map((user) => user._id)
+      );
+    }
+   
+    images.forEach((image) => {
       formDataToSend.append("files", image);
     });
+    
 
     if (postType == "content") {
       try {
@@ -101,6 +106,8 @@ function PostForm({ userDetails, setData, onClose }) {
         //   posts : [...userDetails.posts , data._id]
 
         // })
+        console.log(images);
+        
         console.log("data", data);
 
         // setData(prev =>([...prev,{...data,user : {profileImage : user.profileImage,username:user.username}}]))
@@ -147,7 +154,7 @@ function PostForm({ userDetails, setData, onClose }) {
     <div>
       <div
         onClick={() => window.history.back()}
-        className="fixed w-full h-full bg-black opacity-30 z-20 top-0 left-0"
+        className="fixed w-full h-full transition-all bg-black opacity-30 z-20 top-0 left-0"
       ></div>
       <div className="fixed w-full sm:max-w-lg right-0 h-full   pt-4   bg-white top-0 z-30  overflow-y-auto">
         <form
@@ -160,8 +167,7 @@ function PostForm({ userDetails, setData, onClose }) {
               <svg
                 class="h-8 w-8 text-gray-700 -ml-[1px]"
                 onClick={() => {
-                  onClose();
-                }}
+                window.history.back()}}
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -267,7 +273,7 @@ function PostForm({ userDetails, setData, onClose }) {
               </div>
             </div>
             <div className="flex flex-col mt-4 items-start">
-              <div className="flex px-4 md:px-6 gap-4 w-full mb-4">
+              <div className="flex px-4 md:px-6 gap-4 w-full ">
                 <UserImageInput
                   className="w-[35px] h-[35px] rounded-full"
                   imageHeight={35}
@@ -295,12 +301,16 @@ function PostForm({ userDetails, setData, onClose }) {
                   className="w-full h-max caret-blue-500 mt-1 focus:outline-none resize-none overflow-hidden"
                 />
               </div>
-              <div className="px-4 sm:px-6 my-3 flex gap-2 text-sm flex-wrap">
+              {mentionList.length>0 &&<div className="px-4 sm:px-6 my-3 flex gap-2 -mb-2 text-sm flex-wrap">
                 {mentionList.map((user) => (
                   <div className=" bg-blue-50 border gap-2 flex items-center border-blue-500 px-2 py-1.5 rounded-md text-blue-500">
                     <p className="  rounded-md font-medium">@{user.username}</p>
                     <svg
-                      onClick={() => setmentionList(mentionList.filter((user)=> user!=user))}
+                      onClick={() =>
+                        setmentionList(
+                          mentionList.filter((user) => user != user)
+                        )
+                      }
                       className="h-5 w-5   cursor-pointer"
                       viewBox="0 0 24 24"
                       fill="none"
@@ -315,9 +325,9 @@ function PostForm({ userDetails, setData, onClose }) {
                     </svg>
                   </div>
                 ))}
-              </div>
+              </div>}
               {postType == "content" ? (
-                <div className="flex w-full  overflow-auto px-4">
+                <div className="flex w-full mt-4  overflow-auto px-4">
                   <ImageCarousel
                     // className={"ml-10"}
                     dots={false}
@@ -347,10 +357,10 @@ function PostForm({ userDetails, setData, onClose }) {
                 className="absolute h-full w-full bg-black opacity-45  top-0 left-0"
               ></div> */}
 
-            <div
+            { showSelectMention  &&<div 
               className={`${
                 selectMentions ? "animate-popup" : "animate-popdown"
-              } transition-all border py-3 border-gray-200 sm:w-1/2 z-20 rounded-xl shadow-md`}
+              } transition-all border py-1 border-gray-200 sm:w-1/2 z-20 rounded-xl shadow-md`}
             >
               <div className="flex items-center px-2 rounded-lg">
                 <input
@@ -362,7 +372,13 @@ function PostForm({ userDetails, setData, onClose }) {
                   placeholder="Search for user to mention"
                 />
                 <svg
-                  onClick={() => setSelectMentions(false)}
+                  onClick={() => {setSelectMentions(false) 
+
+                  setTimeout(() => {
+                    setShowSelectMention(false)
+                  }, 2000);
+                  }
+                  }
                   className="h-6 w-6 mx-3 text-gray-400 cursor-pointer"
                   viewBox="0 0 24 24"
                   fill="none"
@@ -380,7 +396,7 @@ function PostForm({ userDetails, setData, onClose }) {
                 {mentionSearchList.map((user) => (
                   <div
                     onClick={() => {
-                      if (!mentionList.some(listUser => listUser === user)) {
+                      if (!mentionList.some((listUser) => listUser === user)) {
                         setmentionList((prev) => [...prev, user]);
                       }
                       console.log(mentionList);
@@ -396,7 +412,7 @@ function PostForm({ userDetails, setData, onClose }) {
                   </div>
                 ))}
               </div>
-            </div>
+            </div>}
           </div>
           <div className="flex gap-4 text-blue-500  py-4 px-4 md:px-6 items-center">
             <div className="disabled:text-blue-300">
@@ -428,6 +444,7 @@ function PostForm({ userDetails, setData, onClose }) {
             <svg
               onClick={() => {
                 setSelectMentions(true);
+                setShowSelectMention(true)
               }}
               class="h-7 w-7 "
               viewBox="0 0 24 24"

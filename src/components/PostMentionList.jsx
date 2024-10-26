@@ -7,7 +7,7 @@ function PostMentionList({ setShowMentions, showMentions = [] }) {
 
   return (
     <div>
-      <div className="fixed h-fit sm:left-24 top-0 sm:-mx-8 z-50">
+      <div className="fixed h-fit left-0 top-0  z-50">
         {showMentions?.length > 0 && (
           <div
             onClick={() => setShowMentions(null)}
@@ -19,7 +19,7 @@ function PostMentionList({ setShowMentions, showMentions = [] }) {
         <div
           className={`fixed w-full z-50 p-4 md:p-6 sm:max-w-sm transition-transform transform ${
             showMentions ? "translate-y-0" : "translate-y-full"
-          } bottom-0 md:top-1/2 sm:left-[53%] h-fit md:-translate-x-1/2 md:-translate-y-1/2 ${
+          } bottom-0 md:top-1/2 sm:left-[52%] h-fit md:-translate-x-1/2 md:-translate-y-1/2 ${
             !showMentions && "md:hidden"
           } bg-white border pt-5 shadow-xl`}
         >
@@ -41,7 +41,7 @@ function PostMentionList({ setShowMentions, showMentions = [] }) {
                     <p className="font-medium">
                       {user.company_details
                         ? user.company_details?.company_name
-                        : `${user.personal_details.firstname} ${user.personal_details.lastname}`}
+                        : `${user.personal_details?.firstname} ${user.personal_details?.lastname}`}
                     </p>
                     <p className="text-sm text-gray-400 -mt-0.5">
                       @{user.username}

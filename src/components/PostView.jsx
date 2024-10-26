@@ -15,6 +15,8 @@ import {
 } from "../services/postService";
 import { useParams } from "react-router-dom";
 import savedService from "../services/savedService";
+import UserPostUpdateSettings from "./UserPostUpdateSettings";
+import PostMentionList from "./PostMentionList";
 
 function PostView({ postId = useParams().postId, index, className }) {
   const [commentButtonClicked, setCommentButtonClicked] = useState(null);
@@ -24,6 +26,8 @@ function PostView({ postId = useParams().postId, index, className }) {
   const [comments, setcomments] = useState([]);
   const [likes, setLikes] = useState([]);
   const [savedList, setSavedList] = useState([]);
+  const [postSettings, setPostSettings] = useState(null);
+  const [postMentions, setPostMentions] = useState(null);
   const [post, setPost] = useState();
   const sendBtnRef = useRef(null);
   const currentUser = useSelector((state) => state.auth.user);
@@ -62,11 +66,8 @@ function PostView({ postId = useParams().postId, index, className }) {
       content: commentText,
     });
     console.log("commentRes:", response);
-    response.user = currentUser
-    setcomments((prev) => ([
-      ...prev,
-      response,
-    ]));
+    response.user = currentUser;
+    setcomments((prev) => [...prev, response]);
     // setPost((prev) => ({
     //   ...prev,
     //   comments: [
@@ -126,14 +127,24 @@ function PostView({ postId = useParams().postId, index, className }) {
           key={index}
           className="w-full sm:w-1/2 relative sm:border-x h-fit bg-white border-gray-300 "
         >
+          <UserPostUpdateSettings
+            setPostSetting={setPostSettings}
+            postSettings={postSettings}
+            // setPostData={setPostData}
+            // postData={postData}
+          />
+          <PostMentionList
+            showMentions={postMentions}
+            setShowMentions={setPostMentions}
+          />
           <p className="py-3 px-4 sticky top-0 mb-5 left-0 right-0 bg-white z-40 font-bold text-2xl  border-gray-300">
             Post
           </p>{" "}
           <div className="flex items-center px-4 justify-between">
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-4 items-center">
               <UserImageInput
-                className="w-[35px] h-[35px] rounded-full"
-                imageHeight={35}
+                className="w-[35px] -mt-1 h-[35px] rounded-full"
+                imageHeight={40}
                 imageBorder={1}
                 image={
                   post?.user.profileImage?.compressedImage ||
@@ -142,9 +153,14 @@ function PostView({ postId = useParams().postId, index, className }) {
                 alt={`${post?.user.username}'s avatar`}
                 isEditable={false}
               />
-              <div className="flex gap-2 items-center ">
-                <p className="font-medium text-sm">{post?.user.username}</p>
-                <p className="text-sm text-gray-400">
+              <div className="flex flex-col  ">
+                <p className="font-medium">
+                  {post?.user.company_details
+                    ? post?.user.company_details?.company_name
+                    : `${post?.user.personal_details?.firstname} ${post?.user.personal_details?.lastname}`}
+                </p>
+                <p className="text-gray-400 text-sm">{post?.user.username}</p>
+                {/* <p className="text-sm text-gray-400">
                   {formatDistanceToNow(new Date(post.createdAt), {}).split(
                     " "
                   )[0] != "about" &&
@@ -157,24 +173,26 @@ function PostView({ postId = useParams().postId, index, className }) {
                   {formatDistanceToNow(new Date(post.createdAt), {})
                     ?.split(" ")[2]
                     ?.slice(0, 1)}
-                </p>
+                </p> */}
               </div>
             </div>
             <div className="flex gap-2 items-center">
-              {savedList.some((item) => item.saved_content?._id == post._id) ? (
+             { currentUser._id != post.user._id && (savedList.some((item) => item.saved_content?._id == post._id) ? (
                 <svg
                   onClick={(e) => {
                     unsavePost(post._id);
                     e.stopPropagation();
                   }}
                   xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
+                  viewBox="0 0 24 24"
                   fill="currentColor"
-                  class="bi bi-bookmark-fill"
-                  viewBox="0 0 16 16"
+                  class={`bi size-6 bi-bookmark-fill liked-animation`}
                 >
-                  <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
+                  <path
+                    fill-rule="evenodd"
+                    d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z"
+                    clip-rule="evenodd"
+                  />
                 </svg>
               ) : (
                 <svg
@@ -183,16 +201,23 @@ function PostView({ postId = useParams().postId, index, className }) {
                     e.stopPropagation();
                   }}
                   xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="currentColor"
-                  class="bi bi-bookmark"
-                  viewBox="0 0 16 16"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class={`size-6 bi bi-bookmark-fill unliked-animation`}
                 >
-                  <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+                  />
                 </svg>
-              )}
+              ))}
               <svg
+                onClick={() => {
+                  setPostSettings(post);
+                }}
                 className="h-6 w-6 text-gray-500"
                 width="26"
                 height="26"
@@ -210,17 +235,57 @@ function PostView({ postId = useParams().postId, index, className }) {
               </svg>
             </div>
           </div>
-          <p
-            className="mt-4 px-4 text-sm flex-1"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
-          
+          <div className="relative mx-4">
+            <p
+              className={`mt-4 text-sm flex-1 ${
+                !post.images && " border p-4 rounded-xl"
+              }`}
+              dangerouslySetInnerHTML={{ __html: post.content }}
+            />
+            {post.mentions.length > 0 && !post.images && (
+              // <svg
+              //   onClick={(e) => {
+              //     e.stopPropagation();
+              //     setPostMentions(post.mentions);
+              //   }}
+              //   xmlns="http://www.w3.org/2000/svg"
+              //   width="30"
+              //   height="30"
+              //   fill="currentColor"
+              //   class="bi bi-person-fill border rounded-full p-1.5"
+              //   viewBox="0 0 16 16"
+              // >
+              //   <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+              // </svg>
+
+              <div
+                // onClick={() => handleRemoveImage(image)}
+                className="absolute bottom-11 right-4  cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPostMentions(post.mentions);
+                }}
+              >
+                <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  className="h-4 w-4 text-gray-100  absolute top-[9px] right-2 z-10"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                </svg>
+              </div>
+            )}
+          </div>
           {post.post_type !== "job" && (
             <div
               style={{ overflowX: "auto", scrollbarWidth: "none" }}
               className="mt-2 px-4 flex flex-col transition-all duration-300 overflow-x-auto flex-1"
             >
-              {post.images && (
+              {/* {post.images && (
                 <ImageCarousel
                   dots={false}
                   edges="rounded-lg"
@@ -228,6 +293,59 @@ function PostView({ postId = useParams().postId, index, className }) {
                   gap={2}
                   images={post.images?.originalImage}
                 />
+              )} */}
+              {post.images && (
+                <div
+                  style={{ overflowX: "auto", scrollbarWidth: "none" }}
+                  className="mt-2 flex mb-4 flex-col relative w-full  transition-all  duration-300 overflow-x-auto flex-1"
+                >
+                  {post.images && (
+                    <ImageCarousel
+                      dots={false}
+                      edges=""
+                      className="h-full  flex-grow w-full "
+                      gap={2}
+                      images={post.images?.originalImage}
+                    />
+                  )}
+                  {post.mentions.length > 0 && (
+                    // <svg
+                    //   onClick={(e) => {
+                    //     e.stopPropagation();
+                    //     setPostMentions(post.mentions);
+                    //   }}
+                    //   xmlns="http://www.w3.org/2000/svg"
+                    //   width="30"
+                    //   height="30"
+                    //   fill="currentColor"
+                    //   class="bi bi-person-fill border rounded-full p-1.5"
+                    //   viewBox="0 0 16 16"
+                    // >
+                    //   <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                    // </svg>
+
+                    <div
+                      // onClick={() => handleRemoveImage(image)}
+                      className="absolute bottom-12 right-4 z-10  cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setPostMentions(post.mentions);
+                      }}
+                    >
+                      <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-80 rounded-full"></div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        fill="currentColor"
+                        className="h-4 w-4 text-gray-100  absolute top-[9px] right-2 z-10"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
               )}
             </div>
           )}
@@ -301,21 +419,39 @@ function PostView({ postId = useParams().postId, index, className }) {
                   </div> */}
             </div>
           )}
-          <div className="flex gap-4 z-10 px-4 text-gray-400 font-normal items-center  mt-2">
-            <LikeButton
-              postData={post}
-              likes={likes}
-              likesCount={post.likes_count}
-            />
-            <CommentButton
-              onClick={() => {
-                setCommentButtonClicked((prev) =>
-                  prev == index ? null : index
-                );
-              }}
-              postData={post}
-              // setPostData={setPostData}
-            />
+          <div className="flex justify-between z-10 px-4 text-gray-400 font-normal items-center  mt-2">
+            <div className="flex gap-4">
+              <LikeButton
+                postData={post}
+                likes={likes}
+                likesCount={post.likes_count}
+              />
+              <CommentButton
+                onClick={() => {
+                  setCommentButtonClicked((prev) =>
+                    prev == index ? null : index
+                  );
+                }}
+                postData={post}
+                // setPostData={setPostData}
+              />
+            </div>
+            <p className="">
+              {/* Posted on{" "} */}
+              {new Date(post.createdAt).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })}{" "}
+              at{" "}
+              <span>
+                {new Date(post.createdAt).toLocaleTimeString("en-GB", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })}
+              </span>
+            </p>
           </div>
           <div
             id="commentInput"
@@ -546,10 +682,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                           });
                           console.log("commentRes:", response);
 
-                          setcomments((prev) => ([
-                            ...prev,
-                            response,
-                          ]));
+                          setcomments((prev) => [...prev, response]);
                           // setPost((prev) => ({
                           //   ...prev,
                           //   comments: [

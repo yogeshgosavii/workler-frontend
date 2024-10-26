@@ -8,10 +8,13 @@ import CommentButton from "../../components/Button/CommentButton";
 import JobListItem from "../../components/jobComponent/JobListItem";
 import companyDefaultImage from "../../assets/companyDefaultImage.png";
 import Button from "../../components/Button/Button";
+import ImageCarousel from "../../components/ImageCarousel";
+import { useSelector } from "react-redux";
 
 function Saved() {
   const [selectedTab, setSelectedTab] = useState("Posts");
   const jobService = useJobApi();
+  const currentUser = useSelector(state => state.auth.user)
   const [savedItems, setSavedItems] = useState({
     posts: [],
     profiles: [],
@@ -79,14 +82,14 @@ function Saved() {
 
   const handleUnsave = async (post, type) => {
     try {
-      await savedService.unsave(post.saved_content._id, type);
       setUnsavedItems((prev) => [...prev, post._id]); // Track unsaved item
+      await savedService.unsave(post.saved_content._id, type);
       setTimeout(() => {
         setSavedItems((prev) => ({
           ...prev,
           [type]: prev[type].filter((item) => item._id !== post._id),
         }));
-      }, 200);
+      }, 0);
 
       // Remove the unsaved item from the tracked list after a delay
       setTimeout(() => {
@@ -98,204 +101,254 @@ function Saved() {
     }
   };
 
-  const renderPosts = () =>
-    savedItems.posts.map((post) => (
-      <div
-        key={post._id}
-        onClick={() => {
-          navigate("/post/" + post.saved_content._id);
-        }}
-        className={`col-span-1 flex flex-col border py-3 h-full  sm:rounded-xl ${
-          unsavedItems.includes(post._id) ? "animate-unsave" : ""
-        }`} // Add animation class
-      >
-        {post.saved_content.post_type === "job" ? (
-          <div className="border  h-full relative ">
-            <div className="flex items-center gap-2 m-3">
-              <div className="w-12 h-12 rounded-full bg-pink-950 text-white flex justify-center items-center">
-                {post.saved_content.job?.company_name[0].toUpperCase()}
-              </div>
+  const renderPosts = () => (
+    <div className="flex flex-col gap-4">
+      {savedItems.posts.map((post) => (
+        <div
+          key={post._id}
+          onClick={() => {
+            navigate("/post/" + post.saved_content._id);
+          }}
+          className={`col-span-1 flex flex-col border-y sm:border py-3 h-full  sm:rounded-xl ${
+            unsavedItems.includes(post._id) ? "animate-unsave" : ""
+          }`} // Add animation class
+        >
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/user/" + post.saved_content.user._id);
+            }}
+            className="flex gap-2 px-4 py-2 mb-1 "
+          >
+            <UserImageInput
+              className="w-[35px] h-[35px]  rounded-full"
+              imageHeight={40}
+              imageBorder={1}
+              image={post?.saved_content.user.profileImage?.compressedImage}
+              alt={`${post?.saved_content.user.username}'s avatar`}
+              isEditable={false}
+            />
+            <div className="flex gap-2 ml-2 items-center ">
               <div>
-                <p className="font-semibold">
-                  {post.saved_content.job?.job_role}
+                <p className="font-medium">
+                  {post?.saved_content.user.personal_details?.firstname}{" "}
+                  {post?.saved_content.user.personal_details?.lastname}
                 </p>
-                <p className="text-sm text-gray-400">
-                  {post.saved_content.job?.company_name}
+                <p className=" text-gray-400 -mt-[3px] text-sm">
+                  {post?.saved_content.user.username}
                 </p>
               </div>
-            </div>
-            <p className="text-xs text-gray-500 mx-4 mb-2 line-clamp-2">
-              {post.saved_content.job?.description ||
-                "No description available."}
-            </p>
-
-            <div className="absolute bottom-2 right-2">
-              <div className="relative w-full border">
-                <div className="absolute h-10 w-10 rounded-full bg-black opacity-50 bottom-0 -right-0"></div>
-
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="22"
-                  height="22"
-                  fill="currentColor"
-                  className="bi bi-images absolute bottom-[9px]  right-[9px] text-white "
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v1.384l7.614 2.03a1.5 1.5 0 0 0 .772 0L16 5.884V4.5A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5" />
-                  <path d="M0 12.5A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5V6.85L8.129 8.947a.5.5 0 0 1-.258 0L0 6.85z" />
-                </svg>
-              </div>
+              {/* <span className="font-bold text-gray-500">·</span>{" "}
+              <p className="text-sm text-gray-400">
+                {formatDistanceToNow(new Date(post.createdAt), {}).split(
+                  " "
+                )[0] != "about" &&
+                  formatDistanceToNow(new Date(post.createdAt), {}).split(" ")[0]}
+                {formatDistanceToNow(new Date(post.createdAt), {})
+                  .split(" ")[1]
+                  .slice(0, 1)}
+                {formatDistanceToNow(new Date(post.createdAt), {})
+                  ?.split(" ")[2]
+                  ?.slice(0, 1)}
+              </p> */}
             </div>
           </div>
-        ) : post.saved_content.images ? (
-          post?.saved_content.images?.compressedImage[0] && (
-            <div className="relative">
-              <img
-                className="w-full aspect-square object-cover h-full border"
-                src={post.saved_content.images.compressedImage[0]}
-                alt="Post"
-              />
-
-              <div className="absolute bottom-2 left-0 right-0 flex items-center space-x-2">
-                <div
-                  className={`relative flex items-center   ${
-                    post.saved_content.images.compressedImage.length > 1
-                      ? "justify-start pl-3"
-                      : "justify-center"
-                  } w-full  left-0`}
-                >
-                  {/* Background with opacity */}
-                  <div className="absolute h-10 w-[95%] rounded-full bg-black opacity-50 bottom-0 right-1 left-1"></div>
-
-                  <button
-                    className={`relative bottom-2 font-medium z-10 px-3  text-white bg-transparent `}
-                  >
-                    Unsave
-                  </button>
+          {post.saved_content.post_type === "job" ? (
+            <div className="border  h-full relative ">
+              <div className="flex items-center gap-2 m-3">
+                <div className="w-12 h-12 rounded-full bg-pink-950 text-white flex justify-center items-center">
+                  {post.saved_content.job?.company_name[0].toUpperCase()}
                 </div>
+                <div>
+                  <p className="font-semibold">
+                    {post.saved_content.job?.job_role}
+                  </p>
+                  <p className="text-sm text-gray-400">
+                    {post.saved_content.job?.company_name}
+                  </p>
+                </div>
+              </div>
+              <p className="text-xs text-gray-500 mx-4 mb-2 line-clamp-2">
+                {post.saved_content.job?.description ||
+                  "No description available."}
+              </p>
 
-                {post.saved_content.images.compressedImage.length > 1 && (
+              <div className="absolute bottom-2 right-2">
+                <div className="relative w-full border">
+                  <div className="absolute h-10 w-10 rounded-full bg-black opacity-50 bottom-0 -right-0"></div>
+
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="22"
                     height="22"
                     fill="currentColor"
-                    className="absolute bottom-2 right-5 z-10 text-white"
+                    className="bi bi-images absolute bottom-[9px]  right-[9px] text-white "
                     viewBox="0 0 16 16"
                   >
-                    <path d="M4.502 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3" />
-                    <path d="M14.002 13a2 2 0 0 1-2 2h-10a2 2 0 0 1-2-2V5A2 2 0 0 1 2 3a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-1.998 2M14 2H4a1 1 0 0 0-1 1h9.002a2 2 0 0 1 2 2v7A1 1 0 0 0 15 11V3a1 1 0 0 0-1-1M2.002 4a1 1 0 0 0-1 1v8l2.646-2.354a.5.5 0 0 1 .63-.062l2.66 1.773 3.71-3.71a.5.5 0 0 1 .577-.094l1.777 1.947V5a1 1 0 0 0-1-1z" />
+                    <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v1.384l7.614 2.03a1.5 1.5 0 0 0 .772 0L16 5.884V4.5A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5" />
+                    <path d="M0 12.5A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5V6.85L8.129 8.947a.5.5 0 0 1-.258 0L0 6.85z" />
                   </svg>
-                )}
+                </div>
               </div>
             </div>
-          )
-        ) : (
-          <p
-            className="p-3  text-sm h-full "
-            dangerouslySetInnerHTML={{ __html: post?.saved_content.content }}
-          />
-          //   {post?.saved_content.content}
-          // </p>
-        )}
-        <div className="flex justify-between w-full gap-4 px-4 items-center border-t pt-3 pb-1">
-          <div className="flex gap-4  z-10 text-gray-400 font-normal items-center  mt-2">
-            <LikeButton
-              postData={post.saved_content}
-              likes={post.saved_content.likes}
-              likesCount={post.saved_content.likes_count}
-            />
-            <CommentButton
-              onClick={(e) => {
-                e.stopPropagation();
-                setCommentButtonClicked((prev) =>
-                  prev == index ? null : index
-                );
-              }}
-              postData={post.saved_content}
-              // setPostData={setPostData}
-            />
-          </div>
-          {true ? (
-            <svg
-              onClick={(e) => {
-                e.stopPropagation()
-                handleUnsave(post, "posts")}}
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              fill="currentColor"
-              class="bi bi-bookmark-fill"
-              viewBox="0 0 16 16"
-            >
-              <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
-            </svg>
+          ) : post.saved_content.images ? (
+            post?.saved_content.images?.compressedImage[0] && (
+   
+                <div
+                  style={{ overflowX: "auto", scrollbarWidth: "none" }}
+                  className="mt-2 flex mb-4 flex-col relative w-full  transition-all  duration-300 overflow-x-auto flex-1"
+                >
+                  {post?.saved_content.images?.compressedImage[0] && (
+                    <ImageCarousel
+                      dots={false}
+                      edges=""
+                      className="h-full  flex-grow w-full px-5"
+                      gap={2}
+                      images={post.saved_content.images?.originalImage}
+                      />
+                  )}
+                 
+                </div>
+            
+            )
           ) : (
-            <svg
-              onClick={(e) => {
-                savePost(post._id);
-                e.stopPropagation();
-              }}
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              fill="currentColor"
-              class="bi bi-bookmark"
-              viewBox="0 0 16 16"
-            >
-              <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z" />
-            </svg>
+            <p
+              className="p-3  text-sm h-full "
+              dangerouslySetInnerHTML={{ __html: post?.saved_content.content }}
+            />
+            //   {post?.saved_content.content}
+            // </p>
           )}
-        </div>
-        {/* <button
-          className=" w-full rounded-b-2xl border py-3 font-semibold bg-gray-100 text-gray-500"
-          onClick={() => handleUnsave(post, "posts")}
-        >
-          Unsave
-        </button> */}
-      </div>
-    ));
-
-  const renderProfiles = () =>
-    <div className="px-4">
-     { savedItems.profiles.map((profile) => (
-      <div
-        key={profile._id}
-        onClick={() => {
-          navigate("/user/" + profile.saved_content._id);
-        }}
-        className={`border flex flex-col justify-between  p-3  rounded-xl ${
-          unsavedItems.includes(profile._id) ? "animate-unsave" : ""
-        }`}
-      >
-        <div className=" gap-2 flex flex-col  w-full items-center">
-          <UserImageInput
-            image={profile.saved_content.profileImage?.compressedImage[0]}
-            isEditable={false}
-          />
-          <div>
-            {profile.saved_content.company_details && (
-              <p className="font-semibold">
-                {profile.saved_content.company_details?.company_name}
-              </p>
+          <div className="flex justify-between h-full w-full gap-4 px-4 items-center  pt-3 pb-1">
+            <div className="flex gap-4 justify-center  z-10 text-gray-400 font-normal items-center ">
+              <LikeButton
+                postData={post.saved_content}
+                likes={post.saved_content.likes}
+                likesCount={post.saved_content.likes_count}
+              />
+              <CommentButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCommentButtonClicked((prev) =>
+                    prev == index ? null : index
+                  );
+                }}
+                postData={post.saved_content}
+                // setPostData={setPostData}
+              />
+            </div>
+            {true ? (
+              <svg
+              onClick={(e) => {
+                e.stopPropagation();
+                handleUnsave(post, "posts");
+              }}
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="size-6 -mr-1"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            ) : (
+              <svg
+                onClick={(e) => {
+                  savePost(post._id);
+                  e.stopPropagation();
+                }}
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                fill="currentColor"
+                class="bi bi-bookmark"
+                viewBox="0 0 16 16"
+              >
+                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z" />
+              </svg>
             )}
-            {profile.saved_content.personal_details && (
-              <p className="font-semibold">
-                {`${profile.saved_content.personal_details?.firstname} ${profile.saved_content.personal_details?.lastname}`}
-              </p>
-            )}
-            <p className="text-gray-400">{profile.saved_content.username}</p>
           </div>
+          {/* <button
+            className=" w-full rounded-b-2xl border py-3 font-semibold bg-gray-100 text-gray-500"
+            onClick={() => handleUnsave(post, "posts")}
+          >
+            Unsave
+          </button> */}
         </div>
-        <Button
+      ))}
+    </div>
+  );
+
+  const renderProfiles = () => (
+    <div className="px-4 sm:px-0 grid grid-cols-2 w-full gap-4">
+      {savedItems.profiles.map((profile) => (
+        <div
+          key={profile._id}
+          onClick={() => {
+            navigate("/user/" + profile.saved_content._id);
+          }}
+          className={`border relative flex flex-col justify-between  p-3 w-full  rounded-xl ${
+            unsavedItems.includes(profile._id) ? "animate-unsave" : ""
+          }`}
+        >
+          <div className=" gap-2 flex flex-col  w-full items-center">
+            <UserImageInput
+              imageHeight={90}
+              image={profile.saved_content.profileImage?.compressedImage[0]}
+              isEditable={false}
+            />
+            <div>
+              {profile.saved_content.company_details && (
+                <p className="font-semibold text-center">
+                  {profile.saved_content.company_details?.company_name}
+                </p>
+              )}
+              {profile.saved_content.personal_details &&
+                profile.saved_content.personal_details && (
+                  <p className="font-semibold text-center">
+                    {`${profile.saved_content.personal_details?.firstname} ${profile.saved_content.personal_details?.lastname}`}
+                  </p>
+                )}
+              <p className="text-gray-400 text-center">
+                {profile.saved_content.username}
+              </p>
+            </div>
+          </div>
+          {/* <Button
           className="border w-full mt-3 bg-gray-100 text-gray-500"
           onClick={() => handleUnsave(profile, "profiles")}
         >
           Unsave
-        </Button>
-      </div>
-    ))}
+        </Button> */}
+          {true && (
+            <div
+              // onClick={() => handleRemoveImage(image)}
+              className="absolute top-4 right-4  cursor-pointer"
+            >
+              <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
+              <svg
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleUnsave(profile, "profiles");
+                }}
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                fill="currentColor"
+                className="h-4 w-4 text-gray-100  absolute top-[9px] right-2 z-10"
+                viewBox="0 0 16 16"
+              >
+                <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
+              </svg>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
+  );
 
   const renderJobs = () => {
     return (
@@ -303,7 +356,7 @@ function Saved() {
         {savedItems.jobs.map((job) => (
           <JobListItem
             job={job.saved_content}
-            className = {"border-y"}
+            className={"border-y sm:border shadow-none"}
             companyDefaultImage={companyDefaultImage}
           />
           //   <div
@@ -513,7 +566,7 @@ function Saved() {
             </svg>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-2">{renderProfiles()}</div>
+          <div className="">{renderProfiles()}</div>
         );
       case "Jobs":
         return loading ? (
@@ -560,7 +613,7 @@ function Saved() {
       ></div>
 
       {/* Main Content */}
-      <div className="fixed w-full sm:max-w-lg right-0 flex flex-col gap-5 border   h-full   sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
+      <div className="fixed w-full sm:max-w-lg right-0 flex flex-col gap-5    h-full    py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
         <div className=" ">
           <h2 className="text-2xl font-bold mb-5 -mt-px px-4 sm:px-6">
             Bookmarks
@@ -568,7 +621,7 @@ function Saved() {
 
           {/* Tab Navigation */}
           <div className="flex w-full gap-3 px-4 sm:px-6">
-            {["Posts", "Profiles", "Jobs"].map((tab) => (
+            {["Posts", "Profiles", currentUser.account_type == "Candidate"?"Jobs":null].filter(Boolean).map((tab) => (
               <p
                 key={tab}
                 onClick={() => setSelectedTab(tab)}
@@ -585,7 +638,7 @@ function Saved() {
         </div>
 
         {/* Tab Content */}
-        <div className="mt-2 overflow-y-auto max-h-full">
+        <div className="mt-2 overflow-y-auto w-full  max-h-full sm:px-6">
           {renderTabContent()}
         </div>
       </div>

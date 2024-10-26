@@ -170,7 +170,7 @@ function JobApplication() {
   }, []);
 
   const renderSkeleton = () => (
-    <div class="grid min-h-[140px]  border-x h-full w-full justify-center pt-16 overflow-x-scroll   lg:overflow-visible">
+    <div class="grid min-h-[140px]   h-full w-full justify-center pt-16 overflow-x-scroll   lg:overflow-visible">
     <svg
       class="text-white animate-spin"
       viewBox="0 0 64 64"
@@ -212,7 +212,7 @@ function JobApplication() {
                 <div
                   key={approach._id}
                   onClick={() => {navigate("/job/"+approach.job._id)}}
-                  className="border-y p-4  cursor-pointer flex flex-col gap-4"
+                  className="border-y sm:border-y-0 p-4  cursor-pointer flex flex-col gap-4"
                 >
                   <JobListItem 
                   job={approach.job}
@@ -681,7 +681,7 @@ function JobApplication() {
 
   return (
     <div className="w-full flex justify-center gap-4  ">
-      <div className={`w-full max-w-xl py-3 sm:w-full border-x ${selectedJob && "hidden sm:block"}`}>
+      <div className={`w-full max-w-xl py-3 sm:w-full  ${selectedJob && "hidden sm:block"}`}>
         <div className="flex gap-4 mb-3  px-4 py-1">
           <p
             onClick={() => setInnerTab("applications")}

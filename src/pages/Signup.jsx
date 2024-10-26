@@ -16,6 +16,7 @@ import { loginSuccess, loginFailure } from "../features/auth/authSlice";
 import UrlInput from "../components/Input/UrlInput";
 import LocationInput from "../components/Input/LocationInput";
 import NumberInput from "../components/Input/NumberInput";
+import Logo from "../assets/LogoCircle";
 
 function Signup() {
   const [otpInput, setotpInput] = useState(false);
@@ -50,7 +51,6 @@ function Signup() {
     console.log("File uploaded:", file.name);
   };
 
- 
   const [userData, setuserData] = useState({});
 
   const [personal_details, setpersonal_details] = useState({});
@@ -60,16 +60,16 @@ function Signup() {
     const { name, value } = e.target;
     console.log("User Data:", userData);
     console.log("Personal Details:", personal_details);
-  
+
     // Update userData state
     setuserData((prevState) => ({ ...prevState, [name]: value }));
-  
+
     // Handle username validation with debounce
     if (name === "username") {
       if (usernameTimeout.current) {
         clearTimeout(usernameTimeout.current);
       }
-  
+
       if (value !== "") {
         usernameTimeout.current = setTimeout(() => {
           setusernameChecking(true);
@@ -81,7 +81,7 @@ function Signup() {
       }
     }
   };
-  
+
   const isFormValid = () => {
     console.log(userData, personal_details, company_details);
     if (
@@ -92,7 +92,7 @@ function Signup() {
       userData.account_type
     ) {
       if (userData.account_type == "Candidate") {
-        console.log("HI",personal_details);
+        console.log("HI", personal_details);
 
         if (personal_details.birthdate && personal_details.firstname) {
           console.log("form valid");
@@ -133,28 +133,28 @@ function Signup() {
       location: "",
     }));
   };
-  
+
   const verifyUserName = async (username) => {
     setusernameChecking(true);
     setusernameChecked(false);
-  
+
     try {
       // Check if the username is empty
       if (username.length === 0) {
         setuserNameAvailable(false);
         resetFormStates();
         setusernameError("Username cannot be empty");
-      } 
+      }
       // Check if the username exceeds the maximum length
       else if (username.length > 30) {
         setuserNameAvailable(false);
         resetFormStates();
         setusernameError("Username can have only 30 characters");
-      } 
+      }
       // Valid length: Check if the username is available
       else {
         const response = await authService.checkUsername(username);
-  
+
         if (response.exists) {
           setuserNameAvailable(false);
           resetFormStates();
@@ -172,8 +172,7 @@ function Signup() {
       setusernameChecking(false);
     }
   };
-  
-  
+
   const verifyEmail = async () => {
     var validRegex =
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -234,32 +233,32 @@ function Signup() {
 
     try {
       let response;
-    if(userData.account_type  === "Employeer"){
-       response = await fetch(
-        "https://workler-backend.vercel.app/api/auth/signup",
-        // "http://localhost:5002/api/auth/signup",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ ...userData, company_details }),
-        }
-      );
-    }else{
-       response = await fetch(
-        // "http://localhost:5002/api/auth/signup",
+      if (userData.account_type === "Employeer") {
+        response = await fetch(
+          "https://workler-backend.vercel.app/api/auth/signup",
+          // "http://localhost:5002/api/auth/signup",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ ...userData, company_details }),
+          }
+        );
+      } else {
+        response = await fetch(
+          // "http://localhost:5002/api/auth/signup",
 
-        "https://workler-backend.vercel.app/api/auth/signup",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ ...userData, personal_details }),
-        }
-      );
-    }
+          "https://workler-backend.vercel.app/api/auth/signup",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ ...userData, personal_details }),
+          }
+        );
+      }
 
       const token = await authService.login(userData.email, userData.password);
       const user = await authService.fetchUserDetails(token);
@@ -289,7 +288,11 @@ function Signup() {
   };
 
   return (
-    <div className={`flex flex-col h-svh  items-center w-full justify-center   text-gray-800 overflow-y-hidden ${!userNameAvailable || userData.username == "" ?"overflow-hidden":""}`}>
+    <div
+      className={`flex flex-col h-svh  items-center w-full justify-center   text-gray-800 overflow-y-hidden ${
+        !userNameAvailable || userData.username == "" ? "overflow-hidden" : ""
+      }`}
+    >
       <div
         className={` flex h-full flex-col justify-between items-center sm:justify-center  w-full   ${
           next ? "hidden" : null
@@ -297,10 +300,13 @@ function Signup() {
       >
         <div
           id="email-form"
-          className={` w-full  sm:border px-4 sm:px-6 mt-10 sm:p-10 max-w-sm flex  flex-col  `}
+          className={` w-full  sm:border px-6 sm:shadow-xl  sm:p-10 max-w-sm flex  flex-col  `}
         >
-          <div className="">
-            <p className="text-2xl font-semibold text-gray-800 ">Hello User</p>
+          <div className="w-full flex justify-center  py-2 mt-5 sm:mt-0 px-6">
+            <Logo className={"text-6xl p-4 px-5"} />
+          </div>
+          <div className=" text-center mt-4 w-full">
+            <p className="text-2xl font-semibold text-gray-800 ">Hello User 👋</p>
             <p className="text-sm text-gray-400">
               Enter you email address to get started
             </p>
@@ -315,11 +321,11 @@ function Signup() {
           </p>
 
           <div
-            className={`flex flex-col mt-16 w-full ${
+            className={`flex flex-col mt-5 w-full ${
               otpInput ? "hidden" : null
             }`}
           >
-            <div id="userEmailFull" class="relative flex peer  items-center">
+            <div id="userEmailFull" class="relative  flex peer  items-center">
               <input
                 type="email"
                 id="email"
@@ -401,7 +407,7 @@ function Signup() {
             setPurpose={setpurpose}
             setOtpInput={setotpInput}
             text={email}
-            className={`mt-5  ${!otpInput ? "hidden" : null}`}
+            className={`mt-2  ${!otpInput ? "hidden" : null}`}
           />
           <Button
             type="button"
@@ -451,7 +457,7 @@ function Signup() {
           console.log("create");
           create(e);
         }}
-        className={`sm:border w-full flex-1  sm:flex-none flex overflow-y-auto flex-col h-fit sm:w-full sm:max-w-fit px-4 md:mt-32 md:mb-10 py-10 sm:p-10 ${
+        className={`sm:border w-full flex-1  sm:flex-none flex overflow-y-auto flex-col h-fit sm:w-full sm:max-w-fit px-6 md:mt-32 md:mb-10 py-10 sm:p-10 ${
           next ? null : "hidden"
         }`}
       >
@@ -572,13 +578,13 @@ function Signup() {
             />
           </div>
           {userData.account_type == "Candidate" && (
-          <div
-          className={`transition-transform  flex flex-col gap-6 duration-300 ease-in-out ${
-            userNameAvailable
-              ? "md:flex opacity-100 translate-y-0"
-              : "md:hidden opacity-0 -translate-y-5"
-          }`}
-        >
+            <div
+              className={`transition-transform  flex flex-col gap-6 duration-300 ease-in-out ${
+                userNameAvailable
+                  ? "md:flex opacity-100 translate-y-0"
+                  : "md:hidden opacity-0 -translate-y-5"
+              }`}
+            >
               <div className="flex flex-wrap gap-6 w-full">
                 <TextInput
                   name={"firstname"}
@@ -607,7 +613,7 @@ function Signup() {
               </div>
               <div className="flex flex-wrap gap-6 w-full">
                 <DateInput
-                type={"date"}
+                  type={"date"}
                   className={"flex-grow"}
                   name={"birthdate"}
                   onChange={(e) => {
@@ -620,8 +626,8 @@ function Signup() {
                   value={personal_details.date_of_birth}
                 />
                 <LocationInput
-                className={"flex-grow"}
-                placeholder={"Location"}
+                  className={"flex-grow"}
+                  placeholder={"Location"}
                   value={personal_details.location}
                   onChange={(value) => {
                     setpersonal_details((prev) => ({
@@ -676,7 +682,6 @@ function Signup() {
                   }}
                 />
               </div>
-            
             </div>
           )}
           {userData.account_type == "Employeer" && (
@@ -701,7 +706,6 @@ function Signup() {
                   placeholder={"Company name"}
                 />
 
-
                 <LocationInput
                   name={"location"}
                   className={"flex-grow"}
@@ -716,7 +720,7 @@ function Signup() {
                 />
               </div>
               <div className="flex gap-6 flex-wrap">
-              <OptionInput
+                <OptionInput
                   name={"industry"}
                   options={[
                     "Agriculture",
@@ -742,7 +746,7 @@ function Signup() {
                     "Telecommunications",
                     "Transportation",
                     "Travel",
-                    "Utilities"
+                    "Utilities",
                   ]}
                   className={"flex-grow"}
                   value={company_details.industry}
@@ -754,19 +758,19 @@ function Signup() {
                   }}
                   placeholder={"Industry"}
                 />
-              <DateInput
-                name={"found_in_date"}
-                type={"date"}
-                placeholder={"Found in"}
-                className={"flex-grow"}
-                onChange={(e) => {
-                  setcompany_details((prev) => ({
-                    ...prev,
-                    found_in_date: e.target.value,
-                  }));
-                }}
-                value={company_details.found_in_date}
-              />
+                <DateInput
+                  name={"found_in_date"}
+                  type={"date"}
+                  placeholder={"Found in"}
+                  className={"flex-grow"}
+                  onChange={(e) => {
+                    setcompany_details((prev) => ({
+                      ...prev,
+                      found_in_date: e.target.value,
+                    }));
+                  }}
+                  value={company_details.found_in_date}
+                />
               </div>
               {/* <UrlInput
                name={"website"}
@@ -785,7 +789,13 @@ function Signup() {
         </div>
         <Button
           type="submit"
-          className={`flex items-center text-xl justify-center   bg-blue-500 text-white py-2  rounded disabled:opacity-50 mt-6 ${userNameAvailable?"-translate-y-0":userData.account_type =="Candidate"?"-translate-y-[512px]":"-translate-y-[300px]"}`}
+          className={`flex items-center text-xl justify-center   bg-blue-500 text-white py-2  rounded disabled:opacity-50 mt-6 ${
+            userNameAvailable
+              ? "-translate-y-0"
+              : userData.account_type == "Candidate"
+              ? "-translate-y-[512px]"
+              : "-translate-y-[370px]"
+          }`}
           disabled={!isFormValid() || loader} // Ensure the form validation is active
         >
           {loader ? (

@@ -376,6 +376,7 @@ function UserProfileView({ userId = useParams().userId }) {
             user={userDetails}
             isEditable={false}
             loading={loading}
+            postData={postData}
             setCurrentTab={setCurrentTab}
           />
         );
@@ -394,7 +395,9 @@ function UserProfileView({ userId = useParams().userId }) {
       case "Posts":
         return (
           <Posts
-          className={"pb-8"}
+          className={"pb-8 "}
+          columns={"grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3"}
+          postClassName={"w-full"}
             postData={postData}
             setPostData={setpostData}
             userDetails={userDetails}
@@ -494,7 +497,7 @@ function UserProfileView({ userId = useParams().userId }) {
     console.log(unfollowResponse);
   };
   return (
-    <div className=" flex gap-8  w-full justify-center">
+    <div className=" flex gap-8 sm:p-10 sm:py-6 bg-gray-50  w-full justify-center">
       <div
         ref={profileRef}
         style={{
@@ -504,7 +507,7 @@ function UserProfileView({ userId = useParams().userId }) {
           !userId && "hidden"
         }  w-full flex-1 transition-all  ${
           approaching ? "overflow-y-hidden" : "overflow-y-auto"
-        }   flex-grow ${showProfileImage && "pointer-events"}`}
+        }  flex-grow sm:rounded-3xl ${showProfileImage && "pointer-events"}`}
       >
         {approaching && currentUserJobData && (
           <div
@@ -565,12 +568,12 @@ function UserProfileView({ userId = useParams().userId }) {
         {showProfileImage && (
           <div
             onClick={() => setShowProfileImage(false)}
-            className="h-screen  w-full top-0 bg-white opacity-85 z-50 fixed"
+            className="h-screen -ml-[34px] w-full top-0 bg-white opacity-85 z-50 fixed"
           ></div>
         )}
         <div className="flex relative  flex-wrap">
           <div
-            className={` w-full border-t  fixed sm:sticky  sm:border-x  z-20 top-0   px-4 py-4 bg-white flex `}
+            className={` w-full border-t sm:rounded-t-3xl  fixed sm:sticky  sm:border-x  z-20 top-0   px-4 sm:px-6 py-4 sm:py-6 bg-white flex `}
           >
             <div className="flex w-full items-center gap-4">
               {atTop >= 100 && (
@@ -583,8 +586,8 @@ function UserProfileView({ userId = useParams().userId }) {
                   imageHeight="40"
                 />
               )}
-              <div className="flex flex-col justify-center">
-                <p className="text-xl font-semibold">
+              <div className="flex flex-col -mt-1 justify-center">
+                <p className="sm:text-2xl  font-semibold">
                   {atTop > 100 ? userDetails?.username : "Profile"}
                 </p>
                 {/* <div className="flex gap-1 mt-0.5 items-center">
@@ -829,15 +832,15 @@ function UserProfileView({ userId = useParams().userId }) {
           </div>
         </div>
         <div
-          className={`md:border-t sticky md:top-0 top-16 -mt-px  bg-white md:mb-4 z-20 transition-all ease-in-out `}
+          className={`md:border-t sticky md:-top-px top-16 -mt-px  bg-white md:mb-4 z-20 transition-all ease-in-out `}
         >
           <div
             style={{
               overflowX: "auto",
               scrollbarWidth: "none",
             }}
-            className={`flex-grow z-20  max-w-full overflow-x-auto border-b sm:border-x ${
-              atTop > 340 ? "" : ""
+            className={`flex-grow z-20  max-w-full overflow-x-auto border-b  ${
+              atTop > 340 ? "rounded-t-3xl sm:border" : "sm:border-x "
             } w-full   sm:top-0 gap-3 bg-white font-medium flex`}
           >
             <div className="flex w-full pt-1">
@@ -898,8 +901,8 @@ function UserProfileView({ userId = useParams().userId }) {
 
         <div>{renderTabContent()}</div>
       </div>
-      <div className="hidden sticky top-20 w-full max-w-lg flex-col gap-5 md:flex">
-        <div className="border  p-4">
+      <div className="hidden sticky top-20 w-full max-w-lg flex-col gap-5 xl:flex">
+        <div className="border bg-white p-4">
           <p className="text-xl font-semibold mb-5">Releated Accounts</p>
           <div className="flex gap-5 justify-between items-center">
             <div className="flex gap-2">

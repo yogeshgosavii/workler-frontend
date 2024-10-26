@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Button from '../components/Button/Button';
 import { loginSuccess, loginFailure } from '../features/auth/authSlice';
 import authService from '../services/authService';
+import LogoCircle from '../assets/LogoCircle';
 
 function Login({ userType = "candidate" }) {
   const [email, setEmail] = useState('');
@@ -48,12 +49,13 @@ function Login({ userType = "candidate" }) {
   return (
     <div className='h-svh flex flex-col text-gray-700 justify-between'>
       <div className='flex-1 flex flex-col w-full items-center sm:justify-center text-gray-800'>
-        <div className='bg-white flex sm:max-w-sm w-full flex-row mt-0.5 sm:border'>
-          <div className='w-full px-6 pt-10 sm:p-10 duration-200'>
-            <h2 className="text-2xl font-semibold leading-tight">Sign in</h2>
+        <div className='bg-white flex sm:max-w-sm w-full flex-row mt-0.5 sm:border sm:shadow-xl'>
+          <div className='w-full px-6 pt-6 sm:p-10 duration-200'>
+            <LogoCircle/>
+            <h2 className="text-2xl font-semibold leading-tight mt-16 sm:mt-10">Sign in</h2>
             <p className='text-gray-400 text-sm font-normal'>Enter your registered email and password</p>
             <p id='error' className={`text-red-500 mt-1 w-fit rounded-sm text-sm ${error ? "" : "invisible"}`}>{error}</p>
-            <form className='mt-16' onSubmit={handleSubmit}>
+            <form className='mt-5' onSubmit={handleSubmit}>
               <div className="relative flex peer">
                 <input
                   type="email"

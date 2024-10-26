@@ -9,10 +9,8 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
   const [saved, setSaved] = useState(false);
   const currentUser = useSelector((state) => state.auth.user);
 
-
   useEffect(() => {
     const checkSaved = async () => {
-
       // setLoading((prev) => ({ ...prev, checkSaved: true }));
       try {
         const saveData = await savedService.checkSaved({
@@ -28,9 +26,9 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
       }
     };
 
-   if(job.user){
-    checkSaved()
-   }
+    if (job.user) {
+      checkSaved();
+    }
   }, []);
 
   const saveJob = async () => {
@@ -51,17 +49,22 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
 
   return (
     <div
-    onClick={() => {
-      console.log("Navigating with job:", job);
-      navigate(`/job/${job._id}`, { state: { jobDetails : job } });
-    }}
-      className={` sm:rounded-2xl sm:shadow-lg py-6  transition-all cursor-pointer ${className}`}
+      onClick={() => {
+        console.log("Navigating with job:", job);
+        navigate(`/job/${job._id}`, { state: { jobDetails: job } });
+      }}
+      className={` sm:rounded-2xl  py-6  transition-all cursor-pointer ${className}`}
     >
       <div className="flex gap-4 px-6">
         {/* Company Logo */}
         <img
           className="w-14 h-14 object-contain border bg-gray-50 p-2 rounded-lg"
-          src={job.company_logo || (job.user.company_details && job.user?.profileImage.compressedImage )|| companyDefaultImage}
+          src={
+            job.company_logo ||
+            (job.user.company_details &&
+              job.user?.profileImage.compressedImage) ||
+            companyDefaultImage
+          }
           alt={`${job.company_name} logo`}
           onError={(e) => {
             e.target.onerror = null;
@@ -187,21 +190,44 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
         )}
       </div>
       <div className="border-t w-full mt-5"></div>
-      <div onClick={(e)=>{e.stopPropagation()}} className="flex  px-6 justify-between gap-4 mt-5  items-center">
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        className="flex  px-6 justify-between gap-4 mt-5  items-center"
+      >
         <div className="flex gap-2   font-medium text-lg rounded-lg items-center">
-          <svg
-            className="h-7 w-7 text-blue-500 "
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
+          {job.currency_type == "$" || job.currency_type == "USD" ? (
+            <svg
+              class="h-6 w-6 text-blue-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          ) : job.currency_type == "₹" ? (
+            <svg
+              className="h-7 w-7 text-blue-500 "
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          ) : (
+            job.currency_type
+          )}
           <p className="text-nowrap  sm:text-base  ">
             {job.min_salary || job.max_salary
               ? ` ${
@@ -214,10 +240,17 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
                     : job.max_salary
                 }`
               : "Not disclosed"}
+            {(job.min_salary || job.max_salary) && job.salary_type && (
+              <span className="text-gray-400 font-normal ml-2">
+                per {job.salary_type}
+              </span>
+            )}
           </p>
         </div>
-          {/* <p>Save</p> */}
-          {(job?.user || job.source =="job_post") &&(saved ? (
+        {/* <p>Save</p> */}
+        {(job?.user || job.source == "job_post") &&
+          currentUser &&
+          (saved ? (
             <svg
               onClick={(e) => {
                 unsaveJob(job._id);

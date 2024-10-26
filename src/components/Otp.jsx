@@ -62,7 +62,7 @@ function Otp({
           <p className="text-gray-800 font-normal ">{text}</p>
           <svg
             width="20"
-            className=" ml-1 cursor-pointer stroke-current hover:stroke-blue-500"
+            className=" ml-1 mt-[3px] cursor-pointer stroke-current hover:stroke-blue-500"
             height="18"
             viewBox="0 0 24 24"
             xmlns="http://www.w3.org/2000/svg"

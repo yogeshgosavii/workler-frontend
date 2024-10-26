@@ -34,6 +34,7 @@ import Jobs from "../components/profileTabs/Jobs";
 import PostForm from "../components/Forms/PostForm";
 import { getUserPosts } from "../services/postService";
 import FreezeScroll from "../components/FreezeScroll";
+import UserPostedJobs from "../components/profileTabs/Jobs";
 
 // Register necessary components from Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
@@ -122,7 +123,7 @@ const UserProfile = () => {
     projects: true,
     personalDetails: true,
     userDetails: true,
-    posts :true
+    posts: true,
   });
 
   useEffect(() => {
@@ -161,7 +162,7 @@ const UserProfile = () => {
 
   const fetchJobData = useCallback(async () => {
     try {
-      const data = await jobApi.job.getAll();
+      const data = await jobApi.job.getByUserIds(user._id);
       setjobData(data);
     } catch (error) {
       console.error("Error fetching education data:", error);
@@ -177,7 +178,6 @@ const UserProfile = () => {
       console.error("Error fetching education data:", error);
     } finally {
       setLoading((prev) => ({ ...prev, posts: false }));
-
     }
   }, []);
 
@@ -436,32 +436,32 @@ const UserProfile = () => {
   const renderTabContent = () => {
     if (loading.userDetails || loading.posts) {
       return (
-          <div class="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
-            <svg
-              class="text-white animate-spin"
-              viewBox="0 0 64 64"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              width="50"
-              height="50"
-            >
-              <path
-                d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
-                stroke="currentColor"
-                stroke-width="5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              ></path>
-              <path
-                d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="text-gray-400"
-              ></path>
-            </svg>
-          </div>
+        <div class="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+          <svg
+            class="text-transparent animate-spin"
+            viewBox="0 0 64 64"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            width="50"
+            height="50"
+          >
+            <path
+              d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+              stroke="currentColor"
+              stroke-width="5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-gray-400"
+            ></path>
+          </svg>
+        </div>
       );
     }
 
@@ -503,7 +503,9 @@ const UserProfile = () => {
           <Posts
             setFormType={setFormType}
             postData={postData}
-            className={"pb-5"}
+            className={"pb-5 "}
+            columns={"grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"}
+            postClassName={" h-full"}
             userDetails={userDetails}
             setPostData={setPostData}
           />
@@ -524,7 +526,7 @@ const UserProfile = () => {
         );
       case "Jobs":
         return (
-          <Jobs
+          <UserPostedJobs
             setFormType={setFormType}
             setUpdateData={setUpdateData}
             setupdateFormType={setupdateFormType}
@@ -542,20 +544,20 @@ const UserProfile = () => {
         formType ||
         updateFormType ||
         settings ||
+        showProfileImage ||
         location.pathname === "/profile/settings" ||
         location.pathname === "/profile/settings/preferences" ||
         location.pathname === "/profile/settings/account-settings" ||
         location.pathname === "/profile/settings/saveds" ||
-        location.pathname === "/profile/post" 
-
+        location.pathname === "/profile/post"
       }
-      className={`w-full flex justify-center gap-5`}
+      className={`w-full flex bg-gray-50 justify-center gap-5`}
     >
       {pageLoading ? (
         <div>Loading...</div>
       ) : (
         <div
-          className={`w-full flex-1 flex-grow ${
+          className={`w-full flex-1 flex justify-center flex-grow ${
             settings ? "pointer-events-none " : "pointer-events-auto"
           }`}
         >
@@ -650,7 +652,7 @@ const UserProfile = () => {
                 onClick={() => {
                   setshowProfileImage(false);
                 }}
-                className={`h-screen border w-full top-0 bg-white opacity-85   z-50 absolute `}
+                className={`h-screen  w-full top-0 bg-black opacity-70  z-50 absolute `}
               ></div>
             )}
             <div className="flex gap-4  max-h-min flex-wrap ">
@@ -1016,19 +1018,19 @@ const UserProfile = () => {
         </div>
       )}
 
-      <div className=" min-w-[35%] hidden lg:flex fixed top-6 right-10 flex-col gap-4">
+      {/* <div className=" min-w-[35%] hidden lg:flex fixed top-6 right-10 flex-col gap-4">
         <div
           className={`border  h-fit px-6   bg-white sm:px-8 py-5 flex w-full transition-transform duration-300  `}
         >
-          <p className="text-xl font-medium">Recomendations</p>
+          <p className="text-xl font-medium">People you may know</p>
         </div>
         <div
           className={`border transition-all  ease-in-out h-fit px-6  top-4 
            bg-white sm:px-8 py-5  flex w-full `}
         >
-          <p className="text-xl font-medium">Candidates</p>
+          <p className="text-xl font-medium">Jobs based on preferences</p>
         </div>
-      </div>
+      </div> */}
       {/* <div className=" z-40"> */}
       <Outlet />
       {/* </div> */}

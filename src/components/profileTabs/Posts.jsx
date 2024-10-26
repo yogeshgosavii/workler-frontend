@@ -22,8 +22,9 @@ function Posts({
   postData,
   className,
   postClassName,
+  postPaddingbottom,
   setPostData,
-  columns = 2,
+  columns ,
   userDetails,
   isEditable = true,
 }) {
@@ -99,7 +100,7 @@ function Posts({
   };
 
   return (
-    <div className={`w-full relative h-full ${className}`}>
+    <div className={`w-full  h-full ${className}`}>
       {postData && postData?.length === 0 ? (
         isEditable ? (
           <div className="flex w-full  flex-col items-center bg-white">
@@ -151,25 +152,33 @@ function Posts({
           <UserPostUpdateSettings
             setPostSetting={setPostSettings}
             postSettings={postSettings}
+            setPostData={setPostData}
+            postData={postData}
           />
           <PostMentionList
-          showMentions={postMentions}
-          setShowMentions={setPostMentions}
+            showMentions={postMentions}
+            setShowMentions={setPostMentions}
           />
 
-          <div className={`flex flex-wrap gap-4`}>
+          <div className={`grid ${columns} ${postPaddingbottom}  gap-4 `}>
             {postData?.map((post, index) => {
               return (
                 <div
                   key={index}
                   onClick={() => navigate("/post/" + post._id)}
-                  className={` sm:border bg-white  ${postClassName} flex-grow   h-fit   p-4 sm:p-7`}
+                  className={`sm:border w-full  bg-white cursor-pointer  ${postClassName} flex flex-col  transition-all  h-full   p-4 sm:p-7`}
                 >
                   <div className="flex items-center   justify-between">
-                    <div className="flex gap-2 ">
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate("/user/" + post.user._id);
+                      }}
+                      className="flex gap-4  items-center"
+                    >
                       <UserImageInput
-                        className="w-[35px] h-[35px] rounded-full"
-                        imageHeight={35}
+                        className="w-[35px] h-[35px] -mt-1.5 rounded-full"
+                        imageHeight={40}
                         imageBorder={1}
                         image={
                           post?.user.profileImage?.compressedImage ||
@@ -180,11 +189,12 @@ function Posts({
                       />
                       <div className="flex gap-2 items-center ">
                         <div>
-                          <p className="font-medium text-sm">
-                            {post?.user.personal_details.firstname}{" "}
-                            {post?.user.personal_details.lastname}
+                          <p className="font-medium">
+                            {post?.user.company_details
+                              ? post?.user.company_details?.company_name
+                              : `${post?.user.personal_details?.firstname} ${post?.user.personal_details?.lastname}`}
                           </p>
-                          <p className=" text-gray-400 -mt-[3px] text-xs">
+                          <p className=" text-gray-400 -mt-1  text-sm">
                             {post?.user.username}
                           </p>
                         </div>
@@ -208,39 +218,46 @@ function Posts({
                       </div>
                     </div>
                     <div className="flex gap-2 items-center">
-                      {savedList.some(
-                        (item) => item.saved_content?._id == post._id
-                      ) ? (
-                        <svg
-                          onClick={(e) => {
-                            unsavePost(post._id);
-                            e.stopPropagation();
-                          }}
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          fill="currentColor"
-                          class={`bi bi-bookmark-fill liked-animation`}
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
-                        </svg>
-                      ) : (
-                        <svg
-                          onClick={(e) => {
-                            savePost(post._id);
-                            e.stopPropagation();
-                          }}
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          fill="currentColor"
-                          class="bi bi-bookmark unliked-animation"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z" />
-                        </svg>
-                      )}
+                      {currentUser._id != post.user._id &&
+                        (savedList.some(
+                          (item) => item.saved_content?._id == post._id
+                        ) ? (
+                          <svg
+                            onClick={(e) => {
+                              unsavePost(post._id);
+                              e.stopPropagation();
+                            }}
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            class={`bi size-6 bi-bookmark-fill liked-animation`}
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        ) : (
+                          <svg
+                            onClick={(e) => {
+                              savePost(post._id);
+                              e.stopPropagation();
+                            }}
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class={`size-6 bi bi-bookmark-fill unliked-animation`}
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+                            />
+                          </svg>
+                        ))}
                       <svg
                         onClick={(e) => {
                           setPostSettings(post);
@@ -263,23 +280,103 @@ function Posts({
                       </svg>
                     </div>
                   </div>
-                  <p
-                    className={`mt-4 text-sm flex-1 ${!post.images && ""}`}
-                    dangerouslySetInnerHTML={{ __html: post.content }}
-                  />
-                  {post.post_type !== "job" && (
+                  <div className={`relative ${
+                        !post.images && " flex-1"
+                      } `}>
+                    <p
+                      className={`mt-4 text-sm ${
+                        !post.images && " flex-1  border p-4 rounded-xl"
+                      }`}
+                      dangerouslySetInnerHTML={{ __html: post.content }}
+                    />
+                    {post.mentions.length > 0 && !post.images && (
+                      // <svg
+                      //   onClick={(e) => {
+                      //     e.stopPropagation();
+                      //     setPostMentions(post.mentions);
+                      //   }}
+                      //   xmlns="http://www.w3.org/2000/svg"
+                      //   width="30"
+                      //   height="30"
+                      //   fill="currentColor"
+                      //   class="bi bi-person-fill border rounded-full p-1.5"
+                      //   viewBox="0 0 16 16"
+                      // >
+                      //   <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                      // </svg>
+
+                      <div
+                        // onClick={() => handleRemoveImage(image)}
+                        className="absolute bottom-11 right-4  cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPostMentions(post.mentions);
+                        }}
+                      >
+                        <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          fill="currentColor"
+                          className="h-4 w-4 text-gray-100  absolute top-[9px] right-2 z-10"
+                          viewBox="0 0 16 16"
+                        >
+                          <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                  {post.images && (
                     <div
                       style={{ overflowX: "auto", scrollbarWidth: "none" }}
-                      className="mt-2 flex flex-col w-full  transition-all  duration-300 overflow-x-auto flex-1"
+                      className="mt-2 flex mb-4 flex-col relative w-full  transition-all  duration-300 overflow-x-auto flex-1"
                     >
                       {post.images && (
                         <ImageCarousel
                           dots={false}
-                          edges="rounded-lg"
+                          edges=""
                           className="h-full  flex-grow w-full "
                           gap={2}
                           images={post.images?.originalImage}
                         />
+                      )}
+                      {post.mentions.length > 0 && (
+                        // <svg
+                        //   onClick={(e) => {
+                        //     e.stopPropagation();
+                        //     setPostMentions(post.mentions);
+                        //   }}
+                        //   xmlns="http://www.w3.org/2000/svg"
+                        //   width="30"
+                        //   height="30"
+                        //   fill="currentColor"
+                        //   class="bi bi-person-fill border rounded-full p-1.5"
+                        //   viewBox="0 0 16 16"
+                        // >
+                        //   <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                        // </svg>
+
+                        <div
+                          // onClick={() => handleRemoveImage(image)}
+                          className="absolute bottom-12 right-4 z-10  cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPostMentions(post.mentions);
+                          }}
+                        >
+                          <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-80 rounded-full"></div>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            fill="currentColor"
+                            className="h-4 w-4 text-gray-100  absolute top-[9px] right-2 z-10"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                          </svg>
+                        </div>
                       )}
                     </div>
                   )}
@@ -292,7 +389,7 @@ function Posts({
                         scrollBehavior: "smooth",
                         display: "flex",
                       }}
-                      className="relative flex flex-col"
+                      className="relative flex-1 flex flex-col"
                     >
                       <div
                         style={{
@@ -373,20 +470,6 @@ function Posts({
                         // setPostData={setPostData}
                       />
                     </div>
-                    {post.mentions.length >0&&<svg
-                      onClick={(e)=>{
-                        e.stopPropagation()
-                        setPostMentions(post.mentions)
-                      }}
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="30"
-                      height="30"
-                      fill="currentColor"
-                      class="bi bi-person-fill border rounded-full p-1.5"
-                      viewBox="0 0 16 16"
-                    >
-                      <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                    </svg>}
                   </div>
                   {post.comments_count > 0 && (
                     <div className=" text-sm z-10">

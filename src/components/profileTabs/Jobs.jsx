@@ -4,7 +4,7 @@ import UserImageInput from "../Input/UserImageInput";
 import companyDefaultImage from "../../assets/companyDefaultImage.png";
 
 
-function Jobs({
+function UserPostedJobs({
   setFormType,
   setupdateFormType,
   setUpdateData,
@@ -39,7 +39,7 @@ function Jobs({
         <p>No jobs post yet</p>
       )}
 
-      {!isEditable && jobData.length <= 0 && (
+      {!isEditable && jobData?.length <= 0 && (
         <div className="text-gray-400 w-full text-center mt-4">
           No jobs posted yet
         </div>
@@ -80,13 +80,13 @@ function Jobs({
                 </p>
               ) : (
                 <p className="text-xs mt-0.5 text-gray-400">
-                  Posted{" "}
+                  {/* Posted{" "}
                   {formatDistanceToNow(
                     new Date(job.createdAt || job.job_post_date),
                     {
                       addSuffix: true,
                     }
-                  )}
+                  )} */}
                 </p>
               )}
             </div>
@@ -115,4 +115,4 @@ function Jobs({
   );
 }
 
-export default Jobs;
+export default UserPostedJobs;

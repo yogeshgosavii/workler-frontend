@@ -41,9 +41,9 @@ function UserHome() {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex flex-col bg-gray-50">
       <div
-        className={` px-4 sm:px-10  flex gap-4  sm:ml-[2px]  w-full sm:w-[99%]  py-4  z-50 bg-white   top-0  ${
+        className={` px-4 sm:px-10  flex gap-4  sm:ml-1.5  w-full sm:w-[99%]  py-4  z-50 bg-white   top-0  ${
           selectedPost && "hidden sm:block"
         }`}
       >
@@ -99,7 +99,8 @@ function UserHome() {
               isEditable={false}
               postData={content}
               className={"sm:max-w-lg "}
-              postClassName={"sm:shadow-lg sm:rounded-xl"}
+              postPaddingbottom={"pb-10"}
+              postClassName={"sm:shadow-lg  sm:rounded-xl"}
               columns={1}
             />
           </div>

@@ -62,20 +62,20 @@ const ImageCarousel = ({
     <div className={`${className}`}>
       <div
         ref={imageContainerRef}
-    className={`flex ${!dots && images.length > 1 && "pl-[43px]"}  w-full transition-all max-h-min max-w-full gap-${gap}`}
+    className={`flex ${!dots && images.length > 1 && ""} h-full w-full transition-all max-h-min max-w-full gap-${gap}`}
         style={
         scrollContainerStyle}
       >
         {animatingImages.map((image, index) => (
           <div
-            className={`relative ${images.length >1?"w-fit":"w-full"} transition-all duration-300 ease-in-out ${
+            className={`relative h-full  flex items-center flex-grow self-center  bg-gray-50 ${images.length >1?"w-fit":"w-full"} transition-all duration-300 ease-in-out ${
               removedImage === image ? "opacity-0 scale-95" : "opacity-100 scale-100"
             }`}
             key={index}
             style={scrollItemStyle}
           >
             <img
-              className={`w-full  h-full ${imageClassName} object-cover max-h-60 ${edges}`}
+              className={`w-full flex-grow max-h-60  h-full ${imageClassName} object-contain  ${edges}`}
               src={
                 typeof image === "string" ? image : URL.createObjectURL(image)
               }

@@ -1,8 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 function News() {
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+
   return (
-    <div className='max-w-64 lg:max-w-full  sticky top-20 ' >
+    <div className={`max-w-64 lg:max-w-full  sticky ${isAuthenticated?"top-20":"top-28" }`} >
       <div className='border px-6 py-4 rounded-lg cursor-pointer'>
         <p className='text-blue-500 font-bold text-lg'>Wrokler 2x</p>
         <p className='font-semibold mt-2'>Get your profile get viewed 2X faster </p>

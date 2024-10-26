@@ -17,8 +17,10 @@ function Jobs() {
   const [submitJobList, setSubmitJobList] = useState([]);
   const [searchFocus, setSearchFocus] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [filters, setfilters] = useState("");
   const navigate = useNavigate();
   const jobService = useJobApi();
+  const [jobsRefersh, setJobsRefersh] = useState(false);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   // Fetch jobs based on search text
@@ -41,9 +43,10 @@ function Jobs() {
   // }, [searchText]);
   useEffect(() => {
     const fetchJobs = async () => {
+      setLoading(true)
       try {
         if (searchText) {
-          const jobs = await searchService.secrchJobByKeyword(searchText);
+          const jobs = await searchService.secrchJobByKeyword(searchText+" "+filters);
           setSubmitJobList(jobs);
         } else {
           const jobs = await jobService.job.getAll();
@@ -58,7 +61,7 @@ function Jobs() {
       }
     };
     fetchJobs();
-  }, []);
+  }, [filters]);
 
   // Handle search submission
   const handleSearchSubmit = (e) => {
@@ -118,7 +121,7 @@ function Jobs() {
             onBlur={() => setSearchFocus(false)}
             ref={searchRef}
             inputClassName=""
-            className={`sticky transition-all sm:shadow-md mt-6 sm:ml-0   sm:max-w-[250px] flex items-center md:max-w-[350px] lg:max-w-md z-10 bg-white w-full ${
+            className={`sticky transition-all ${isAuthenticated &&"sm:shadow-md"} mt-6 sm:ml-0   sm:max-w-[250px] flex items-center md:max-w-[350px] lg:max-w-md z-10 bg-white w-full ${
               !isAuthenticated ? "w-[100%]" : ""
             } caret-blue-500 h-12  `}
             placeholder="Enter the job title or domain"
@@ -147,7 +150,7 @@ function Jobs() {
         {/* Left Sidebar (JobFilter) */}
         <div
           className={`flex justify-center overflow-x-hidden  mr- sm:mr-6 md:mr-0 sm:px-0 w-full mt-4 ${
-            isAuthenticated ? " pt-16" : "pt-16 sm:pt-24"
+            isAuthenticated ? " pt-16" : " ml-9 pt-16 sm:pt-24"
           } sm:pr-10 pb-10 sm:gap-10`}
         >
           <div
@@ -158,11 +161,11 @@ function Jobs() {
                 : "left-0 sm:left-8 top-[40px] sm:top-24"
             } pt-4 `}
           >
-            <JobFilter />
+            <JobFilter filterText={filters} setfilterText={setfilters} />
           </div>
 
           {loading ? (
-            <div className=" sm:ml-[330px] mt-20 sm:mt-0 w-full">{joblistSkeleton()}</div>
+            <div className=" sm:ml-[321px] mt-20 sm:mt-0 w-full">{joblistSkeleton()}</div>
           ) : (
             <JobList jobs={submitJobList} />
           )}
@@ -170,7 +173,7 @@ function Jobs() {
 
         {/* Right News Section */}
         <div
-          className={`hidden lg:block mr-6 mt-5 ${!isAuthenticated && "mt-28"}`}
+          className={`hidden lg:block mr-6 mt-5 ${!isAuthenticated && "mt-24"}`}
         >
           <News />
         </div>
