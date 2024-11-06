@@ -5,6 +5,7 @@ import { updateUserDetails } from "../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
 import PasswordInput from "../../components/Input/PasswordInput";
 import Button from "../../components/Button/Button";
+import { Link } from "react-router-dom";
 
 function AccountSettings() {
   const [username, setUsername] = useState("");
@@ -433,6 +434,13 @@ function AccountSettings() {
                 value={newPassword}
               />
             </div>
+            <div className="mt-2 text-end">
+              <Link to="/forgot-password">
+                <p className="text-blue-500 font-medium cursor-pointer">
+                  Forgot password?
+                </p>
+              </Link>
+            </div>
             {passwordError && (
               <div className="text-sm text-red-500 mt-2">{passwordError}</div>
             )}
@@ -448,6 +456,7 @@ function AccountSettings() {
             >
               Change password
             </button> */}
+
             <Button
               onClick={() => {
                 updatePassword();

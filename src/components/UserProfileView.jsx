@@ -21,7 +21,6 @@ import followService from "../services/followService";
 import savedService from "../services/savedService";
 import companyDefaultImage from "../assets/companyDefaultImage.png";
 
-
 function UserProfileView({ userId = useParams().userId }) {
   // const { userId } = useParams();
 
@@ -34,7 +33,7 @@ function UserProfileView({ userId = useParams().userId }) {
   const [currentTab, setCurrentTab] = useState("Posts");
   const [tabIndex, setTabIndex] = useState(1);
   const [jobData, setJobData] = useState(null);
-  const [loading, setLoading] = useState({ userDetails: true ,posts:true});
+  const [loading, setLoading] = useState({ userDetails: true, posts: true });
   const [selectedJob, setSelectedJob] = useState("");
   const [approached, setApproached] = useState(null);
   const [applications, setapplications] = useState([]);
@@ -175,17 +174,19 @@ function UserProfileView({ userId = useParams().userId }) {
             setWorksAt(item);
           }
         });
-        const latestEducationData = qualificationData.education.reduce((closest, item) => {
-          const itemDate = new Date(item.end_month);
-          const closestDate = new Date(closest.end_month);
-  
-          return Math.abs(itemDate - currentDate) <
-            Math.abs(closestDate - currentDate)
-            ? item
-            : closest;
-        });
+        const latestEducationData = qualificationData.education.reduce(
+          (closest, item) => {
+            const itemDate = new Date(item.end_month);
+            const closestDate = new Date(closest.end_month);
 
-        setLatestEducation(latestEducationData)
+            return Math.abs(itemDate - currentDate) <
+              Math.abs(closestDate - currentDate)
+              ? item
+              : closest;
+          }
+        );
+
+        setLatestEducation(latestEducationData);
       } catch (error) {
         console.error("Failed to fetch qualification data", error);
       } finally {
@@ -245,12 +246,13 @@ function UserProfileView({ userId = useParams().userId }) {
       checkApproached();
       fetchUserJobsPosts();
       fetchApplications();
-    }
-    else if( currentUserDetails?.account_type == "Candidate" &&
-      userDetails?.account_type == "Candidate"){
+    } else if (
+      userDetails?.account_type != "Employeer"
+    ) {
       fetchQualificationData();
-
     }
+          // fetchQualificationData();
+
   }, [userDetails]);
 
   const saveProfie = async () => {
@@ -284,7 +286,11 @@ function UserProfileView({ userId = useParams().userId }) {
       setApproaching(false);
       console.log(approached);
 
-      if (approached &&(approached.user == userDetails._id && approached.job._id == job._id)) {
+      if (
+        approached &&
+        approached.user == userDetails._id &&
+        approached.job._id == job._id
+      ) {
         const response = await approachService.updateStatus({
           id: approached._id,
           status: "approached",
@@ -311,7 +317,6 @@ function UserProfileView({ userId = useParams().userId }) {
       setSaved(false);
       const response = await savedService.unsave(userDetails._id);
       console.log(response);
-      
     } catch (error) {
       console.error("Failed to unsave candidate", error);
     }
@@ -340,33 +345,35 @@ function UserProfileView({ userId = useParams().userId }) {
   }, []);
 
   const renderTabContent = () => {
-    if (loading.userDetails ||loading.posts) {
-      return  <div class="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
-      <svg
-        class="text-white animate-spin"
-        viewBox="0 0 64 64"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        width="50"
-        height="50"
-      >
-        <path
-          d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
-          stroke="currentColor"
-          stroke-width="5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        ></path>
-        <path
-          d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="text-gray-400"
-        ></path>
-      </svg>
-    </div>;
+    if (loading.userDetails || loading.posts) {
+      return (
+        <div class="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+          <svg
+            class="text-transparent animate-spin"
+            viewBox="0 0 64 64"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            width="50"
+            height="50"
+          >
+            <path
+              d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+              stroke="currentColor"
+              stroke-width="5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-gray-400"
+            ></path>
+          </svg>
+        </div>
+      );
     }
 
     switch (currentTab) {
@@ -395,9 +402,9 @@ function UserProfileView({ userId = useParams().userId }) {
       case "Posts":
         return (
           <Posts
-          className={"pb-8 "}
-          columns={"grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3"}
-          postClassName={"w-full"}
+            className={"pb-8 "}
+            columns={"grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3"}
+            postClassName={"w-full"}
             postData={postData}
             setPostData={setpostData}
             userDetails={userDetails}
@@ -424,7 +431,10 @@ function UserProfileView({ userId = useParams().userId }) {
               >
                 <div className="flex gap-2 ">
                   <UserImageInput
-                    image={userDetails.profileImage.compressedImage ||companyDefaultImage}
+                    image={
+                      userDetails.profileImage.compressedImage ||
+                      companyDefaultImage
+                    }
                     isEditable={false}
                     imageHeight={40}
                   />
@@ -497,15 +507,19 @@ function UserProfileView({ userId = useParams().userId }) {
     console.log(unfollowResponse);
   };
   return (
-    <div className=" flex gap-8 sm:p-10 sm:py-6 bg-gray-50  w-full justify-center">
+    <div className=" flex gap-8 sm:p-10 sm:py-6 bg-gray-50 h-full  w-full justify-center">
+      {showProfileImage && (
+          <div
+            onClick={() => setShowProfileImage(false)}
+            className="h-screen  w-full top-0 bg-white blur-lg  opacity-85 z-30 fixed"
+          ></div>
+        )}
       <div
         ref={profileRef}
         style={{
-          scrollbarWidth:"none"
+          scrollbarWidth: "none",
         }}
-        className={`${
-          !userId && "hidden"
-        }  w-full flex-1 transition-all  ${
+        className={`${!userId && "hidden"} max-w-2xl w-full flex-1 transition-all  ${
           approaching ? "overflow-y-hidden" : "overflow-y-auto"
         }  flex-grow sm:rounded-3xl ${showProfileImage && "pointer-events"}`}
       >
@@ -557,7 +571,7 @@ function UserProfileView({ userId = useParams().userId }) {
                   onClick={() => {
                     createApproach(job);
                   }}
-                  className="px-6 py-1 pb-1.5 mt-2 bg-blue-500 text-white font-medium rounded-full w-fit"
+                  className="px-6 py-1 pb-1.5 mt-2 bg-gray-800 text-white font-medium rounded-full w-fit"
                 >
                   Approach
                 </button>
@@ -565,12 +579,7 @@ function UserProfileView({ userId = useParams().userId }) {
             ))}
           </div>
         )}
-        {showProfileImage && (
-          <div
-            onClick={() => setShowProfileImage(false)}
-            className="h-screen -ml-[34px] w-full top-0 bg-white opacity-85 z-50 fixed"
-          ></div>
-        )}
+        
         <div className="flex relative  flex-wrap">
           <div
             className={` w-full border-t sm:rounded-t-3xl  fixed sm:sticky  sm:border-x  z-20 top-0   px-4 sm:px-6 py-4 sm:py-6 bg-white flex `}
@@ -602,17 +611,17 @@ function UserProfileView({ userId = useParams().userId }) {
           <div className="flex border-t sm:border-t-0 pt-8 pb-6 mt-10 sm:mt-0 flex-grow sm:border-x px-4 md:px-6 gap-3 bg-white justify-center flex-col">
             {loading.userDetails || !userDetails ? (
               <div className="animate-pulse mt-2">
-              <div className="flex  items-center">
-                <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
-                <div className=" w-32 ml-2">
-                  <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded-md mb-2 w-1/2"></div>
+                <div className="flex  items-center">
+                  <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
+                  <div className=" w-32 ml-2">
+                    <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded-md mb-2 w-1/2"></div>
+                  </div>
                 </div>
-              </div>
-              <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
-              <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
-              <div className="h-3 bg-gray-200 rounded-md mt-2 w-1/2"></div>
-              {/* <div className="flex  items-center mt-4">
+                <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
+                <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
+                <div className="h-3 bg-gray-200 rounded-md mt-2 w-1/2"></div>
+                {/* <div className="flex  items-center mt-4">
                 <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
                 <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
               </div>
@@ -621,11 +630,11 @@ function UserProfileView({ userId = useParams().userId }) {
                 <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
               </div> */}
 
-              <div className="flex mt-5">
-                <div className="h-3 w-20 bg-gray-200 rounded-md "></div>
-                <div className="h-3 w-20 bg-gray-200 rounded-md ml-2"></div>
+                <div className="flex mt-5">
+                  <div className="h-3 w-20 bg-gray-200 rounded-md "></div>
+                  <div className="h-3 w-20 bg-gray-200 rounded-md ml-2"></div>
+                </div>
               </div>
-            </div>
             ) : (
               <div className="mt-2 flex relative  flex-col ">
                 <div className="flex mb-4 mt-1  w-full gap-4  items-center">
@@ -711,13 +720,11 @@ function UserProfileView({ userId = useParams().userId }) {
                           </span>
                         )}{" "}
                         {latestEducation && (
-                              <span>
-                              {worksAt && "·"}
-                                {" "}
-                                Completed {latestEducation.course} from{" "}
-                                {latestEducation.university}
-                              </span>
-                            )}
+                          <span>
+                            {worksAt && "·"} Completed {latestEducation.course}{" "}
+                            from {latestEducation.university}
+                          </span>
+                        )}
                       </p>
                     </div>
                   )}
@@ -743,7 +750,7 @@ function UserProfileView({ userId = useParams().userId }) {
             {applications?.map((application) => {
               return (
                 application.user._id == userDetails._id && (
-                  <p className="text-sm bg-blue-50 px-4 py-1 rounded-md text-blue-500 w-fit">
+                  <p className="text-sm bg-blue-50 px-4 py-1 rounded-md text-gray-800 w-fit">
                     Applied for{" "}
                     <span className="font-medium">
                       {application.job.job_role}
@@ -765,9 +772,9 @@ function UserProfileView({ userId = useParams().userId }) {
                       onClick={() => {
                         unfollow();
                       }}
-                      className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center  border-blue-500 text-blue-500 border-2 py-1 rounded-full "
+                      className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center  border-gray-800 text-gray-800 border-2 py-1 rounded-full "
                     >
-                    Following
+                      Following
                     </button>
                   ) : (
                     <button
@@ -775,9 +782,9 @@ function UserProfileView({ userId = useParams().userId }) {
                       onClick={() => {
                         follow();
                       }}
-                      className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 py-1 rounded-full "
+                      className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-white bg-gray-800 sm:hover:bg-blue-600 py-1 rounded-full "
                     >
-                     Follow
+                      Follow
                     </button>
                   ))}
 
@@ -792,7 +799,7 @@ function UserProfileView({ userId = useParams().userId }) {
                       onClick={() => {
                         setApproaching((prev) => !prev);
                       }}
-                      className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5 items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 py-1 rounded-full"
+                      className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5 items-center justify-center text-white bg-gray-800 sm:hover:bg-blue-600 py-1 rounded-full"
                     >
                       Approach
                     </button>
@@ -822,9 +829,9 @@ function UserProfileView({ userId = useParams().userId }) {
                   ) : (
                     <button
                       onClick={() => saveProfie()}
-                      className="w-fit px-5 py-1 text-nowrap flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-blue-500 border-2 border-blue-500  sm:hover:bg-blue-50   rounded-full"
+                      className="w-fit px-5 py-1 text-nowrap flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-gray-800 border-2 border-gray-800    rounded-full"
                     >
-                      Save 
+                      Save
                     </button>
                   ))}
               </div>
@@ -832,16 +839,16 @@ function UserProfileView({ userId = useParams().userId }) {
           </div>
         </div>
         <div
-          className={`md:border-t sticky md:-top-px top-16 -mt-px  bg-white md:mb-4 z-20 transition-all ease-in-out `}
+          className={` sticky md:-top-px top-16 -mt-px  bg-white md:mb-4 z-20 transition-all ease-in-out `}
         >
           <div
             style={{
               overflowX: "auto",
               scrollbarWidth: "none",
             }}
-            className={`flex-grow z-20  max-w-full overflow-x-auto border-b  ${
-              atTop > 340 ? "rounded-t-3xl sm:border" : "sm:border-x "
-            } w-full   sm:top-0 gap-3 bg-white font-medium flex`}
+            className={`flex-grow z-20 absolute max-w-full overflow-x-auto border-b sm:border-x ${
+              atTop > 340 ? "sm:border-t sm:rounded-t-3xl" : ""
+            } w-full  sticky top-16 sm:top-0 gap-3 bg-white font-medium flex`}
           >
             <div className="flex w-full pt-1">
               {[
@@ -865,7 +872,7 @@ function UserProfileView({ userId = useParams().userId }) {
                       setTabIndex(index);
                     }}
                     className={` text-base  md:text-lg mb-1 truncate font-medium md:font-semibold cursor-pointer ${
-                      tab === currentTab ? "z-20 text-blue-500" : ""
+                      tab === currentTab ? "z-20 text-gray-800" : ""
                     } text-center py-2`}
                     style={{
                       width: `${100 / arr.length}%`,
@@ -895,13 +902,13 @@ function UserProfileView({ userId = useParams().userId }) {
                   ? "3"
                   : "4"
                 : "3"
-            } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute`}
+            } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-gray-800 absolute`}
           ></div>
         </div>
 
         <div>{renderTabContent()}</div>
       </div>
-      <div className="hidden sticky top-20 w-full max-w-lg flex-col gap-5 xl:flex">
+      {/* <div className="hidden sticky top-20 w-full max-w-lg flex-col gap-5 xl:flex">
         <div className="border bg-white p-4">
           <p className="text-xl font-semibold mb-5">Releated Accounts</p>
           <div className="flex gap-5 justify-between items-center">
@@ -912,13 +919,12 @@ function UserProfileView({ userId = useParams().userId }) {
                 <p className="text-gray-400">yogesh_gosavii</p>
               </div>
             </div>
-            <p className="bg-blue-500 h-fit rounded-full text-white font-medium px-3 py-1">
+            <p className="bg-gray-800 h-fit rounded-full text-white font-medium px-3 py-1">
               Follow
             </p>
           </div>
         </div>
-       
-      </div>
+      </div> */}
     </div>
   );
 }

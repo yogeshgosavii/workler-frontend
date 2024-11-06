@@ -82,11 +82,11 @@ const App = () => {
     }
   }, [location.pathname]);
   return (
-    <div className="relative flex flex-col sm:flex-row h-screen  text-gray-700">
-      <div className=" w-full h-full">
+    <div className="relative flex flex-col sm:flex-row h-screen w-full  text-gray-700">
+      <div className=" w-full h-full overflow-y-auto">
         <Header />
         <div
-          className={`flex-1  h-full w-full  overflow-y-auto  flex justify-center  ${
+          className={` h-screen w-full  overflow-auto  ${
             isAuthenticated && "pb-14 sm:pb-0 sm:pl-[63px]"
           } `}
         >
@@ -104,7 +104,7 @@ const App = () => {
           }}
           className={`w-1/5 h-full sm:w-fit    px-5 py-3 sm:py-5 text-center flex justify-center items-center ${
             activeTab === "home"
-              ? "text-blue-500  bg-blue-50"
+              ? "text-gray-800  bg-blue-50"
               : "text-gray-400 sm:hover:bg-gray-100"
           }`}
         >
@@ -154,7 +154,7 @@ const App = () => {
           }}
           className={`w-1/5 h-full sm:w-fit px-5 py-3 sm:py-5   text-center flex justify-center items-center ${
             activeTab === "search"
-              ? "text-blue-500 bg-blue-50"
+              ? "text-gray-800 bg-blue-50"
               : "text-gray-400 sm:hover:bg-gray-100"
           }`}
         >
@@ -180,7 +180,7 @@ const App = () => {
             }}
             className={`w-1/5 h-full sm:w-fit px-5 py-3 sm:py-5   text-center flex justify-center items-center ${
               activeTab === "manager"
-                ? "text-blue-500 bg-blue-50"
+                ? "text-gray-800 bg-blue-50"
                 : "text-gray-400 sm:hover:bg-gray-100"
             }`}
           >
@@ -228,7 +228,7 @@ const App = () => {
             }}
             className={`w-1/5 h-full sm:w-fit px-5 py-3 sm:py-5    text-center flex justify-center items-center ${
               activeTab === "job-applications"
-                ? "text-blue-500 bg-blue-50"
+                ? "text-gray-800 bg-blue-50"
                 : "text-gray-400 sm:hover:bg-gray-100"
             }`}
           >
@@ -274,11 +274,11 @@ const App = () => {
             navigate("/post");
           }}
           className={`w-1/5 sm:w-fit  text-center flex justify-center items-center ${
-            activeTab === "post" ? "text-blue-500" : "text-gray-500"
+            activeTab === "post" ? "text-gray-800" : "text-gray-500"
           }`}
         >
           <svg
-            className=" w-8 p-2 rounded-full  bg-blue-50 text-blue-500"
+            className=" w-8 p-2 rounded-full  bg-blue-50 text-gray-800"
             viewBox="0 0 24 24"
             strokeWidth="2"
             stroke="currentColor"
@@ -297,7 +297,7 @@ const App = () => {
           }}
           className={`w-1/5 h-full  sm:w-fit px-5 py-3 sm:py-5   relative   text-center flex justify-center items-center ${
             activeTab === "notifications"
-              ? "text-blue-500 bg-blue-50"
+              ? "text-gray-800 bg-blue-50"
               : "text-gray-400 sm:hover:bg-gray-100"
           }`}
         >
@@ -369,7 +369,7 @@ const App = () => {
           }}
           className={`w-1/5 h-full sm:w-full px-4 py-3 sm:py-5  relative   text-center flex justify-center items-center ${
             activeTab === "profile"
-              ? "text-blue-500 bg-blue-50"
+              ? "text-gray-800 bg-blue-50"
               : "text-gray-400 sm:hover:bg-gray-100"
           }`}
         >

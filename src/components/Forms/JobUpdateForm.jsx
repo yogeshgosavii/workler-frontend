@@ -333,7 +333,7 @@ function JobUpdateForm({ onClose,data, setData }) {
       </div>
       <div className="mt-10 flex gap-4 w-full justify-end">
         {/* <Button
-          className="bg-red-500 w-full text-white disabled:bg-blue-300"
+          className="bg-red-500 w-full text-white disabled:bg-gray-600"
           onClick={handleUpdateJob}
           disabled={!isFormValid || loading}
         >
@@ -360,7 +360,7 @@ function JobUpdateForm({ onClose,data, setData }) {
 
         {
           <Button
-            className="bg-blue-500 w-full text-lg flex items-center justify-center text-white disabled:bg-blue-300"
+            className="bg-gray-800 w-full text-lg flex items-center justify-center text-white disabled:bg-gray-600"
             onClick={handleUpdateJob}
             disabled={!isFormValid() || loading || data?.candidates_applied > 0}
           >

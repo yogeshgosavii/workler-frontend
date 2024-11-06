@@ -482,7 +482,7 @@ function EducationForm({ onClose, setData, data }) {
             </Button> */}
             <Button
               disabled={isSaveDisabled() || loading}
-              className="bg-blue-500 flex justify-center items-center text-lg w-full rounded-full text-white disabled:bg-blue-300"
+              className="bg-gray-800 flex justify-center items-center text-lg w-full rounded-full text-white disabled:bg-gray-600"
               onClick={onSave}
             >
               {loading ? (

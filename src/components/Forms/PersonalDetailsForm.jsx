@@ -220,7 +220,7 @@ function PersonalDetailsForm({ onClose, data, setData }) {
       <div className="mt-8 px-4 sm:px-8 flex w-full justify-end">
        
         <button
-          className="bg-blue-500 w-full py-2 text-lg flex items-center justify-center px-7 rounded-md font-semibold disabled:bg-blue-300 text-white"
+          className="bg-gray-800 w-full py-2 text-lg flex items-center justify-center px-7 rounded-md font-semibold disabled:bg-gray-600 text-white"
           disabled={!isFormValid()}
           onClick={handleSave}
         >

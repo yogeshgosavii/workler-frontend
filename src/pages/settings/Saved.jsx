@@ -627,7 +627,7 @@ function Saved() {
                 onClick={() => setSelectedTab(tab)}
                 className={`w-1/3 border cursor-pointer px-2 py-1 rounded-lg font-medium text-center ${
                   selectedTab === tab
-                    ? "border-blue-500 bg-blue-50 text-blue-500"
+                    ? "border-gray-800 bg-gray-800 text-white"
                     : ""
                 }`}
               >

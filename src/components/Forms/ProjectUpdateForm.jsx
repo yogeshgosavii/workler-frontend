@@ -261,7 +261,7 @@ function ProjectUpdateForm({ data, setData, onClose }) {
             Cancel
           </Button> */}
           <Button
-            className={`bg-blue-500 text-white disabled:bg-blue-300`}
+            className={`bg-gray-800 text-white disabled:bg-gray-600`}
             onClick={handleUpdateProject}
             disabled={!isFormValid() || loading}
           >

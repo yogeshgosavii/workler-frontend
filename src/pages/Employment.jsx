@@ -28,6 +28,9 @@ function Employment({ job, applications, approaches }) {
   const [qualification, setQualification] = useState(null);
   const [showInterviewForm, setShowInterviewForm] = useState(false);
   const [interviewList, setInterviewList] = useState();
+  const [interviewCreateLoading, setInterviewCreateLoading] = useState(false);
+
+  
   const profileService = useProfileApi();
   // const [applications, setApplications] = useState([]);
   const [interviewForm, setInterviewForm] = useState({
@@ -80,7 +83,7 @@ function Employment({ job, applications, approaches }) {
   const setupInterview = async (e) => {
     e.preventDefault();
     console.log(interviewForm, showInterviewForm);
-
+    setInterviewCreateLoading(true)
     const interview = await interviewService.createInterview({
       ...interviewForm,
       user: showInterviewForm.user._id,
@@ -100,6 +103,8 @@ function Employment({ job, applications, approaches }) {
       });
     }
     setShowInterviewForm(null);
+    setInterviewCreateLoading(false)
+    setInterviewList(prev => [...prev,interview])
     console.log(interview);
   };
 
@@ -177,7 +182,32 @@ function Employment({ job, applications, approaches }) {
   };
 
   const renderSkeleton = () => (
-    <div className="animate-pulse flex flex-col gap-4">Loading...</div>
+    <div class="grid min-h-[140px] w-full  h-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+      <svg
+        class="text-transparent animate-spin"
+        viewBox="0 0 64 64"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        width="50"
+        height="50"
+      >
+        <path
+          d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+          stroke="currentColor"
+          stroke-width="5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        ></path>
+        <path
+          d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="text-gray-400"
+        ></path>
+      </svg>
+    </div>
   );
 
   let content;
@@ -189,12 +219,12 @@ function Employment({ job, applications, approaches }) {
           {loading.approachList ? (
             renderSkeleton()
           ) : approaches.length > 0 ? (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col  gap-4">
               {approaches.map((approach) => (
                 <div
                   key={approach._id}
                   onClick={() => handleProfileSelect(approach.user._id)}
-                  className="border p-3 "
+                  className="border-b sm:border p-3 py-5 "
                 >
                   <div className="flex gap-4 mb-3">
                     <UserImageInput
@@ -206,7 +236,9 @@ function Employment({ job, applications, approaches }) {
                         {approach.user.personal_details.firstname}{" "}
                         {approach.user.personal_details.lastname}
                       </p>
-                      <p className="text-sm -mt-1 text-gray-400">{approach.user.username}</p>
+                      <p className="text-sm -mt-1 text-gray-400">
+                        {approach.user.username}
+                      </p>
 
                       {/* <p className="text-sm text-gray-400 truncate w-full text-wrap">
                         {approach.user.location.address}
@@ -223,16 +255,18 @@ function Employment({ job, applications, approaches }) {
                     </p>
                   ) : approach.status === "accepted" ? (
                     <div className="bg-gray-50 border gap-2 flex  justify-between items-center text-sm  rounded-lg text-gray-500">
-                      <p className=" px-4 font-medium truncate">Approach accepted</p>
+                      <p className=" px-4 font-medium truncate">
+                        Approach accepted
+                      </p>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           console.log("Hello");
                           setShowInterviewForm(approach);
                         }}
-                        className="bg-blue-500 border border-blue-500 h-full font-medium  truncate text-white px-3 py-2.5  rounded-e-lg"
+                        className="bg-gray-500 border border-gray-500 h-full font-medium  truncate text-white px-3 py-2.5  rounded-e-lg"
                       >
-                        Step up interview
+                        Set up interview
                       </button>
                     </div>
                   ) : approach.status === "interview_setup" ? (
@@ -286,7 +320,7 @@ function Employment({ job, applications, approaches }) {
                               )}
                               {interview.interview_mode == "Online" && (
                                 <div
-                                  className="relative"
+                                  className="relative w-12"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                   }}
@@ -296,7 +330,7 @@ function Employment({ job, applications, approaches }) {
                                     width="16"
                                     height="16"
                                     fill="currentColor"
-                                    class="bi bi-link-45deg"
+                                    class="bi bi-link-45deg h-full p-1 bg-white rounded-md  w-full"
                                     viewBox="0 0 16 16"
                                   >
                                     <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z" />
@@ -379,9 +413,7 @@ function Employment({ job, applications, approaches }) {
                         d="M6 2a1 1 0 00-1 1v14a1 1 0 001 1h12a1 1 0 001-1V7l-6-5H6z"
                       />
                     </svg>
-                    <p className="">
-                      {application.resume.fileName}
-                    </p>
+                    <p className="">{application.resume.fileName}</p>
                   </div>
 
                   <div className="flex gap-2 flex-wrap w-full  items-center justify-between">
@@ -538,7 +570,7 @@ function Employment({ job, applications, approaches }) {
               ))}
             </div>
           ) : (
-            <p className="text-center">No candidates yet</p>
+            <p className="text-center pt-5">No candidates yet</p>
           )}
         </div>
       );
@@ -549,9 +581,9 @@ function Employment({ job, applications, approaches }) {
   }
 
   return (
-    <div className="w-full flex gap-4 px-4 ">
+    <div className="w-full flex gap-4  sm:max-w-lg">
       {/* {showInterviewForm && ( */}
-      <div className=" fixed h-fit -mx-4 sm:-mx-8 z-50 -mt-5">
+      <div className=" fixed h-fit sm:left-[69px] left-0   z-50 -mt-5">
         {showInterviewForm && (
           <div
             onClick={() => setShowInterviewForm(null)}
@@ -606,6 +638,7 @@ function Employment({ job, applications, approaches }) {
                   interview_mode: e.target.value,
                 }));
               }}
+              initialValue="Select interview mode"
               options={["In-person", "Online", "Phone call"]}
               placeholder={"Mode of Interview"}
             />
@@ -626,7 +659,7 @@ function Employment({ job, applications, approaches }) {
                     interview_link: e.target.value,
                   }));
                 }}
-                placeholder={"Meet link"}
+                placeholder={"Enter your meet link"}
               />
             )}
             {interviewForm.interview_mode == "In-person" && (
@@ -655,18 +688,29 @@ function Employment({ job, applications, approaches }) {
             )}
             <div className="mt-4">
               <button
+              disabled = {interviewCreateLoading}
                 type="submit"
-                className="bg-blue-500 font-medium text-white px-4 py-2 rounded-md"
+                className="bg-gray-800 disabled:bg-gray-600 w-full font-medium text-white px-4 py-3 rounded-md"
               >
-                Confirm Interview
+                {interviewCreateLoading ? (
+                  <div className='flex items-center justify-center gap-5'> 
+        
+                    <svg className="inline w-6 h-6 text-transparent animate-spin fill-white" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                      <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                    </svg>
+                  </div>
+                ) : (
+                  "Create Interview"
+                )}
               </button>
             </div>
           </form>
         </div>
       </div>
       {/* )} */}
-      <div className=" w-full">
-        <div className="flex flex-col mb-5 fixed left-0 z-40  md:-mt-0  -mt-6 w-full sm:static p-4 bg-gray-50">
+      <div className=" w-full sm:pr-5">
+        <div className="flex flex-col mb-5 fixed left-0 z-40  md:-mt-0  -mt-6 w-full sm:static p-4 border sm:rounded-xl bg-gray-50">
           <p className="font-medium">{job?.job_role}</p>
           <p className="text-xs truncate text-wrap max-w-full">
             {job?.location.address}
@@ -675,18 +719,16 @@ function Employment({ job, applications, approaches }) {
             <div className="flex gap-4 ">
               <p
                 onClick={() => setInnerTab("approach")}
-                className={`px-2 py-1 rounded-md  bg-white border ${
-                  innerTab === "approach" &&
-                  "bg-blue-50 border-blue-500 text-blue-500"
+                className={`px-3 cursor-pointer py-1.5 rounded-md border bg-gray-50   ${
+                  innerTab === "approach" ? "shadow-inner bg-white font-medium  border-gray-200 ":"border-gray-50"
                 }`}
               >
                 Approaches
               </p>
               <p
                 onClick={() => setInnerTab("applications")}
-                className={`px-2 py-1 bg-white border rounded-md ${
-                  innerTab === "applications" &&
-                  "bg-blue-50 border-blue-500  text-blue-500"
+                className={`px-3 cursor-pointer py-1.5  rounded-md border  ${
+                  innerTab === "applications" ? "shadow-inner font-medium bg-white   border-gray-200 ":"border-gray-50"
                 }`}
               >
                 Applications
@@ -695,7 +737,7 @@ function Employment({ job, applications, approaches }) {
           </div>
         </div>
 
-        <div className="mt-32 min-w-full md:mt-0">{content}</div>
+        <div className="mt-24  w-full sm:mt-0">{content}</div>
       </div>
     </div>
   );

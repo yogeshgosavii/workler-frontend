@@ -41,9 +41,9 @@ function UserHome() {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="w-full flex flex-col bg-gray-50">
+    <div className="w-full flex flex-col bg-gray-50 h-dvh ">
       <div
-        className={` px-4 sm:px-10  flex gap-4  sm:ml-1.5  w-full sm:w-[99%]  py-4  z-50 bg-white   top-0  ${
+        className={` px-4 sm:px-10 sticky  flex gap-4  sm:ml-1.5  w-full sm:w-[99%]  py-4  z-50 bg-white   top-0  ${
           selectedPost && "hidden sm:block"
         }`}
       >
@@ -52,19 +52,19 @@ function UserHome() {
             key={type}
             onClick={() => setSelectedType(type)}
             className={`${
-              selectedType === type ? "bg-blue-50  border-blue-500 text-blue-500 " : ""
+              selectedType === type ? "bg-gray-800 border-gray-800 text-white " : ""
             } px-4 py-1 border cursor-pointer text-sm rounded-lg font-medium`}
           >
             {type}
           </p>
         ))}
       </div>
-      <div className="flex overflow-y-auto flex-1 justify-center  gap-4">
+      <div className="flex overflow-y-auto  h-full flex-1 justify-center  gap-4">
         {loading ? (
           <div className=" pb-14">
-            <div class="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+            <div class="grid min-h-[140px] w-full  h-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
               <svg
-                class="text-white animate-spin"
+                class="text-transparent animate-spin"
                 viewBox="0 0 64 64"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -91,7 +91,7 @@ function UserHome() {
           </div>
         ) : (
           <div
-            className={`  w-full sm:pt-5 mb-10 justify-center flex ${
+            className={`  w-full sm:pt-5 mb-10  justify-center flex ${
               selectedPost && "hidden sm:block"
             }`}
           >

@@ -426,7 +426,7 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
           </Button> */}
           <Button
             disabled={!isFormValid() || loading}
-            className="bg-blue-500 w-full text-lg flex justify-center items-center rounded-full text-white disabled:bg-blue-300 disabled:cursor-not-allowed"
+            className="bg-gray-800 w-full text-lg flex justify-center items-center rounded-full text-white disabled:bg-gray-600 disabled:cursor-not-allowed"
             onClick={onSave}
           >
             {

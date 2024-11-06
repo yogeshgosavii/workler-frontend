@@ -73,9 +73,9 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
         />
 
         {/* Job Details */}
-        <div className="flex-1 flex flex-col ">
+        <div className="flex-1 flex flex-col overflow-x-hidden ">
           <div className="flex justify-between items-center">
-            <h2 className="text-[23px] font-semibold leading-[27px] -mt-1 text-black">
+            <h2 className="text-[23px] truncate text-wrap line-clamp-2 max-w-full font-semibold leading-[27px] -mt-1 text-black">
               {job.job_role}
             </h2>
           </div>
@@ -199,7 +199,7 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
         <div className="flex gap-2   font-medium text-lg rounded-lg items-center">
           {job.currency_type == "$" || job.currency_type == "USD" ? (
             <svg
-              class="h-6 w-6 text-blue-500"
+              class="h-6 w-6  text-blue-500"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -241,7 +241,7 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
                 }`
               : "Not disclosed"}
             {(job.min_salary || job.max_salary) && job.salary_type && (
-              <span className="text-gray-400 font-normal ml-2">
+              <span className="text-gray-400 truncate   text-wrap  font-normal ml-2">
                 per {job.salary_type}
               </span>
             )}

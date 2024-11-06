@@ -13,7 +13,7 @@ import {
   getLikesByPostId,
   getPostById,
 } from "../services/postService";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import savedService from "../services/savedService";
 import UserPostUpdateSettings from "./UserPostUpdateSettings";
 import PostMentionList from "./PostMentionList";
@@ -31,6 +31,7 @@ function PostView({ postId = useParams().postId, index, className }) {
   const [post, setPost] = useState();
   const sendBtnRef = useRef(null);
   const currentUser = useSelector((state) => state.auth.user);
+  const navigate = useNavigate()
   console.log(post);
 
   useEffect(() => {
@@ -120,12 +121,12 @@ function PostView({ postId = useParams().postId, index, className }) {
   };
   return (
     <div
-      className={`${className}  flex justify-center  h-screen w-screen max-w-screen-lg  gap-8 `}
+      className={`${className}  flex justify-center bg-gray-50   h-full min-h-screen    gap-8 `}
     >
       {post && (
         <div
           key={index}
-          className="w-full sm:w-1/2 relative sm:border-x h-fit bg-white border-gray-300 "
+          className="w-full sm:max-w-lg relative sm:border-x h-fit bg-white border-gray-300 "
         >
           <UserPostUpdateSettings
             setPostSetting={setPostSettings}
@@ -141,7 +142,7 @@ function PostView({ postId = useParams().postId, index, className }) {
             Post
           </p>{" "}
           <div className="flex items-center px-4 justify-between">
-            <div className="flex gap-4 items-center">
+            <div onClick={()=>{navigate("/user/"+post?.user._id)}} className="flex gap-4 items-center">
               <UserImageInput
                 className="w-[35px] -mt-1 h-[35px] rounded-full"
                 imageHeight={40}
@@ -283,7 +284,7 @@ function PostView({ postId = useParams().postId, index, className }) {
           {post.post_type !== "job" && (
             <div
               style={{ overflowX: "auto", scrollbarWidth: "none" }}
-              className="mt-2 px-4 flex flex-col transition-all duration-300 overflow-x-auto flex-1"
+              className="mt-2 px-4 flex flex-col  transition-all duration-300 overflow-x-auto flex-1"
             >
               {/* {post.images && (
                 <ImageCarousel
@@ -297,13 +298,12 @@ function PostView({ postId = useParams().postId, index, className }) {
               {post.images && (
                 <div
                   style={{ overflowX: "auto", scrollbarWidth: "none" }}
-                  className="mt-2 flex mb-4 flex-col relative w-full  transition-all  duration-300 overflow-x-auto flex-1"
-                >
+                  className="mt-2 flex mb-4 flex-col  relative h-full w-full  transition-all  duration-300 overflow-x-auto flex-1"                >
                   {post.images && (
                     <ImageCarousel
                       dots={false}
                       edges=""
-                      className="h-full  flex-grow w-full "
+                      className="h-full flex-grow w-full "
                       gap={2}
                       images={post.images?.originalImage}
                     />
@@ -707,7 +707,7 @@ function PostView({ postId = useParams().postId, index, className }) {
           </div>
         </div>
       )}
-      <div className="hidden sticky top-20 w-full mt-5 max-w-sm flex-col gap-5 lg:flex">
+      {/* <div className="hidden sticky top-20 w-full mt-5 max-w-sm flex-col gap-5 lg:flex">
         <div className="border rounded-lg p-4">
           <p className="text-xl font-semibold mb-5">Releated Accounts</p>
           <div className="flex gap-5 justify-between items-center">
@@ -726,7 +726,7 @@ function PostView({ postId = useParams().postId, index, className }) {
         <div className="border p-4 rounded-lg">
           <p className="text-xl font-semibold">Similar Jobs</p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -652,7 +652,7 @@ const UserProfile = () => {
                 onClick={() => {
                   setshowProfileImage(false);
                 }}
-                className={`h-screen  w-full top-0 bg-black opacity-70  z-50 absolute `}
+                className={`h-screen  w-full top-0 bg-black opacity-70 max-w-3xl  z-50 absolute `}
               ></div>
             )}
             <div className="flex gap-4  max-h-min flex-wrap ">
@@ -873,7 +873,7 @@ const UserProfile = () => {
                         <div className=" mt-4 order-last ">
                           <div className="flex gap-1 max-w-full flex-wrap ">
                             {user.tags?.map((tag) => (
-                              <p className="flex rounded-md w-fit px-px  text-blue-500 text-nowrap">
+                              <p className="flex rounded-md w-fit px-px  text-gray-800 text-nowrap">
                                 #{tag}
                               </p>
                             ))}
@@ -896,7 +896,7 @@ const UserProfile = () => {
               </div>
             </div>
             <div
-              className={`sticky w-full top-16 md:top-0 md:mb-4 z-20 transition-all ease-in-out bg-white ${
+              className={`sticky w-full top-16 md:top-0 md:mb-4 z-20 transition-all ease-in-out bg-gray-50 ${
                 atTop < 340 ? "pt-0" : "md:pt-[25px]"
               }`}
             >
@@ -923,7 +923,7 @@ const UserProfile = () => {
                           settabIndex(index);
                         }}
                         className={` text-base  md:text-lg mb-1 truncate font-medium md:font-semibold cursor-pointer ${
-                          tab === currentTab ? "z-20 text-blue-500" : ""
+                          tab === currentTab ? "z-20 text-gray-800" : ""
                         } text-center py-2`}
                         style={{
                           width: `${
@@ -946,7 +946,7 @@ const UserProfile = () => {
                   }}
                   className={`w-1/${
                     user.account_type === "Employeer" ? "4" : "3"
-                  } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute`}
+                  } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-gray-800 absolute`}
                 ></div>
               </div>
             </div>

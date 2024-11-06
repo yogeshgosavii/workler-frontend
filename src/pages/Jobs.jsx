@@ -97,7 +97,7 @@ function Jobs() {
   };
 
   return (
-    <div className={`flex flex-col  w-full  gap-10`}>
+    <div className={`flex flex-col bg-gray-50  w-full  gap-10`}>
       {searchFocus && (
         <div className="bg-black z-10 opacity-30 h-full sm:-ml-6 w-full absolute"></div>
       )}
@@ -108,8 +108,8 @@ function Jobs() {
           onSubmit={handleSearchSubmit}
           className={`flex w-screen ${
             !isAuthenticated && "sm:max-w-lg"
-          } bg-blue-50   justify-center  sm:justify-start py-3 ${
-            isAuthenticated ? "bg-white" : "bg-transparent"
+          }   justify-center  sm:justify-start py-3 ${
+            isAuthenticated ? "  bg-gray-50" : "bg-transparent"
           } px-4 sm:px-0 ${
             !isAuthenticated ? "sm:ml-44" : "sm:ml-8 ml-0"
           }   left-0 relative -mt-6`}
@@ -121,7 +121,7 @@ function Jobs() {
             onBlur={() => setSearchFocus(false)}
             ref={searchRef}
             inputClassName=""
-            className={`sticky transition-all ${isAuthenticated &&"sm:shadow-md"} mt-6 sm:ml-0   sm:max-w-[250px] flex items-center md:max-w-[350px] lg:max-w-md z-10 bg-white w-full ${
+            className={`sticky px-4 rounded-xl transition-all ${isAuthenticated &&"sm:shadow-md"} mt-6 sm:ml-0   sm:max-w-[250px] flex items-center md:max-w-[350px] lg:max-w-md z-10 bg-white w-full ${
               !isAuthenticated ? "w-[100%]" : ""
             } caret-blue-500 h-12  `}
             placeholder="Enter the job title or domain"
@@ -150,7 +150,7 @@ function Jobs() {
         {/* Left Sidebar (JobFilter) */}
         <div
           className={`flex justify-center overflow-x-hidden  mr- sm:mr-6 md:mr-0 sm:px-0 w-full mt-4 ${
-            isAuthenticated ? " pt-16" : " ml-9 pt-16 sm:pt-24"
+            isAuthenticated ? " pt-16" : " sm:ml-9 pt-16 sm:pt-24"
           } sm:pr-10 pb-10 sm:gap-10`}
         >
           <div

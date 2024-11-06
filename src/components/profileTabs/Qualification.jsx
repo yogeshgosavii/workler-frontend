@@ -41,7 +41,7 @@ function Qualification({
 
   const Section = ({ id, title, content, loading, onAdd }) =>
     (isEditable || (!isEditable && content != "")) && (
-      <div className={`flex  bg-white flex-col pb-6  sm:mt-3 `}>
+      <div className={`flex    flex-col sm:mt-3 `}>
         <div className="flex justify-between items-center px-4 py-3 bg-gray-50 shadow-inner border w-full">
           <p className="text-xl font-medium   ">{title}</p>
           {onAdd && isEditable && (
@@ -63,7 +63,7 @@ function Qualification({
             <div className="h-2 bg-gray-200 w-1/4 rounded-md mb-2"></div>
           </div>
         ) : (
-          <div className="px-4">{content}</div>
+          <div className="p-4 sm:border sm:mt-5 bg-white">{content}</div>
         )}
       </div>
     );
@@ -75,11 +75,11 @@ function Qualification({
         title: "Skills",
         content:
           skillData?.length === 0 ? (
-            <p className="text-sm text-gray-400 mt-4">
+            <p className="text-sm text-gray-400">
               Adding the skills helps recruiters know your most useful work
             </p>
           ) : (
-            <div className="flex gap-2 mt-3 flex-wrap">
+            <div className="flex gap-2 flex-wrap">
               {skillData?.map((data, index) => (
                 <div
                   key={index}
@@ -109,7 +109,7 @@ function Qualification({
         title: "Education",
         content:
           educationData?.length === 0 ? (
-            <p className="text-sm text-gray-400 mt-4">
+            <p className="text-sm text-gray-400 ">
               Adding education or course type helps recruiters know your
               educational background
             </p>
@@ -192,7 +192,7 @@ function Qualification({
         content:
           workExperienceData?.length === 0 ? (
             isEditable ? (
-              <p className="text-sm text-gray-400 mt-4">
+              <p className="text-sm text-gray-400 ">
                 Adding work experience helps recruiters know about your previous
                 work experience
               </p>
@@ -240,11 +240,11 @@ function Qualification({
         title: "Projects",
         content:
           projectData?.length === 0 ? (
-            <p className="text-sm text-gray-400 mt-4">
+            <p className="text-sm text-gray-400 ">
               Adding projects helps recruiters know about your previous projects
             </p>
           ) : (
-            <div className="flex flex-col gap-3 mt-4">
+            <div className="flex flex-col gap-3">
               {projectData?.map((data, index) => {
                 const formattedStartDate = data.start_date
                   ? format(new Date(data.start_date), "MMMM yyyy")

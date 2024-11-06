@@ -35,6 +35,8 @@ import Saved from "./pages/settings/Saved.jsx";
 import Preferences from "./pages/settings/Preferences.jsx";
 import AccountSettings from "./pages/settings/AccountSettings";
 import Settings from "./pages/settings/Settings.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 
 const router = createBrowserRouter([
   {
@@ -120,6 +122,10 @@ const router = createBrowserRouter([
       // },
     ],
   },
+  { path: "/forgot-password", element: <ForgotPassword/> }, 
+
+  { path: "/password-reset/:token", element: <ResetPassword /> }, 
+
   { path: "/jobs/:jobId", element: <JobProfile /> },
 
   {
@@ -206,7 +212,7 @@ const router = createBrowserRouter([
       </LoginVerification>
     ),
   },
-  { path: "*", element: <NotFound /> },
+  // { path: "*", element: <NotFound /> },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

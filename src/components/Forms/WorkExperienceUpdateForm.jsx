@@ -464,7 +464,7 @@ function WorkExperienceUpdateForm({ onClose, data, setData }) {
         <Button
           variant="primary"
           size="md"
-          className="bg-blue-500 disabled:bg-blue-300 text-white"
+          className="bg-gray-800 disabled:bg-gray-600 text-white"
           type="submit"
           disabled={isFormValid() || loading}
         >

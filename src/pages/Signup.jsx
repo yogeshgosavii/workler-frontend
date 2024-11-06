@@ -186,34 +186,30 @@ function Signup() {
 
       try {
         setemailChecking(true);
-        const response = await fetch(
-          "https://workler-backend.vercel.app/api/auth/check-email",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ email: emailInput.value }),
-          }
-        );
+        const response = await authService.checkEmail(emailInput.value)
+        // console.log(response);
+        
+        const data = response;
 
-        if (response.ok) {
-          const data = await response.json();
+        if (!data.exists) {
+          // const data = await response.json();
           console.log(data);
 
-          if (!data.exists) {
-            document.getElementById("error").classList.add("invisible");
-            const otp = Math.floor(100000 + Math.random() * 900000); // Generate a random 6-digit OTP
-            console.log("otp : ", otp);
-            setotpValue(otp);
+          // if (!data.exists) {
+          //   document.getElementById("error").classList.add("invisible");
+          //   const otp = Math.floor(100000 + Math.random() * 900000); // Generate a random 6-digit OTP
+          //   console.log("otp : ", otp);
+            setotpValue(data.otp);
             setemail(emailInput.value);
             setotpInput(true);
-          } else {
-            setErrorMessage("Email already exists");
-            console.log("Email already exists");
-          }
+          // } else {
+          //   setErrorMessage("Email already exists");
+          //   console.log("Email already exists");
+          // }
         } else {
-          const errorMessage = await response.text();
+                setErrorMessage("Email already exists");
+            console.log("Email already exists");
+          const errorMessage = "Failed to send email";
           console.error("Error checking email:", errorMessage);
         }
       } catch (error) {
@@ -303,7 +299,7 @@ function Signup() {
           className={` w-full  sm:border px-6 sm:shadow-xl  sm:p-10 max-w-sm flex  flex-col  `}
         >
           <div className="w-full flex justify-center  py-2 mt-5 sm:mt-0 px-6">
-            <Logo className={"text-6xl p-4 px-5"} />
+            <Logo className={"size-24"} />
           </div>
           <div className=" text-center mt-4 w-full">
             <p className="text-2xl font-semibold text-gray-800 ">Hello User 👋</p>
@@ -311,17 +307,10 @@ function Signup() {
               Enter you email address to get started
             </p>
           </div>
-          <p
-            id="error"
-            className={`text-red-500 px-2 mt-1 w-fit rounded-sm text-sm bg-red-50 transition-opacity duration-300 ${
-              errorMessage ? "opacity-100 visible" : "opacity-0 invisible"
-            }`}
-          >
-            {errorMessage}
-          </p>
+         
 
           <div
-            className={`flex flex-col mt-5 w-full ${
+            className={`flex flex-col mt-8 w-full ${
               otpInput ? "hidden" : null
             }`}
           >
@@ -355,7 +344,7 @@ function Signup() {
                     <img src={verifiedIcon} className="h-8 w-8" alt="" />
                   ) : (
                     <p
-                      className="text-blue-500 cursor-pointer font-medium flex items-center my-1   "
+                      className="text-gray-800 cursor-pointer font-medium flex items-center my-1   "
                       onClick={(e) => {
                         verifyEmail();
                       }}
@@ -384,6 +373,14 @@ function Signup() {
               </div>
             </div>
           </div>
+          <p
+            id="error"
+            className={`text-red-500 px-2 mt-1 w-fit rounded-sm text-sm  transition-opacity duration-300 ${
+              errorMessage ? "opacity-100 visible" : "opacity-0 invisible"
+            }`}
+          >
+            {errorMessage}
+          </p>
           {purpose && (
             <OptionInput
               placeholder={"Purpose"}
@@ -416,7 +413,7 @@ function Signup() {
               setNext(true);
             }}
             disabled={!verified || !userData.account_type}
-            className="w-full flex justify-center mt-8 duration-200 font-semibold text-lg  text-white bg-blue-500 disabled:bg-blue-300"
+            className="w-full flex justify-center mt-8 duration-200 font-semibold text-lg  text-white bg-gray-800 disabled:bg-gray-600"
           >
             {loader ? (
               <svg
@@ -443,7 +440,7 @@ function Signup() {
             Already have an account?{" "}
             <Link
               to={"/login"}
-              className="text-blue-500 font-semibold cursor-pointer"
+              className="text-gray-800 font-semibold cursor-pointer"
             >
               Login
             </Link>
@@ -504,7 +501,7 @@ function Signup() {
                 />
                 <label
                   htmlFor="username"
-                  className="absolute duration-200 cursor-text px-2 text-gray-400 bg-white font-normal transform -translate-y-5 scale-90 top-2 z-10 peer-focus:px-2 peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-90 peer-focus:-translate-y-5 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                  className="absolute duration-200 cursor-text px-2 text-gray-400 bg-white font-normal transform -translate-y-5 scale-90 top-2 z-10 peer-focus:px-2 peer-focus:text-gray-800 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-90 peer-focus:-translate-y-5 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
                 >
                   User name
                 </label>
@@ -789,7 +786,7 @@ function Signup() {
         </div>
         <Button
           type="submit"
-          className={`flex items-center text-xl justify-center   bg-blue-500 text-white py-2  rounded disabled:opacity-50 mt-6 ${
+          className={`flex items-center text-xl justify-center   bg-gray-800 text-white py-2  rounded disabled:opacity-50 mt-6 ${
             userNameAvailable
               ? "-translate-y-0"
               : userData.account_type == "Candidate"
@@ -823,7 +820,7 @@ function Signup() {
           Already have an account?{" "}
           <Link
             to={"/login"}
-            className="text-blue-500 font-semibold cursor-pointer"
+            className="text-gray-800 font-semibold cursor-pointer"
           >
             Login
           </Link>
@@ -834,7 +831,7 @@ function Signup() {
         Already have an account?{" "}
         <Link
           to={"/login"}
-          className="text-blue-500 font-semibold cursor-pointer"
+          className="text-gray-800 font-semibold cursor-pointer"
         >
           Login
         </Link>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  deleteNotification,
   getUserNotifications,
   markNotificationAsRead,
 } from "../services/notificationService";
@@ -9,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 
 function Notification({ userId }) {
   const [notifications, setNotifications] = useState([]);
+  const [notificationSettings, setNotificationSettings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -64,15 +66,72 @@ function Notification({ userId }) {
   };
 
   return (
-    <div className="text-start w-full h-full relative  max-w-xl">
-      <p className="text-2xl w-full font-bold px-4 md:px-6 absolute  -top-0 bg-white z-40 py-4 ">
+    <div className=" flex flex-col bg-gray-50 h-dvh items-center w-full sm:pl-1.5">
+      <p className="text-2xl  font-bold border-x px-4 w-full  sticky max-w-xl  -top-0 bg-white z-40 py-4 ">
         Notifications
       </p>
+      <div>
+        <div className="fixed h-fit left-0 top-0  z-50">
+          {notificationSettings && (
+            <div
+              onClick={() => {
+                setNotificationSettings(null);
+                setSelectMentions(null);
+              }}
+              className={`w-screen h-screen bg-black transition-opacity ${
+                notificationSettings ? "opacity-50" : "opacity-0"
+              }`}
+            ></div>
+          )}
+          <div
+            className={`fixed w-full z-50 p-4 md:p-6 sm:max-w-sm transition-transform transform ${
+              notificationSettings ? "translate-y-0" : "translate-y-full"
+            } bottom-0 md:top-1/2 sm:left-[52%] h-fit md:-translate-x-1/2 md:-translate-y-1/2 ${
+              !notificationSettings && "md:hidden"
+            } bg-white border pt-5 shadow-xl`}
+          >
+            <p className="text-xl font-semibold mb-5">Notifications options</p>
+
+            {true && (
+              <div
+                onClick={() => {
+                  setNotifications(
+                    notifications.filter(
+                      (notification) =>
+                        notification._id != notificationSettings._id
+                    )
+                  );
+
+                  deleteNotification(notificationSettings._id);
+                  setNotificationSettings(null);
+                }}
+                className="flex gap-5 text-red-500 py-3 text-lg font-medium items-center cursor-pointer"
+              >
+                <svg
+                  className="h-6 w-6"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <polyline points="3 6 5 6 21 6" />
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  <line x1="10" y1="11" x2="10" y2="17" />
+                  <line x1="14" y1="11" x2="14" y2="17" />
+                </svg>
+                <p>Delete notification</p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
       {loading ? (
         <div class="grid min-h-[140px]  h-full w-full justify-center pt-16 overflow-x-scroll   lg:overflow-visible">
           <svg
-            class="text-white animate-spin"
+            class="text-transparent animate-spin"
             viewBox="0 0 64 64"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -99,11 +158,11 @@ function Notification({ userId }) {
       ) : error ? (
         <p className="text-red-500 px-4 md:px-6">{error}</p>
       ) : notifications.length === 0 ? (
-        <p className="text-gray-400 sm:border-x pt-16 sm:h-full px-4 md:px-6">
+        <p className="text-gray-400  pt-16 sm:h-full h-fit px-4 md:px-6">
           No notifications yet
         </p>
       ) : (
-        <ul className=" overflow-y-auto h-full  mt-16  pb-20 sm:pb-0">
+        <ul className=" overflow-y-auto w-full h-full bg-white  max-w-xl  border-x   pb-20 sm:pb-0">
           {notifications.map((notification, index, arr) => (
             <li
               key={notification._id}
@@ -115,7 +174,7 @@ function Notification({ userId }) {
                   notification.notificationType == "comment" ||
                   notification.notificationType == "like"
                 ) {
-                  navigate("/post/" + notification.populatedContent[0]._id);
+                  navigate("/post/" + notification?.populatedContent[0]._id);
                 } else if (notification.notificationType == "reply") {
                   navigate("/post/" + notification.populatedContent[0].post);
                 } else if (notification.notificationType == "approach") {
@@ -132,36 +191,102 @@ function Notification({ userId }) {
                 notification.read
                   ? "bg-white"
                   : notification.notificationType == "like"
-                  ? "bg-red-50 border-red-500"
-                  : notification.notificationType == "comment" || notification.notificationType == "reply"
-                  ? "bg-indigo-50 border-indigo-500"
-                    : notification.notificationType == "approach"
-                  ? "bg-blue-50 border-blue-500"
+                  ? "bg-red-50 "
+                  : notification.notificationType == "comment" ||
+                    notification.notificationType == "reply"
+                  ? "bg-indigo-50 "
+                  : notification.notificationType == "approach"
+                  ? "bg-blue-50 "
                   : "bg-gray-50"
               }`}
             >
               <div className="flex gap-4  h-full  ">
-                <UserImageInput
-                  imageHeight={40}
-                  className={"mt-0.5 justify-self-start"}
-                  image={
-                    notification.relatedUser?.profileImage?.compressedImage
-                  }
-                  isEditable={false}
-                />
+                <div className="relative">
+                  <UserImageInput
+                    imageHeight={40}
+                    className={"mt-0.5 justify-self-start"}
+                    image={
+                      notification.relatedUser?.profileImage?.compressedImage
+                    }
+                    isEditable={false}
+                  />
+                  <div className="absolute -top-1 bg-white rounded-full border p-1 -right-2">
+                    {notification.notificationType == "like" ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="size-3 text-red-500"
+                      >
+                        <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                      </svg>
+                    ) : notification.notificationType == "comment" ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="size-3 text-indigo-500"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97-1.94.284-3.916.455-5.922.505a.39.39 0 0 0-.266.112L8.78 21.53A.75.75 0 0 1 7.5 21v-3.955a48.842 48.842 0 0 1-2.652-.316c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97Z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    ) : notification.notificationType == "reply" ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="size-6 text-indigo-800"
+                      >
+                        <path d="M4.913 2.658c2.075-.27 4.19-.408 6.337-.408 2.147 0 4.262.139 6.337.408 1.922.25 3.291 1.861 3.405 3.727a4.403 4.403 0 0 0-1.032-.211 50.89 50.89 0 0 0-8.42 0c-2.358.196-4.04 2.19-4.04 4.434v4.286a4.47 4.47 0 0 0 2.433 3.984L7.28 21.53A.75.75 0 0 1 6 21v-4.03a48.527 48.527 0 0 1-1.087-.128C2.905 16.58 1.5 14.833 1.5 12.862V6.638c0-1.97 1.405-3.718 3.413-3.979Z" />
+                        <path d="M15.75 7.5c-1.376 0-2.739.057-4.086.169C10.124 7.797 9 9.103 9 10.609v4.285c0 1.507 1.128 2.814 2.67 2.94 1.243.102 2.5.157 3.768.165l2.782 2.781a.75.75 0 0 0 1.28-.53v-2.39l.33-.026c1.542-.125 2.67-1.433 2.67-2.94v-4.286c0-1.505-1.125-2.811-2.664-2.94A49.392 49.392 0 0 0 15.75 7.5Z" />
+                      </svg>
+                    ) : notification.notificationType == "approach" ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="size-6 text-blue-500"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M7.5 5.25a3 3 0 0 1 3-3h3a3 3 0 0 1 3 3v.205c.933.085 1.857.197 2.774.334 1.454.218 2.476 1.483 2.476 2.917v3.033c0 1.211-.734 2.352-1.936 2.752A24.726 24.726 0 0 1 12 15.75c-2.73 0-5.357-.442-7.814-1.259-1.202-.4-1.936-1.541-1.936-2.752V8.706c0-1.434 1.022-2.7 2.476-2.917A48.814 48.814 0 0 1 7.5 5.455V5.25Zm7.5 0v.09a49.488 49.488 0 0 0-6 0v-.09a1.5 1.5 0 0 1 1.5-1.5h3a1.5 1.5 0 0 1 1.5 1.5Zm-3 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
+                          clip-rule="evenodd"
+                        />
+                        <path d="M3 18.4v-2.796a4.3 4.3 0 0 0 .713.31A26.226 26.226 0 0 0 12 17.25c2.892 0 5.68-.468 8.287-1.335.252-.084.49-.189.713-.311V18.4c0 1.452-1.047 2.728-2.523 2.923-2.12.282-4.282.427-6.477.427a49.19 49.19 0 0 1-6.477-.427C4.047 21.128 3 19.852 3 18.4Z" />
+                      </svg>
+                    ) : null}
+                  </div>
+                </div>
                 <div className="h-full  w-full flex flex-col ">
                   <p>
                     <span className="font-medium">
                       {notification.relatedUser.username}{" "}
                     </span>
-                    <span className="text-gray-400 ">
+                    <span className="text-gray-400 text-sm">
                       {" "}
                       <span className="font-bold">·</span>{" "}
                       {formatNotificationDate(notification.createdAt)}
                     </span>
                   </p>
                   <div className="w-full ">
-                    <p className=" text-gray-400  h-full ">
+                    <p
+                      className={` ${
+                        notification.read
+                          ? "text-gray-400"
+                          : notification.notificationType == "like"
+                          ? "text-red-400"
+                          : notification.notificationType == "comment"
+                          ? "text-indigo-500"
+                          : notification.notificationType == "reply"
+                          ? "text-indigo-800"
+                          : notification.notificationType == "approach"
+                          ? "text-blue-500"
+                          : "text-gray-400 "
+                      } h-full text-sm`}
+                    >
                       {notification.message}{" "}
                     </p>
                     {notification.notificationType == "approach" ? (
@@ -238,7 +363,7 @@ function Notification({ userId }) {
                     ) : notification.notificationType == "reply" ||
                       notification.notificationType == "comment" ? (
                       <div className="p-4 bg-white rounded-lg border mt-4">
-                        <div className="flex gap-4 items-center">
+                        <div className="flex gap-3 items-center">
                           <UserImageInput
                             isEditable={false}
                             imageHeight={30}
@@ -248,7 +373,7 @@ function Notification({ userId }) {
                             {currentUser.username}
                           </p>
                         </div>
-                        <p className=" ml-11">
+                        <p className=" ml-11 -mt-1 text-sm text-gray-400">
                           {notification.populatedContent[0].content}
                         </p>
                       </div>
@@ -263,53 +388,22 @@ function Notification({ userId }) {
                   {/* {notification.read && <span className='text-gray-500 text-sm'> Visited</span>} */}
                 </div>
               </div>
-              {notification.notificationType == "like" ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  class="size-8 text-red-500"
-                >
-                  <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
-                </svg>
-              ) : notification.notificationType == "comment" ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  class="size-8 text-indigo-500"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97-1.94.284-3.916.455-5.922.505a.39.39 0 0 0-.266.112L8.78 21.53A.75.75 0 0 1 7.5 21v-3.955a48.842 48.842 0 0 1-2.652-.316c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97Z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              ) : notification.notificationType == "reply" ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  class="size-8 text-indigo-800"
-                >
-                  <path d="M4.913 2.658c2.075-.27 4.19-.408 6.337-.408 2.147 0 4.262.139 6.337.408 1.922.25 3.291 1.861 3.405 3.727a4.403 4.403 0 0 0-1.032-.211 50.89 50.89 0 0 0-8.42 0c-2.358.196-4.04 2.19-4.04 4.434v4.286a4.47 4.47 0 0 0 2.433 3.984L7.28 21.53A.75.75 0 0 1 6 21v-4.03a48.527 48.527 0 0 1-1.087-.128C2.905 16.58 1.5 14.833 1.5 12.862V6.638c0-1.97 1.405-3.718 3.413-3.979Z" />
-                  <path d="M15.75 7.5c-1.376 0-2.739.057-4.086.169C10.124 7.797 9 9.103 9 10.609v4.285c0 1.507 1.128 2.814 2.67 2.94 1.243.102 2.5.157 3.768.165l2.782 2.781a.75.75 0 0 0 1.28-.53v-2.39l.33-.026c1.542-.125 2.67-1.433 2.67-2.94v-4.286c0-1.505-1.125-2.811-2.664-2.94A49.392 49.392 0 0 0 15.75 7.5Z" />
-                </svg>
-              ) : notification.notificationType == "approach" ? (
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  class="size-8 text-blue-500"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M7.5 5.25a3 3 0 0 1 3-3h3a3 3 0 0 1 3 3v.205c.933.085 1.857.197 2.774.334 1.454.218 2.476 1.483 2.476 2.917v3.033c0 1.211-.734 2.352-1.936 2.752A24.726 24.726 0 0 1 12 15.75c-2.73 0-5.357-.442-7.814-1.259-1.202-.4-1.936-1.541-1.936-2.752V8.706c0-1.434 1.022-2.7 2.476-2.917A48.814 48.814 0 0 1 7.5 5.455V5.25Zm7.5 0v.09a49.488 49.488 0 0 0-6 0v-.09a1.5 1.5 0 0 1 1.5-1.5h3a1.5 1.5 0 0 1 1.5 1.5Zm-3 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
-                    clip-rule="evenodd"
-                  />
-                  <path d="M3 18.4v-2.796a4.3 4.3 0 0 0 .713.31A26.226 26.226 0 0 0 12 17.25c2.892 0 5.68-.468 8.287-1.335.252-.084.49-.189.713-.311V18.4c0 1.452-1.047 2.728-2.523 2.923-2.12.282-4.282.427-6.477.427a49.19 49.19 0 0 1-6.477-.427C4.047 21.128 3 19.852 3 18.4Z" />
-                </svg>
-              ) : null}
+              <svg
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setNotificationSettings(notification)}}
+                class="h-6 w-6 text-gray-800 self-start mt-2"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                {" "}
+                <circle cx="12" cy="12" r="1" /> <circle cx="12" cy="5" r="1" />{" "}
+                <circle cx="12" cy="19" r="1" />
+              </svg>
             </li>
           ))}
         </ul>

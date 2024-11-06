@@ -183,7 +183,7 @@ function PostForm({ userDetails, setData, onClose }) {
                 <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
               <div className="flex gap-4">
-                <div className="relative rounded-full bg-blue-50 px-2 gap-4 flex min-w-[80px] w-16 justify-between py-1  items-center ">
+                <div className="relative rounded-full bg-gray-50 px-2 gap-4 flex min-w-[80px] w-16 justify-between py-1  items-center ">
                   <div className="w-full flex justify-center ">
                     <svg
                       class={`h-5 w-5 z-10 ${
@@ -238,7 +238,7 @@ function PostForm({ userDetails, setData, onClose }) {
                       left: `${(100 / 2) * (postType === "content" ? 0 : 1)}%`,
                       transition: "left 0.2s ease-in-out",
                     }}
-                    className={`bg-blue-500 absolute  ${
+                    className={`bg-gray-800 absolute  ${
                       postType == "content" ? "rounded-full" : "rounded-full"
                     } w-1/2 h-full  `}
                   ></div>
@@ -247,7 +247,7 @@ function PostForm({ userDetails, setData, onClose }) {
                   type="submit"
                   // disabled={loading}
                   className={` text-white w-fit  font-semibold px-4 flex items-center rounded-full ${
-                    loading ? "" : "bg-blue-500 hover:bg-blue-600 "
+                    loading ? "" : "bg-gray-800 hover:bg-blue-600 "
                   } focus:outline-none `}
                 >
                   {loading ? (
@@ -298,12 +298,12 @@ function PostForm({ userDetails, setData, onClose }) {
                       : "Describe more about the job like deadline and more..."
                   }
                   ref={textareaRef}
-                  className="w-full h-max caret-blue-500 mt-1 focus:outline-none resize-none overflow-hidden"
+                  className="w-full h-max caret-gray-800 mt-1 focus:outline-none resize-none overflow-hidden"
                 />
               </div>
               {mentionList.length>0 &&<div className="px-4 sm:px-6 my-3 flex gap-2 -mb-2 text-sm flex-wrap">
                 {mentionList.map((user) => (
-                  <div className=" bg-blue-50 border gap-2 flex items-center border-blue-500 px-2 py-1.5 rounded-md text-blue-500">
+                  <div className=" bg-gray-50 border gap-2 flex items-center border-blue-500 px-2 py-1.5 rounded-md text-blue-500">
                     <p className="  rounded-md font-medium">@{user.username}</p>
                     <svg
                       onClick={() =>
@@ -414,7 +414,7 @@ function PostForm({ userDetails, setData, onClose }) {
               </div>
             </div>}
           </div>
-          <div className="flex gap-4 text-blue-500  py-4 px-4 md:px-6 items-center">
+          <div className="flex gap-4 text-gray-800  py-4 px-4 md:px-6 items-center">
             <div className="disabled:text-blue-300">
               <svg
                 className="h-8 w-8 z-20  cursor-pointer"

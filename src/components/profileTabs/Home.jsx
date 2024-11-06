@@ -12,6 +12,7 @@ function Home({
   setUpdateData,
   postData,
   isEditable,
+  
 }) {
   console.log("user", user);
   return (

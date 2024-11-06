@@ -73,7 +73,7 @@ function JobList({jobs}) {
         <Suspense fallback={<div>{joblistSkeleton()}</div>}>
          
           {currentJobs.map((job, index) => (
-            <JobListItem onCl key={index} job={job} companyDefaultImage={companyDefaultImage} className="border  sm:shadow-none hover:sm:shadow-xl  hover:scale-105" />
+            <JobListItem onCl key={index} job={job} companyDefaultImage={companyDefaultImage} className="border bg-white  sm:shadow-none hover:sm:shadow-xl  hover:scale-105" />
           ))}
            {/* {currentJobs.map((job, index) => (
             <JobListItem key={index} job={job} companyDefaultImage={companyDefaultImage} />

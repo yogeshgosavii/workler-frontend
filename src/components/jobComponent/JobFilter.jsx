@@ -108,7 +108,7 @@ function JobFilter({ filterText, setfilterText }) {
                 </div>
             </div>
             <div className=''>
-                <div className='border sticky top-24 bottom-0 hidden sm:block rounded-2xl min-w-60 px-6 py-8' ref={filtersRef}>
+                <div className='border bg-white sticky top-24 bottom-0 hidden sm:block rounded-2xl min-w-60 px-6 py-8' ref={filtersRef}>
                     <p className='border-b pb-5 text-lg font-semibold'>Filters</p>
                     {filters.map((filter,index,arr) => (
                         <div key={filter.filterName} className={`mt-5 pb-8 ${index != arr.length-1 &&"border-b"}`}>

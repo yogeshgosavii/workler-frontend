@@ -80,7 +80,7 @@ function SkillForm({ onClose, setSkills }) {
         </Button> */}
         <Button
           disabled={addDisabled || loading}
-          className="bg-blue-500 flex items-center justify-center text-lg w-full text-white disabled:bg-blue-300"
+          className="bg-gray-800 flex items-center justify-center text-lg w-full text-white disabled:bg-gray-600"
           type="submit"
         >
           {

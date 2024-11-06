@@ -114,10 +114,15 @@ function Login({ userType = "candidate" }) {
                   )}
                 </div>
               </div>
+              <div className='mt-2 text-end'>
+  <Link to="/forgot-password">
+    <p className="text-blue-500 font-medium cursor-pointer">Forgot password?</p>
+  </Link>
+</div>
               <Button
                 type="submit"
                 disabled={!(passwordCheck && emailCheck && !loader)}
-                className="w-full flex py-1 items-center justify-center text-lg mt-8 duration-200 font-semibold text-white bg-blue-500 disabled:bg-blue-300"
+                className="w-full flex py-1 items-center justify-center text-lg mt-6 duration-200 font-semibold text-white bg-gray-800 disabled:bg-gray-600"
               >
                 {loader ? (
                   <div className='flex items-center gap-5'> 
@@ -132,11 +137,11 @@ function Login({ userType = "candidate" }) {
                 )}
               </Button>
             </form>
-            <p className='mt-8 hidden sm:block w-full text-center'>Haven't been here before? <Link to={"/signup"} className='text-blue-500 font-semibold cursor-pointer'>Signup</Link></p>
+            <p className='mt-8 hidden sm:block w-full text-center'>Haven't been here before? <Link to={"/signup"} className='text-gray-800 font-semibold cursor-pointer'>Signup</Link></p>
           </div>
         </div>
       </div>
-      <p className='py-5 border-t-2 sm:hidden w-full text-center'>Haven't been here before? <Link to={"/signup"} className='text-blue-500 font-semibold cursor-pointer'>Signup</Link></p>
+      <p className='py-5 border-t-2 sm:hidden w-full text-center'>Haven't been here before? <Link to={"/signup"} className='text-gray-800 font-semibold cursor-pointer'>Signup</Link></p>
     </div>
   );
 }

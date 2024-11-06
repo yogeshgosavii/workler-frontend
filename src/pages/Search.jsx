@@ -284,18 +284,22 @@ function Search() {
                       )}
                     </div>
                     {searchedUsers.length > 0 ? (
-                      <div onClick={()=>{
-                        navigate("/user/"+user._id)
-                      }}>
+                      <div >
                         {searchedUsers.map((user) => (
-                          <div className="flex gap-4">
+                          <div
+                          
+                          onClick={()=>{
+                            navigate("/user/"+user._id)
+                          }}
+                          
+                          className="flex gap-4">
                             <UserImageInput
                               image={user.profileImage.compressedImage[0]}
                               isEditable={false}
                             />
                             <div className="-mt-1">
                               <p className="font-medium text-lg">{user.username}</p>
-                              <p className="text-gray-400">{user.personal_details.firstname} {" "}{user.personal_details.lastname}</p>
+                              {user.personal_details ?<p className="text-gray-400">{user.personal_details?.firstname} {" "}{user.personal_details?.lastname}</p>:<p className="text-gray-400">{user.company_details.company_name}</p>}
                             </div>
                           </div>
                         ))}

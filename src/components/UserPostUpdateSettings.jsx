@@ -177,7 +177,7 @@ function UserPostUpdateSettings({
                     setPostSetting(null);
                     setSelectMentions(false);
                   }}
-                  className="w-full bg-blue-500 mb-6 font-medium py-2.5 rounded-lg text-white"
+                  className="w-full bg-gray-800 mb-6 font-medium py-2.5 rounded-lg text-white"
                 >
                   Update
                 </button>

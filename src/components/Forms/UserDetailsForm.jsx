@@ -297,7 +297,7 @@ function UserDetailsForm({ onClose, setData, data }) {
           Cancel
         </Button> */}
         <Button
-          className="bg-blue-500 flex justify-center items-center text-white w-full text-lg disabled:bg-blue-300"
+          className="bg-gray-800 flex justify-center items-center text-white w-full text-lg disabled:bg-gray-600"
           onClick={handleUpdateUserDetails}
           disabled={!isFormValid() || loading}
         >

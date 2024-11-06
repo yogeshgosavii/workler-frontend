@@ -27,6 +27,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   const [postData, setpostData] = useState();
   const [currentTab, setCurrentTab] = useState("Job details");
   const [tabIndex, setTabIndex] = useState(0);
+  const currentUser = useSelector((state) => state.auth.user);
 
   // Access the passed data
   // const jobDetails = location.state?.jobDetails;
@@ -349,7 +350,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
         <div className="h-full">
           <div class="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
             <svg
-              class="text-white animate-spin"
+              class="text-transparent animate-spin"
               viewBox="0 0 64 64"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
@@ -381,7 +382,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       case "Job details":
         return (
           !loading.jobDetails && (
-            <div className="flex flex-col px-4 sm:px-0 sm:gap-4 ">
+            <div className="flex flex-col sm:px-0 sm:gap-4 ">
               {/* <div className="border  px-4 flex flex-col gap-4 md:px-6 py-6">
                 {jobDetails.location && (
                   <div className="flex gap-2  ">
@@ -442,7 +443,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                   )}
                 </div>
               </div> */}
-              <div className=" flex flex-col sm:px-6 gap-6 sm:border bg-white mb-10  py-6 ">
+              <div className=" flex flex-col px-4 sm:px-6 gap-6 sm:border bg-white mb-10  py-6 ">
                 <div>
                   <p className="font-medium text-xl mb-3 border-b pb-3 ">
                     Description
@@ -457,7 +458,9 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                       }}
                     />
                     <button
-                      className={`${isExpanded?"text-gray-400":"text-blue-500"} text-sm mt-2`}
+                      className={`${
+                        isExpanded ? "text-gray-400" : "text-gray-800"
+                      } text-sm mt-2`}
                       onClick={toggleDescription}
                     >
                       {isExpanded ? "Read Less" : "Read More"}
@@ -555,7 +558,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                     onClick={() => {
                       navigate("/user/" + jobDetails.user._id);
                     }}
-                    class="h-8 w-8 mt-px text-blue-500"
+                    class="h-8 w-8 mt-px text-gray-800"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -603,7 +606,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
         );
       case "Related jobs":
         return (
-          <div className="p-4 sm:px-0 pb-8 flex flex-col gap-5 ">
+          <div className="p-4 sm:px-0 pb-14 flex flex-col gap-5 ">
             {relatedJobs.length <= 0 ? (
               <div className="w-full text-center text-lg text-gray-500">
                 {" "}
@@ -781,7 +784,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
             <div className="mt-4">
               <button
                 type="submit"
-                className="bg-blue-500 font-medium text-white px-4 py-2 rounded-md"
+                className="bg-gray-800 font-medium text-white px-4 py-2 rounded-md"
               >
                 Confirm Interview
               </button>
@@ -794,7 +797,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                     applyJob();
                   }}
                   // type="submit"
-                  className="bg-blue-500 w-full font-medium text-white px-4 py-3 text-xl  rounded-lg"
+                  className="bg-gray-800 w-full font-medium text-white px-4 py-3 text-xl  rounded-lg"
                 >
                   Apply
                 </button>
@@ -809,10 +812,10 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
           ></div>
         )}
         <div className="flex relative  flex-wrap">
-          <div className="bg-blue-50 border-x absolute top-0 w-full h-32 sm:h-40"></div>
+          <div className="bg-gray-100 border-x absolute top-0 w-full h-32 sm:h-40"></div>
           <div
             className={` w-full border-t rounded-t-3xl  fixed sm:sticky  ${
-              atTop > 100 ? "bg-white" : "bg-blue-50"
+              atTop > 100 ? "bg-white" : "bg-gray-100"
             }  sm:border-x  z-20 top-0   px-4 py-4  flex `}
           >
             <div className="flex w-full items-center gap-4">
@@ -1007,7 +1010,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                       {jobDetails.currency_type == "$" ||
                       jobDetails.currency_type == "USD" ? (
                         <svg
-                          class="h-6 w-6 text-blue-500"
+                          class="h-6 w-6 text-gray-800"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -1021,7 +1024,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                         </svg>
                       ) : jobDetails.currency_type == "₹" ? (
                         <svg
-                          className="h-7 w-7 text-blue-500 "
+                          className="h-7 w-7 text-gray-800 "
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -1062,7 +1065,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                       <span className="mr-1">
                         This job is fetched from a job post.{" "}
                       </span>
-                      <a className="text-blue-500 cursor-pointer flex gap-1 font-medium items-center">
+                      <a className="text-gray-800 cursor-pointer flex gap-1 font-medium items-center">
                         View post{" "}
                       </a>
                     </p>
@@ -1071,7 +1074,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
 
                 {/* <div className="order-3 flex flex-col gap-2">
               <div classNa <svg
-                          class="h-5 w-5 text-blue-500"
+                          class="h-5 w-5 text-gray-800"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -1159,7 +1162,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
 
                 {/* <div className="order-3 flex flex-col gap-2">
               <div classNa <svg
-                          class="h-5 w-5 text-blue-500"
+                          class="h-5 w-5 text-gray-800"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -1247,7 +1250,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
               </div>
             )}
             {approaches?.status === "approached" ? (
-              <div className="bg-blue-50 text-blue-500 shadow-md font-medium text-sm flex gap-2 flex-wrap justify-between items-center p-4 rounded-lg">
+              <div className="bg-blue-50 text-gray-800 shadow-md font-medium text-sm flex gap-2 flex-wrap justify-between items-center p-4 rounded-lg">
                 <p className="">Select response </p>
                 <div className="flex gap-2">
                   <button
@@ -1257,7 +1260,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                         status: "accepted",
                       });
                     }}
-                    className="bg-blue-500 hover:bg-blue-600 transition-colors text-white px-4 py-2 rounded-full "
+                    className="bg-gray-800 transition-colors text-white px-4 py-2 rounded-full "
                   >
                     Accept
                   </button>
@@ -1446,7 +1449,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                   href={"/login"}
                   className={`w-fit px-5 ${
                     applied && "hidden"
-                  } flex cursor-pointer py-1 md:order-2 text-center order-last gap-2 font-medium mt-3.5 items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 pb-1 rounded-full`}
+                  } flex cursor-pointer py-1 md:order-2 text-center order-last gap-2 font-medium mt-3.5 items-center justify-center text-white bg-gray-800 sm:hover:bg-blue-600 pb-1 rounded-full`}
                 >
                   Login / Sign up
                 </a>
@@ -1462,7 +1465,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                   href={jobDetails?.job_url}
                   className={`w-fit px-5 ${
                     applied && "hidden"
-                  } flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5 items-center justify-center text-white bg-blue-500 sm:hover:bg-blue-600 pb-1 rounded-full`}
+                  } flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5 items-center justify-center text-white bg-gray-800 sm:hover:bg-blue-600 pb-1 rounded-full`}
                 >
                   Apply
                 </a>
@@ -1478,7 +1481,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                 ) : (
                   <button
                     onClick={() => saveJob()}
-                    className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-blue-500 border-2 border-blue-500  sm:hover:bg-blue-50 pb-0.5  rounded-full"
+                    className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-gray-800 border-2 border-blue-500  sm:hover:bg-blue-50 pb-0.5  rounded-full"
                   >
                     Save
                   </button>
@@ -1523,7 +1526,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                         setTabIndex(index);
                       }}
                       className={` text-base  md:text-lg mb-1 truncate font-medium md:font-semibold cursor-pointer ${
-                        tab === currentTab ? "z-20 text-blue-500" : ""
+                        tab === currentTab ? "z-20 text-gray-800" : ""
                       } text-center py-2`}
                       style={{
                         width: `${100 / arr.length}%`,
@@ -1541,7 +1544,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
               }}
               className={`${
                 userDetails ? "w-1/3" : "w-1/2"
-              } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-blue-500 absolute`}
+              } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-gray-800 absolute`}
             ></div>
             {/* <div className="fixed   w-full sm:max-w-xl self-center flex gap-3 bottom-[56px] sm:bottom-0 z-30 bg-white border px-4 py-5 items-center">
               {copied && (
@@ -1586,7 +1589,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                   }
                 }}
                 href={jobDetails?.job_url}
-                className={`disabled:bg-blue-300 bg-blue-500 text-white text-center flex items-center justify-center py-2.5 font-medium w-full rounded-lg text-xl transition-all duration-300 ease-in-out ${
+                className={`disabled:bg-blue-300 bg-gray-800 text-white text-center flex items-center justify-center py-2.5 font-medium w-full rounded-lg text-xl transition-all duration-300 ease-in-out ${
                   applied ||
                   approaches[0]?.status === "accepted" ||
                   approaches[0]?.status === "approached"
@@ -1665,7 +1668,9 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
           </div>
         </div>
 
-        <div>{renderTabContent()}</div>
+        <div className={`pb-12 sm:pb-0`}>
+          {renderTabContent()}
+        </div>
         <div
           className={`fixed ${
             userDetails && "mb-[55px] sm:mb-0"
@@ -1718,12 +1723,12 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
               }
             }}
             href={jobDetails?.job_url}
-            className={`disabled:bg-blue-300 bg-blue-500 text-white text-center flex items-center justify-center py-2.5 font-medium w-full rounded-lg text-xl transition-all duration-300 ease-in-out ${
+            className={`disabled:bg-gray-600 bg-gray-800 text-white text-center flex items-center justify-center py-2.5 font-medium w-full rounded-lg text-xl transition-all duration-300 ease-in-out ${
               applied ||
               approaches[0]?.status === "accepted" ||
               approaches[0]?.status === "approached"
                 ? "cursor-not-allowed"
-                : "hover:bg-blue-600"
+                : ""
             }`}
           >
             {userDetails ? (
@@ -1804,7 +1809,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
         className="hidden sticky   overflow-y-auto w-full max-w-md flex-col gap-5 lg:flex"
         style={{ scrollbarWidth: "none" }}
       >
-        {userDetails && (
+        {/* {userDetails && (
           <div className="border bg-white p-4">
             <p className="text-xl font-semibold mb-5">Releated Accounts</p>
             <div className="flex gap-5 justify-between items-center">
@@ -1815,12 +1820,12 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                   <p className="text-gray-400">yogesh_gosavii</p>
                 </div>
               </div>
-              <p className="bg-blue-500 h-fit rounded-full text-white font-medium px-3 py-1">
+              <p className="bg-gray-800 h-fit rounded-full text-white font-medium px-3 py-1">
                 Follow
               </p>
             </div>
           </div>
-        )}
+        )} */}
         <div className="">
           <p className="text-xl font-semibold border sticky top-0 bg-white  py-4 px-6">
             Similar Jobs

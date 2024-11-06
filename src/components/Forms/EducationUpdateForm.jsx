@@ -460,7 +460,7 @@ function EducationUpdateForm({
           </Button> */}
           <Button
             disabled={isUpdateDisabled() || loading}
-            className="bg-blue-500 rounded-full text-white disabled:bg-blue-300"
+            className="bg-gray-800 rounded-full text-white disabled:bg-gray-600"
             onClick={onSave}
           >
              {
