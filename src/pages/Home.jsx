@@ -19,6 +19,7 @@ function Home() {
   const [jobList, setJobList] = useState([]);
   const [searchFocus, setSearchFocus] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [latestJobs, setLatestJobs] = useState([]);
   const [topPayingJobs, setTopPayingJobs] = useState([]);
@@ -81,6 +82,7 @@ function Home() {
   useEffect(() => {
     const fetchLatestJobs = async () => {
       try {
+        setLoading(true);
         const response = await jobService.job.getAll();
 
         // Filter jobs with salary info for "Latest Jobs" category
@@ -112,6 +114,8 @@ function Home() {
         console.log("Filtered Various Location Jobs:", variousLocatioJobs);
       } catch (error) {
         console.error("Failed to fetch jobs:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -174,10 +178,10 @@ function Home() {
     >
       {searchFocus && (
         <div
-        onClick={()=>setSearchFocus(false)}
+          onClick={() => setSearchFocus(false)}
           className={`blur-lg backdrop-blur-sm z-20 transition-all ${
             searchFocus ? "opacity-100" : "opacity-0"
-          }  h-screen w-screen -mt-10 -ml-8 absolute`}
+          }  h-screen w-screen -mt-10  -ml-4 sm:-ml-8 absolute`}
         ></div>
       )}
       {/* Header Section */}
@@ -197,41 +201,85 @@ function Home() {
         }}
         className="sticky flex items-center  w-full pointer-events-none bg-transparent justify-center -top-8 z-40"
       >
-        <div className={`relative   ${isAtTop && "w-full"}  lg:w-full flex justify-center`}>
+        <div
+          className={`relative   pointer-events-none  ${isAtTop && "w-full"} ${
+            searchFocus && "w-full"
+          } xl:w-full  flex justify-center`}
+        >
           <SearchInput
+            onClick={() => {
+              setSearchFocus(true);
+            }}
             onChange={(e) => setSearchText(e.target.value)}
             onFocus={() => setSearchFocus(true)}
             // onBlur={() => setSearchFocus(false)}
             inputClassName={`placeholder:text-lg transition-all ${
-              !isAtTop ? "hidden lg:block" : ""
+              !isAtTop ? `  ${searchFocus ? "block" : "hidden xl:block"}` : ""
             }`}
-            className={`sticky top-5 transition-all w-full max-w-screen-sm   md:max-w-screen-md border bg-white ${
+            className={`sticky top-5 transition-all pointer-events-auto w-full max-w-screen-sm   md:max-w-screen-md border bg-white ${
               isAtTop
-                ? "shadow-xl rounded-2xl py-3 px-5 w-full"
-                : "sm:scale-x-90 rounded-full lg:rounded-2xl sm:scale-y-90 scale-95 py-3 px-3 lg:px-5 w-fit"
+                ? "shadow-xl rounded-2xl py-3 px-5 w-full "
+                : `sm:scale-x-90  xl:rounded-2xl sm:scale-y-90 ${
+                    searchFocus ? "rounded-2xl" : "rounded-full"
+                  } scale-95 py-3 ${
+                    searchFocus ? "px-5" : "px-3"
+                  } xl:px-5 w-fit`
             }`}
             placeholder="Enter the job title or domain"
           />
-          {searchFocus &&jobList.length > 0 && (
+
+          {searchFocus && (
             <div
               role="listbox"
               aria-expanded="true"
-              className="border w-full absolute max-h-60 overflow-y-auto rounded-2xl max-w-screen-md mt-20 shadow-2xl overflow-hidden bg-white z-40 p-4 flex flex-col"
+              className="border w-full pointer-events-auto absolute max-h-60 overflow-y-auto rounded-2xl max-w-screen-md mt-20 shadow-2xl overflow-hidden bg-white z-40 p-4 flex flex-col"
             >
-              {jobList.map((job, index) => (
-                <div
-                  key={index}
-                  onClick={(e) => {
-                    navigate("/job/" + job._id);
-                  }}
-                  role="option"
-                  tabIndex={0}
-                  className="py-2.5 border-b cursor-pointer"
-                >
-                  <p className="font-medium">{job.job_role}</p>
-                  <p className="text-gray-400">{job.company_name}</p>
-                </div>
-              ))}
+              {isLoading
+                ? true && (
+                    <div class="flex min-h-[140px] place-content-center place-self-center w-full  h-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+                      <svg
+                        class="text-transparent animate-spin"
+                        viewBox="0 0 64 64"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="50"
+                        height="50"
+                      >
+                        <path
+                          d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+                          stroke="currentColor"
+                          stroke-width="5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        ></path>
+                        <path
+                          d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="text-gray-400"
+                        ></path>
+                      </svg>
+                    </div>
+                  )
+                :
+                jobList.length >0 ?
+                jobList.map((job, index) => (
+                  <div
+                    key={index}
+                    onClick={(e) => {
+                      navigate("/job/" + job._id);
+                    }}
+                    role="option"
+                    tabIndex={0}
+                    className="py-2.5 border-b cursor-pointer"
+                  >
+                    <p className="font-medium">{job.job_role}</p>
+                    <p className="text-gray-400">{job.company_name}</p>
+                  </div>
+                )):<p>No jobs Found</p>
+                }
             </div>
           )}
         </div>
@@ -250,7 +298,9 @@ function Home() {
       <div className="w-full flex justify-center ">
         {currentTab == "Latest Oportunities" && (
           <div
-            className=" flex sm:grid gap-5 overflow-x-auto w-full mt-16 sm:border sm:p-5 sm:bg-gray-100 sm:shadow-inner sm:rounded-3xl max-w-screen-lg  grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
+            className={` flex sm:grid gap-5 overflow-x-auto w-full mt-16 sm:border sm:p-5 sm:bg-gray-100 sm:shadow-inner sm:rounded-3xl max-w-screen-lg  ${
+              !loading ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3" : ""
+            }`}
             style={{
               scrollbarWidth: "none",
               overflowX: "auto",
@@ -258,11 +308,39 @@ function Home() {
               WebkitOverflowScrolling: "touch",
             }}
           >
+            {loading && (
+              <div class="flex min-h-[140px] place-content-center place-self-center w-full  h-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+                <svg
+                  class="text-transparent animate-spin"
+                  viewBox="0 0 64 64"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="50"
+                  height="50"
+                >
+                  <path
+                    d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+                    stroke="currentColor"
+                    stroke-width="5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                  <path
+                    d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-gray-400"
+                  ></path>
+                </svg>
+              </div>
+            )}
             {latestJobs?.slice(0, 6).map((job) => (
               <div
-              onClick={()=>{
-                navigate("job/"+job._id)
-              }}
+                onClick={() => {
+                  navigate("job/" + job._id);
+                }}
                 style={{
                   scrollSnapAlign: "center", // This makes each item snap to the center of the viewport
                 }}
@@ -317,9 +395,9 @@ function Home() {
           >
             {topPayingJobs.map((job) => (
               <div
-              onClick={()=>{
-                navigate("job/"+job._id)
-              }}
+                onClick={() => {
+                  navigate("job/" + job._id);
+                }}
                 style={{
                   scrollSnapAlign: "center", // This makes each item snap to the center of the viewport
                 }}
@@ -410,9 +488,9 @@ function Home() {
           >
             {variousLocatioJobs.map((job) => (
               <div
-               onClick={()=>{
-                navigate("job/"+job._id)
-              }}
+                onClick={() => {
+                  navigate("job/" + job._id);
+                }}
                 style={{
                   scrollSnapAlign: "center", // This makes each item snap to the center of the viewport
                 }}
@@ -515,6 +593,9 @@ function Home() {
               style={{
                 scrollSnapAlign: "start",
               }}
+              onClick={() => {
+                navigate("/jobs/" + job.category);
+              }}
               className="border border-gray-300 mb-5 shadow-lg cursor-pointer text-start w-full rounded-xl bg-white p-6"
             >
               <p className="font-medium text-lg">{job.category}</p>
@@ -566,7 +647,7 @@ function Home() {
             title: "Create an account",
             description: "Create an account with your details and motive",
             linkText: "Create account",
-            link :"/signup",
+            link: "/signup",
             logo: (
               <div className="p-4 w-fit text-blue-500 flex items-center rounded-full bg-blue-50">
                 <svg
@@ -667,7 +748,14 @@ function Home() {
               </p>
               <p>{step.description}</p>
               {step.linkText && (
-                <p onClick={()=>{navigate(step.link)}} className="text-blue-500 cursor-pointer font-medium">{step.linkText}</p>
+                <p
+                  onClick={() => {
+                    navigate(step.link);
+                  }}
+                  className="text-blue-500 cursor-pointer font-medium"
+                >
+                  {step.linkText}
+                </p>
               )}
             </div>
           </div>

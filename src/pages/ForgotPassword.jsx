@@ -22,6 +22,8 @@ function ForgotPassword() {
     try {
       const response = await fetch(
         "https://workler-backend.vercel.app/api/auth/request-password-reset",
+        // "http://localhost:5002/api/auth/request-password-reset",
+
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

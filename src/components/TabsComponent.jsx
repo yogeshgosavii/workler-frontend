@@ -7,17 +7,17 @@ function Tabs({ tabs, className,setTab,tab, selectedTextColor = "#012169", ...pr
     tabs = [
       {
         tabName: "Latest Oportunities",
-        tabImage: "",
+        tabImage: "https://img.icons8.com/?size=100&id=lYYpvG0DCiKl&format=png&color=000000",
         tabLink: "/personal"
       },
       {
         tabName: "Top Paying",
-        tabImage: "",
+        tabImage: "https://img.icons8.com/?size=100&id=34028&format=png&color=000000",
         tabLink: "/business-help"
       },
       {
         tabName: "Various Locations",
-        tabImage: "",
+        tabImage: "https://img.icons8.com/?size=100&id=ONd36JPfNc5a&format=png&color=000000",
         tabLink: "/technical-help"
       }
     ];
