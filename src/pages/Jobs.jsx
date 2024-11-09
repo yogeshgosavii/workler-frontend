@@ -99,20 +99,20 @@ function Jobs() {
   return (
     <div className={`flex flex-col bg-gray-50  w-full  gap-10`}>
       {searchFocus && (
-        <div className="bg-black z-10 opacity-30 h-full sm:-ml-6 w-full absolute"></div>
+        <div className={`bg-black z-10 opacity-30 h-full ${isAuthenticated &&"sm:-ml-20"} w-full absolute`}></div>
       )}
 
       {/* Search Input Section */}
       <div className="fixed  z-40">
         <form
           onSubmit={handleSearchSubmit}
-          className={`flex w-screen ${
+          className={`flex w-screen  ${
             !isAuthenticated && "sm:max-w-lg"
-          }   justify-center  sm:justify-start py-3 ${
+          }   justify-center  sm:justify-start py-3  ${
             isAuthenticated ? "  bg-gray-50" : "bg-transparent"
           } px-4 sm:px-0 ${
             !isAuthenticated ? "sm:ml-44" : "sm:ml-8 ml-0"
-          }   left-0 relative -mt-6`}
+          }   left-0 relative `}
         >
           <SearchInput
             value={searchText}
@@ -121,8 +121,8 @@ function Jobs() {
             onBlur={() => setSearchFocus(false)}
             ref={searchRef}
             inputClassName=""
-            className={`sticky px-4 rounded-xl transition-all ${isAuthenticated &&"sm:shadow-md"} mt-6 sm:ml-0   sm:max-w-[250px] flex items-center md:max-w-[350px] lg:max-w-md z-10 bg-white w-full ${
-              !isAuthenticated ? "w-[100%]" : ""
+            className={`sticky px-4 rounded-xl transition-all ${isAuthenticated &&"sm:shadow-md "} sm:ml-0   sm:max-w-[250px] flex items-center md:max-w-[350px] lg:max-w-md z-10 bg-white w-full ${
+              !isAuthenticated ? "w-[100%] mt-1" : ""
             } caret-blue-500 h-12  `}
             placeholder="Enter the job title or domain"
           />

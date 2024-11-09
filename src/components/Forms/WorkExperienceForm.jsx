@@ -500,8 +500,8 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
               disabled={!workExperienceType || !currentlyWorkingHere}
               className={`${
                 !workExperienceType || !currentlyWorkingHere
-                  ? "text-blue-300  cursor-not-allowed"
-                  : "text-blue-500 "
+                  ? "text-gray-600  cursor-not-allowed"
+                  : "text-gray-800 "
               } px-4 flex items-center text-lg font-bold py-2 rounded-md `}
               onClick={handleNext}
             >

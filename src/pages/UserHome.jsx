@@ -43,23 +43,29 @@ function UserHome() {
   return (
     <div className="w-full flex flex-col bg-gray-50 h-dvh ">
       <div
-        className={` px-4 sm:px-10 sticky  flex gap-4  sm:ml-1.5  w-full sm:w-[99%]  py-4  z-50 bg-white   top-0  ${
+        className={` px-4 sm:px-10  fixed  flex gap-4  sm:ml-1.5  w-full sm:w-[99%]  py-4  bg-transparent z-30 top-0  ${
           selectedPost && "hidden sm:block"
         }`}
       >
+        <div
+          className={`absolute inset-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60 -z-10 `}
+        />
+
         {["All", "Posts", "Jobs"].map((type) => (
           <p
             key={type}
             onClick={() => setSelectedType(type)}
             className={`${
-              selectedType === type ? "bg-gray-800 border-gray-800 text-white " : ""
-            } px-4 py-1 border cursor-pointer text-sm rounded-lg font-medium`}
+              selectedType === type
+                ? "bg-gray-800 border-gray-800 text-white "
+                : "bg-white"
+            } px-4 z-40 py-1 border cursor-pointer text-sm rounded-lg font-medium`}
           >
             {type}
           </p>
         ))}
       </div>
-      <div className="flex overflow-y-auto  h-full flex-1 justify-center  gap-4">
+      <div className="flex overflow-y-auto  h-full flex-1 pt-10 justify-center  gap-4">
         {loading ? (
           <div className=" pb-14">
             <div class="grid min-h-[140px] w-full  h-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
@@ -91,7 +97,7 @@ function UserHome() {
           </div>
         ) : (
           <div
-            className={`  w-full sm:pt-5 mb-10  justify-center flex ${
+            className={`  w-full pt-6 sm:pt-5 mb-10  justify-center flex ${
               selectedPost && "hidden sm:block"
             }`}
           >

@@ -179,9 +179,9 @@ function Home() {
       {searchFocus && (
         <div
           onClick={() => setSearchFocus(false)}
-          className={`blur-lg backdrop-blur-sm z-20 transition-all ${
+          className={`absolute top-0  inset-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60  z-20 transition-all ${
             searchFocus ? "opacity-100" : "opacity-0"
-          }  h-screen w-screen -mt-10  -ml-4 sm:-ml-8 absolute`}
+          }  h-screen w-screen   sm:-ml-4  absolute`}
         ></div>
       )}
       {/* Header Section */}
@@ -221,18 +221,18 @@ function Home() {
                 ? "shadow-xl rounded-2xl py-3 px-5 w-full "
                 : `sm:scale-x-90  xl:rounded-2xl sm:scale-y-90 ${
                     searchFocus ? "rounded-2xl" : "rounded-full"
-                  } scale-95 py-3 ${
+                  }  py-3 ${
                     searchFocus ? "px-5" : "px-3"
                   } xl:px-5 w-fit`
             }`}
             placeholder="Enter the job title or domain"
           />
 
-          {searchFocus && (
+          {searchFocus  && searchText.length>0 && (
             <div
               role="listbox"
               aria-expanded="true"
-              className="border w-full pointer-events-auto absolute max-h-60 overflow-y-auto rounded-2xl max-w-screen-md mt-20 shadow-2xl overflow-hidden bg-white z-40 p-4 flex flex-col"
+              className="border w-full pointer-events-auto absolute sm:max-h-60 max-h-96 overflow-y-auto rounded-2xl max-w-screen-md mt-20 shadow-2xl overflow-hidden bg-white z-40 p-4 flex flex-col"
             >
               {isLoading
                 ? true && (
@@ -534,7 +534,9 @@ function Home() {
           </div>
         )}
       </div>
-      {/* <p className=" text-blue-500 mt-5 font-medium text-lg">See all</p> */}
+     <div className="w-full flex justify-center">
+     <p onClick={()=>{navigate("/jobs/")}} className="  mt-10 border-2 border-gray-800 text-gray-800 hover:text-white hover:bg-gray-800  cursor-pointer transition-all rounded-full w-fit font-medium text-lg px-6 py-2">See all jobs</p>
+      </div>
 
       <p className="text-3xl mt-20 font-bold">Job Categories</p>
       <p className="text-gray-400 mt-2">

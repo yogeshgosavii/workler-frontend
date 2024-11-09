@@ -53,7 +53,7 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
         console.log("Navigating with job:", job);
         navigate(`/job/${job._id}`, { state: { jobDetails: job } });
       }}
-      className={` sm:rounded-2xl  py-6  transition-all cursor-pointer ${className}`}
+      className={` sm:rounded-2xl  py-6 sm:max-w-full  transition-all cursor-pointer ${className}`}
     >
       <div className="flex gap-4 px-6">
         {/* Company Logo */}
@@ -103,10 +103,10 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
 
       {/* Job Description */}
       {job.description && (
-        <p
-          className="mt-4 px-6 text-gray-400 leading-tight line-clamp-3"
-          dangerouslySetInnerHTML={{ __html: job.description }}
-        />
+       <p
+       className="mt-4 px-6 text-gray-400 leading-tight  overflow-hidden sm:max-w-sm md:max-w-lg break-words whitespace-normal line-clamp-3"
+       dangerouslySetInnerHTML={{ __html: job.description }}
+     />
       )}
       {/* <div className="border-t w-full mt-5"></div> */}
 

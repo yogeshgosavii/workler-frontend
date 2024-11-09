@@ -71,12 +71,23 @@ export const deleteLike = async (likeData) => {
 
 
 
+
+
+
 // Add a comment or reply
 export const addComment = async (commentData) => {
   const response = await handleRequest(API_URL + `/post/${commentData.post}/comment`, {
     method: 'POST',
     headers: setAuthHeaders(getToken()),
     body: JSON.stringify(commentData)
+  });
+  return response;
+};
+
+export const deleteComment = async (commentDataId) => {
+  const response = await handleRequest(API_URL + `/post/comment/${commentDataId}`, {
+    method: 'DELETE',
+    headers: setAuthHeaders(getToken()),
   });
   return response;
 };

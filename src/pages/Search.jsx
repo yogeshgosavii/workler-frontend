@@ -277,7 +277,7 @@ function Search() {
                           onClick={() => {
                             navigate("/jobs/" + query);
                           }}
-                          className="text-blue-500"
+                          className="text-blue-500 cursor-pointer"
                         >
                           See all users
                         </p>
@@ -292,7 +292,7 @@ function Search() {
                             navigate("/user/"+user._id)
                           }}
                           
-                          className="flex gap-4">
+                          className="flex gap-4 cursor-pointer">
                             <UserImageInput
                               image={user.profileImage.compressedImage[0]}
                               isEditable={false}
@@ -317,7 +317,7 @@ function Search() {
                             onClick={() => {
                               navigate("/jobs/" + query);
                             }}
-                            className="text-blue-500"
+                            className="text-blue-500 cursor-pointer"
                           >
                             See all jobs
                           </p>
@@ -329,7 +329,7 @@ function Search() {
                           onClick={()=>{
                             navigate("/job/"+job._id)
                           }}
-                           className="flex gap-4 p-4 border bg-gray-50 rounded-lg">
+                           className="flex gap-4 p-4 border cursor-pointer bg-gray-50 rounded-lg">
                             <UserImageInput
                               isEditable={false}
                               image={

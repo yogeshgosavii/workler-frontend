@@ -160,4 +160,35 @@
   }
 }
 
+@keyframes commentCountFromTop {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes commentCountFromBottom {
+  0% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-commentCountFromTop {
+  animation: commentCountFromTop 0.5s ease-out;
+}
+
+.animate-commentCountFromBottom {
+  animation: commentCountFromBottom 0.5s ease-out;
+}
+
+
 

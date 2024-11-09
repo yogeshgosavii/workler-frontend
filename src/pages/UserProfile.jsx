@@ -652,7 +652,7 @@ const UserProfile = () => {
                 onClick={() => {
                   setshowProfileImage(false);
                 }}
-                className={`h-screen  w-full top-0 bg-black opacity-70 max-w-3xl  z-50 absolute `}
+                className={`h-screen  w-full top-0 absolute inset-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60    max-w-3xl  z-50  `}
               ></div>
             )}
             <div className="flex gap-4  max-h-min flex-wrap ">

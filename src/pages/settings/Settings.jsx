@@ -210,7 +210,7 @@ function Settings() {
               dispatch(logout());
               navigate("/", { replace: true });
             }}
-            className="flex gap-4 items-center"
+            className="flex  cursor-pointer gap-4 items-center"
           >
             <svg
               class="h-6 w-6 text-red-500"

@@ -447,7 +447,7 @@ function EducationForm({ onClose, setData, data }) {
             </Button> */}
             <button
               disabled={!educationType}
-              className="text-blue-500 items-center  flex gap-2 text-lg font-bold rounded-full  disabled:text-blue-300"
+              className="text-gray-800 items-center  flex gap-2 text-lg font-bold rounded-full  disabled:text-gray-600"
               onClick={() => setCurrentPage(currentPage + 1)}
             >
               <span>Next</span>

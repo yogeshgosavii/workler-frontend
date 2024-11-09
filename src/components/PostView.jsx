@@ -17,21 +17,24 @@ import { useNavigate, useParams } from "react-router-dom";
 import savedService from "../services/savedService";
 import UserPostUpdateSettings from "./UserPostUpdateSettings";
 import PostMentionList from "./PostMentionList";
+import CommentSettings from "./CommentSettings";
 
 function PostView({ postId = useParams().postId, index, className }) {
   const [commentButtonClicked, setCommentButtonClicked] = useState(null);
+  const [showReplies, setShowReplies] = useState([]);
   const [sendClicked, setSendClicked] = useState(null);
   const [commentText, setcommentText] = useState("");
-  const [replyText, setReplyText] = useState("");
+  const [replyText, setReplyText] = useState({ index: null, text: "" });
   const [comments, setcomments] = useState([]);
   const [likes, setLikes] = useState([]);
   const [savedList, setSavedList] = useState([]);
   const [postSettings, setPostSettings] = useState(null);
   const [postMentions, setPostMentions] = useState(null);
   const [post, setPost] = useState();
+  const [commentSetting, setCommentSetting] = useState(null);
   const sendBtnRef = useRef(null);
   const currentUser = useSelector((state) => state.auth.user);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   console.log(post);
 
   useEffect(() => {
@@ -66,6 +69,10 @@ function PostView({ postId = useParams().postId, index, className }) {
       user: currentUser._id,
       content: commentText,
     });
+    setPost((prev) => ({
+      ...prev,
+      comments_count: prev.comments_count +1,
+    }));
     console.log("commentRes:", response);
     response.user = currentUser;
     setcomments((prev) => [...prev, response]);
@@ -79,7 +86,6 @@ function PostView({ postId = useParams().postId, index, className }) {
     //     },
     //   ],
     // }));
-
     setcommentText("");
   };
 
@@ -138,11 +144,23 @@ function PostView({ postId = useParams().postId, index, className }) {
             showMentions={postMentions}
             setShowMentions={setPostMentions}
           />
+          <CommentSettings
+            setCommentSettings={setCommentSetting}
+            commentSettings={commentSetting}
+            commentData={comments}
+            setPost= {setPost}
+            setcommentData={setcomments}
+          />
           <p className="py-3 px-4 sticky top-0 mb-5 left-0 right-0 bg-white z-40 font-bold text-2xl  border-gray-300">
             Post
           </p>{" "}
           <div className="flex items-center px-4 justify-between">
-            <div onClick={()=>{navigate("/user/"+post?.user._id)}} className="flex gap-4 items-center">
+            <div
+              onClick={() => {
+                navigate("/user/" + post?.user._id);
+              }}
+              className="flex gap-4 items-center"
+            >
               <UserImageInput
                 className="w-[35px] -mt-1 h-[35px] rounded-full"
                 imageHeight={40}
@@ -178,43 +196,46 @@ function PostView({ postId = useParams().postId, index, className }) {
               </div>
             </div>
             <div className="flex gap-2 items-center">
-             { currentUser._id != post.user._id && (savedList.some((item) => item.saved_content?._id == post._id) ? (
-                <svg
-                  onClick={(e) => {
-                    unsavePost(post._id);
-                    e.stopPropagation();
-                  }}
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  class={`bi size-6 bi-bookmark-fill liked-animation`}
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  onClick={(e) => {
-                    savePost(post._id);
-                    e.stopPropagation();
-                  }}
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class={`size-6 bi bi-bookmark-fill unliked-animation`}
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
-                  />
-                </svg>
-              ))}
+              {currentUser._id != post.user._id &&
+                (savedList.some(
+                  (item) => item.saved_content?._id == post._id
+                ) ? (
+                  <svg
+                    onClick={(e) => {
+                      unsavePost(post._id);
+                      e.stopPropagation();
+                    }}
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class={`bi size-6 bi-bookmark-fill liked-animation`}
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    onClick={(e) => {
+                      savePost(post._id);
+                      e.stopPropagation();
+                    }}
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class={`size-6 bi bi-bookmark-fill unliked-animation`}
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+                    />
+                  </svg>
+                ))}
               <svg
                 onClick={() => {
                   setPostSettings(post);
@@ -298,7 +319,8 @@ function PostView({ postId = useParams().postId, index, className }) {
               {post.images && (
                 <div
                   style={{ overflowX: "auto", scrollbarWidth: "none" }}
-                  className="mt-2 flex mb-4 flex-col  relative h-full w-full  transition-all  duration-300 overflow-x-auto flex-1"                >
+                  className="mt-2 flex mb-4 flex-col  relative h-full w-full  transition-all  duration-300 overflow-x-auto flex-1"
+                >
                   {post.images && (
                     <ImageCarousel
                       dots={false}
@@ -432,6 +454,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                     prev == index ? null : index
                   );
                 }}
+                comments={comments}
                 postData={post}
                 // setPostData={setPostData}
               />
@@ -459,7 +482,7 @@ function PostView({ postId = useParams().postId, index, className }) {
           >
             <UserImageInput
               className=" rounded-full"
-              imageHeight={20}
+              imageHeight={30}
               imageBorder={0}
               image={
                 currentUser.profileImage?.compressedImage || profileImageDefault
@@ -472,7 +495,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                 id={post._id + "commentText"}
                 key={post._id + "commentText"}
                 autoFocus={commentButtonClicked === index}
-                value={commentText}
+                value={commentText || ""}
                 onChange={(e) => {
                   setcommentText(e.target.value);
                   console.log(commentText);
@@ -483,7 +506,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                 }}
                 disabled={sendClicked}
                 // onBlur={() => setCommentButtonClicked(null)}
-                className={`rounded-xl text-sm bg-white placeholder:text-sm outline-none py-2 flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
+                className={`rounded-xl text-sm bg-white  outline-none py-2 flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
                 placeholder={`Comment on @${post.user.username}`}
               />
               <svg
@@ -546,161 +569,431 @@ function PostView({ postId = useParams().postId, index, className }) {
             </div>
           </div>
           <div className="pb-14 sm:pb-0">
-            {comments?.map((comment, index, arr) => (
+            {comments?.filter((comment)=>!comment.parentComment).map((comment, index, arr) => (
               <div
-                className={` text-sm px-4 ${index > 0 && "border-t"} py-5 z-10`}
+                className={` text-sm px-4   ${
+                  index > 0 && "border-t"
+                } py-5 z-10`}
               >
-                {comment.parentComment && (
-                  <p className="text-gray-400">
-                    Replied to {comment.parentComment.user.username}
-                  </p>
-                )}
-                <div
-                  className={`relative  gap-2  transition-all items-center rounded-xl  overflow-hidden mt-2 `}
-                >
-                  <div className="flex gap-2">
+                <div>
+                  {/* {comment.parentComment && (
+                    <p className="text-gray-400">
+                      Replied to {comment.parentComment.user.username}
+                    </p>
+                  )} */}
+                  <div className="flex justify-between w-full">
+                    <div
+                      className={`relative  gap-2  transition-all items-center rounded-xl  overflow-hidden mt-2 `}
+                    >
+                      <div className="flex items-center gap-3">
+                        <UserImageInput
+                          className=" rounded-full"
+                          imageHeight={25}
+                          imageBorder={0}
+                          image={
+                            comment.user.profileImage?.compressedImage ||
+                            profileImageDefault
+                          }
+                          alt={`${post.username}'s avatar`}
+                          isEditable={false}
+                        />
+                        <p className="font-medium text-[15px] -mt-1">
+                          {comment.user.username}
+                        </p>
+                      </div>
+                      <p
+                        value={comment.content}
+                        // onBlur={() => setCommentButtonClicked(null)}
+                        className={`rounded-xl  mt-2  outline-none  flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
+                      >
+                        {comment.content}
+                      </p>
+                    </div>
+                    <svg
+                      onClick={() => {
+                        setCommentSetting(comment);
+                      }}
+                      className="h-6 w-6 text-gray-500   mt-3"
+                      width="26"
+                      height="26"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      stroke="currentColor"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" />
+                      <circle cx="12" cy="12" r="1" />
+                      <circle cx="12" cy="19" r="1" />
+                      <circle cx="12" cy="5" r="1" />
+                    </svg>
+                  </div>
+                  <div className="flex gap-4 z-10 px-1 text-gray-400 font-normal items-center  mt-2">
+                    <LikeButton
+                      postData={comment}
+                      likes={comment}
+                      likesCount={post.likes_count}
+                    />
+                    <CommentButton
+                      onClick={() => {
+                        setCommentButtonClicked((prev) =>
+                          prev == index ? null : index
+                        );
+                      }}
+                      state="comment"
+                      postData={comment}
+                      comments={comments}
+                      // setPostData={setPostData}
+                    />
+                  </div>
+                  <div
+                    id="commentInput"
+                    className={`relative  w-full flex gap-2 transition-all items-center overflow-hidden ${
+                      commentButtonClicked === index
+                        ? " opacity-100"
+                        : "-mt-8 opacity-0 pointer-events-none "
+                    } `}
+                  >
                     <UserImageInput
                       className=" rounded-full"
                       imageHeight={20}
                       imageBorder={0}
                       image={
-                        comment.user.profileImage?.compressedImage ||
+                        currentUser.profileImage?.compressedImage ||
                         profileImageDefault
                       }
                       alt={`${post.username}'s avatar`}
                       isEditable={false}
                     />
-                    <p className="font-medium">{comment.user.username}</p>
-                  </div>
-                  <p
-                    value={comment.content}
-                    // onBlur={() => setCommentButtonClicked(null)}
-                    className={`rounded-xl ml-5 mt-2  outline-none  flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
-                  >
-                    {comment.content}
-                  </p>
-                </div>
-                <div className="flex gap-4 z-10 px-4 ml-2 text-gray-400 font-normal items-center  mt-2">
-                  <LikeButton
-                    postData={comment}
-                    likes={comment}
-                    likesCount={post.likes_count}
-                  />
-                  <CommentButton
-                    onClick={() => {
-                      setCommentButtonClicked((prev) =>
-                        prev == index ? null : index
-                      );
-                    }}
-                    state="comment"
-                    postData={comment}
-                    // setPostData={setPostData}
-                  />
-                </div>
-                <div
-                  id="commentInput"
-                  className={`relative flex gap-2 transition-all items-center overflow-hidden ${
-                    commentButtonClicked === index
-                      ? " opacity-100"
-                      : "-mt-8 opacity-0 pointer-events-none "
-                  } `}
-                >
-                  <UserImageInput
-                    className=" rounded-full"
-                    imageHeight={20}
-                    imageBorder={0}
-                    image={
-                      currentUser.profileImage?.compressedImage ||
-                      profileImageDefault
-                    }
-                    alt={`${post.username}'s avatar`}
-                    isEditable={false}
-                  />
-                  <div className="flex w-full">
+                    <div className="flex w-full">
                     <input
-                      id={comment._id + "replyText"}
-                      key={comment._id + "replyText"}
-                      autoFocus={commentButtonClicked === index}
-                      value={replyText?.index == index ? replyText?.text : ""}
-                      onChange={(e) => {
-                        setReplyText({
-                          index: index,
-                          text: e.target.value,
-                        });
-                      }}
-                      style={{
-                        WebkitAutofill: "number",
-                        WebkitBoxShadow: "0 0 0px 1000px white inset",
-                      }}
-                      disabled={sendClicked}
-                      // onBlur={() => setCommentButtonClicked(null)}
-                      className={`rounded-xl text-sm bg-white placeholder:text-sm outline-none py-2 flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
-                      placeholder={`Reply on @${comment.user.username}`}
-                    />
-                    <svg
-                      id="sendBtn"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      fill="currentColor"
-                      ref={sendBtnRef}
-                      className={`bi bi-send-fill  text-blue-500 absolute top-1/4 rotate-45 right-1 ${
-                        sendClicked === index ? "send-animation" : ""
-                      }`}
-                      viewBox="0 0 16 16"
-                      onAnimationEnd={() => {
-                        setcommentText(null);
-                        setSendClicked(false);
-                        handleAnimationEnd();
-                        // if (
-                        //   post.comments.some(
-                        //     (comment) => comment.user == userDetails._id
-                        //   )
-                        // ) {
+  id={comment._id + "replyText"}
+  key={comment._id + "replyText"}
+  autoFocus={commentButtonClicked === index}
+  value={replyText?.index === index ? replyText?.text : ""}  // Default to empty string if replyText is undefined
+  onChange={(e) => {
+    setReplyText({
+      index: index,
+      text: e.target.value,
+    });
+  }}
+  style={{
+    WebkitAutofill: "number",
+    WebkitBoxShadow: "0 0 0px 1000px white inset",
+  }}
+  disabled={sendClicked}
+  className="rounded-xl text-sm bg-white placeholder:text-sm outline-none py-2 flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300"
+  placeholder={`Reply on @${comment.user.username}`}
+/>
 
-                        //   const commentInput =
-                        //     document.getElementById("commentInput");
+                      <svg
+                        id="sendBtn"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        fill="currentColor"
+                        ref={sendBtnRef}
+                        className={`bi bi-send-fill  text-blue-500 absolute top-1/4 rotate-45 right-1 ${
+                          sendClicked === index ? "send-animation" : ""
+                        }`}
+                        viewBox="0 0 16 16"
+                        onAnimationEnd={() => {
+                          setcommentText(null);
+                          setSendClicked(false);
+                          handleAnimationEnd();
+                          // if (
+                          //   post.comments.some(
+                          //     (comment) => comment.user == userDetails._id
+                          //   )
+                          // ) {
 
-                        //   if (commentInput) {
-                        //     commentInput.classList.add(
-                        //       "-mt-8",
-                        //       "opacity-0"
-                        //     ); // Hide the input field
-                        //   }
-                        // }
-                      }}
-                      onClick={async () => {
-                        if (replyText?.text.length > 0) {
-                          setSendClicked(index);
-                          // console.log(postData[index]);
-                          setcommentText("");
-                          const response = await addReply({
-                            post: postId,
-                            user: currentUser._id,
-                            parentComment: comment._id,
-                            content: replyText.text,
-                          });
-                          console.log("commentRes:", response);
+                          //   const commentInput =
+                          //     document.getElementById("commentInput");
 
-                          setcomments((prev) => [...prev, response]);
-                          // setPost((prev) => ({
-                          //   ...prev,
-                          //   comments: [
-                          //     ...prev.comments,
-                          //     {
-                          //       user: currentUser._id,
-                          //       comment_text: commentText,
-                          //     },
-                          //   ],
-                          // }));
-
-                          setcommentText("");
-                        }
-                      }}
-                    >
-                      <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
-                    </svg>
+                          //   if (commentInput) {
+                          //     commentInput.classList.add(
+                          //       "-mt-8",
+                          //       "opacity-0"
+                          //     ); // Hide the input field
+                          //   }
+                          // }
+                        }}
+                        onClick={async () => {
+                          if (replyText?.text.length > 0) {
+                            setSendClicked(index);
+                            setReplyText("");
+                        
+                            // Optimistically update comments count
+                            setPost((prev) => ({
+                              ...prev,
+                              comments_count: prev.comments_count + 1,
+                            }));
+                        
+                            try {
+                              // Make API call to add reply
+                              const response = await addReply({
+                                post: postId,
+                                user: currentUser._id,
+                                parentComment: comment._id,
+                                content: replyText.text,
+                              });
+                        
+                              // Create the new comment object, including user and parentComment details
+                              const newComment = {
+                                ...response,
+                                user: {
+                                  _id: currentUser._id,
+                                  username: currentUser.username,
+                                  profileImage: currentUser.profileImage,
+                                },
+                                parentComment: {
+                                  _id: comment._id,
+                                  user: {
+                                    _id: comment.user._id,
+                                    username: comment.user.username,
+                                    profileImage: comment.user.profileImage,
+                                  },
+                                },
+                              };
+                        
+                              // Update comments state with new comment
+                              setcomments((prevComments) => [...prevComments, newComment]);
+                              setReplyText(""); // Clear reply input field
+                            } catch (error) {
+                              console.error("Failed to add reply:", error);
+                        
+                              // Revert the optimistic update for comments count if API call fails
+                              setPost((prev) => ({
+                                ...prev,
+                                comments_count: prev.comments_count - 1,
+                              }));
+                            }
+                          }
+                        }}
+                        
+                        
+                      >
+                        <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
+                      </svg>
+                    </div>
                   </div>
+                </div>
+                <p className=" text-gray-500 my-1">
+                  {
+                    showReplies.includes(comment._id)?<p onClick={()=>setShowReplies(prev=>prev.filter(reply => reply !== comment._id))}>Hide replies</p>:<p onClick={()=>{setShowReplies(prev=>[...prev,comment._id])}}>Show replies</p>
+                  }
+                  </p>
+                <div className="ml-8">
+                  {showReplies.includes(comment._id) && comments.map((reply) => {
+                    if (reply?.parentComment?._id == comment._id) {
+                      return <div>
+                      {/* {reply.parentComment && (
+                        <p className="text-gray-400">
+                          Replied to {comment.parentComment.user.username}
+                        </p>
+                      )} */}
+                      <div className="flex justify-between w-full">
+                        <div
+                          className={`relative  gap-2  transition-all items-center rounded-xl  overflow-hidden mt-2 `}
+                        >
+                          <div className="flex items-center gap-3">
+                            <UserImageInput
+                              className=" rounded-full"
+                              imageHeight={25}
+                              imageBorder={0}
+                              image={
+                                reply.user.profileImage?.compressedImage ||
+                                profileImageDefault
+                              }
+                              alt={`${post.username}'s avatar`}
+                              isEditable={false}
+                            />
+                            <p className="font-medium text-[15px] -mt-1">
+                              {reply.user.username}
+                            </p>
+                          </div>
+                          <p
+                            value={reply.content}
+                            // onBlur={() => setCommentButtonClicked(null)}
+                            className={`rounded-xl  mt-2  outline-none  flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
+                          >
+                            {reply.content}
+                          </p>
+                        </div>
+                        <svg
+                          onClick={() => {
+                            setCommentSetting(reply);
+                          }}
+                          className="h-6 w-6 text-gray-500   mt-3"
+                          width="26"
+                          height="26"
+                          viewBox="0 0 24 24"
+                          strokeWidth="2"
+                          stroke="currentColor"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" />
+                          <circle cx="12" cy="12" r="1" />
+                          <circle cx="12" cy="19" r="1" />
+                          <circle cx="12" cy="5" r="1" />
+                        </svg>
+                      </div>
+                      <div className="flex gap-4 z-10 px-1 text-gray-400 font-normal items-center  mt-2">
+                        <LikeButton
+                          postData={reply}
+                          likes={reply}
+                          likesCount={post.likes_count}
+                        />
+                        <CommentButton
+                          onClick={() => {
+                            setCommentButtonClicked(reply._id);
+                          }}
+                          state="comment"
+                          postData={reply}
+                          comments={comments}
+                          // setPostData={setPostData}
+                        />
+                      </div>
+                      <div
+                        id="replyInput"
+                        className={`relative  w-full flex gap-2 transition-all items-center overflow-hidden ${
+                          commentButtonClicked === reply._id
+                            ? " opacity-100"
+                            : "-mt-8 opacity-0 pointer-events-none "
+                        } `}
+                      >
+                        <UserImageInput
+                          className=" rounded-full"
+                          imageHeight={20}
+                          imageBorder={0}
+                          image={
+                            currentUser.profileImage?.compressedImage ||
+                            profileImageDefault
+                          }
+                          alt={`${post.username}'s avatar`}
+                          isEditable={false}
+                        />
+                        <div className="flex w-full">
+                          <input
+                            id={reply._id + "replyText"}
+                            key={reply._id + "replyText"}
+                            autoFocus={commentButtonClicked === index}
+                            value={replyText?.index == index ? replyText?.text : ""}
+                            onChange={(e) => {
+                              setReplyText({
+                                index: index,
+                                text: e.target.value,
+                              });
+                            }}
+                            style={{
+                              WebkitAutofill: "number",
+                              WebkitBoxShadow: "0 0 0px 1000px white inset",
+                            }}
+                            disabled={sendClicked}
+                            // onBlur={() => setCommentButtonClicked(null)}
+                            className={`rounded-xl text-sm bg-white placeholder:text-sm outline-none py-2 flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
+                            placeholder={`Reply on @${reply.user.username}`}
+                          />
+                          <svg
+                            id="sendBtn"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="18"
+                            height="18"
+                            fill="currentColor"
+                            ref={sendBtnRef}
+                            className={`bi bi-send-fill  text-blue-500 absolute top-1/4 rotate-45 right-1 ${
+                              sendClicked === index ? "send-animation" : ""
+                            }`}
+                            viewBox="0 0 16 16"
+                            onAnimationEnd={() => {
+                              setcommentText(null);
+                              setSendClicked(false);
+                              handleAnimationEnd();
+                              // if (
+                              //   post.comments.some(
+                              //     (comment) => comment.user == userDetails._id
+                              //   )
+                              // ) {
+    
+                              //   const commentInput =
+                              //     document.getElementById("commentInput");
+    
+                              //   if (commentInput) {
+                              //     commentInput.classList.add(
+                              //       "-mt-8",
+                              //       "opacity-0"
+                              //     ); // Hide the input field
+                              //   }
+                              // }
+                            }}
+                            onClick={async () => {
+                              if (replyText?.text.length > 0) {
+                                setSendClicked(index);
+                            
+                                // Optimistically update the comments count
+                                setPost((prevPost) => ({
+                                  ...prevPost,
+                                  comments_count: prevPost.comments_count + 1,
+                                }));
+                            
+                                try {
+                                  // API call to add reply
+                                  const response = await addReply({
+                                    post: postId,
+                                    user: currentUser._id,
+                                    parentComment: comment._id,
+                                    content: replyText.text,
+                                  });
+                            
+                                  // Create new comment structure with user details
+                                  const newComment = {
+                                    ...response,
+                                    user: {
+                                      _id: currentUser._id,
+                                      username: currentUser.username,
+                                      profileImage: currentUser.profileImage,
+                                    },
+                                    parentComment: {
+                                      _id: comment._id,
+                                      user: {
+                                        _id: comment.user._id,
+                                        username: comment.user.username,
+                                        profileImage: comment.user.profileImage,
+                                      },
+                                    },
+                                  };
+                            
+                                  // Append the new comment to comments list with functional update
+                                  setcomments((prevComments) => [...prevComments, newComment]);
+                            
+                                  // Clear the reply text after successful update
+                                  setReplyText("");
+                                } catch (error) {
+                                  console.error("Failed to add reply:", error);
+                            
+                                  // Revert optimistic comments count increment if API fails
+                                  setPost((prevPost) => ({
+                                    ...prevPost,
+                                    comments_count: prevPost.comments_count - 1,
+                                  }));
+                                }
+                              }
+                            }}
+                            
+                            
+                            
+                            
+                          >
+                            <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    }
+                  })}
                 </div>
               </div>
             ))}
