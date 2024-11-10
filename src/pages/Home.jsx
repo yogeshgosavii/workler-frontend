@@ -8,6 +8,7 @@ import debounce from "lodash.debounce";
 import Tabs from "../components/TabsComponent";
 import useJobApi from "../services/jobService";
 import UserImageInput from "../components/Input/UserImageInput";
+import JobCategories from "../components/JobCategories";
 
 function Home() {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -27,6 +28,40 @@ function Home() {
   const [currentTab, setcurrentTab] = useState("Latest Oportunities");
   const [bgblur, setBgblur] = useState(false);
   const [oportunities, setOportunities] = useState({});
+  const [jobsCurrrentIndex, setJobsCurrrentIndex] = useState(0);
+  const jobsScrollRef = useRef(null);
+  const handleJobsScroll = () => {
+    const scrollLeft = jobsScrollRef.current.scrollLeft;
+    const elementWidth = jobsScrollRef.current.clientWidth;
+    const newIndex = Math.round(scrollLeft / elementWidth);
+    setJobsCurrrentIndex(newIndex);
+  };
+
+  useEffect(() => {
+    setJobsCurrrentIndex(0);
+  }, [currentTab]);
+
+  useEffect(() => {
+    const scrollElement = jobsScrollRef.current;
+    scrollElement.addEventListener("scroll", handleJobsScroll);
+    return () => scrollElement.removeEventListener("scroll", handleJobsScroll);
+  }, [currentTab]);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const jobCategoryScrollRef = useRef(null);
+  const handleJobCategoryScroll = () => {
+    const scrollLeft = jobCategoryScrollRef.current.scrollLeft;
+    const elementWidth = jobCategoryScrollRef.current.clientWidth;
+    const newIndex = Math.round(scrollLeft / elementWidth);
+    setCurrentIndex(newIndex);
+  };
+
+  useEffect(() => {
+    const scrollElement = jobCategoryScrollRef.current;
+    scrollElement.addEventListener("scroll", handleJobCategoryScroll);
+    return () =>
+      scrollElement.removeEventListener("scroll", handleJobCategoryScroll);
+  }, []);
 
   useEffect(() => {
     const fetchOportunities = async () => {
@@ -131,7 +166,7 @@ function Home() {
   const handleScroll = useCallback(() => {
     if (divRef.current) {
       const scrollTopValue = divRef.current.scrollTop;
-      setIsAtTop(scrollTopValue <= 220);
+      setIsAtTop(scrollTopValue <= 180);
     }
   }, []);
 
@@ -221,50 +256,47 @@ function Home() {
                 ? "shadow-xl rounded-2xl py-3 px-5 w-full "
                 : `sm:scale-x-90  xl:rounded-2xl sm:scale-y-90 ${
                     searchFocus ? "rounded-2xl" : "rounded-full"
-                  }  py-3 ${
-                    searchFocus ? "px-5" : "px-3"
-                  } xl:px-5 w-fit`
+                  }  py-3 ${searchFocus ? "px-5" : "px-3"} xl:px-5 w-fit`
             }`}
             placeholder="Enter the job title or domain"
           />
 
-          {searchFocus  && searchText.length>0 && (
+          {searchFocus && searchText.length > 0 && (
             <div
               role="listbox"
               aria-expanded="true"
               className="border w-full pointer-events-auto absolute sm:max-h-60 max-h-96 overflow-y-auto rounded-2xl max-w-screen-md mt-20 shadow-2xl overflow-hidden bg-white z-40 p-4 flex flex-col"
             >
-              {isLoading
-                ? true && (
-                    <div class="flex min-h-[140px] place-content-center place-self-center w-full  h-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
-                      <svg
-                        class="text-transparent animate-spin"
-                        viewBox="0 0 64 64"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="50"
-                        height="50"
-                      >
-                        <path
-                          d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
-                          stroke="currentColor"
-                          stroke-width="5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        ></path>
-                        <path
-                          d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="text-gray-400"
-                        ></path>
-                      </svg>
-                    </div>
-                  )
-                :
-                jobList.length >0 ?
+              {isLoading ? (
+                true && (
+                  <div class="flex min-h-[140px] place-content-center place-self-center w-full  h-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+                    <svg
+                      class="text-transparent animate-spin"
+                      viewBox="0 0 64 64"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="50"
+                      height="50"
+                    >
+                      <path
+                        d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+                        stroke="currentColor"
+                        stroke-width="5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></path>
+                      <path
+                        d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="text-gray-400"
+                      ></path>
+                    </svg>
+                  </div>
+                )
+              ) : jobList.length > 0 ? (
                 jobList.map((job, index) => (
                   <div
                     key={index}
@@ -278,8 +310,10 @@ function Home() {
                     <p className="font-medium">{job.job_role}</p>
                     <p className="text-gray-400">{job.company_name}</p>
                   </div>
-                )):<p>No jobs Found</p>
-                }
+                ))
+              ) : (
+                <p>No jobs Found</p>
+              )}
             </div>
           )}
         </div>
@@ -298,7 +332,8 @@ function Home() {
       <div className="w-full flex justify-center ">
         {currentTab == "Latest Oportunities" && (
           <div
-            className={` flex sm:grid gap-5 overflow-x-auto w-full mt-16 sm:border sm:p-5 sm:bg-gray-100 sm:shadow-inner sm:rounded-3xl max-w-screen-lg  ${
+            ref={jobsScrollRef}
+            className={` flex sm:grid gap-5  overflow-x-auto w-full mt-16 sm:border sm:p-5 sm:bg-gray-100 sm:shadow-inner sm:rounded-3xl max-w-screen-lg  ${
               !loading ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3" : ""
             }`}
             style={{
@@ -344,7 +379,7 @@ function Home() {
                 style={{
                   scrollSnapAlign: "center", // This makes each item snap to the center of the viewport
                 }}
-                className="bg-white cursor-pointer w-full min-w-full  border sm:shadow-lg text-sm flex overflow-hidden flex-col justify-between  rounded-3xl p-7 "
+                className={`bg-white cursor-pointer w-full min-w-full  border sm:shadow-lg text-sm flex overflow-hidden flex-col justify-between  rounded-3xl p-7  `}
               >
                 <div className="flex gap-4  items-center  text-left ">
                   <UserImageInput
@@ -385,6 +420,7 @@ function Home() {
 
         {currentTab == "Top Paying" && (
           <div
+            ref={jobsScrollRef}
             className=" flex sm:grid gap-5 overflow-x-auto w-full mt-16 sm:border sm:p-5 sm:bg-gray-100 sm:shadow-inner sm:rounded-3xl max-w-screen-lg  grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
             style={{
               scrollbarWidth: "none",
@@ -478,6 +514,7 @@ function Home() {
         )}
         {currentTab == "Various Locations" && (
           <div
+            ref={jobsScrollRef}
             className=" flex sm:grid gap-5 overflow-x-auto w-full mt-16 sm:border sm:p-5 sm:bg-gray-100 sm:shadow-inner sm:rounded-3xl max-w-screen-lg  grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
             style={{
               scrollbarWidth: "none",
@@ -534,8 +571,32 @@ function Home() {
           </div>
         )}
       </div>
-     <div className="w-full flex justify-center">
-     <p onClick={()=>{navigate("/jobs/")}} className="  mt-10 border-2 border-gray-800 text-gray-800 hover:text-white hover:bg-gray-800  cursor-pointer transition-all rounded-full w-fit font-medium text-lg px-6 py-2">See all jobs</p>
+      <div className="flex sm:hidden gap-2 mt-4 w-full justify-center">
+        {(currentTab === "Latest Oportunities"
+          ? latestJobs
+          : currentTab == "Top Paying"
+          ? topPayingJobs
+          : currentTab == "Various Locations"
+          ? variousLocatioJobs
+          : null
+        ).map((_, index) => (
+          <div
+            key={index}
+            className={`h-2 w-2 rounded-full ${
+              jobsCurrrentIndex === index ? "bg-blue-500" : "bg-gray-300"
+            }`}
+          ></div>
+        ))}
+      </div>
+      <div className="w-full flex justify-center">
+        <p
+          onClick={() => {
+            navigate("/jobs/");
+          }}
+          className="  mt-10 border-2 border-gray-800 text-gray-800 hover:text-white hover:bg-gray-800  cursor-pointer transition-all rounded-full w-fit font-medium text-lg px-6 py-2"
+        >
+          See all jobs
+        </p>
       </div>
 
       <p className="text-3xl mt-20 font-bold">Job Categories</p>
@@ -545,6 +606,7 @@ function Home() {
       </p>
       <div className="flex w-full justify-center">
         <div
+          ref={jobCategoryScrollRef}
           className=" flex sm:grid gap-5 overflow-x-auto w-full mt-16   max-w-screen-lg  grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
           style={{
             scrollbarWidth: "none",
@@ -598,7 +660,7 @@ function Home() {
               onClick={() => {
                 navigate("/jobs/" + job.category);
               }}
-              className="border border-gray-300 mb-5 shadow-lg cursor-pointer text-start w-full rounded-xl bg-white p-6"
+              className="border  border-gray-300 mb-5 shadow-lg cursor-pointer text-start w-full rounded-xl bg-white p-6"
             >
               <p className="font-medium text-lg">{job.category}</p>
               <div className="flex justify-between items-center text-sm text-gray-400">
@@ -624,6 +686,53 @@ function Home() {
             </div>
           ))}
         </div>
+      </div>
+      {/* <JobCategories/> */}
+      <div className="flex sm:hidden gap-2 mt-4 w-full justify-center">
+        {[
+          {
+            category: "Information Technology",
+            roles:
+              "Web Developer, Database Administrator, Network Engineer, Cybersecurity Analyst",
+            opportunities: oportunities.informationTechnology,
+          },
+          {
+            category: "Business and Accounting",
+            roles:
+              "Accountant, Financial Analyst, Business Development Manager, Tax Advisor",
+            opportunities: oportunities.businessFinance,
+          },
+          {
+            category: "Engineering and Technology",
+            roles:
+              "Software Engineer, Civil Engineer, Mechanical Engineer, IT Support Specialist",
+            opportunities: oportunities.engineeringTechnology,
+          },
+          {
+            category: "Human Resources (HR)",
+            roles:
+              "HR Manager, Recruiter, Talent Acquisition Specialist, Payroll Specialist",
+            opportunities: oportunities.humanResource,
+          },
+          {
+            category: "Marketing and Advertising",
+            roles:
+              "Marketing Manager, Social Media Specialist, Content Writer, Market Research Analyst",
+            opportunities: oportunities.marketingAdvertising,
+          },
+          {
+            category: "Writing and Journalism",
+            roles: "Journalist, Editor, Copywriter, Technical Writer",
+            opportunities: oportunities.writingJournalist,
+          },
+        ].map((_, index) => (
+          <div
+            key={index}
+            className={`h-2 w-2 rounded-full ${
+              currentIndex === index ? "bg-blue-500" : "bg-gray-300"
+            }`}
+          ></div>
+        ))}
       </div>
 
       <p className="text-2xl w-full  font-semibold mt-20">

@@ -122,7 +122,7 @@ function Jobs() {
             ref={searchRef}
             inputClassName=""
             className={`sticky px-4 rounded-xl transition-all ${isAuthenticated &&"sm:shadow-md "} sm:ml-0   sm:max-w-[250px] flex items-center md:max-w-[350px] lg:max-w-md z-10 bg-white w-full ${
-              !isAuthenticated ? "w-[100%] mt-1" : ""
+              !isAuthenticated ? "w-[100%] -mt-0.5 sm:mt-1" : ""
             } caret-blue-500 h-12  `}
             placeholder="Enter the job title or domain"
           />

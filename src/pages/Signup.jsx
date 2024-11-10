@@ -303,7 +303,7 @@ function Signup() {
           </div>
           <div className=" text-center mt-4 w-full">
             <p className="text-2xl font-semibold text-gray-800 ">Hello User 👋</p>
-            <p className="text-sm text-gray-400">
+            <p className=" text-gray-400">
               Enter you email address to get started
             </p>
           </div>

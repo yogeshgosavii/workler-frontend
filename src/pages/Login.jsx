@@ -53,7 +53,7 @@ function Login({ userType = "candidate" }) {
           <div className='w-full px-6 pt-6 sm:p-10 duration-200'>
             <LogoCircle/>
             <h2 className="text-2xl font-semibold leading-tight mt-16 sm:mt-10">Sign in</h2>
-            <p className='text-gray-400 text-sm font-normal'>Enter your registered email and password</p>
+            <p className='text-gray-400  font-normal'>Enter your registered email and password</p>
             <p id='error' className={`text-red-500 mt-1 w-fit rounded-sm text-sm ${error ? "" : "invisible"}`}>{error}</p>
             <form className='mt-5' onSubmit={handleSubmit}>
               <div className="relative flex peer">

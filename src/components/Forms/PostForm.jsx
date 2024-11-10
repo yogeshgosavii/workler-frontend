@@ -156,14 +156,14 @@ function PostForm({ userDetails, setData, onClose }) {
         onClick={() => window.history.back()}
         className="fixed w-full h-full transition-all bg-black opacity-30 z-20 top-0 left-0"
       ></div>
-      <div className="fixed w-full sm:max-w-lg right-0 h-full   pt-4   bg-white top-0 z-30  overflow-y-auto">
+      <div className="fixed w-full sm:max-w-lg right-0 h-full      bg-white top-0 z-30  overflow-y-auto">
         <form
           onSubmit={handleSubmit}
           className="flex flex-col justify-between h-full  min-w-full  gap-4 "
           encType="multipart/form-data"
         >
-          <div className=" flex-1">
-            <div className="flex px-4 sm:px-6    justify-between">
+          <div className=" flex-1 -mt-4">
+            <div className="flex px-4 sm:px-6   sticky top-0 py-3 items-center bg-white   border-b  z-20  justify-between">
               <svg
                 class="h-8 w-8 text-gray-700 -ml-[1px]"
                 onClick={() => {
@@ -272,7 +272,7 @@ function PostForm({ userDetails, setData, onClose }) {
                 </button>
               </div>
             </div>
-            <div className="flex flex-col mt-4 items-start">
+            <div className="flex flex-col mt-6 items-start">
               <div className="flex px-4 md:px-6 gap-4 w-full ">
                 <UserImageInput
                   className="w-[35px] h-[35px] rounded-full"
@@ -339,17 +339,19 @@ function PostForm({ userDetails, setData, onClose }) {
                   />
                 </div>
               ) : (
-                <JobList
+               <div className="mt-5 w-full">
+                 <JobList
                   jobs={jobs}
                   setJobs={setJobs}
                   tagsText={tagsText}
                   settagsText={settagsText}
                 />
+                </div>
               )}
             </div>
           </div>
 
-          <div className="w-full rela  px-4">
+          <div className="w-full  sticky bottom-20 bg-white  px-4">
             {/* <div
                 onClick={() => {
                   setSelectMentions(false);
@@ -360,7 +362,7 @@ function PostForm({ userDetails, setData, onClose }) {
             { showSelectMention  &&<div 
               className={`${
                 selectMentions ? "animate-popup" : "animate-popdown"
-              } transition-all border py-1 border-gray-200 sm:w-1/2 z-20 rounded-xl shadow-md`}
+              } transition-all border py-1 border-gray-200  z-20 rounded-xl shadow-md`}
             >
               <div className="flex items-center px-2 rounded-lg">
                 <input
@@ -414,7 +416,7 @@ function PostForm({ userDetails, setData, onClose }) {
               </div>
             </div>}
           </div>
-          <div className="flex gap-4 text-gray-800  py-4 px-4 md:px-6 items-center">
+          <div className="flex sticky bg-white bottom-0 gap-4 text-gray-800  py-4 px-4 md:px-6 items-center">
             <div className="disabled:text-blue-300">
               <svg
                 className="h-8 w-8 z-20  cursor-pointer"
@@ -446,7 +448,7 @@ function PostForm({ userDetails, setData, onClose }) {
                 setSelectMentions(true);
                 setShowSelectMention(true)
               }}
-              class="h-7 w-7 "
+              class={`h-7 w-7 ${showSelectMention && "text-gray-400"} `}
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

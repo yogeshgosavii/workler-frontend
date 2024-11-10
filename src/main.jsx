@@ -212,7 +212,7 @@ const router = createBrowserRouter([
       </LoginVerification>
     ),
   },
-  // { path: "*", element: <NotFound /> },
+  { path: "*", element: <NotFound /> },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

@@ -212,12 +212,12 @@ function JobApplication() {
                 <div
                   key={approach._id}
                   onClick={() => {navigate("/job/"+approach.job._id)}}
-                  className="border-y sm:border-y-0 p-4  cursor-pointer flex flex-col gap-4"
+                  className="border-y sm:border sm:rounded-3xl  p-4 sm:p-6  cursor-pointer flex flex-col gap-4"
                 >
                   <JobListItem 
                   job={approach.job}
                   companyDefaultImage={companyDefaultImage}
-                  className="rounded-2xl shadow-lg border"
+                  className="rounded-2xl  border"
                   />
                   {/* <div className="flex gap-4">
                     <UserImageInput
@@ -337,7 +337,7 @@ function JobApplication() {
                       {interviewList?.map((interview) => {
                         if (interview.job._id == approach.job._id) {
                           return (
-                            <div className="text-sm justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
+                            <div className="text-sm border justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
                             <div>
                               <p>
                                 {" "}

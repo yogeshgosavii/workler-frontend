@@ -86,7 +86,7 @@ const App = () => {
       <div className=" w-full h-full overflow-y-auto">
         <Header />
         <div
-          className={` h-screen w-full  overflow-auto  ${
+          className={` h-dvh w-full  overflow-auto  ${
             isAuthenticated && "pb-14 sm:pb-0 sm:pl-[63px]"
           } `}
         >
