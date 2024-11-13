@@ -46,7 +46,7 @@ function Home() {
       document.title = "Find your dream job at workler";
 
     
-   }, [userDetails]);
+   }, []);
 
   useEffect(() => {
     const scrollElement = jobsScrollRef.current;
