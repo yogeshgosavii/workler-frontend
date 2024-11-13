@@ -81,6 +81,7 @@ function UserProfileView({ userId = useParams().userId }) {
   console.log(userId);
 
   useEffect(() => {
+    
     const fetchData = async () => {
       setLoading((prev) => ({ ...prev, userDetails: true }));
       try {
@@ -150,7 +151,14 @@ function UserProfileView({ userId = useParams().userId }) {
       ) {
       }
     }
-  }, [userId]);
+   }, [userId]);
+
+   useEffect(() => {
+    if(userDetails){
+      document.title = userDetails?.username;
+    }
+    
+   }, [userDetails]);
 
   useEffect(() => {
     const fetchApplications = async () => {

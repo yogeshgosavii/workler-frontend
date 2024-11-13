@@ -44,6 +44,10 @@ function PostView({ postId = useParams().postId, index, className }) {
   console.log(post);
 
   useEffect(() => {
+    document.title = post.content  
+ }, []);
+
+  useEffect(() => {
     const fetchPostData = async () => {
       const updatedPosts = await getPostById(postId);
       setPost(updatedPosts);

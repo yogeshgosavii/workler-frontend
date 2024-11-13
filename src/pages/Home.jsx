@@ -42,6 +42,13 @@ function Home() {
   }, [currentTab]);
 
   useEffect(() => {
+  
+      document.title = "Find your dream job at workler";
+
+    
+   }, [userDetails]);
+
+  useEffect(() => {
     const scrollElement = jobsScrollRef.current;
     scrollElement.addEventListener("scroll", handleJobsScroll);
     return () => scrollElement.removeEventListener("scroll", handleJobsScroll);

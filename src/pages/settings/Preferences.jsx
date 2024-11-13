@@ -13,6 +13,10 @@ import Toast from "../../components/toast/Toast";
 const Preferences = () => {
   const currentUser = useSelector((state) => state.auth.user);
 
+
+  useEffect(() => {
+    document.title = "User job preferences"  
+ }, []);
   const [hasPreferences, setHasPreferences] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);

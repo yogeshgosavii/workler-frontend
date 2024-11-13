@@ -10,6 +10,14 @@ function ForgotPassword() {
   const [timer, setTimer] = useState(30);
   const [resetLinkLoading, setResetLinkLoading] = useState(false);
 
+
+  useEffect(() => {
+  
+      document.title = "Forget password";
+
+    
+    
+   }, []);
   // Handle Resend Link and Timer Countdown
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -23,6 +23,10 @@ function UserHome() {
   const navigate = useNavigate()
 
   const jobService = useJobApi();
+  useEffect(() => {
+      document.title = "Home";
+    
+   }, []);
 
   useEffect(() => {
     const fetchPosts = async () => {

@@ -27,6 +27,10 @@ function AccountSettings() {
   const userData = useSelector((state) => state.auth.user);
   const usernameTimeout = useRef(null);
 
+
+  useEffect(() => {
+    document.title = "Account settings"  
+ }, []);
   // Set the username when the component mounts or userData changes
   useEffect(() => {
     if (userData) {

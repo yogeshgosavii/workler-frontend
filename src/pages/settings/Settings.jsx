@@ -8,7 +8,9 @@ function Settings() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.user);
-
+  useEffect(() => {
+      document.title = "User settings"  
+   }, []);
   return (
     <div className="">
       <div

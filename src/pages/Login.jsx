@@ -23,6 +23,13 @@ function Login({ userType = "candidate" }) {
     return regex.test(email);
   };
 
+
+  useEffect(() => {
+      document.title = "Login";
+    
+    
+   }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!emailCheck || !passwordCheck) {

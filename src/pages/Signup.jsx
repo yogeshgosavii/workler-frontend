@@ -56,6 +56,11 @@ function Signup() {
   const [personal_details, setpersonal_details] = useState({});
   const [company_details, setcompany_details] = useState({});
 
+  useEffect(() => {
+      document.title = "Signup";
+    
+   }, []);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     console.log("User Data:", userData);

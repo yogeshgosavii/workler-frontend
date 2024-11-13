@@ -42,6 +42,12 @@ function JobApplication() {
     }
   };
 
+
+  useEffect(() => {
+      document.title = "Job application manager";
+    
+   }, []);
+
   const updateApproach = async ({ id, status }) => {
     const updatedApproach = await approachService.updateStatus({ id, status });
     setApproaches((prev) => [...prev, { updatedApproach }]);

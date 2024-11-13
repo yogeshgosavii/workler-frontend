@@ -30,6 +30,11 @@ function Search() {
   const jobService = useJobApi();
 
   useEffect(() => {
+      document.title = "User Search";
+    
+   }, []);
+
+  useEffect(() => {
     console.log(location.pathname);
 
     const handleScroll = () => {

@@ -32,6 +32,12 @@ function Notification({ userId }) {
   };
 
   useEffect(() => {
+      document.title = "User notification";
+    
+    
+   }, []);
+
+  useEffect(() => {
     const fetchNotifications = async () => {
       setLoading(true);
       setError(null); // Reset error state before fetching

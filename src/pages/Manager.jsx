@@ -22,6 +22,12 @@ function Manager() {
     applicationList: false,
     interviewList: false,
   });
+
+  useEffect(() => {
+      document.title = "Job manager";
+    
+    
+   }, []);
  
   useEffect(() => {
     const handlePopState = () => {

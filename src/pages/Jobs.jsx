@@ -23,6 +23,17 @@ function Jobs() {
   const [jobsRefersh, setJobsRefersh] = useState(false);
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
+
+  useEffect(() => {
+    if(jobQuery){
+      document.title = jobQuery;
+    }
+    else{
+      document.title = "All jobs";
+
+    }
+    
+   }, []);
   // Fetch jobs based on search text
   // useEffect(() => {
   //   const fetchJobs = async () => {

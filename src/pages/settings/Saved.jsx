@@ -23,7 +23,9 @@ function Saved() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [unsavedItems, setUnsavedItems] = useState([]); // Track unsaved items
-
+  useEffect(() => {
+    document.title = "User saveds "  
+ }, []);
   // Fetch saved data based on the selected tab
   useEffect(() => {
     setLoading(true);

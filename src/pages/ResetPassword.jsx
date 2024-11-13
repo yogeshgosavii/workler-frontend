@@ -15,6 +15,11 @@ const ResetPassword = () => {
 
   const navigate = useNavigate();
 
+    useEffect(() => {
+      document.title = "Reset Password";
+    
+   }, []);
+
   useEffect(() => {
     const checkTokenValidity = async () => {
       try {

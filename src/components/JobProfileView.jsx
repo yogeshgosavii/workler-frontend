@@ -107,6 +107,10 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       fetchInterviews();
     }
   }, []);
+
+  useEffect(() => {
+    document.title = jobDetails.job_role 
+ }, []);
   useEffect(() => {
     const fetchData = async () => {
       setLoading((prev) => ({ ...prev, jobDetails: true }));

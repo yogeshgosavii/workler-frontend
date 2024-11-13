@@ -60,7 +60,7 @@ const UserProfile = () => {
   const jobApi = useJobApi();
 
   useEffect(() => {
-    return () => {};
+    document.title = "User Profile";
   }, []);
   const [pageLoading, setpageLoading] = useState(false);
   const [settings, setsettings] = useState(false);
