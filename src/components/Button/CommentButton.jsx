@@ -16,7 +16,7 @@ function CommentButton({ onClick, comments = [],commentId, postData, className, 
     // If comments array is empty, fetch data
     if (comments.length === 0) {
       const fetchComments = async () => {
-        const response = await getCommentsByPostId(postData._id);
+        const response = await getCommentsByPostId(postData?._id);
         setCommentCount(response.length);
       };
 

@@ -769,7 +769,7 @@ function UserProfileView({ userId = useParams().userId }) {
             })}
             {!loading.userDetails && (
               <div className="flex gap-4 flex-wrap">
-                {(currentUserDetails.account_type == "Candidate" ||
+                {currentUserDetails._id != userDetails._id &&(currentUserDetails.account_type == "Candidate" ||
                   currentUserDetails.account_type == "Explorer" ||
                   currentUserDetails.account_type == "Employeer" ||
                   currentUserDetails.account_type ==
@@ -796,7 +796,7 @@ function UserProfileView({ userId = useParams().userId }) {
                     </button>
                   ))}
 
-                {currentUserDetails.account_type === "Employeer" &&
+                {currentUserDetails._id != userDetails._id  && currentUserDetails.account_type === "Employeer" &&
                   userDetails?.account_type === "Candidate" &&
                   (approached?.status === "declined" || !approached) &&
                   !loading.checkApproached &&
@@ -826,7 +826,7 @@ function UserProfileView({ userId = useParams().userId }) {
                   return <p>Applied for {application.job.job_role}</p>;
                 }
               })} */}
-                {!loading.userDetails &&
+                {!loading.userDetails && currentUserDetails._id != userDetails._id  &&
                   (saved ? (
                     <button
                       onClick={() => unsaveProfie()}
@@ -896,7 +896,7 @@ function UserProfileView({ userId = useParams().userId }) {
                 (100 /
                   (userDetails?.account_type === "Employeer"
                     ? currentUserDetails?.account_type === "Employeer"
-                      ? 3
+                      ? 2
                       : 4
                     : 3)) *
                 tabIndex
@@ -906,7 +906,7 @@ function UserProfileView({ userId = useParams().userId }) {
             className={`w-1/${
               userDetails?.account_type === "Employeer"
                 ? currentUserDetails?.account_type === "Employeer"
-                  ? "3"
+                  ? "2"
                   : "4"
                 : "3"
             } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-gray-800 absolute`}

@@ -9,6 +9,8 @@ import Tabs from "../components/TabsComponent";
 import useJobApi from "../services/jobService";
 import UserImageInput from "../components/Input/UserImageInput";
 import JobCategories from "../components/JobCategories";
+import companyDefaultImage from '../assets/companyDefaultImage.png';
+
 
 function Home() {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -391,8 +393,12 @@ function Home() {
                 <div className="flex gap-4  items-center  text-left ">
                   <UserImageInput
                     imageHeight={60}
-                    image={job.conpany_logo}
+                    image={job.conpany_logo ||companyDefaultImage}
                     isEditable={false}
+                    onError={(e) => {
+                      e.target.src = companyDefaultImage;
+                      e.target.onerror = null; // Remove error handler to avoid infinite loop
+                    }}
                   />
                   <div className="">
                     <p className="font-semibold text-xl text-wrap leading-tight line-clamp-2 sm:line-clamp-2">
@@ -449,8 +455,12 @@ function Home() {
                 <div className="flex gap-4  items-center  text-left ">
                   <UserImageInput
                     imageHeight={60}
-                    image={job.conpany_logo}
+                    image={job.conpany_logo || companyDefaultImage}
                     isEditable={false}
+                    onError={(e) => {
+                      e.target.src = companyDefaultImage;
+                      e.target.onerror = null; // Remove error handler to avoid infinite loop
+                    }}
                   />
                   <div className="">
                     <p className="font-semibold text-xl text-wrap leading-tight line-clamp-2 sm:line-clamp-2">
@@ -543,8 +553,12 @@ function Home() {
                 <div className="flex gap-4  items-center  text-left ">
                   <UserImageInput
                     imageHeight={60}
-                    image={job.conpany_logo}
+                    image={job.conpany_logo || companyDefaultImage}
                     isEditable={false}
+                    onError={(e) => {
+                      e.target.src = companyDefaultImage;
+                      e.target.onerror = null; // Remove error handler to avoid infinite loop
+                    }}
                   />
                   <div className="">
                     <p className="font-semibold text-xl text-wrap leading-tight line-clamp-2 sm:line-clamp-2">

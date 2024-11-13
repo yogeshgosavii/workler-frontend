@@ -75,7 +75,7 @@ function Saved() {
     if (
       savedItems.posts.some(
         (post) =>
-          post.saved_content.post_type === "job" && !post.saved_content.job
+          post.saved_content?.post_type === "job" && !post.saved_content?.job
       )
     ) {
       fetchJobDetails();
@@ -137,18 +137,18 @@ function Saved() {
               className="w-[35px] h-[35px]  rounded-full"
               imageHeight={40}
               imageBorder={1}
-              image={post?.saved_content.user.profileImage?.compressedImage}
-              alt={`${post?.saved_content.user.username}'s avatar`}
+              image={post?.saved_content?.user.profileImage?.compressedImage}
+              alt={`${post?.saved_content?.user.username}'s avatar`}
               isEditable={false}
             />
             <div className="flex gap-2 ml-2 items-center ">
               <div>
                 <p className="font-medium">
-                  {post?.saved_content.user.personal_details?.firstname}{" "}
-                  {post?.saved_content.user.personal_details?.lastname}
+                  {post?.saved_content?.user.personal_details?.firstname}{" "}
+                  {post?.saved_content?.user.personal_details?.lastname}
                 </p>
                 <p className=" text-gray-400 -mt-[3px] text-sm">
-                  {post?.saved_content.user.username}
+                  {post?.saved_content?.user.username}
                 </p>
               </div>
               {/* <span className="font-bold text-gray-500">·</span>{" "}
@@ -166,7 +166,7 @@ function Saved() {
               </p> */}
             </div>
           </div>
-          {post.saved_content.post_type === "job" ? (
+          {post.saved_content?.post_type === "job" ? (
             <div className="border  h-full relative ">
               <div className="flex items-center gap-2 m-3">
                 <div className="w-12 h-12 rounded-full bg-pink-950 text-white flex justify-center items-center">
@@ -204,8 +204,8 @@ function Saved() {
                 </div>
               </div>
             </div>
-          ) : post.saved_content.images ? (
-            post?.saved_content.images?.compressedImage[0] && (
+          ) : post.saved_content?.images ? (
+            post?.saved_content?.images?.compressedImage[0] && (
    
                 <div
                   style={{ overflowX: "auto", scrollbarWidth: "none" }}
@@ -227,7 +227,7 @@ function Saved() {
           ) : (
             <p
               className="p-3  text-sm h-full "
-              dangerouslySetInnerHTML={{ __html: post?.saved_content.content }}
+              dangerouslySetInnerHTML={{ __html: post?.saved_content?.content }}
             />
             //   {post?.saved_content.content}
             // </p>
@@ -236,8 +236,8 @@ function Saved() {
             <div className="flex gap-4 justify-center  z-10 text-gray-400 font-normal items-center ">
               <LikeButton
                 postData={post.saved_content}
-                likes={post.saved_content.likes}
-                likesCount={post.saved_content.likes_count}
+                likes={post.saved_content?.likes}
+                likesCount={post.saved_content?.likes_count}
               />
               <CommentButton
                 onClick={(e) => {
@@ -296,9 +296,9 @@ function Saved() {
   );
 
   const renderProfiles = () => (
-    <div className="px-4 sm:px-0 grid grid-cols-2 w-full gap-4">
+    <div className="px-4 sm:px-0 grid grid-cols-1 w-full gap-4">
         {
-          savedItems.profiles.length <=0 && <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+          savedItems.profiles.length <=0 && <p className="max-w-xl w-full pt-20 text-center sm:h-full h-fit px-6 md:px-6">
           <p className="text-2xl font-bold text-gray-500">
             No Saved Profiles 
           </p>
@@ -308,11 +308,12 @@ function Saved() {
           </p>
         </p>
         }
-      {savedItems.profiles.map((profile) => (
+    <div className="px-4 sm:px-0 grid grid-cols-2 w-full gap-4">
+    {savedItems.profiles.map((profile) => (
         <div
           key={profile._id}
           onClick={() => {
-            navigate("/user/" + profile.saved_content._id);
+            navigate("/user/" + profile.saved_content?._id);
           }}
           className={`border relative flex flex-col justify-between  p-3 w-full  rounded-xl ${
             unsavedItems.includes(profile._id) ? "animate-unsave" : ""
@@ -337,7 +338,7 @@ function Saved() {
                   </p>
                 )}
               <p className="text-gray-400 text-center">
-                {profile.saved_content.username}
+                {profile.saved_content?.username}
               </p>
             </div>
           </div>
@@ -371,6 +372,7 @@ function Saved() {
           )}
         </div>
       ))}
+     </div>
     </div>
   );
 

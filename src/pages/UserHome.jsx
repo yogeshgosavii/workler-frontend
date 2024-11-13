@@ -150,7 +150,7 @@ function UserHome() {
           </div>
         ) : selectedType == "Preferred Jobs" ? (
           preferedJobs.lehgth<=0 ? (
-            <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+            <p className="max-w-xl pt-20 text-center bg-gray-50 sm:h-full h-fit px-6 md:px-6">
               <p className="text-2xl font-bold text-gray-500">
                 No jobs listed based on your preferences
               </p>
@@ -184,8 +184,8 @@ function UserHome() {
               postPaddingbottom={"pb-10"}
               postClassName={"sm:shadow-lg   sm:rounded-xl"}
               no_post_error={
-                selectedType == "Job Posts" && (
-                  <p className="max-w-xl pt-20 sm:h-full text-center h-fit px-6 md:px-6">
+                selectedType == "Job Posts" ? (
+                  <p className="max-w-xl pt-20 bg-gray-50 sm:h-full text-center h-fit px-6 md:px-6">
                     <p className="text-2xl font-bold text-gray-500">
                       No Job Posts Available
                     </p>
@@ -195,6 +195,17 @@ function UserHome() {
                     <p onClick={()=>{navigate("/jobs")}} className="text-blue-500 font-medium cursor-pointer">Explore jobs</p>
 
                   </p>
+                ):
+                (
+                  <p className="max-w-xl pt-20 bg-gray-50 sm:h-full text-center h-fit px-6 md:px-6">
+                  <p className="text-2xl font-bold text-gray-500">
+                    No  Posts Available
+                  </p>
+                  <p className="mt-1 text-gray-400 ">
+                    Once available, relevant posts will appear here.
+                  </p>
+
+                </p>
                 )
               }
             columns={"grid-cols-1 "}
