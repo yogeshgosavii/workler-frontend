@@ -174,6 +174,10 @@ function UserPostUpdateSettings({
                       ...postSettings,
                       mentions: mentionList,
                     });
+                    setPostData((prev)=>({
+                      ...prev,
+                      mentions : mentionList
+                    }))
                     setPostSetting(null);
                     setSelectMentions(false);
                   }}

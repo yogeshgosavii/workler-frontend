@@ -596,7 +596,7 @@ function UserProfileView({ userId = useParams().userId }) {
                 />
               )}
               <div className="flex flex-col -mt-1 justify-center">
-                <p className="sm:text-2xl  font-semibold">
+                <p className="text-xl  font-semibold">
                   {atTop > 100 ? userDetails?.username : "Profile"}
                 </p>
                 {/* <div className="flex gap-1 mt-0.5 items-center">

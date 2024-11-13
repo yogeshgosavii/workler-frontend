@@ -7,6 +7,7 @@ import {
 import { useSelector } from "react-redux";
 import UserImageInput from "../components/Input/UserImageInput";
 import { useNavigate } from "react-router-dom";
+import TouchRipple from "@mui/material/ButtonBase/TouchRipple";
 
 function Notification({ userId }) {
   const [notifications, setNotifications] = useState([]);
@@ -157,9 +158,13 @@ function Notification({ userId }) {
         </div>
       ) : error ? (
         <p className="text-red-500 px-4 md:px-6">{error}</p>
-      ) : notifications.length === 0 ? (
-        <p className="text-gray-400  pt-16 sm:h-full h-fit px-4 md:px-6">
-          No notifications yet
+      ) :
+       notifications.length === 0 
+      // true
+      ? (
+        <p className="  max-w-xl pt-20  sm:h-full h-fit px-6 md:px-6">
+         <p className="text-3xl font-bold text-gray-500">No notifications yet </p>
+         <p className="mt-2 text-gray-400 font-medium"> Notifications like like you post , commented on you post or job approach will be shows here</p>
         </p>
       ) : (
         <ul className=" overflow-y-auto w-full h-full bg-white  max-w-xl  border-x   pb-20 sm:pb-0">

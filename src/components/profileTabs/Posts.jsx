@@ -24,8 +24,9 @@ function Posts({
   postClassName,
   postPaddingbottom,
   setPostData,
-  columns ,
+  columns,
   userDetails,
+  no_post_error,
   isEditable = true,
 }) {
   const [commentButtonClicked, setCommentButtonClicked] = useState(null);
@@ -114,8 +115,17 @@ function Posts({
               Add post
             </p>
           </div>
+        ) : no_post_error ? (
+          no_post_error
         ) : (
-          <p className="w-full text-center mt-5 text-gray-400">No posts yet</p>
+          <p className="max-w-xl pt-20 sm:h-full text-center h-fit px-6 md:px-6">
+            <p className="text-2xl font-bold text-gray-500">
+              No Posts Available
+            </p>
+            <p className="mt-1 text-gray-400">
+              Once available, relevant posts will appear here.
+            </p>
+          </p>
         )
       ) : (
         <div className="flex flex-col  sm:gap-4">
@@ -280,52 +290,58 @@ function Posts({
                       </svg>
                     </div>
                   </div>
-                  <div className={`relative ${
-                        !post.images && " flex-1"
-                      } `}>
+                  <div
+                    className={`relative ${
+                      !post.images && post.post_type !== "job" && " flex-1"
+                    } `}
+                  >
                     <p
-                      className={`mt-4 text-sm ${
-                        !post.images && " flex-1  border p-4 rounded-xl"
+                      className={`mt-4 ${
+                        !post.images &&
+                        post.post_type !== "job" &&
+                        " flex-1  border p-4 rounded-xl"
                       }`}
                       dangerouslySetInnerHTML={{ __html: post.content }}
                     />
-                    {post.mentions.length > 0 && !post.images && (
-                      // <svg
-                      //   onClick={(e) => {
-                      //     e.stopPropagation();
-                      //     setPostMentions(post.mentions);
-                      //   }}
-                      //   xmlns="http://www.w3.org/2000/svg"
-                      //   width="30"
-                      //   height="30"
-                      //   fill="currentColor"
-                      //   class="bi bi-person-fill border rounded-full p-1.5"
-                      //   viewBox="0 0 16 16"
-                      // >
-                      //   <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                      // </svg>
+                    {post.mentions.length > 0 &&
+                      !post.images &&
+                      post.post_type !== "job" && (
+                        // <svg
+                        //   onClick={(e) => {
+                        //     e.stopPropagation();
+                        //     setPostMentions(post.mentions);
+                        //   }}
+                        //   xmlns="http://www.w3.org/2000/svg"
+                        //   width="30"
+                        //   height="30"
+                        //   fill="currentColor"
+                        //   class="bi bi-person-fill border rounded-full p-1.5"
+                        //   viewBox="0 0 16 16"
+                        // >
+                        //   <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                        // </svg>
 
-                      <div
-                        // onClick={() => handleRemoveImage(image)}
-                        className="absolute bottom-11 right-4  cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setPostMentions(post.mentions);
-                        }}
-                      >
-                        <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          fill="currentColor"
-                          className="h-4 w-4 text-gray-100  absolute top-[9px] right-2 z-10"
-                          viewBox="0 0 16 16"
+                        <div
+                          // onClick={() => handleRemoveImage(image)}
+                          className="absolute bottom-11 right-4  cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setPostMentions(post.mentions);
+                          }}
                         >
-                          <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                        </svg>
-                      </div>
-                    )}
+                          <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            fill="currentColor"
+                            className="h-4 w-4 text-gray-100  absolute top-[9px] right-2 z-10"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                          </svg>
+                        </div>
+                      )}
                   </div>
                   {post.images && (
                     <div
@@ -389,8 +405,47 @@ function Posts({
                         scrollBehavior: "smooth",
                         display: "flex",
                       }}
-                      className="relative flex-1 flex flex-col"
+                      className="relative w-full flex flex-col"
                     >
+                      {post.mentions.length > 0 &&
+                        !post.images &&
+                        post.post_type === "job" && (
+                          // <svg
+                          //   onClick={(e) => {
+                          //     e.stopPropagation();
+                          //     setPostMentions(post.mentions);
+                          //   }}
+                          //   xmlns="http://www.w3.org/2000/svg"
+                          //   width="30"
+                          //   height="30"
+                          //   fill="currentColor"
+                          //   class="bi bi-person-fill border rounded-full p-1.5"
+                          //   viewBox="0 0 16 16"
+                          // >
+                          //   <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                          // </svg>
+
+                          <div
+                            // onClick={() => handleRemoveImage(image)}
+                            className="absolute top-10 right-4  cursor-pointer"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setPostMentions(post.mentions);
+                            }}
+                          >
+                            <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="20"
+                              height="20"
+                              fill="currentColor"
+                              className="h-4 w-4 text-gray-100  absolute top-[9px] right-2 z-10"
+                              viewBox="0 0 16 16"
+                            >
+                              <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                            </svg>
+                          </div>
+                        )}
                       <div
                         style={{
                           display: "flex",
@@ -416,29 +471,31 @@ function Posts({
                                   scrollSnapAlign: "start", // Snap to the start of each item
                                   minWidth: "100%", // Ensure items take full width
                                 }}
-                                className="mt-2 border p-5 w-full rounded-2xl flex-shrink-0"
+                                className="mt-2 border p-5 w-full rounded-2xl flex flex-col justify-between flex-shrink-0"
                               >
-                                <div className="flex gap-4">
-                                  <p className="bg-pink-950 text-white font-bold text-3xl -ml-px rounded-full flex items-center justify-center w-14 h-14">
-                                    {logoLetter}
-                                  </p>
-                                  <div>
-                                    <h3 className="font-bold text-2xl">
-                                      {job.job_role}
-                                    </h3>
-                                    <p className="text-gray-500">
-                                      {job.company_name}
+                                <div>
+                                  <div className="flex gap-4">
+                                    <p className="bg-pink-950 text-white font-bold text-3xl -ml-px rounded-full flex items-center justify-center w-14 h-14">
+                                      {logoLetter}
                                     </p>
+                                    <div>
+                                      <h3 className="font-bold text-2xl">
+                                        {job.job_role}
+                                      </h3>
+                                      <p className="text-gray-500">
+                                        {job.company_name}
+                                      </p>
+                                    </div>
                                   </div>
+                                  <p className="text-sm mt-2 line-clamp-3 max-w-fit text-wrap truncate">
+                                    {job.description}
+                                  </p>
                                 </div>
-                                <p className="text-sm mt-2 line-clamp-3 max-w-fit text-wrap truncate">
-                                  {job.description}
-                                </p>
                                 <a
                                   href={job.job_url}
                                   target="_blank"
                                   aria-label={`Apply for ${job.job_role} at ${job.company_name}`}
-                                  className="bg-blue-500 rounded-lg w-full px-4 py-2 pb-3 flex items-center justify-center text-xl font-bold text-white mt-4"
+                                  className="bg-blue-500 rounded-lg w-full px-4 py-2 pb-3 flex items-center sticky  justify-center text-xl font-bold text-white mt-4"
                                 >
                                   Apply
                                 </a>

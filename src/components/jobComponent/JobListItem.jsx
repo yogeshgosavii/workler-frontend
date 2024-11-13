@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import remotiveLogo from "../../assets/wordmark_H_orange.svg";
 import savedService from "../../services/savedService";
@@ -31,6 +31,14 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
     }
   }, []);
 
+  const logoRef = useRef(null);
+
+  const logoSrc = job.company_logo
+    ? `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(job.company_logo)}`
+    : job.user?.company_details && job.user.profileImage.compressedImage
+    ? job.user.profileImage.compressedImage
+    : companyDefaultImage;
+
   const saveJob = async () => {
     setSaved(true);
     const response = await savedService.save({
@@ -58,19 +66,18 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
       <div className="flex gap-4 px-6">
         {/* Company Logo */}
         <img
-          className="w-14 h-14 object-contain border bg-gray-50 p-2 rounded-lg"
-          src={
-            job.company_logo ||
-            (job.user.company_details &&
-              job.user?.profileImage.compressedImage) ||
-            companyDefaultImage
-          }
-          alt={`${job.company_name} logo`}
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.src = companyDefaultImage;
-          }}
-        />
+      ref={logoRef}
+      className="w-14 h-14 object-contain border bg-gray-200 rounded-lg"
+      crossOrigin="anonymous"
+      referrerPolicy="no-referrer"
+      src={logoSrc}
+      alt={`${job.company_name} logo`}
+      onError={(e) => {
+        e.target.classList.add("bg-gray-50", "p-2");
+        e.target.src = companyDefaultImage;
+        e.target.onerror = null; // Remove error handler to avoid infinite loop
+      }}
+    />
 
         {/* Job Details */}
         <div className="flex-1 flex flex-col overflow-x-hidden ">

@@ -14,6 +14,7 @@ const JobList = ({ jobs, setJobs, settagsText, tagsText }) => {
       containerRef.current.scrollLeft = containerRef.current.scrollWidth;
     }
   }, [jobs]);
+  const [companyName, setCompanyName] = useState("");
 
   const handleAddJob = () => {
     setJobs((prev) => [
@@ -119,7 +120,7 @@ const JobList = ({ jobs, setJobs, settagsText, tagsText }) => {
           <OptionInput
             key={job.jobId + "_companyname"}
             name={job.jobId + "_companyname"}
-            initialValue="Click to select"
+            initialValue="Others"
             onChange={(e) => {
               const updatedJobs = jobs.map((j) =>
                 j.jobId === job.jobId ? { ...j, company_name: e.target.value } : j
@@ -141,8 +142,92 @@ const JobList = ({ jobs, setJobs, settagsText, tagsText }) => {
                 name: "Google",
                 value: "Google",
               },
+              {
+                name: "Apple",
+                value: "Apple",
+              },
+              {
+                name: "Amazon",
+                value: "Amazon",
+              },
+              {
+                name: "Facebook",
+                value: "Facebook",
+              },
+              {
+                name: "IBM",
+                value: "IBM",
+              },
+              {
+                name: "Intel",
+                value: "Intel",
+              },
+              {
+                name: "Oracle",
+                value: "Oracle",
+              },
+              {
+                name: "Cisco",
+                value: "Cisco",
+              },
+              {
+                name: "Salesforce",
+                value: "Salesforce",
+              },
+              {
+                name: "Adobe",
+                value: "Adobe",
+              },
+              {
+                name: "Deloitte",
+                value: "Deloitte",
+              },
+              {
+                name: "SAP",
+                value: "SAP",
+              },
+              {
+                name: "Walmart",
+                value: "Walmart",
+              },
+              {
+                name: "Goldman Sachs",
+                value: "Goldman Sachs",
+              },
+              {
+                name: "JPMorgan Chase",
+                value: "JPMorgan Chase",
+              },
+              {
+                name: "Tesla",
+                value: "Tesla",
+              },
+              {
+                name: "Uber",
+                value: "Uber",
+              },
+              {
+                name: "Airbnb",
+                value: "Airbnb",
+              },
+              {
+                name: "Others",
+                value: "Others",
+              },
+              
             ]}
+            
           />
+         {true && <TextInput
+         onChange={(e) => {
+          const updatedJobs = jobs.map((j) =>
+            j.jobId === job.jobId ? { ...j, company_name: e.target.value } : j
+          );
+          setJobs(updatedJobs);
+        }}
+        value={job.company_name}
+        placeholder={"Enter company name"}
+          />}
           <TextAreaInput
             key={job.jobId + "_description"}
             name={job.jobId + "_description"}

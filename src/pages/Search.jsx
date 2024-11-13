@@ -68,16 +68,16 @@ function Search() {
         }
       }
 
-      try {
-        jobSearchResponse = await searchService.secrchJobByKeyword(searchQuery);
-        console.log(jobSearchResponse);
-      } catch (error) {
-        if (error.response && error.response.status === 404) {
-          console.warn("Job search not found.");
-        } else {
-          console.error("An error occurred during job search:", error);
-        }
-      }
+      // try {
+      //   jobSearchResponse = await searchService.secrchJobByKeyword(searchQuery);
+      //   console.log(jobSearchResponse);
+      // } catch (error) {
+      //   if (error.response && error.response.status === 404) {
+      //     console.warn("Job search not found.");
+      //   } else {
+      //     console.error("An error occurred during job search:", error);
+      //   }
+      // }
 
       setSearchedUsers(userSearchResponse || []);
       setSearchedJobs(jobSearchResponse || []);

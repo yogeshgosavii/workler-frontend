@@ -2,10 +2,12 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../../features/auth/authSlice";
 import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 function Settings() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.auth.user);
 
   return (
     <div className="">
@@ -15,7 +17,7 @@ function Settings() {
         }}
         className="fixed w-full h-full bg-black opacity-30 z-20 top-0 left-0"
       ></div>
-      <div className="fixed w-full sm:max-w-lg right-0   h-full  px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
+      <div className="fixed w-full text-gray-800 sm:max-w-lg right-0   h-full  px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
         <div className=" flex  h-full justify-between flex-col">
           <div>
             <h2 className="text-2xl font-bold mb-10 ">Settings</h2>
@@ -97,7 +99,7 @@ function Settings() {
                 </svg>
                 <p className="-mt-0.5">Preferences</p>
               </div> */}
-              <button
+              {currentUser.account_type =="Candidate" && <button
                 onClick={(e) => {
                   navigate("/profile/settings/preferences");
                 }}
@@ -144,7 +146,7 @@ function Settings() {
                     />
                   </svg>
                 </span>
-              </button>
+              </button>}
 
               {/* <div
                 onClick={(e) => {

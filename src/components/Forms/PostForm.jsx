@@ -15,6 +15,7 @@ import authservice from "../../services/authService.js";
 import JobList from "../JobList.jsx";
 import DOMPurify from "dompurify";
 import searchService from "../../services/searchService.js";
+import { useNavigate } from "react-router-dom";
 
 function PostForm({ userDetails, setData, onClose }) {
   const [images, setImages] = useState([]);
@@ -28,6 +29,7 @@ function PostForm({ userDetails, setData, onClose }) {
   const [mentionSecrchText, setMentionSecrchText] = useState("");
   const [mentionList, setmentionList] = useState([]);
   const [mentionSearchList, setMentionSearchList] = useState([]);
+  const navigate = useNavigate()
 
   const jobService = useJobApi();
   const [tagsText, settagsText] = useState([]);
@@ -112,7 +114,8 @@ function PostForm({ userDetails, setData, onClose }) {
 
         // setData(prev =>([...prev,{...data,user : {profileImage : user.profileImage,username:user.username}}]))
         // onClose()
-        window.history.back();
+        navigate("/profile", { replace: true });
+        // window.history.back();
         setFormData({ content: "", images: [] });
         setImages([]);
       } finally {
@@ -137,7 +140,10 @@ function PostForm({ userDetails, setData, onClose }) {
 
         // })
         // setData(prev =>([...prev,data]))
-        onClose();
+        // onClose();
+        navigate("/profile", { replace: true });
+
+
         setFormData({ content: "", images: [] });
         setImages([]);
       } catch (error) {
@@ -417,7 +423,7 @@ function PostForm({ userDetails, setData, onClose }) {
             </div>}
           </div>
           <div className="flex sticky bg-white bottom-0 gap-4 text-gray-800  py-4 px-4 md:px-6 items-center">
-            <div className="disabled:text-blue-300">
+            <div className={`${postType=="job" &&"text-gray-600"}`}>
               <svg
                 className="h-8 w-8 z-20  cursor-pointer"
                 viewBox="0 0 24 24"
@@ -438,6 +444,7 @@ function PostForm({ userDetails, setData, onClose }) {
                 id="fileInput"
                 name="images"
                 multiple
+                disabled={postType=="job"?true:false}
                 onChange={handleImageChange}
                 className="hidden"
               />

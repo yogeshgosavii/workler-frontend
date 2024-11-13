@@ -101,8 +101,8 @@ export const addReply = async (replyData) => {
   return response;
 };
 
-export const getReplies = async (replyData) => {
-  const response = await handleRequest(API_URL + `/post/comment/${replyData}/reply`, {
+export const getReplies = async (commentId) => {
+  const response = await handleRequest(API_URL + `/post/comment/${commentId}/reply`, {
     method: 'GET',
     headers: setAuthHeaders(getToken()),
   });

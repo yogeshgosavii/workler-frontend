@@ -3,30 +3,31 @@ import { useSelector } from "react-redux";
 import { getCommentsByPostId, getReplies } from "../../services/postService";
 import "../../css/button.css";
 
-
-function CommentButton({ onClick,comments, postData, className, state = "post" }) {
+function CommentButton({ onClick, comments = [],commentId, postData, className, state = "post", count }) {
   const user = useSelector((state) => state.auth.user);
-  const [commentCount, setCommentCount] = useState(0);
+  const [commentCount, setCommentCount] = useState(comments.length);
   const [clicked, setClicked] = useState(false);  // Track button click state
   const debounceTimeout = useRef(null);  // For debouncing the click action
 
   useEffect(() => {
-    const fetchComments = async () => {
-      const response = await getCommentsByPostId(postData._id);
-      setCommentCount(response.length > 0 ? response.length : 0);
-    };
+    // Update the count based on the length of `comments`
+    setCommentCount(comments.length);
 
-    const fetchReplies = async () => {
-      const response = await getReplies(postData._id);
-      setCommentCount(response.length > 0 ? response.length : 0);
-    };
+    // If comments array is empty, fetch data
+    if (comments.length === 0) {
+      const fetchComments = async () => {
+        const response = await getCommentsByPostId(postData._id);
+        setCommentCount(response.length);
+      };
 
-    if (state === "post") {
-      fetchComments();
-    } else {
-      fetchReplies();
+      const fetchReplies = async () => {
+        const response = await getReplies(commentId);
+        setCommentCount(response.length);
+      };
+
+      state === "post" ? fetchComments() : fetchReplies();
     }
-  }, [postData,comments, state]);
+  }, [comments.length]); // Depend on comments.length for real-time update
 
   // Handle the comment button click event
   const handleCommentClick = async () => {
@@ -56,25 +57,6 @@ function CommentButton({ onClick,comments, postData, className, state = "post" }
       >
         <path d="M2.678 11.894a1 1 0 0 1 .287.801 11 11 0 0 1-.398 2c1.395-.323 2.247-.697 2.634-.893a1 1 0 0 1 .71-.074A8 8 0 0 0 8 14c3.996 0 7-2.807 7-6s-3.004-6-7-6-7 2.808-7 6c0 1.468.617 2.83 1.678 3.894m-.493 3.905a22 22 0 0 1-.713.129c-.2.032-.352-.176-.273-.362a10 10 0 0 0 .244-.637l.003-.01c.248-.72.45-1.548.524-2.319C.743 11.37 0 9.76 0 8c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7a9 9 0 0 1-2.347-.306c-.52.263-1.639.742-3.468 1.105" />
       </svg>
-      {/* <div
-        style={{
-          scrollbarWidth: "none",
-          pointerEvents: "none",
-        }}
-        className="flex flex-col items-center justify-center scroll-smooth transition-all h-6 overflow-y-auto"
-      >
-        <span
-          className={`${
-            clicked
-              ? commentCount > 0
-                ? "animate-commentCountFromTop"
-                : "animate-commentCountFromBottom"
-              : ""
-          } transition-all duration-500 ease-in-out`}
-        >
-          {commentCount}
-        </span>
-      </div> */}
       <div
         style={{ scrollbarWidth: "none", pointerEvents: "none" }}
         className="flex flex-col h-6 -mt-px items-center justify-center overflow-y-auto"
@@ -82,8 +64,8 @@ function CommentButton({ onClick,comments, postData, className, state = "post" }
         <span
           key={commentCount}
           className={`${
-            false ? "animate-likeCountFromTop" : "animate-likeCountFromBottom"
-          } transition-all duration-500 ease-in-out`}
+            clicked ? "animate-likeCountFromTop" : "animate-likeCountFromBottom"
+          } transition-all mt-px duration-500 ease-in-out`}
         >
           <span className={`${commentCount <= 0 ? "opacity-0" : ""}`}>
             {commentCount}

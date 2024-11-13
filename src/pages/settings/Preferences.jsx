@@ -113,7 +113,7 @@ const Preferences = () => {
         <button
           disabled={isLoading}
           onClick={handleSavePreferences}
-          className="w-full py-2 px-4 mt-5 disabled:bg-blue-300 font-medium text-lg bg-blue-500 text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full py-2 px-4 mt-5 disabled:bg-gray-600 font-medium text-lg bg-gray-800 text-white rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           {isLoading ? (
             <div className="flex items-center justify-center gap-5">

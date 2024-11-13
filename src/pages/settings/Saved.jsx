@@ -103,6 +103,17 @@ function Saved() {
 
   const renderPosts = () => (
     <div className="flex flex-col gap-4">
+      {
+          savedItems.posts.length <=0 && <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+          <p className="text-2xl font-bold text-gray-500">
+            No Saved Posts 
+          </p>
+          <p className="mt-1 text-gray-400">
+            Your saved posts will appear here once you've save
+            them.
+          </p>
+        </p>
+        }
       {savedItems.posts.map((post) => (
         <div
           key={post._id}
@@ -284,6 +295,17 @@ function Saved() {
 
   const renderProfiles = () => (
     <div className="px-4 sm:px-0 grid grid-cols-2 w-full gap-4">
+        {
+          savedItems.profiles.length <=0 && <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+          <p className="text-2xl font-bold text-gray-500">
+            No Saved Profiles 
+          </p>
+          <p className="mt-1 text-gray-400">
+            Your saved profiles will appear here once you've save
+            them.
+          </p>
+        </p>
+        }
       {savedItems.profiles.map((profile) => (
         <div
           key={profile._id}
@@ -353,6 +375,17 @@ function Saved() {
   const renderJobs = () => {
     return (
       <div className="flex flex-col gap-4">
+        {
+          savedItems.jobs.length <=0 && <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+          <p className="text-2xl font-bold text-gray-500">
+            No Saved Job 
+          </p>
+          <p className="mt-1 text-gray-400">
+            Your saved jobs will appear here once you've save
+            them.
+          </p>
+        </p>
+        }
         {savedItems.jobs.map((job) => (
           <JobListItem
             job={job.saved_content}

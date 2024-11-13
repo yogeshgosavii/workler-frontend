@@ -174,7 +174,7 @@ function AccountSettings() {
       ></div>
 
       {/* Modal for Account Settings */}
-      <div className="fixed w-full sm:max-w-lg right-0   h-full  px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
+      <div className="fixed w-full sm:max-w-lg right-0 text-gray-800   h-full  px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
         <h2 className="text-2xl font-bold mb-10 ">Account Settings</h2>
 
         <div className="space-y-4 mb-3">
@@ -345,9 +345,9 @@ function AccountSettings() {
                 !userNameAvailable
                   ? "bg-blue-300"
                   : "bg-blue-500"
-              } w-full mt-5 text-lg mb-5 rounded-md py-2 text-white font-medium`}
+              } w-full mt-5 text-lg mb-5 rounded-md py-2.5 text-white font-medium`}
             >
-              Change
+              Update Username
             </button>
           </div>
         </div>
