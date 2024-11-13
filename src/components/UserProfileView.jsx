@@ -9,7 +9,7 @@ import useJobApi from "../services/jobService";
 import Posts from "./profileTabs/Posts";
 import { useNavigate, useParams } from "react-router-dom";
 import About from "./profileTabs/About";
-import Jobs from "./profileTabs/Jobs";
+import UserPostedJobs from "./profileTabs/UserPostedJobs";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserDetails } from "../features/auth/authSlice";
 import approachService from "../services/approachService";
@@ -858,8 +858,7 @@ function UserProfileView({ userId = useParams().userId }) {
                       "Posts",
                       currentUserDetails.account_type != "Employeer"
                         ? "Jobs"
-                        : null,
-                      "People",
+                        : null
                     ]
                   : ["Home", "Posts", "Qualification"]),
               ]

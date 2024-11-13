@@ -36,7 +36,7 @@ function JobForm({ onClose, data, setData }) {
   const userData = useSelector((state) => state.auth.user);
 
   useEffect(() => {
-    const fetchData =  () => {
+    const fetchData = () => {
       try {
         if (userData) {
           setFormData((prev) => ({
@@ -56,7 +56,6 @@ function JobForm({ onClose, data, setData }) {
 
   useEffect(() => {
     console.log(formData);
-    
   }, [formData]);
   const handleChange = useCallback((e) => {
     const { name, value, type } = e.target;
@@ -93,9 +92,6 @@ function JobForm({ onClose, data, setData }) {
     }));
   }, []);
 
-  
-
-
   const isFormValid = useMemo(() => {
     const {
       job_role,
@@ -111,6 +107,7 @@ function JobForm({ onClose, data, setData }) {
       max_experience,
       company_logo,
       job_url,
+      salary_type
     } = formData;
 
     if (
@@ -118,7 +115,7 @@ function JobForm({ onClose, data, setData }) {
       !description ||
       !company_name ||
       !location ||
-      skills_required == 0 
+      skills_required == 0
     ) {
       return false;
     }
@@ -169,8 +166,8 @@ function JobForm({ onClose, data, setData }) {
           prevData.map((item) =>
             item._id === data._id ? { ...jobData, _id: data._id } : item
           )
-        );   
-      onClose();
+        );
+        onClose();
       } catch (error) {
         console.error("Error adding job:", error);
       } finally {
@@ -190,22 +187,7 @@ function JobForm({ onClose, data, setData }) {
             Create a job for candidates to apply
           </p>
         </div>
-        <svg
-          class="h-7 w-7 text-gray-400"
-          width="24"
-          height="24"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-          fill="none"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          {" "}
-          <path stroke="none" d="M0 0h24v24H0z" />{" "}
-          <circle cx="12" cy="12" r="1" /> <circle cx="12" cy="19" r="1" />{" "}
-          <circle cx="12" cy="5" r="1" />
-        </svg>
+        
       </div>
       <div className="flex-1 flex flex-col gap-6">
         <TextInput
@@ -301,6 +283,13 @@ function JobForm({ onClose, data, setData }) {
             onChange={handleChange}
           />
         </div>
+        <TextInput
+          name="salary_type"
+          placeholder="Salary type (per month, etc)"
+          value={formData.salary_type}
+          className="flex-grow min-w-48"
+          onChange={handleChange}
+        />
         <ToggleInput
           name="job_type"
           onChange={handleChange}
@@ -317,6 +306,7 @@ function JobForm({ onClose, data, setData }) {
           />
         )}
       </div>
+
       <div className="mt-10 flex gap-4 w-full justify-end">
         {/* <Button
           className="bg-red-500 w-full text-white disabled:bg-gray-600"
@@ -348,7 +338,7 @@ function JobForm({ onClose, data, setData }) {
           <Button
             className="bg-gray-800 justify-center flex items-center text-lg w-full text-white disabled:bg-gray-600"
             onClick={handleUpdateJob}
-            disabled={!isFormValid || loading }
+            disabled={!isFormValid || loading}
           >
             {loading ? (
               <svg

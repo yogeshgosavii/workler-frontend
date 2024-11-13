@@ -218,7 +218,7 @@ function UserPostUpdateSettings({
               <p>Delete post</p>
             </div>
           )}
-          {currentUser._id != postSettings?.user._id && (
+          {/* {currentUser._id != postSettings?.user._id && (
             <div
               onClick={() => {
                 // setPostData(postData.filter(post=> post.id == postSettings._id))
@@ -244,7 +244,7 @@ function UserPostUpdateSettings({
               </svg>
               <p>Report post</p>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>

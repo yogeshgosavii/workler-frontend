@@ -57,8 +57,8 @@ const router = createBrowserRouter([
       { path: "job/:jobId", element: <JobProfileView /> },
       { path: "user/:userId", element: <UserProfileView /> },
 
-      { path: "/companies", element: <Companies /> },
-      { path: "/companies/:companyId", element: <CompanyProfile /> },
+      // { path: "/companies", element: <Companies /> },
+      // { path: "/companies/:companyId", element: <CompanyProfile /> },
       {
         path: "/home",
         element: (

@@ -99,7 +99,7 @@ function CommentSettings({
               <p>Delete comment</p>
             </div>
           )}
-          {currentUser._id != commentSettings?.user._id && (
+          {/* {currentUser._id != commentSettings?.user._id && (
             <div
               onClick={() => {
                 // setcommentData(commentData.filter(post=> post.id == commentSettings._id))
@@ -125,7 +125,7 @@ function CommentSettings({
               </svg>
               <p>Report comment</p>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>

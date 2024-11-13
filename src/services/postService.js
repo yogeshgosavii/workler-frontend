@@ -93,6 +93,9 @@ export const deleteComment = async (commentDataId) => {
 };
 
 export const addReply = async (replyData) => {
+  if(!replyData.parentComment){
+    return
+  }
   const response = await handleRequest(API_URL + `/post/comment/${replyData.parentComment}/reply`, {
     method: 'POST',
     headers: setAuthHeaders(getToken()),

@@ -37,7 +37,7 @@ function UserHome() {
 
           const jobPosts = await jobService.job.getAll();
           setContent(posts.filter((post) => post.post_type === "job"));
-        } else if (selectedType === "Preferred Jobs") {
+        } else if (selectedType === "Preferred Jobs" && currentUser.accountType == "Candidate") {
           const response = await searchService.secrchJobByKeyword(
             `${preferences.experienceLevel}  ${preferences.jobType}  ${preferences.location.country} `
           );
@@ -60,12 +60,14 @@ function UserHome() {
   useEffect(() => {
     async function fetchPreferences() {
       try {
+       if(currentUser.accountType == "Candidate"){
         const existingPreferences = await getPreference(currentUser._id);
         console.log("pref", existingPreferences);
 
         if (existingPreferences) {
           setPreferences(existingPreferences);
         }
+       }
       } catch (error) {
         console.error("Error fetching preferences:", error);
       }
@@ -96,7 +98,9 @@ function UserHome() {
           className={`absolute inset-0 flex  bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 -z-10 `}
         />
 
-        {["Posts", "Job Posts", "Preferred Jobs"].map((type) => (
+        {["Posts", currentUser.account_type == "Candidate" && "Jobs Posts", currentUser.account_type == "Candidate" && "Preferred Jobs"]
+          .filter(Boolean) 
+        .map((type) => (
           <p
             key={type}
             onClick={() => setSelectedType(type)}

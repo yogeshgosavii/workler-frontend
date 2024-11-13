@@ -3,7 +3,6 @@ import React from "react";
 import UserImageInput from "../Input/UserImageInput";
 import companyDefaultImage from "../../assets/companyDefaultImage.png";
 
-
 function UserPostedJobs({
   setFormType,
   setupdateFormType,
@@ -16,33 +15,55 @@ function UserPostedJobs({
       {jobData?.length > 0 ? (
         <div className="flex justify-between mb-3 items-center">
           <p className="font-medium">Recently posted jobs</p>
-        {isEditable &&  <button
-            onClick={() => {
-              setFormType("job");
-            }}
-            className="text-blue-500 bg-blue-50 text-sm py-1 px-4 border rounded-full font-medium border-blue-500"
-          >
-            Create job
-          </button>}
+          {isEditable && (
+            <button
+              onClick={() => {
+                setFormType("job");
+              }}
+              className="text-blue-500 bg-blue-50 text-sm py-1 px-4 border rounded-full font-medium border-blue-500"
+            >
+              Create job
+            </button>
+          )}
         </div>
-      ) : (
-        isEditable ?<div className="flex w-full  flex-col items-center bg-white">
-          <p className="font-bold text-xl mt-2">Create your first job</p>
-          <p
-            onClick={() => setFormType("job")}
-            className="text-sm text-blue-500 mt-2 font-medium cursor-pointer"
-          >
-            Add job
+      ) : isEditable && jobData?.length <= 0 ? (
+        <div className="flex w-full  flex-col items-center bg-white">
+          <p className="max-w-xl pt-10 text-center sm:h-full h-fit px-6 md:px-6">
+            <p className="text-2xl font-bold text-gray-500">
+              No Job Posted Yet
+            </p>
+            <p className="mt-1 text-gray-400">
+              Your job added will appear here once you've submitted them.
+            </p>
+            <p
+              onClick={() => setFormType("job")}
+              className="text-blue-500 font-medium cursor-pointer"
+            >
+              Create Job
+            </p>
           </p>
         </div>
-        :
+      ) : (
         <p>No jobs post yet</p>
       )}
 
       {!isEditable && jobData?.length <= 0 && (
-        <div className="text-gray-400 w-full text-center mt-4">
-          No jobs posted yet
-        </div>
+        <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+          <p className="text-2xl font-bold text-gray-500">
+            No Job Applications Yet
+          </p>
+          <p className="mt-1 text-gray-400">
+            Your job applications will appear here once you've submitted them.
+          </p>
+          <p
+            onClick={() => {
+              navigate("/jobs");
+            }}
+            className="text-blue-500 font-medium cursor-pointer"
+          >
+            Explore Jobs
+          </p>
+        </p>
       )}
 
       {jobData?.map((job, index) => (

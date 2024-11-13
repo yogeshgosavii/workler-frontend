@@ -30,11 +30,10 @@ import About from "../components/profileTabs/About";
 import Posts from "../components/profileTabs/Posts";
 import Qualification from "../components/profileTabs/Qualification";
 import Home from "../components/profileTabs/Home";
-import Jobs from "../components/profileTabs/Jobs";
+import UserPostedJobs from "../components/profileTabs/UserPostedJobs";
 import PostForm from "../components/Forms/PostForm";
 import { getUserPosts } from "../services/postService";
 import FreezeScroll from "../components/FreezeScroll";
-import UserPostedJobs from "../components/profileTabs/Jobs";
 
 // Register necessary components from Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
@@ -531,6 +530,7 @@ const UserProfile = () => {
             setUpdateData={setUpdateData}
             setupdateFormType={setupdateFormType}
             jobData={jobData}
+            isEditable={true}
           />
         );
       default:
@@ -913,7 +913,7 @@ const UserProfile = () => {
                   <div className="flex w-screen md:w-full pt-1">
                     {[
                       ...(user.account_type === "Employeer"
-                        ? ["About", "Posts", "Jobs", "People"]
+                        ? ["About", "Posts", "Jobs"]
                         : ["Home", "Posts", "Qualification"]),
                     ].map((tab, index, arr) => (
                       <p
@@ -927,7 +927,7 @@ const UserProfile = () => {
                         } text-center py-2`}
                         style={{
                           width: `${
-                            100 / (user.account_type === "Employeer" ? 4 : 3)
+                            100 / (user.account_type === "Employeer" ? 3 : 3)
                           }%`,
                         }}
                       >
@@ -939,13 +939,13 @@ const UserProfile = () => {
                 <div
                   style={{
                     left: `${
-                      (100 / (user.account_type === "Employeer" ? 4 : 3)) *
+                      (100 / (user.account_type === "Employeer" ? 3 : 3)) *
                       tabIndex
                     }%`,
                     transition: "left 0.2s ease-in-out",
                   }}
                   className={`w-1/${
-                    user.account_type === "Employeer" ? "4" : "3"
+                    user.account_type === "Employeer" ? "3" : "3"
                   } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-gray-800 absolute`}
                 ></div>
               </div>

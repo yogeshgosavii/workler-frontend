@@ -21,8 +21,10 @@ function CommentButton({ onClick, comments = [],commentId, postData, className, 
       };
 
       const fetchReplies = async () => {
+       if(commentId){
         const response = await getReplies(commentId);
         setCommentCount(response.length);
+       }
       };
 
       state === "post" ? fetchComments() : fetchReplies();

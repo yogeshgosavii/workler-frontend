@@ -362,7 +362,7 @@ function Employment({ job, applications, approaches }) {
               <p className="text-2xl font-bold text-gray-500">
                 No approcahes yet
               </p>
-              <p className="mt-2 text-gray-400 font-medium">
+              <p className="mt-2 text-gray-400 ">
                 The candidates you aproached for this job will be listed here
               </p>
             </p>
@@ -578,9 +578,9 @@ function Employment({ job, applications, approaches }) {
           ) : (
             <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
               <p className="text-2xl font-bold text-gray-500">
-                No Candidate Applications Yet
+                No Job Applications Yet
               </p>
-              <p className="mt-2 text-gray-400 font-medium">
+              <p className="mt-2 text-gray-400 ">
                 Applications from candidates will be displayed here once they
                 apply.
               </p>
@@ -736,7 +736,7 @@ function Employment({ job, applications, approaches }) {
       <div className=" w-full sm:pr-5">
         <div className="flex flex-col mb-5 fixed left-0 z-40  md:-mt-0  -mt-6 w-full sm:static p-4 border sm:rounded-xl bg-gray-50">
           <p className="font-medium">{job?.job_role}</p>
-          <p className="text-xs truncate text-wrap max-w-full">
+          <p className="text-sm text-gray-500 truncate text-wrap max-w-full">
             {job?.location.address}
           </p>
           <div className={`w-full text-sm mt-4 `}>

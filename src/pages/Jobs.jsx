@@ -41,6 +41,15 @@ function Jobs() {
   //     fetchJobs();
   //   }
   // }, [searchText]);
+  if(user.account_type == "Employeer"){
+    navigate("/not-found", { replace: true });
+  }
+
+  useEffect(() => {
+    if(user.account_type == "Employeer"){
+      navigate("/not-found", { replace: true });
+    }
+  }, []);
   useEffect(() => {
     const fetchJobs = async () => {
       setLoading(true)
