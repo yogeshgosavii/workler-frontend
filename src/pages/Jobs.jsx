@@ -26,7 +26,7 @@ function Jobs() {
 
   useEffect(() => {
     if(jobQuery){
-      document.title = jobQuery;
+      document.title = jobQuery +" jobs";
     }
     else{
       document.title = "All jobs";
@@ -52,12 +52,12 @@ function Jobs() {
   //     fetchJobs();
   //   }
   // }, [searchText]);
-  if(user.account_type == "Employeer"){
+  if(user?.account_type == "Employeer"){
     navigate("/not-found", { replace: true });
   }
 
   useEffect(() => {
-    if(user.account_type == "Employeer"){
+    if(user?.account_type == "Employeer"){
       navigate("/not-found", { replace: true });
     }
   }, []);

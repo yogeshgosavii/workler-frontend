@@ -34,6 +34,7 @@ import UserPostedJobs from "../components/profileTabs/UserPostedJobs";
 import PostForm from "../components/Forms/PostForm";
 import { getUserPosts } from "../services/postService";
 import FreezeScroll from "../components/FreezeScroll";
+import followService from "../services/followService";
 
 // Register necessary components from Chart.js
 ChartJS.register(ArcElement, Tooltip, Legend, Title);
@@ -53,6 +54,8 @@ const UserProfile = () => {
   const [userDetails, setuserDetails] = useState([]);
   const [postData, setPostData] = useState([]);
   const [tabIndex, settabIndex] = useState(1);
+  const [followers, setFollowers] = useState(0);
+  const [followings, setfollowings] = useState(0);
   const [currentTab, setCurrentTab] = useState("Posts");
 
   const [jobData, setjobData] = useState();
@@ -94,26 +97,7 @@ const UserProfile = () => {
     };
   }, [lastScrollY]);
 
-  const data = {
-    labels: ["ReactJs", "Frontend", "Java developer", "Spring boot"],
-    datasets: [
-      {
-        data: [20, 12, 2, 9],
-        backgroundColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(255, 159, 64, 1)",
-          "rgba(255, 205, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-        ],
-        borderColor: [
-          "rgba(255, 99, 132, 1)",
-          "rgba(255, 159, 64, 1)",
-          "rgba(255, 205, 86, 1)",
-          "rgba(75, 192, 192, 1)",
-        ],
-      },
-    ],
-  };
+  
 
   const [loading, setLoading] = useState({
     education: true,
@@ -140,7 +124,21 @@ const UserProfile = () => {
       }
     };
 
+    const fetchConnections = async () =>{
+      try {
+        const followingResponse = await followService.getFollowing(user._id)
+        setfollowings(followingResponse.length)
+
+        const followerResponse = await followService.getFollowers(user._id)
+        setFollowers(followerResponse.length)
+      } catch (error) {
+        console.error("Error fetching connections:", error);
+
+      }
+    }
+
     fetchData();
+    fetchConnections()
   }, []);
 
   const [updateForm, setUpdateForm] = useState({
@@ -821,17 +819,16 @@ const UserProfile = () => {
                     </div>
 
                     <div className="order-3 flex flex-col gap-2">
-                      <div className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm ">
+                      <div onClick={()=>{navigate("/connections/"+user._id)}} className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm ">
                         <p>
                           {/* <span>{user.location?.address} · </span> */}
-                          {user.followers ? user.followers : 0}
+                          {followers || 0}
                           <span className="  font-normal"> followers</span>{" "}
                           {user.account_type == "Candidate" && (
                             <span>
                               ·{" "}
-                              {userDetails.followings
-                                ? userDetails.followings
-                                : 0}{" "}
+                              {followings
+                                || 0}{" "}
                               <span className="  font-normal">following</span>
                             </span>
                           )}

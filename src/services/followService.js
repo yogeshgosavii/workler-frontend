@@ -1,7 +1,7 @@
 import { setAuthHeaders } from "../../utility";
 
-const API_URL = "https://workler-backend.vercel.app/api/follow";
-// const API_URL = "http://localhost:5002/api/follow";
+// const API_URL = "https://workler-backend.vercel.app/api/follow";
+const API_URL = "http://localhost:5002/api/follow";
 
 const getToken = () => localStorage.getItem("token");
 
@@ -51,9 +51,9 @@ const followService = {
     }
   },
 
-  getFollowing: async () => {
+  getFollowing: async (userId) => {
     try {
-      const response = await fetch(`${API_URL}/get-following`, {
+      const response = await fetch(`${API_URL}/get-following/${userId}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${getToken()}`,

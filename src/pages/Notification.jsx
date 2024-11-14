@@ -32,10 +32,8 @@ function Notification({ userId }) {
   };
 
   useEffect(() => {
-      document.title = "User notification";
-    
-    
-   }, []);
+    document.title = "User notification";
+  }, []);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -73,7 +71,7 @@ function Notification({ userId }) {
   };
 
   return (
-    <div className=" flex flex-col bg-gray-50 h-dvh items-center w-full sm:pl-1.5">
+    <div className=" flex flex-col bg-gray-50 h-full items-center w-full sm:pl-1.5">
       <p className="text-2xl  font-bold border-x px-4 w-full  sticky max-w-xl  -top-0 bg-white z-40 py-4 ">
         Notifications
       </p>
@@ -83,7 +81,6 @@ function Notification({ userId }) {
             <div
               onClick={() => {
                 setNotificationSettings(null);
-                setSelectMentions(null);
               }}
               className={`w-screen h-screen bg-black transition-opacity ${
                 notificationSettings ? "opacity-50" : "opacity-0"
@@ -170,7 +167,7 @@ function Notification({ userId }) {
           <p className="text-3xl font-bold text-gray-500">
             No notifications yet
           </p>
-          <p className="mt-2 text-gray-400 font-medium">
+          <p className="mt-2 text-gray-400 ">
             When someone likes or comments on your post, or you receive a job
             approach, notifications will appear here.
           </p>
@@ -193,6 +190,9 @@ function Notification({ userId }) {
                   navigate("/post/" + notification.populatedContent[0].post);
                 } else if (notification.notificationType == "approach") {
                   navigate("/job/" + notification.populatedContent[0]._id);
+                }
+                else if (notification.notificationType == "mention") {
+                  navigate("/post/" + notification.populatedContent[0]._id);
                 }
               }}
               className={`p-3 px-4 flex items-center justify-between md:px-6 ${
@@ -224,7 +224,17 @@ function Notification({ userId }) {
                     }
                     isEditable={false}
                   />
-                  <div className="absolute -top-1 bg-white rounded-full border p-1 -right-2">
+                  <div
+                    className={`absolute -top-1 ${
+                      [
+                        "like",
+                        "comment",
+                        "reply",
+                        "approach",
+                        "mention",
+                      ].includes(notification.notificationType ) && "bg-white border"
+                    } rounded-full  p-1 -right-2`}
+                  >
                     {notification.notificationType == "like" ? (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -270,6 +280,20 @@ function Notification({ userId }) {
                           clip-rule="evenodd"
                         />
                         <path d="M3 18.4v-2.796a4.3 4.3 0 0 0 .713.31A26.226 26.226 0 0 0 12 17.25c2.892 0 5.68-.468 8.287-1.335.252-.084.49-.189.713-.311V18.4c0 1.452-1.047 2.728-2.523 2.923-2.12.282-4.282.427-6.477.427a49.19 49.19 0 0 1-6.477-.427C4.047 21.128 3 19.852 3 18.4Z" />
+                      </svg>
+                    ) : notification.notificationType == "mention" ? (
+                      <svg
+                        class={`size-4  text-gray-800`}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        {" "}
+                        <circle cx="12" cy="12" r="4" />{" "}
+                        <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94" />
                       </svg>
                     ) : null}
                   </div>

@@ -178,7 +178,7 @@ function JobApplication() {
   const renderSkeleton = () => (
     <div class="grid min-h-[140px]   h-full w-full justify-center pt-16 overflow-x-scroll   lg:overflow-visible">
       <svg
-        class="text-white animate-spin"
+        class="text-transparent animate-spin"
         viewBox="0 0 64 64"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -706,7 +706,7 @@ function JobApplication() {
   }
 
   return (
-    <div className="w-full flex justify-center gap-4  ">
+    <div className="w-full bg-gray-50 h-full flex justify-center gap-4  ">
       <div
         className={`w-full max-w-xl py-3 sm:w-full  ${
           selectedJob && "hidden sm:block"
@@ -715,9 +715,9 @@ function JobApplication() {
         <div className="flex gap-4 mb-3  px-4 sm:px-0 py-1">
           <p
             onClick={() => setInnerTab("applications")}
-            className={`px-3 py-1 cursor-pointer rounded-md font-medium border ${
-              innerTab === "applications" &&
-              "bg-gray-800 border-gray-800 text-white"
+            className={`px-3 py-1 cursor-pointer bg rounded-md font-medium border ${
+              innerTab === "applications" ?
+              "bg-gray-800 border-gray-800 text-white":"bg-white"
             }`}
           >
             Applications
@@ -725,8 +725,8 @@ function JobApplication() {
           <p
             onClick={() => setInnerTab("approach")}
             className={`px-3 py-1 cursor-pointer rounded-md font-medium border ${
-              innerTab === "approach" &&
-              "bg-gray-800 border-gray-800 text-white"
+              innerTab === "approach" ?
+              "bg-gray-800 border-gray-800 text-white":"bg-white"
             }`}
           >
             Approaches

@@ -41,6 +41,7 @@ function UserProfileView({ userId = useParams().userId }) {
   const profileService = useProfileApi();
   const jobService = useJobApi();
   const [followers, setFollowers] = useState([]);
+  const [followings, setFollowings] = useState(0);
   const [isFollowing, setIsFollowing] = useState(false);
   const currentUserDetails = useSelector((state) => state.auth.user);
   const [currentUserJobData, setcurrentUserJobData] = useState(null);
@@ -137,11 +138,24 @@ function UserProfileView({ userId = useParams().userId }) {
       }
     };
 
+    const fetchConnections = async () =>{
+      try {
+        const followingResponse = await followService.getFollowing(userDetails._id)
+        setFollowings(followingResponse.length)
+
+       
+      } catch (error) {
+        console.error("Error fetching connections:", error);
+
+      }
+    }
+
     if (userId) {
       fetchJobData();
       fetchData();
       fetchPostData();
       fetchFollowers();
+      fetchConnections()
 
       console.log(currentUserDetails, userDetails);
 
@@ -423,7 +437,7 @@ function UserProfileView({ userId = useParams().userId }) {
         return <About isEditable={false} userDetails={userDetails} />;
       case "Jobs":
         return (
-          <div className="px-4  py-4">
+          currentUserJobData.length>0 ?<div className="px-4  py-4">
             <p className="font-medium text-sm mb-2">Recently posted jobs</p>
             {currentUserJobData?.map((job, index) => (
               <div
@@ -476,7 +490,16 @@ function UserProfileView({ userId = useParams().userId }) {
                 </div>
               </div>
             ))}
-          </div>
+          </div>:
+          <p className="max-w-xl pt-12 text-center sm:h-full h-fit px-6 md:px-6">
+          <p className="text-2xl font-bold text-gray-500">
+            No Jobs Posted Yet
+          </p>
+          <p className="mt-1 text-gray-400">
+            Job posted by this account will appear here once they submit it
+          </p>
+          {/* <p onClick={()=>{navigate("/jobs")}} className="text-blue-500 font-medium cursor-pointer">Explore Jobs</p> */}
+        </p>
         );
       default:
         return null;
@@ -684,7 +707,7 @@ function UserProfileView({ userId = useParams().userId }) {
                 </div>
 
                 <div className="order-3 flex flex-col gap-2">
-                  <div className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm ">
+                  <div onClick={()=>{navigate("/connections/"+userDetails._id)}} className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm ">
                     <p>
                       {/* <span>{userDetails.location?.address} · </span> */}
                       {followers.length > 0 ? followers.length : 0}
@@ -695,9 +718,8 @@ function UserProfileView({ userId = useParams().userId }) {
                       {userDetails?.account_type == "Candidate" && (
                         <span>
                           ·{" "}
-                          {userDetails?.followings
-                            ? userDetails?.followings
-                            : 0}{" "}
+                          {followings ||
+                             0}{" "}
                           <span className="  font-normal">following</span>
                         </span>
                       )}
@@ -897,7 +919,7 @@ function UserProfileView({ userId = useParams().userId }) {
                   (userDetails?.account_type === "Employeer"
                     ? currentUserDetails?.account_type === "Employeer"
                       ? 2
-                      : 4
+                      : 3
                     : 3)) *
                 tabIndex
               }%`,
@@ -907,7 +929,7 @@ function UserProfileView({ userId = useParams().userId }) {
               userDetails?.account_type === "Employeer"
                 ? currentUserDetails?.account_type === "Employeer"
                   ? "2"
-                  : "4"
+                  : "3"
                 : "3"
             } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-gray-800 absolute`}
           ></div>

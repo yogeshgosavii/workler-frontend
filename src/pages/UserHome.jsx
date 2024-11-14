@@ -20,13 +20,12 @@ function UserHome() {
   const [preferedJobs, setPreferedJobs] = useState([]);
   const [preferences, setPreferences] = useState([]);
   const currentUser = useSelector((state) => state.auth.user);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const jobService = useJobApi();
   useEffect(() => {
-      document.title = "Home";
-    
-   }, []);
+    document.title = "Home";
+  }, []);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -41,14 +40,16 @@ function UserHome() {
 
           const jobPosts = await jobService.job.getAll();
           setContent(posts.filter((post) => post.post_type === "job"));
-        } else if (selectedType === "Preferred Jobs" && currentUser.accountType == "Candidate") {
+        } else if (
+          selectedType === "Preferred Jobs"
+        ) {
           const response = await searchService.secrchJobByKeyword(
-            `${preferences.experienceLevel}  ${preferences.jobType}  ${preferences.location.country} `
+            `${preferences.experienceLevel}  ${preferences.jobType} ${preferences.location?.address} ${preferences.location?.state}  ${preferences.location?.country} `
           );
           console.log("res", response);
 
           setPreferedJobs(response);
-        } 
+        }
         // console.log("posts", posts);
       } catch (error) {
         setError("Failed to load content ,Refresh and try again.");
@@ -64,14 +65,14 @@ function UserHome() {
   useEffect(() => {
     async function fetchPreferences() {
       try {
-       if(currentUser.accountType == "Candidate"){
-        const existingPreferences = await getPreference(currentUser._id);
-        console.log("pref", existingPreferences);
+        if (currentUser.accountType == "Candidate") {
+          const existingPreferences = await getPreference(currentUser._id);
+          console.log("pref", existingPreferences);
 
-        if (existingPreferences) {
-          setPreferences(existingPreferences);
+          if (existingPreferences) {
+            setPreferences(existingPreferences);
+          }
         }
-       }
       } catch (error) {
         console.error("Error fetching preferences:", error);
       }
@@ -79,19 +80,31 @@ function UserHome() {
     fetchPreferences();
   }, []);
 
-  if (error) return <div className="w-full text-center mt-10"> <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
-  <p className="text-2xl font-bold text-red-500">
-    Failed to load content
-  </p>
-  <p className="mt-1 text-red-400">
-    Refresh to load the content and try again to load content
-  </p>
-  <p onClick={()=>{    window.location.reload();
-}} className="text-blue-500 font-medium cursor-pointer">Refresh</p>
-</p></div>;
+  if (error)
+    return (
+      <div className="w-full text-center mt-10">
+        {" "}
+        <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+          <p className="text-2xl font-bold text-red-500">
+            Failed to load content
+          </p>
+          <p className="mt-1 text-red-400">
+            Refresh to load the content and try again to load content
+          </p>
+          <p
+            onClick={() => {
+              window.location.reload();
+            }}
+            className="text-blue-500 font-medium cursor-pointer"
+          >
+            Refresh
+          </p>
+        </p>
+      </div>
+    );
 
   return (
-    <div className="w-full flex flex-col bg-gray-50 h-dvh ">
+    <div className="w-full flex  flex-col bg-gray-50 h-full ">
       <div
         className={` px-4 sm:px-10  fixed  flex gap-4 overflow-x-auto  sm:ml-1.5  w-full sm:w-[99%]  py-4  bg-transparent z-30 top-0  ${
           selectedPost && "hidden sm:block"
@@ -102,21 +115,25 @@ function UserHome() {
           className={`absolute inset-0 flex  bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 -z-10 `}
         />
 
-        {["Posts", currentUser.account_type == "Candidate" && "Jobs Posts", currentUser.account_type == "Candidate" && "Preferred Jobs"]
-          .filter(Boolean) 
-        .map((type) => (
-          <p
-            key={type}
-            onClick={() => setSelectedType(type)}
-            className={`${
-              selectedType === type
-                ? "bg-gray-800 border-gray-800 text-white "
-                : "bg-white"
-            } px-4 z-40 py-1 border cursor-pointer text-nowrap text-sm rounded-lg font-medium`}
-          >
-            {type}
-          </p>
-        ))}
+        {[
+          "Posts",
+          currentUser.account_type == "Candidate" && "Jobs Posts",
+          currentUser.account_type == "Candidate" && "Preferred Jobs",
+        ]
+          .filter(Boolean)
+          .map((type) => (
+            <p
+              key={type}
+              onClick={() => setSelectedType(type)}
+              className={`${
+                selectedType === type
+                  ? "bg-gray-800 border-gray-800 text-white "
+                  : "bg-white"
+              } px-4 z-40 py-1 border cursor-pointer text-nowrap text-sm rounded-lg font-medium`}
+            >
+              {type}
+            </p>
+          ))}
       </div>
       <div className="flex overflow-y-auto  h-full flex-1 pt-10 justify-center  gap-4">
         {loading ? (
@@ -149,19 +166,27 @@ function UserHome() {
             </div>
           </div>
         ) : selectedType == "Preferred Jobs" ? (
-          preferedJobs.lehgth<=0 ? (
+          preferedJobs.lehgth <= 0 ? (
             <p className="max-w-xl pt-20 text-center bg-gray-50 sm:h-full h-fit px-6 md:px-6">
               <p className="text-2xl font-bold text-gray-500">
                 No jobs listed based on your preferences
               </p>
               <p className="mt-1 text-gray-400">
-                Update your preferences to a basic level to see more job listings here
+                Update your preferences to a basic level to see more job
+                listings here
               </p>
-              <p onClick={()=>{navigate("/profile/settings/preferences")}} className="text-blue-500 font-medium cursor-pointer">Update preferences</p>
+              <p
+                onClick={() => {
+                  navigate("/profile/settings/preferences");
+                }}
+                className="text-blue-500 font-medium cursor-pointer"
+              >
+                Update preferences
+              </p>
             </p>
           ) : (
             <div className="w-full pt-6 flex flex-col gap-5">
-              {preferedJobs.map((job,index) => (
+              {preferedJobs.map((job, index) => (
                 <JobListItem
                   key={index}
                   job={job}
@@ -185,32 +210,36 @@ function UserHome() {
               postClassName={"sm:shadow-lg   sm:rounded-xl"}
               no_post_error={
                 selectedType == "Job Posts" ? (
-                  <p className="max-w-xl pt-20 bg-gray-50 sm:h-full text-center h-fit px-6 md:px-6">
+                  <p className="max-w-xl pt-20 bg-gray-50 h-full text-center px-6 md:px-6">
                     <p className="text-2xl font-bold text-gray-500">
                       No Job Posts Available
                     </p>
                     <p className="mt-1 text-gray-400 ">
                       Once available, relevant job posts will appear here.
                     </p>
-                    <p onClick={()=>{navigate("/jobs")}} className="text-blue-500 font-medium cursor-pointer">Explore jobs</p>
-
+                    <p
+                      onClick={() => {
+                        navigate("/jobs");
+                      }}
+                      className="text-blue-500 font-medium cursor-pointer"
+                    >
+                      Explore jobs
+                    </p>
                   </p>
-                ):
-                (
-                  <p className="max-w-xl pt-20 bg-gray-50 sm:h-full text-center h-fit px-6 md:px-6">
-                  <p className="text-2xl font-bold text-gray-500">
-                    No  Posts Available
+                ) : (
+                  <p className="sm:max-w-xl pt-20   h-full bg-gray-50 text-center  px-6 md:px-6">
+                    <p className="text-2xl font-bold text-gray-500">
+                      No Posts Available
+                    </p>
+                    <p className="mt-1 text-gray-400 ">
+                      Once available, relevant posts will appear here.
+                    </p>
                   </p>
-                  <p className="mt-1 text-gray-400 ">
-                    Once available, relevant posts will appear here.
-                  </p>
-
-                </p>
                 )
               }
-            columns={"grid-cols-1 "}
+              columns={"grid-cols-1 "}
             />
-             {/* <Posts
+            {/* <Posts
              isEditable={false}
             // setFormType={setFormType}
             postData={content}

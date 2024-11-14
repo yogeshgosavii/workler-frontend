@@ -101,7 +101,7 @@ function Posts({
   };
 
   return (
-    <div className={`w-full bg-white h-full ${className}`}>
+    <div className={`w-full  h-full ${className}`}>
       {postData && postData?.length === 0 ? (
         isEditable ? (
           <p className=" pt-12 text-center w-full  sm:h-full h-fit px-6 md:px-6">
@@ -121,7 +121,7 @@ function Posts({
         ) : no_post_error ? (
           no_post_error
         ) : (
-          <p className="max-w-xl pt-20 sm:h-full text-center h-fit px-6 md:px-6">
+          <p className=" pt-14 bg-gray-50 h-full text-center  px-6 md:px-6">
             <p className="text-2xl font-bold text-gray-500">
               No Posts Available
             </p>

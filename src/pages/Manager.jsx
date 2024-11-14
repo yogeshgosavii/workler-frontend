@@ -406,6 +406,16 @@ function Manager() {
             Jobs
           </p>
         </div>
+        {
+          applications<=0 && approaches<=0 && jobs.length<=0 &&  <p className="max-w-xl pt-20 sm:h-full text-center h-fit px-6 md:px-6">
+          <p className="text-3xl font-bold text-gray-500">
+            No jobs yet
+          </p>
+          <p className="mt-2 text-gray-400 ">
+            When jobs posted the actions taken on the jobs, like applications and approaches will be shown here
+          </p>
+        </p>
+        }
         <div className="w-full">{(loading.applicationList || loading.approachList)?<div class="grid min-h-[140px] w-full  h-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
               <svg
                 class="text-transparent animate-spin"

@@ -37,6 +37,7 @@ import AccountSettings from "./pages/settings/AccountSettings";
 import Settings from "./pages/settings/Settings.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
+import Connections from "./pages/Connections.jsx";
 
 const router = createBrowserRouter([
   {
@@ -179,6 +180,17 @@ const router = createBrowserRouter([
         ),
       },
     ],
+  },
+
+  {
+    path: "/connections/:userId",
+    element: (
+      <LoginVerification>
+        <PageTransition>
+          <Connections />
+        </PageTransition>
+      </LoginVerification>
+    ),
   },
 
   {

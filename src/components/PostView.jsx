@@ -38,18 +38,18 @@ function PostView({ postId = useParams().postId, index, className }) {
   const [post, setPost] = useState();
   const [commentSetting, setCommentSetting] = useState(null);
   const [replySetting, setReplySetting] = useState(null);
+  const [tab, setTab] = useState("comments");
+
   const sendBtnRef = useRef(null);
   const currentUser = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
   console.log(post);
 
   useEffect(() => {
-    document.title = post.content  
- }, []);
-
-  useEffect(() => {
     const fetchPostData = async () => {
       const updatedPosts = await getPostById(postId);
+      document.title = updatedPosts?.content;
+
       setPost(updatedPosts);
     };
 
@@ -295,55 +295,57 @@ function PostView({ postId = useParams().postId, index, className }) {
           <div className="relative mx-4">
             <p
               className={`mt-4 flex-1 ${
-                !post.images && post.post_type !="job" && " border p-4 rounded-xl"
+                !post.images &&
+                post.post_type != "job" &&
+                " border p-4 rounded-xl"
               }`}
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
-            {post.mentions.length > 0 && !post.images && post.post_type !=="job"  && (
-              // <svg
-              //   onClick={(e) => {
-              //     e.stopPropagation();
-              //     setPostMentions(post.mentions);
-              //   }}
-              //   xmlns="http://www.w3.org/2000/svg"
-              //   width="30"
-              //   height="30"
-              //   fill="currentColor"
-              //   class="bi bi-person-fill border rounded-full p-1.5"
-              //   viewBox="0 0 16 16"
-              // >
-              //   <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-              // </svg>
+            {post.mentions.length > 0 &&
+              !post.images &&
+              post.post_type !== "job" && (
+                // <svg
+                //   onClick={(e) => {
+                //     e.stopPropagation();
+                //     setPostMentions(post.mentions);
+                //   }}
+                //   xmlns="http://www.w3.org/2000/svg"
+                //   width="30"
+                //   height="30"
+                //   fill="currentColor"
+                //   class="bi bi-person-fill border rounded-full p-1.5"
+                //   viewBox="0 0 16 16"
+                // >
+                //   <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                // </svg>
 
-              <div
-                // onClick={() => handleRemoveImage(image)}
-                className="absolute bottom-11 right-4  cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setPostMentions(post.mentions);
-                }}
-              >
-                <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="currentColor"
-                  className="h-4 w-4 text-gray-100  absolute top-[9px] right-2 z-10"
-                  viewBox="0 0 16 16"
+                <div
+                  // onClick={() => handleRemoveImage(image)}
+                  className="absolute bottom-11 right-4  cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPostMentions(post.mentions);
+                  }}
                 >
-                  <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                </svg>
-              </div>
-            )}
+                  <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    className="h-4 w-4 text-gray-100  absolute top-[9px] right-2 z-10"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                  </svg>
+                </div>
+              )}
           </div>
-          
           {post.post_type !== "job" && (
             <div
               style={{ overflowX: "auto", scrollbarWidth: "none" }}
               className="mt-2 px-4 flex flex-col  transition-all duration-300 overflow-x-auto flex-1"
             >
-              
               {/* {post.images && (
                 <ImageCarousel
                   dots={false}
@@ -419,43 +421,45 @@ function PostView({ postId = useParams().postId, index, className }) {
               }}
               className="relative px-4 mb-5 flex flex-col"
             >
-              {post.mentions.length > 0 && !post.images && post.post_type ==="job"  && (
-              // <svg
-              //   onClick={(e) => {
-              //     e.stopPropagation();
-              //     setPostMentions(post.mentions);
-              //   }}
-              //   xmlns="http://www.w3.org/2000/svg"
-              //   width="30"
-              //   height="30"
-              //   fill="currentColor"
-              //   class="bi bi-person-fill border rounded-full p-1.5"
-              //   viewBox="0 0 16 16"
-              // >
-              //   <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-              // </svg>
+              {post.mentions.length > 0 &&
+                !post.images &&
+                post.post_type === "job" && (
+                  // <svg
+                  //   onClick={(e) => {
+                  //     e.stopPropagation();
+                  //     setPostMentions(post.mentions);
+                  //   }}
+                  //   xmlns="http://www.w3.org/2000/svg"
+                  //   width="30"
+                  //   height="30"
+                  //   fill="currentColor"
+                  //   class="bi bi-person-fill border rounded-full p-1.5"
+                  //   viewBox="0 0 16 16"
+                  // >
+                  //   <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                  // </svg>
 
-              <div
-                // onClick={() => handleRemoveImage(image)}
-                className="absolute top-10 right-12  cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setPostMentions(post.mentions);
-                }}
-              >
-                <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="currentColor"
-                  className="h-4 w-4 text-gray-100  absolute top-[9px] right-2 z-10"
-                  viewBox="0 0 16 16"
-                >
-                  <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                </svg>
-              </div>
-            )}
+                  <div
+                    // onClick={() => handleRemoveImage(image)}
+                    className="absolute top-10 right-12  cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setPostMentions(post.mentions);
+                    }}
+                  >
+                    <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      fill="currentColor"
+                      className="h-4 w-4 text-gray-100  absolute top-[9px] right-2 z-10"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                    </svg>
+                  </div>
+                )}
               <div
                 style={{
                   display: "flex",
@@ -550,595 +554,675 @@ function PostView({ postId = useParams().postId, index, className }) {
               </span>
             </p>
           </div>
-          <div
-            id="commentInput"
-            className={` bg-white z-40 px-4  py-2 sticky top-[42px] border-b flex gap-2 transition-all items-center overflow-hidden ${" opacity-100"} `}
-          >
-            <UserImageInput
-              className=" rounded-full"
-              imageHeight={30}
-              imageBorder={0}
-              image={
-                currentUser.profileImage?.compressedImage || profileImageDefault
-              }
-              alt={`${post.username}'s avatar`}
-              isEditable={false}
-            />
-            <div className="flex w-full">
-              <input
-                id={post._id + "commentText"}
-                key={post._id + "commentText"}
-                autoFocus={commentButtonClicked === index}
-                value={commentText || ""}
-                onChange={(e) => {
-                  setcommentText(e.target.value);
-                  console.log(commentText);
-                }}
-                style={{
-                  WebkitAutofill: "number",
-                  WebkitBoxShadow: "0 0 0px 1000px white inset",
-                }}
-                disabled={sendClicked}
-                // onBlur={() => setCommentButtonClicked(null)}
-                className={`rounded-xl text-sm bg-white  outline-none py-2 flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
-                placeholder={`Comment on @${post.user.username}`}
-              />
-              <svg
-                id="sendBtn"
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                fill="currentColor"
-                ref={sendBtnRef}
-                className={`bi bi-send-fill  text-blue-500 absolute top-1/4 rotate-45 right-5 ${
-                  sendClicked === index ? "send-animation" : ""
-                }`}
-                viewBox="0 0 16 16"
-                onAnimationEnd={() => {
-                  setcommentText(null);
-                  setSendClicked(false);
-                  handleAnimationEnd();
-                  // if (
-                  //   post.comments.some(
-                  //     (comment) => comment.user == userDetails._id
-                  //   )
-                  // ) {
-
-                  //   const commentInput =
-                  //     document.getElementById("commentInput");
-
-                  //   if (commentInput) {
-                  //     commentInput.classList.add(
-                  //       "-mt-8",
-                  //       "opacity-0"
-                  //     ); // Hide the input field
-                  //   }
-                  // }
-                  // setPost((prevPosts) =>
-                  //   prevPosts.map((post, i) =>
-                  //     i === index
-                  //       ? {
-                  //           ...post,
-                  //           comments_count: post.comments_count + 1,
-                  //           comments: [
-                  //             ...post.comments,
-                  //             {
-                  //               user: userDetails._id,
-                  //               comment_text: commentText.text,
-                  //             },
-                  //           ],
-                  //         }
-                  //       : post
-                  //   )
-                  // );
-                }}
-                onClick={() => {
-                  if (commentText?.length > 0) {
-                    handleSendClick(index);
-                  }
-                }}
-              >
-                <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
-              </svg>
-            </div>
+          <div className="flex gap-4 mt-2  px-4 sm:px-0 py-1">
+            <p
+              onClick={() => setTab("likes")}
+              className={`px-3 py-1 cursor-pointer bg rounded-lg font-medium border ${
+                tab === "likes"
+                  ? "bg-gray-800 border-gray-800 text-white"
+                  : "bg-white"
+              }`}
+            >
+              Likes
+            </p>
+            <p
+              onClick={() => setTab("comments")}
+              className={`px-3 py-1 cursor-pointer rounded-lg font-medium border ${
+                tab === "comments"
+                  ? "bg-gray-800 border-gray-800 text-white"
+                  : "bg-white"
+              }`}
+            >
+              Comments
+            </p>
           </div>
-          <div className="pb-14 sm:pb-0 h-full">
-            {
-              comments.length<=0 &&  <p className="max-w-xl pt-14  text-center sm:h-full  px-6 md:px-6">
+          {tab == "likes" &&  <div>
+          {likes.length > 0 ? (
+            <div className="flex flex-col gap-1 px-4 pt-5">
+              {likes.map((user) => (
+                <div
+                  onClick={() => {
+                    navigate("/user/" + user.user._id);
+                  }}
+                  className="flex gap-4 items-center cursor-pointer"
+                >
+                  <UserImageInput
+                  imageHeight={45}
+                    image={user.user.profileImage.compressedImage[0]}
+                    isEditable={false}
+                  />
+                  <div className="-mt-1">
+                    <p className="font-medium text-lg">{user.user.username}</p>
+                    {user.user.personal_details ? (
+                      <p className="text-gray-400 -mt-1">
+                        {user.user.personal_details?.firstname}{" "}
+                        {user.user.personal_details?.lastname}
+                      </p>
+                    ) : (
+                      <p className="text-gray-400 -mt-1">
+                        {user.user.company_details?.company_name}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
               <p className="text-2xl font-bold text-gray-500">
-                No Comments Yet
+                No likes Yet
               </p>
               <p className="mt-1 text-gray-400">
-                The comments on this posts will be shown here
+                The likes one this post will be shown here 
               </p>
             </p>
-            }
-            {comments
-              ?.filter((comment) => !comment.parentComment)
-              .map((comment, index, arr) => (
-                <div
-                  className={` text-sm px-4   ${
-                    index > 0 && "border-t"
-                  } py-5 z-10`}
-                >
-                  <div>
-                    {/* {comment.parentComment && (
+          )}
+        </div>
+          }
+          {tab == "comments" && (
+            <div>
+              <div
+                id="commentInput"
+                className={` bg-white z-40 px-4  py-2 sticky top-[42px] border-b flex gap-2 transition-all items-center overflow-hidden ${" opacity-100"} `}
+              >
+                <UserImageInput
+                  className=" rounded-full"
+                  imageHeight={30}
+                  imageBorder={0}
+                  image={
+                    currentUser.profileImage?.compressedImage ||
+                    profileImageDefault
+                  }
+                  alt={`${post.username}'s avatar`}
+                  isEditable={false}
+                />
+                <div className="flex w-full">
+                  <input
+                    id={post._id + "commentText"}
+                    key={post._id + "commentText"}
+                    autoFocus={commentButtonClicked === index}
+                    value={commentText || ""}
+                    onChange={(e) => {
+                      setcommentText(e.target.value);
+                      console.log(commentText);
+                    }}
+                    style={{
+                      WebkitAutofill: "number",
+                      WebkitBoxShadow: "0 0 0px 1000px white inset",
+                    }}
+                    disabled={sendClicked}
+                    // onBlur={() => setCommentButtonClicked(null)}
+                    className={`rounded-xl text-sm bg-white  outline-none py-2 flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
+                    placeholder={`Comment on @${post.user.username}`}
+                  />
+                  <svg
+                    id="sendBtn"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    fill="currentColor"
+                    ref={sendBtnRef}
+                    className={`bi bi-send-fill  text-blue-500 absolute top-1/4 rotate-45 right-5 ${
+                      sendClicked === index ? "send-animation" : ""
+                    }`}
+                    viewBox="0 0 16 16"
+                    onAnimationEnd={() => {
+                      setcommentText(null);
+                      setSendClicked(false);
+                      handleAnimationEnd();
+                      // if (
+                      //   post.comments.some(
+                      //     (comment) => comment.user == userDetails._id
+                      //   )
+                      // ) {
+
+                      //   const commentInput =
+                      //     document.getElementById("commentInput");
+
+                      //   if (commentInput) {
+                      //     commentInput.classList.add(
+                      //       "-mt-8",
+                      //       "opacity-0"
+                      //     ); // Hide the input field
+                      //   }
+                      // }
+                      // setPost((prevPosts) =>
+                      //   prevPosts.map((post, i) =>
+                      //     i === index
+                      //       ? {
+                      //           ...post,
+                      //           comments_count: post.comments_count + 1,
+                      //           comments: [
+                      //             ...post.comments,
+                      //             {
+                      //               user: userDetails._id,
+                      //               comment_text: commentText.text,
+                      //             },
+                      //           ],
+                      //         }
+                      //       : post
+                      //   )
+                      // );
+                    }}
+                    onClick={() => {
+                      if (commentText?.length > 0) {
+                        handleSendClick(index);
+                      }
+                    }}
+                  >
+                    <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
+                  </svg>
+                </div>
+              </div>
+              <div className="pb-14 sm:pb-0 h-full">
+                {comments.length <= 0 && (
+                  <p className="max-w-xl pt-14  text-center sm:h-full  px-6 md:px-6">
+                    <p className="text-2xl font-bold text-gray-500">
+                      No Comments Yet
+                    </p>
+                    <p className="mt-1 text-gray-400">
+                      The comments on this posts will be shown here
+                    </p>
+                  </p>
+                )}
+                {comments
+                  ?.filter((comment) => !comment.parentComment)
+                  .map((comment, index, arr) => (
+                    <div
+                      className={` text-sm px-4   ${
+                        index > 0 && "border-t"
+                      } py-5 z-10`}
+                    >
+                      <div>
+                        {/* {comment.parentComment && (
                     <p className="text-gray-400">
                       Replied to {comment.parentComment.user.username}
                     </p>
                   )} */}
-                    <div className="flex justify-between w-full">
-                      <div
-                        className={`relative  gap-2  transition-all items-center rounded-xl  overflow-hidden mt-2 `}
-                      >
-                        <div className="flex items-center gap-3">
+                        <div className="flex justify-between w-full">
+                          <div
+                            className={`relative  gap-2  transition-all items-center rounded-xl  overflow-hidden mt-2 `}
+                          >
+                            <div className="flex items-center gap-3">
+                              <UserImageInput
+                                className=" rounded-full"
+                                imageHeight={25}
+                                imageBorder={0}
+                                image={
+                                  comment.user.profileImage?.compressedImage ||
+                                  profileImageDefault
+                                }
+                                alt={`${post.username}'s avatar`}
+                                isEditable={false}
+                              />
+                              <p className="font-medium text-[15px] -mt-1">
+                                {comment.user.username}
+                              </p>
+                            </div>
+                            <p
+                              value={comment.content}
+                              // onBlur={() => setCommentButtonClicked(null)}
+                              className={`rounded-xl  mt-2  outline-none  flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
+                            >
+                              {comment.content}
+                            </p>
+                          </div>
+                          <svg
+                            onClick={() => {
+                              setCommentSetting(comment);
+                            }}
+                            className="h-6 w-6 text-gray-500   mt-3"
+                            width="26"
+                            height="26"
+                            viewBox="0 0 24 24"
+                            strokeWidth="2"
+                            stroke="currentColor"
+                            fill="none"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <path stroke="none" d="M0 0h24v24H0z" />
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="12" cy="19" r="1" />
+                            <circle cx="12" cy="5" r="1" />
+                          </svg>
+                        </div>
+                        <div className="flex gap-4 z-10 px-1 text-gray-400 font-normal items-center  mt-2">
+                          <LikeButton
+                            postData={comment}
+                            likes={comment}
+                            likesCount={post.likes_count}
+                          />
+                          <CommentButton
+                            onClick={() => {
+                              setCommentButtonClicked((prev) =>
+                                prev == index ? null : index
+                              );
+                            }}
+                            state="comment"
+                            postData={comment}
+                            comments={replies}
+                            commentId={comment._id}
+                            // setPostData={setPostData}
+                          />
+                        </div>
+                        <div
+                          id="commentInput"
+                          className={`relative  w-full flex gap-2 transition-all items-center overflow-hidden ${
+                            commentButtonClicked === index
+                              ? " opacity-100"
+                              : "-mt-8 opacity-0 pointer-events-none "
+                          } `}
+                        >
                           <UserImageInput
                             className=" rounded-full"
-                            imageHeight={25}
+                            imageHeight={20}
                             imageBorder={0}
                             image={
-                              comment.user.profileImage?.compressedImage ||
+                              currentUser.profileImage?.compressedImage ||
                               profileImageDefault
                             }
                             alt={`${post.username}'s avatar`}
                             isEditable={false}
                           />
-                          <p className="font-medium text-[15px] -mt-1">
-                            {comment.user.username}
-                          </p>
-                        </div>
-                        <p
-                          value={comment.content}
-                          // onBlur={() => setCommentButtonClicked(null)}
-                          className={`rounded-xl  mt-2  outline-none  flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
-                        >
-                          {comment.content}
-                        </p>
-                      </div>
-                      <svg
-                        onClick={() => {
-                          setCommentSetting(comment);
-                        }}
-                        className="h-6 w-6 text-gray-500   mt-3"
-                        width="26"
-                        height="26"
-                        viewBox="0 0 24 24"
-                        strokeWidth="2"
-                        stroke="currentColor"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path stroke="none" d="M0 0h24v24H0z" />
-                        <circle cx="12" cy="12" r="1" />
-                        <circle cx="12" cy="19" r="1" />
-                        <circle cx="12" cy="5" r="1" />
-                      </svg>
-                    </div>
-                    <div className="flex gap-4 z-10 px-1 text-gray-400 font-normal items-center  mt-2">
-                      <LikeButton
-                        postData={comment}
-                        likes={comment}
-                        likesCount={post.likes_count}
-                      />
-                      <CommentButton
-                        onClick={() => {
-                          setCommentButtonClicked((prev) =>
-                            prev == index ? null : index
-                          );
-                        }}
-                        state="comment"
-                        postData={comment}
-                        comments={replies}
-                        commentId={comment._id}
-                        // setPostData={setPostData}
-                      />
-                    </div>
-                    <div
-                      id="commentInput"
-                      className={`relative  w-full flex gap-2 transition-all items-center overflow-hidden ${
-                        commentButtonClicked === index
-                          ? " opacity-100"
-                          : "-mt-8 opacity-0 pointer-events-none "
-                      } `}
-                    >
-                      <UserImageInput
-                        className=" rounded-full"
-                        imageHeight={20}
-                        imageBorder={0}
-                        image={
-                          currentUser.profileImage?.compressedImage ||
-                          profileImageDefault
-                        }
-                        alt={`${post.username}'s avatar`}
-                        isEditable={false}
-                      />
-                      <div className="flex w-full">
-                        <input
-                          id={comment._id + "replyText"}
-                          key={comment._id + "replyText"}
-                          autoFocus={commentButtonClicked === index}
-                          value={
-                            replyText?.index === index ? replyText?.text : ""
-                          } // Default to empty string if replyText is undefined
-                          onChange={(e) => {
-                            setReplyText({
-                              index: index,
-                              text: e.target.value,
-                            });
-                          }}
-                          style={{
-                            WebkitAutofill: "number",
-                            WebkitBoxShadow: "0 0 0px 1000px white inset",
-                          }}
-                          disabled={sendClicked}
-                          className="rounded-xl text-sm bg-white placeholder:text-sm outline-none py-2 flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300"
-                          placeholder={`Reply on @${comment.user.username}`}
-                        />
-
-                        <svg
-                          id="sendBtn"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
-                          fill="currentColor"
-                          ref={sendBtnRef}
-                          className={`bi bi-send-fill  text-blue-500 absolute top-1/4 rotate-45 right-1 ${
-                            sendClicked === index ? "send-animation" : ""
-                          }`}
-                          viewBox="0 0 16 16"
-                          onAnimationEnd={() => {
-                            setcommentText(null);
-                            setSendClicked(false);
-                            handleAnimationEnd();
-                            // if (
-                            //   post.comments.some(
-                            //     (comment) => comment.user == userDetails._id
-                            //   )
-                            // ) {
-
-                            //   const commentInput =
-                            //     document.getElementById("commentInput");
-
-                            //   if (commentInput) {
-                            //     commentInput.classList.add(
-                            //       "-mt-8",
-                            //       "opacity-0"
-                            //     ); // Hide the input field
-                            //   }
-                            // }
-                          }}
-                          onClick={async () => {
-                            if (replyText?.text.length > 0) {
-                              setSendClicked(index);
-                              setReplyText("");
-
-                              // Optimistically update comments count
-                              setPost((prev) => ({
-                                ...prev,
-                                comments_count: prev.comments_count + 1,
-                              }));
-
-                              try {
-                                // Make API call to add reply
-                                const response = await addReply({
-                                  post: postId,
-                                  user: currentUser._id,
-                                  parentComment: comment._id,
-                                  content: replyText.text,
+                          <div className="flex w-full">
+                            <input
+                              id={comment._id + "replyText"}
+                              key={comment._id + "replyText"}
+                              autoFocus={commentButtonClicked === index}
+                              value={
+                                replyText?.index === index
+                                  ? replyText?.text
+                                  : ""
+                              } // Default to empty string if replyText is undefined
+                              onChange={(e) => {
+                                setReplyText({
+                                  index: index,
+                                  text: e.target.value,
                                 });
+                              }}
+                              style={{
+                                WebkitAutofill: "number",
+                                WebkitBoxShadow: "0 0 0px 1000px white inset",
+                              }}
+                              disabled={sendClicked}
+                              className="rounded-xl text-sm bg-white placeholder:text-sm outline-none py-2 flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300"
+                              placeholder={`Reply on @${comment.user.username}`}
+                            />
 
-                                // Create the new comment object, including user and parentComment details
-                                const newComment = {
-                                  ...response,
-                                  user: {
-                                    _id: currentUser._id,
-                                    username: currentUser.username,
-                                    profileImage: currentUser.profileImage,
-                                  },
-                                  parentComment: {
-                                    _id: comment._id,
-                                    user: {
-                                      _id: comment.user._id,
-                                      username: comment.user.username,
-                                      profileImage: comment.user.profileImage,
-                                    },
-                                  },
-                                };
+                            <svg
+                              id="sendBtn"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="18"
+                              height="18"
+                              fill="currentColor"
+                              ref={sendBtnRef}
+                              className={`bi bi-send-fill  text-blue-500 absolute top-1/4 rotate-45 right-1 ${
+                                sendClicked === index ? "send-animation" : ""
+                              }`}
+                              viewBox="0 0 16 16"
+                              onAnimationEnd={() => {
+                                setcommentText(null);
+                                setSendClicked(false);
+                                handleAnimationEnd();
+                                // if (
+                                //   post.comments.some(
+                                //     (comment) => comment.user == userDetails._id
+                                //   )
+                                // ) {
 
-                                // Update comments state with new comment
-                                setcomments((prevComments) => [
-                                  ...prevComments,
-                                  newComment,
-                                ]);
-                                setReplyText(""); // Clear reply input field
-                              } catch (error) {
-                                console.error("Failed to add reply:", error);
+                                //   const commentInput =
+                                //     document.getElementById("commentInput");
 
-                                // Revert the optimistic update for comments count if API call fails
-                                setPost((prev) => ({
-                                  ...prev,
-                                  comments_count: prev.comments_count - 1,
-                                }));
-                              }
-                            }
-                          }}
-                        >
-                          <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
-                        </svg>
-                      </div>
-                    </div>
-                  </div>
-                  <p className="text-gray-500 my-1 cursor-pointer">
-                    {showReplies == comment._id ? (
-                      <span
-                        onClick={() =>
-                          // setReplies((prev) => {
-                          //   const updatedReplies = { ...prev };
-                          //   delete updatedReplies[comment._id]; // Remove key to hide replies
-                          //   return updatedReplies;
-                          // })
-                          setShowReplies(null)
-                        }
-                      >
-                        Hide replies
-                      </span>
-                    ) : (
-                      <span
-                        onClick={() => {
-                          setShowReplies(comment._id); // Trigger fetch by setting showReplies
-                        }}
-                      >
-                        Show replies
-                      </span>
-                    )}
+                                //   if (commentInput) {
+                                //     commentInput.classList.add(
+                                //       "-mt-8",
+                                //       "opacity-0"
+                                //     ); // Hide the input field
+                                //   }
+                                // }
+                              }}
+                              onClick={async () => {
+                                if (replyText?.text.length > 0) {
+                                  setSendClicked(index);
+                                  setReplyText("");
 
-                    {replyLoading == comment._id && (
-                      <svg
-                        className="inline w-5 h-5 ml-3 -mt-1 text-transparent animate-spin fill-gray-400"
-                        viewBox="0 0 100 101"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                          fill="currentColor"
-                        />
-                        <path
-                          d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
-                          fill="currentFill"
-                        />
-                      </svg>
-                    )}
-                  </p>
+                                  // Optimistically update comments count
+                                  setPost((prev) => ({
+                                    ...prev,
+                                    comments_count: prev.comments_count + 1,
+                                  }));
 
-                  <div className="ml-8">
-                    {showReplies == comment._id &&
-                      replies?.map((reply) => (
-                        <div>
-                          <div className="flex justify-between w-full">
-                            <div
-                              className={`relative  gap-2  transition-all items-center rounded-xl  overflow-hidden mt-2 `}
+                                  try {
+                                    // Make API call to add reply
+                                    const response = await addReply({
+                                      post: postId,
+                                      user: currentUser._id,
+                                      parentComment: comment._id,
+                                      content: replyText.text,
+                                    });
+
+                                    // Create the new comment object, including user and parentComment details
+                                    const newComment = {
+                                      ...response,
+                                      user: {
+                                        _id: currentUser._id,
+                                        username: currentUser.username,
+                                        profileImage: currentUser.profileImage,
+                                      },
+                                      parentComment: {
+                                        _id: comment._id,
+                                        user: {
+                                          _id: comment.user._id,
+                                          username: comment.user.username,
+                                          profileImage:
+                                            comment.user.profileImage,
+                                        },
+                                      },
+                                    };
+
+                                    // Update comments state with new comment
+                                    setcomments((prevComments) => [
+                                      ...prevComments,
+                                      newComment,
+                                    ]);
+                                    setReplyText(""); // Clear reply input field
+                                  } catch (error) {
+                                    console.error(
+                                      "Failed to add reply:",
+                                      error
+                                    );
+
+                                    // Revert the optimistic update for comments count if API call fails
+                                    setPost((prev) => ({
+                                      ...prev,
+                                      comments_count: prev.comments_count - 1,
+                                    }));
+                                  }
+                                }
+                              }}
                             >
-                              <div className="flex items-center gap-3">
+                              <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-gray-500 my-1 cursor-pointer">
+                        {showReplies == comment._id ? (
+                          <span
+                            onClick={() =>
+                              // setReplies((prev) => {
+                              //   const updatedReplies = { ...prev };
+                              //   delete updatedReplies[comment._id]; // Remove key to hide replies
+                              //   return updatedReplies;
+                              // })
+                              setShowReplies(null)
+                            }
+                          >
+                            Hide replies
+                          </span>
+                        ) : (
+                          <span
+                            onClick={() => {
+                              setShowReplies(comment._id); // Trigger fetch by setting showReplies
+                            }}
+                          >
+                            Show replies
+                          </span>
+                        )}
+
+                        {replyLoading == comment._id && (
+                          <svg
+                            className="inline w-5 h-5 ml-3 -mt-1 text-transparent animate-spin fill-gray-400"
+                            viewBox="0 0 100 101"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                              fill="currentColor"
+                            />
+                            <path
+                              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                              fill="currentFill"
+                            />
+                          </svg>
+                        )}
+                      </p>
+
+                      <div className="ml-8">
+                        {showReplies == comment._id &&
+                          replies?.map((reply) => (
+                            <div>
+                              <div className="flex justify-between w-full">
+                                <div
+                                  className={`relative  gap-2  transition-all items-center rounded-xl  overflow-hidden mt-2 `}
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <UserImageInput
+                                      className=" rounded-full"
+                                      imageHeight={25}
+                                      imageBorder={0}
+                                      image={
+                                        reply.user.profileImage
+                                          ?.compressedImage ||
+                                        profileImageDefault
+                                      }
+                                      alt={`${post.username}'s avatar`}
+                                      isEditable={false}
+                                    />
+                                    <p className="font-medium text-[15px] -mt-1">
+                                      {reply.user.username}
+                                    </p>
+                                  </div>
+                                  <p
+                                    value={reply.content}
+                                    // onBlur={() => setCommentButtonClicked(null)}
+                                    className={`rounded-xl  mt-2  outline-none  flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
+                                  >
+                                    {reply.content}
+                                  </p>
+                                </div>
+                                <svg
+                                  onClick={() => {
+                                    setReplySetting(reply);
+                                  }}
+                                  className="h-6 w-6 text-gray-500   mt-3"
+                                  width="26"
+                                  height="26"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="2"
+                                  stroke="currentColor"
+                                  fill="none"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <path stroke="none" d="M0 0h24v24H0z" />
+                                  <circle cx="12" cy="12" r="1" />
+                                  <circle cx="12" cy="19" r="1" />
+                                  <circle cx="12" cy="5" r="1" />
+                                </svg>
+                              </div>
+                              <div className="flex gap-4 z-10 px-1 text-gray-400 font-normal items-center  mt-2">
+                                <LikeButton
+                                  postData={reply}
+                                  likes={reply}
+                                  likesCount={post.likes_count}
+                                />
+                                <CommentButton
+                                  onClick={() => {
+                                    if (commentButtonClicked != reply._id) {
+                                      setCommentButtonClicked(reply._id);
+                                    } else {
+                                      setCommentButtonClicked(null);
+                                    }
+                                  }}
+                                  state="comment"
+                                  postData={reply}
+                                  // comments={comments}
+                                  // setPostData={setPostData}
+                                />
+                              </div>
+                              <div
+                                id="replyInput"
+                                className={`relative  w-full flex gap-2 transition-all items-center overflow-hidden ${
+                                  commentButtonClicked === reply._id
+                                    ? " opacity-100"
+                                    : "-mt-8 opacity-0 pointer-events-none "
+                                } `}
+                              >
                                 <UserImageInput
                                   className=" rounded-full"
-                                  imageHeight={25}
+                                  imageHeight={20}
                                   imageBorder={0}
                                   image={
-                                    reply.user.profileImage?.compressedImage ||
+                                    currentUser.profileImage?.compressedImage ||
                                     profileImageDefault
                                   }
                                   alt={`${post.username}'s avatar`}
                                   isEditable={false}
                                 />
-                                <p className="font-medium text-[15px] -mt-1">
-                                  {reply.user.username}
-                                </p>
-                              </div>
-                              <p
-                                value={reply.content}
-                                // onBlur={() => setCommentButtonClicked(null)}
-                                className={`rounded-xl  mt-2  outline-none  flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
-                              >
-                                {reply.content}
-                              </p>
-                            </div>
-                            <svg
-                              onClick={() => {
-                                setReplySetting(reply);
-                              }}
-                              className="h-6 w-6 text-gray-500   mt-3"
-                              width="26"
-                              height="26"
-                              viewBox="0 0 24 24"
-                              strokeWidth="2"
-                              stroke="currentColor"
-                              fill="none"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path stroke="none" d="M0 0h24v24H0z" />
-                              <circle cx="12" cy="12" r="1" />
-                              <circle cx="12" cy="19" r="1" />
-                              <circle cx="12" cy="5" r="1" />
-                            </svg>
-                          </div>
-                          <div className="flex gap-4 z-10 px-1 text-gray-400 font-normal items-center  mt-2">
-                            <LikeButton
-                              postData={reply}
-                              likes={reply}
-                              likesCount={post.likes_count}
-                            />
-                            <CommentButton
-                              onClick={() => {
-                                if (commentButtonClicked != reply._id) {
-                                  setCommentButtonClicked(reply._id);
-                                } else {
-                                  setCommentButtonClicked(null);
-                                }
-                              }}
-                              state="comment"
-                              postData={reply}
-                              // comments={comments}
-                              // setPostData={setPostData}
-                            />
-                          </div>
-                          <div
-                            id="replyInput"
-                            className={`relative  w-full flex gap-2 transition-all items-center overflow-hidden ${
-                              commentButtonClicked === reply._id
-                                ? " opacity-100"
-                                : "-mt-8 opacity-0 pointer-events-none "
-                            } `}
-                          >
-                            <UserImageInput
-                              className=" rounded-full"
-                              imageHeight={20}
-                              imageBorder={0}
-                              image={
-                                currentUser.profileImage?.compressedImage ||
-                                profileImageDefault
-                              }
-                              alt={`${post.username}'s avatar`}
-                              isEditable={false}
-                            />
-                            <div className="flex w-full">
-                              <input
-                                id={reply._id + "replyText"}
-                                key={reply._id + "replyText"}
-                                autoFocus={commentButtonClicked === index}
-                                value={
-                                  replyText?.index == index
-                                    ? replyText?.text
-                                    : ""
-                                }
-                                onChange={(e) => {
-                                  setReplyText({
-                                    index: index,
-                                    text: e.target.value,
-                                  });
-                                }}
-                                style={{
-                                  WebkitAutofill: "number",
-                                  WebkitBoxShadow: "0 0 0px 1000px white inset",
-                                }}
-                                disabled={sendClicked}
-                                // onBlur={() => setCommentButtonClicked(null)}
-                                className={`rounded-xl text-sm bg-white placeholder:text-sm outline-none py-2 flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
-                                placeholder={`Reply on @${reply.user.username}`}
-                              />
-                              <svg
-                                id="sendBtn"
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="18"
-                                height="18"
-                                fill="currentColor"
-                                ref={sendBtnRef}
-                                className={`bi bi-send-fill  text-blue-500 absolute top-1/4 rotate-45 right-1 ${
-                                  sendClicked === index ? "send-animation" : ""
-                                }`}
-                                viewBox="0 0 16 16"
-                                onAnimationEnd={() => {
-                                  setcommentText(null);
-                                  setSendClicked(false);
-                                  handleAnimationEnd();
-                                  // if (
-                                  //   post.comments.some(
-                                  //     (comment) => comment.user == userDetails._id
-                                  //   )
-                                  // ) {
-
-                                  //   const commentInput =
-                                  //     document.getElementById("commentInput");
-
-                                  //   if (commentInput) {
-                                  //     commentInput.classList.add(
-                                  //       "-mt-8",
-                                  //       "opacity-0"
-                                  //     ); // Hide the input field
-                                  //   }
-                                  // }
-                                }}
-                                onClick={async () => {
-                                  if (replyText?.text.length > 0) {
-                                    setSendClicked(index);
-
-                                    // Optimistically update the comments count
-                                    setPost((prevPost) => ({
-                                      ...prevPost,
-                                      comments_count:
-                                        prevPost.comments_count + 1,
-                                    }));
-
-                                    try {
-                                      // API call to add reply
-                                      const response = await addReply({
-                                        post: postId,
-                                        user: currentUser._id,
-                                        parentComment: comment._id,
-                                        content: replyText.text,
-                                      });
-
-                                      // Create new comment structure with user details
-                                      const newComment = {
-                                        ...response,
-                                        user: {
-                                          _id: currentUser._id,
-                                          username: currentUser.username,
-                                          profileImage:
-                                            currentUser.profileImage,
-                                        },
-                                        parentComment: {
-                                          _id: comment._id,
-                                          user: {
-                                            _id: comment.user._id,
-                                            username: comment.user.username,
-                                            profileImage:
-                                              comment.user.profileImage,
-                                          },
-                                        },
-                                      };
-
-                                      // Append the new comment to comments list with functional update
-                                      setcomments((prevComments) => [
-                                        ...prevComments,
-                                        newComment,
-                                      ]);
-
-                                      setReplies((prev) => [
-                                        ...prev,
-                                        newComment,
-                                      ]);
-
-                                      // Clear the reply text after successful update
-                                      setReplyText("");
-                                    } catch (error) {
-                                      console.error(
-                                        "Failed to add reply:",
-                                        error
-                                      );
-
-                                      // Revert optimistic comments count increment if API fails
-                                      setPost((prevPost) => ({
-                                        ...prevPost,
-                                        comments_count:
-                                          prevPost.comments_count - 1,
-                                      }));
+                                <div className="flex w-full">
+                                  <input
+                                    id={reply._id + "replyText"}
+                                    key={reply._id + "replyText"}
+                                    autoFocus={commentButtonClicked === index}
+                                    value={
+                                      replyText?.index == index
+                                        ? replyText?.text
+                                        : ""
                                     }
-                                  }
-                                }}
-                              >
-                                <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
-                              </svg>
+                                    onChange={(e) => {
+                                      setReplyText({
+                                        index: index,
+                                        text: e.target.value,
+                                      });
+                                    }}
+                                    style={{
+                                      WebkitAutofill: "number",
+                                      WebkitBoxShadow:
+                                        "0 0 0px 1000px white inset",
+                                    }}
+                                    disabled={sendClicked}
+                                    // onBlur={() => setCommentButtonClicked(null)}
+                                    className={`rounded-xl text-sm bg-white placeholder:text-sm outline-none py-2 flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
+                                    placeholder={`Reply on @${reply.user.username}`}
+                                  />
+                                  <svg
+                                    id="sendBtn"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="18"
+                                    height="18"
+                                    fill="currentColor"
+                                    ref={sendBtnRef}
+                                    className={`bi bi-send-fill  text-blue-500 absolute top-1/4 rotate-45 right-1 ${
+                                      sendClicked === index
+                                        ? "send-animation"
+                                        : ""
+                                    }`}
+                                    viewBox="0 0 16 16"
+                                    onAnimationEnd={() => {
+                                      setcommentText(null);
+                                      setSendClicked(false);
+                                      handleAnimationEnd();
+                                      // if (
+                                      //   post.comments.some(
+                                      //     (comment) => comment.user == userDetails._id
+                                      //   )
+                                      // ) {
+
+                                      //   const commentInput =
+                                      //     document.getElementById("commentInput");
+
+                                      //   if (commentInput) {
+                                      //     commentInput.classList.add(
+                                      //       "-mt-8",
+                                      //       "opacity-0"
+                                      //     ); // Hide the input field
+                                      //   }
+                                      // }
+                                    }}
+                                    onClick={async () => {
+                                      if (replyText?.text.length > 0) {
+                                        setSendClicked(index);
+
+                                        // Optimistically update the comments count
+                                        setPost((prevPost) => ({
+                                          ...prevPost,
+                                          comments_count:
+                                            prevPost.comments_count + 1,
+                                        }));
+
+                                        try {
+                                          // API call to add reply
+                                          const response = await addReply({
+                                            post: postId,
+                                            user: currentUser._id,
+                                            parentComment: comment._id,
+                                            content: replyText.text,
+                                          });
+
+                                          // Create new comment structure with user details
+                                          const newComment = {
+                                            ...response,
+                                            user: {
+                                              _id: currentUser._id,
+                                              username: currentUser.username,
+                                              profileImage:
+                                                currentUser.profileImage,
+                                            },
+                                            parentComment: {
+                                              _id: comment._id,
+                                              user: {
+                                                _id: comment.user._id,
+                                                username: comment.user.username,
+                                                profileImage:
+                                                  comment.user.profileImage,
+                                              },
+                                            },
+                                          };
+
+                                          // Append the new comment to comments list with functional update
+                                          setcomments((prevComments) => [
+                                            ...prevComments,
+                                            newComment,
+                                          ]);
+
+                                          setReplies((prev) => [
+                                            ...prev,
+                                            newComment,
+                                          ]);
+
+                                          // Clear the reply text after successful update
+                                          setReplyText("");
+                                        } catch (error) {
+                                          console.error(
+                                            "Failed to add reply:",
+                                            error
+                                          );
+
+                                          // Revert optimistic comments count increment if API fails
+                                          setPost((prevPost) => ({
+                                            ...prevPost,
+                                            comments_count:
+                                              prevPost.comments_count - 1,
+                                          }));
+                                        }
+                                      }
+                                    }}
+                                  >
+                                    <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
+                                  </svg>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              ))}
-          </div>
+                          ))}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
       {/* <div className="hidden sticky top-20 w-full mt-5 max-w-sm flex-col gap-5 lg:flex">
