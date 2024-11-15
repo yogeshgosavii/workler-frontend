@@ -43,7 +43,6 @@ function PostView({ postId = useParams().postId, index, className }) {
   const sendBtnRef = useRef(null);
   const currentUser = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
-  console.log(post);
 
   useEffect(() => {
     const fetchPostData = async () => {
@@ -55,7 +54,6 @@ function PostView({ postId = useParams().postId, index, className }) {
 
     const fetchComments = async () => {
       const comments = await getCommentsByPostId(postId);
-      console.log("comments", comments);
 
       setcomments(comments);
     };
@@ -90,7 +88,6 @@ function PostView({ postId = useParams().postId, index, className }) {
 
   const handleSendClick = async (index) => {
     setSendClicked(index);
-    // console.log(postData[index]);
     setcommentText("");
     const response = await addComment({
       post: postId,
@@ -101,7 +98,6 @@ function PostView({ postId = useParams().postId, index, className }) {
       ...prev,
       comments_count: prev.comments_count + 1,
     }));
-    console.log("commentRes:", response);
     response.user = currentUser;
     setcomments((prev) => [...prev, response]);
     // setPost((prev) => ({
@@ -120,7 +116,6 @@ function PostView({ postId = useParams().postId, index, className }) {
   useEffect(() => {
     const getSaveds = async () => {
       const savedResponse = await savedService.getSpecificSaved("post");
-      console.log("saveds", savedResponse);
       setSavedList(savedResponse);
     };
 
@@ -141,13 +136,11 @@ function PostView({ postId = useParams().postId, index, className }) {
       contentType: "post",
       saved_content: postId,
     });
-    console.log("saved data:", response);
   };
 
   const unsavePost = async (postId) => {
     setSavedList(savedList.filter((post) => post.saved_content._id != postId));
     const response = await savedService.unsave(postId);
-    console.log("unsaved data:", response);
   };
 
   const handleAnimationEnd = () => {
@@ -644,7 +637,6 @@ function PostView({ postId = useParams().postId, index, className }) {
                     value={commentText || ""}
                     onChange={(e) => {
                       setcommentText(e.target.value);
-                      console.log(commentText);
                     }}
                     style={{
                       WebkitAutofill: "number",

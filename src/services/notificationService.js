@@ -1,7 +1,7 @@
 
-// const API_URL = "https://workler-backend.vercel.app/api/notification";
+const API_URL = "https://workler-backend.vercel.app/api/notification";
 
-const API_URL = "http://localhost:5002/api/notification";
+// const API_URL = "http://localhost:5002/api/notification";
 
 // Create a new notification
 
