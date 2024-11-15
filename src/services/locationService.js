@@ -17,7 +17,6 @@ const locationService = {
             throw new Error("Failed to fetch place");
           }
           const locationData = await response.json();
-          console.log(locationData);
           return locationData; // Return the user details
         } catch (error) {
           console.error("Error in place:", error);

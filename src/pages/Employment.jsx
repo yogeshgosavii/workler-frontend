@@ -63,7 +63,6 @@ function Employment({ job, applications, approaches }) {
           await profileService.qualification.getQualificationById(
             selectedProfile
           );
-        console.log(qualificationData);
 
         setQualification(qualificationData);
       } catch (error) {
@@ -81,7 +80,6 @@ function Employment({ job, applications, approaches }) {
 
   const setupInterview = async (e) => {
     e.preventDefault();
-    console.log(interviewForm, showInterviewForm);
     setInterviewCreateLoading(true);
     const interview = await interviewService.createInterview({
       ...interviewForm,
@@ -104,7 +102,6 @@ function Employment({ job, applications, approaches }) {
     setShowInterviewForm(null);
     setInterviewCreateLoading(false);
     setInterviewList((prev) => [...prev, interview]);
-    console.log(interview);
   };
 
   const updateStatus = async (status) => {
@@ -147,7 +144,6 @@ function Employment({ job, applications, approaches }) {
           currentUser._id
         );
         setInterviewList(interviews);
-        console.log("interviews", interviews);
       } catch (error) {
         console.error("Failed to fetch approaches:", error);
       } finally {
@@ -260,7 +256,6 @@ function Employment({ job, applications, approaches }) {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          console.log("Hello");
                           setShowInterviewForm(approach);
                         }}
                         className="bg-gray-500 border border-gray-500 h-full font-medium  truncate text-white px-3 py-2.5  rounded-e-lg"
@@ -448,7 +443,6 @@ function Employment({ job, applications, approaches }) {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              console.log("Hello");
                               setShowInterviewForm(application);
                             }}
                             className="bg-blue-500 shadow-md w-full hover:bg-blue-600 transition-colors font-medium text-white px-3 py-1.5 rounded-full"
@@ -458,7 +452,6 @@ function Employment({ job, applications, approaches }) {
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              console.log("Hello");
                               updateStatus({
                                 id: application._id,
                                 status: "rejected",

@@ -11,7 +11,6 @@ const getToken = () => localStorage.getItem('token');
 const savedService = {
   // Save content (Job, Post, Profile)
   save: async (saved) => {
-    console.log(saved);
     try {
       const response = await fetch(`${API_URL}/create`, {
         method: "POST",
@@ -31,7 +30,6 @@ const savedService = {
 
   // Check if content is saved by the user
   checkSaved: async (saved) => {
-    console.log(saved);
     try {
       const response = await fetch(`${API_URL}/check`, {
         method: "POST",

@@ -47,7 +47,6 @@ function Login({ userType = "candidate" }) {
       navigate('/jobs'); // Redirect to dashboard on successful login
     } catch (error) {
       setError("Login failed. Please check your email and password and try again.");
-      console.log(error);
       setLoader(false);
       dispatch(loginFailure(error.message));
     }

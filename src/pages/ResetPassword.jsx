@@ -26,7 +26,6 @@ const ResetPassword = () => {
         const response = await fetch(
           `https://workler-backend.vercel.app/api/auth/validate-reset-token/${token}`
         );
-        console.log(response);
 
         setValidToken(response.ok);
       } catch (error) {
@@ -125,7 +124,6 @@ const ResetPassword = () => {
     const passwordCheck = verifyPassword(newPassword, confirmPassword);
 
     if (passwordCheck.valid) {
-      console.log("Password is valid, proceeding with update...");
 
       try {
         const passwordResponse = await fetch(
@@ -142,13 +140,11 @@ const ResetPassword = () => {
         setConfirmPassword("");
         setNewPassword("");
 
-        console.log("Password updated successfully:", passwordResponse);
       } catch (error) {
         // Show specific error message from the response
         setPasswordError(
           error.message || "An error occurred while updating the password."
         );
-        console.log("Error:", error);
       } finally {
         setPasswordLoading(false);
       }

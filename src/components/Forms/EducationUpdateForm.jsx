@@ -27,7 +27,6 @@ function EducationUpdateForm({
 
   const handleInputChange = (e) => {
     let { name, value } = e.target;
-    console.log(value);
     // Utility function to determine and convert value type
     const convertValue = (value) => {
       if (!isNaN(value) && value !== "") {
@@ -131,9 +130,7 @@ function EducationUpdateForm({
     return true;
   };
 
-  console.log("formData:", formData);
-  console.log("data:", data);
-  console.log("Deep equal result:", deepEqual(formData, data));
+
   const isUpdateDisabled = () => {
     switch (data.educationType) {
       case "Post Graduate":
@@ -453,7 +450,6 @@ function EducationUpdateForm({
         <div>
           {/* <Button className="text-blue-500 font-medium" onClick={(e)=>{
             e.preventDefault()
-            console.log("Hello");
             onClose()
           }}>
             Cancel

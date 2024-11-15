@@ -62,14 +62,12 @@ function PersonalDetailsForm({ onClose, data, setData }) {
 
   const isFormValid = () => {
     if (formData.location !== "" && !deepEqual(data,formData) ) {
-      console.log("formvalid");
       return true;
     }
     return false;
   };
 
   const handleInputChange = (e) => {
-    console.log(formData);
     const { name, value } = e.target;
     if (name === "phone") {
       if (value.length <= 10) {
@@ -97,7 +95,6 @@ function PersonalDetailsForm({ onClose, data, setData }) {
       setData(formData)
       onClose()
 
-      console.log("Personal data saved successfully:", personalData);
     } catch (error) {
       console.error("Error saving personal details:", error);
     }
@@ -137,7 +134,6 @@ function PersonalDetailsForm({ onClose, data, setData }) {
                   phone: e.target.value
                 }
               }));
-              console.log(formData);
             }}
             
           />

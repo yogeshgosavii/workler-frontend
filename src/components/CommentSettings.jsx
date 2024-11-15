@@ -40,7 +40,6 @@ function CommentSettings({
 
   const unsavePost = async (postId) => {
     const response = await savedService.unsave(postId);
-    console.log("Unsaved post:", response);
   };
 
   return (

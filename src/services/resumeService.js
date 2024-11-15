@@ -7,7 +7,6 @@ const getToken = () => localStorage.getItem('token');
 
 const resumeService = {
   addResume: async (resumeFile) => {
-    console.log(resumeFile);
     
     try {
       // Create a FormData object
@@ -55,7 +54,6 @@ const resumeService = {
       }
 
       const data = await response.json();
-      console.log(data);
       
       return data; // Return any additional data from the API response if needed
     } catch (error) {

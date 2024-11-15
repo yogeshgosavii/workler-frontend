@@ -13,14 +13,12 @@ function LoginVerification({ loginRequired = true, children }) {
 
     if (loginRequired && !isAuthenticated && location.pathname !== "/login") {
       navigate("/not-found", { replace: true });
-      console.log("User not logged in, redirecting to login page");
     } else if (
       !loginRequired &&
       isAuthenticated &&
       location.pathname === "/login"
     ) {
       navigate("/", { replace: true });
-      console.log("User already logged in, redirecting to home page");
     }
   }, [isAuthenticated, loginRequired, location.pathname, navigate]);
 

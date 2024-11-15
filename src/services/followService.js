@@ -1,14 +1,13 @@
 import { setAuthHeaders } from "../../utility";
 
-// const API_URL = "https://workler-backend.vercel.app/api/follow";
-const API_URL = "http://localhost:5002/api/follow";
+const API_URL = "https://workler-backend.vercel.app/api/follow";
+// const API_URL = "http://localhost:5002/api/follow";
 
 const getToken = () => localStorage.getItem("token");
 
 const followService = {
   createFollow: async (followData) => {
     try {
-      console.log(followData);
 
       const response = await fetch(`${API_URL}/create-follow`, {
         method: "POST",
@@ -42,7 +41,6 @@ const followService = {
       }
 
       const data = await response.json();
-      console.log(data);
 
       return data;
     } catch (error) {
@@ -65,7 +63,6 @@ const followService = {
       }
 
       const data = await response.json();
-      console.log(data);
 
       return data;
     } catch (error) {

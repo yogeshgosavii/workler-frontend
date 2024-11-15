@@ -87,10 +87,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       const approaches = await approachService.getUserApproaches(
         userDetails._id
       );
-      console.log(
-        "approaches1",
-        approaches.filter((approach) => approach.job._id == jobId)
-      );
+     
       setApproaches(approaches.filter((approach) => approach.job._id == jobId));
     };
 
@@ -99,7 +96,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
         userDetails._id
       );
       setInterviews(interviews);
-      console.log("jobInterviews", interviews);
     };
 
     if (userDetails) {
@@ -109,14 +105,13 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   }, []);
 
   useEffect(() => {
-    document.title = jobDetails.job_role 
- }, []);
+    document.title = jobDetails?.job_role 
+ }, [jobDetails]);
   useEffect(() => {
     const fetchData = async () => {
       setLoading((prev) => ({ ...prev, jobDetails: true }));
       try {
         const response = await jobService.job.getById(jobId);
-        console.log("response:", response);
 
         setJobDetails(response);
       } catch (error) {
@@ -131,7 +126,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
     //   setLoading((prev) => ({ ...prev, userDetails: true }));
     //   try {
     //     const response = await authService.fetchUserDetails();
-    //     console.log("response:", response);
     //     if (response.saved_jobs?.some((job) => job == jobId)) {
     //       setSaved(true);
     //     }
@@ -151,7 +145,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
           jobId: jobId,
           userId: userDetails._id,
         });
-        // console.log("response:", application);
         if (application.exists) {
           setapplied(true);
         } else {
@@ -168,7 +161,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       setLoading((prev) => ({ ...prev, applicantsCount: true }));
       try {
         const applicants = await applicationService.getApplicantsCount(jobId);
-        console.log("applicants:", applicants);
         setapplicantsCount(applicants);
       } catch (error) {
         console.error("Failed to fetch applicants data", error);
@@ -182,7 +174,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
     //   try {
     //     const qualificationData =
     //       await profileService.qualification.getQualificationById(userId);
-    //     console.log("qualification:", qualificationData);
     //     setQualification(qualificationData);
     //   } catch (error) {
     //     console.error("Failed to fetch qualification data", error);
@@ -196,7 +187,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
     //   try {
     //     const jobData =
     //       await jobService.job.getByUserIds(userId);
-    //     console.log("jobData:", jobData);
     //     setJobData(jobData);
     //   } catch (error) {
     //     console.error("Failed to fetch qualification data", error);
@@ -212,7 +202,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
           userId: userDetails._id,
           saved_content: jobDetails._id,
         });
-        console.log("saved:", saveData);
         setSaved(saveData.exists);
       } catch (error) {
         console.error("Failed to fetch saved data", error);
@@ -224,9 +213,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
     if (jobId) {
       // Ensure userId exists before making requests
       // fetchUserData();
-      console.log("jInter", interviews);
 
-      // console.log(userDetails.saved_jobs);
 
       checkApplied();
       // checkSaved();
@@ -238,12 +225,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       setJobInterview(
         interviews.find((interview) => interview.job._id === jobId)
       );
-      console.log(
-        "jonInterview",
-        interviews?.filter((interview) => interview.job._id == jobId)
-      );
-      // console.log("approaches",approaches.filter(approach  => approach.job._id === jobId));
-      console.log("jobapproaches", jobApproach);
+     
 
       fetchApplicantsCount();
     }
@@ -254,7 +236,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       const relatedJobs = await searchService.secrchJobByKeyword(
         jobDetails?.job_role
       );
-      console.log("related jobs", relatedJobs);
       setrelatedJobs(relatedJobs.filter((job) => job._id != jobDetails?._id));
     };
     const checkSaved = async () => {
@@ -264,7 +245,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
           userId: userDetails._id,
           saved_content: jobDetails._id,
         });
-        console.log("saved:", saveData);
         setSaved(saveData.exists);
       } catch (error) {
         console.error("Failed to fetch saved data", error);
@@ -286,18 +266,15 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       contentType: "job",
       saved_content: jobDetails._id,
     });
-    console.log("saved data:", response);
   };
 
   const unsaveJob = async () => {
     setSaved(false);
     const response = await savedService.unsave(jobDetails._id);
-    console.log("unsaved data:", response);
   };
 
   const applyJob = async () => {
     // setSelectResume(true);
-    console.log(selectedResume._id);
 
     const response = await applicationService.createApplication({
       job: jobId,
@@ -308,13 +285,11 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
     setapplied(true);
     setSelectResume(null);
 
-    console.log(response);
   };
   useEffect(() => {
     const fetchUserResumes = async () => {
       try {
         const userResumes = await resumeService.getUserResumes();
-        console.log("userResumes:", userResumes);
         setUserResumes(userResumes);
       } catch (error) {
         console.error("Error fetching user resumes:", error);
@@ -322,7 +297,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
     };
 
     fetchUserResumes(); // Call the async function
-    console.log("userResumes1:", userResumes);
   }, []);
 
   useEffect(() => {
@@ -680,7 +654,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                     key={index}
                     onClick={() => {
                       setSelectedResume(resume);
-                      console.log(resume);
                     }}
                     className={`border ${
                       selectedResume == resume && "border-blue-500"

@@ -94,7 +94,6 @@ function AccountSettings() {
     const passwordCheck = verifyPassword(newPassword, currentPassword);
 
     if (passwordCheck.valid) {
-      console.log("Password is valid, proceeding with update...");
 
       try {
         const passwordResponse = await authService.updatePassword({
@@ -105,13 +104,11 @@ function AccountSettings() {
         setCurrentPassword("");
         setNewPassword("");
 
-        console.log("Password updated successfully:", passwordResponse);
       } catch (error) {
         // Show specific error message from the response
         setPasswordError(
           error.message || "An error occurred while updating the password."
         );
-        console.log("Error:", error);
       } finally {
         setPasswordLoading(false);
       }
@@ -154,9 +151,8 @@ function AccountSettings() {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      setPasswordError("Passwords do not match");
     } else {
-      console.log("Form submitted:", { email, username, password });
     }
   };
 
@@ -341,7 +337,6 @@ function AccountSettings() {
                   username: username,
                 });
                 dispatch(updateUserDetails(response));
-                console.log("response", response);
               }}
               className={`${
                 username == userData.username ||

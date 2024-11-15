@@ -13,7 +13,7 @@ function About({
   isEditable = true,
 }) {
   return (
-    <div className="bg-white flex flex-col gap-4 w-full px-4 py-4 sm:px-6 h-full md:border">
+    <div className="bg-white flex flex-col gap-4 text-gray-800 w-full px-4 py-4 sm:px-6 h-full md:border">
       {(isEditable || userDetails.description)  && <div className="relative overflow-hidden mb-2">
         <div className="flex justify-between">
           <p className="text-xl font-bold mb-2">Description</p>
@@ -31,7 +31,6 @@ function About({
               stroke-linejoin="round"
               onClick={() => {
                 setupdateFormType("personalDetails");
-                console.log(userDetails);
                 setUpdateData({ personalDetails: userDetails });
                 setUpdateForm({ personalDetails: true });
               }}

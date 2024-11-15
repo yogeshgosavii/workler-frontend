@@ -41,7 +41,6 @@ function Notification({ userId }) {
       setError(null); // Reset error state before fetching
       try {
         const userNotifications = await getUserNotifications(currentUser._id);
-        console.log(userNotifications);
 
         setNotifications(userNotifications);
       } catch (error) {
@@ -180,7 +179,7 @@ function Notification({ userId }) {
               onClick={() => {
                 handleMarkAsRead(notification._id);
                 if (notification.notificationType == "follow") {
-                  navigate("/user/" + notification.populatedContent[0]._id);
+                  navigate("/user/" + notification.relatedUser._id);
                 } else if (
                   notification.notificationType == "comment" ||
                   notification.notificationType == "like"
@@ -192,7 +191,7 @@ function Notification({ userId }) {
                   navigate("/job/" + notification.populatedContent[0]._id);
                 }
                 else if (notification.notificationType == "mention") {
-                  navigate("/post/" + notification.populatedContent[0]._id);
+                  navigate("/post/" + notification.actionId);
                 }
               }}
               className={`p-3 px-4 flex items-center justify-between md:px-6 ${

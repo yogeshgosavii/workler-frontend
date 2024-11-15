@@ -120,7 +120,6 @@ function Home() {
 
     fetchOportunities();
 
-    console.log(oportunities);
   }, []);
   const jobService = useJobApi();
   useEffect(() => {
@@ -135,8 +134,6 @@ function Home() {
           .slice(0, 6); // Limit to the first 6 jobs
         setLatestJobs(filteredJobs); // Set the latest jobs in state
 
-        console.log("All Jobs:", response);
-        console.log("Filtered Latest Jobs:", filteredJobs);
 
         // Filter for "Top Paying Jobs" category (assuming salaries are strings with "K" in them)
         const topPayingFilteredJobs = response
@@ -148,14 +145,12 @@ function Home() {
           .slice(0, 6); // Limit to the first 6 jobs
         setTopPayingJobs(topPayingFilteredJobs); // Set top-paying jobs in state
 
-        console.log("Filtered Top Paying Jobs:", topPayingFilteredJobs);
 
         const variousLocationFilteredJobs = response
           .filter((job) => job.location && job.location.country) // High-paying jobs with "K"
           .slice(0, 6); // Limit to the first 6 jobs
         setVariousLocatioJobs(variousLocationFilteredJobs); // Set top-paying jobs in state
 
-        console.log("Filtered Various Location Jobs:", variousLocatioJobs);
       } catch (error) {
         console.error("Failed to fetch jobs:", error);
       } finally {

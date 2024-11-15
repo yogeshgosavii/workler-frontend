@@ -37,7 +37,6 @@ function Saved() {
           ...prev,
           [`${contentType}s`]: savedContent,
         }));
-        console.log("saved", savedContent);
       } catch (error) {
         console.error("Error fetching saved data:", error);
       } finally {

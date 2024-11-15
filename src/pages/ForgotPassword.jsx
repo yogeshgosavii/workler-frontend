@@ -25,7 +25,6 @@ function ForgotPassword() {
    if(emailSent){
     setResetLinkLoading(true);
    }
-    console.log("Hello");
 
     try {
       const response = await fetch(
@@ -39,7 +38,6 @@ function ForgotPassword() {
         }
       );
       const data = await response.json(); // Ensure you parse the response as JSON
-      console.log(data);
       if (response.ok) {
         setEmailSent(true);
         setMessage({ success: data.message });
@@ -60,7 +58,6 @@ function ForgotPassword() {
         });
       }, 1000); // Update the timer every second
     } catch (error) {
-      console.log(error);
       setMessage({ error: "An error occurred. Please try again." });
     } finally {
       setLoading(false);

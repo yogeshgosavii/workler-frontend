@@ -19,7 +19,6 @@ function Qualification({
   isEditable = true,
 }) {
   const currentUser = useSelector((state) => state.auth.user);
-  console.log(currentUser._id, user._id);
 
   const [selectedResume, setSelectedResume] = useState(null);
   const [userResumes, setUserResumes] = useState([]);
@@ -37,7 +36,6 @@ function Qualification({
       }
     }
   };
-  console.log(educationData, skillData, workExperienceData, projectData);
 
   const Section = ({ id, title, content, loading, onAdd }) =>
     (isEditable || (!isEditable && content != "")) && (
@@ -48,7 +46,6 @@ function Qualification({
             <p
               className="text-blue-500 font-medium cursor-pointer"
               onClick={() => {
-                console.log("onAdd called for", id); // Debug log
                 onAdd(id);
               }}
             >
@@ -100,7 +97,6 @@ function Qualification({
           ),
         loading: loading?.skills,
         onAdd: (id) => {
-          console.log("Adding skill");
           setFormType(id);
         },
       },
@@ -182,7 +178,6 @@ function Qualification({
           ),
         loading: loading?.education,
         onAdd: (id) => {
-          console.log("Adding education");
           setFormType(id);
         },
       },
@@ -211,7 +206,6 @@ function Qualification({
                 <div
                   key={index}
                   onClick={() => {
-                    console.log("Hello");
                     setUpdateFormType("workExperience");
                     setUpdateData({ workExperience: data });
                     setUpdateForm({ workExperience: true });
@@ -231,7 +225,6 @@ function Qualification({
           ),
         loading: loading.workExperience,
         onAdd: (id) => {
-          console.log("Adding work experience");
           setFormType(id);
         },
       },
@@ -257,7 +250,6 @@ function Qualification({
                     key={index}
                     onClick={() => {
                       setUpdateFormType("projects");
-                      console.log(data);
                       setUpdateData({ projects: data });
                       setUpdateForm({ projects: true });
                     }}
@@ -287,7 +279,6 @@ function Qualification({
           ),
         loading: loading?.projects,
         onAdd: (id) => {
-          console.log("Adding projects");
           setFormType(id);
         },
       },
@@ -302,14 +293,12 @@ function Qualification({
       setSelectedResume(null);
       setUploading(false);
     }
-    console.log(resumeResponse);
   };
 
   useEffect(() => {
     const fetchUserResumes = async () => {
       try {
         const userResumes = await resumeService.getUserResumes();
-        console.log("userResumes:", userResumes);
         setUserResumes(userResumes);
       } catch (error) {
         console.error("Error fetching user resumes:", error);
@@ -317,7 +306,6 @@ function Qualification({
     };
 
     fetchUserResumes(); // Call the async function
-    console.log("userResumes1:", userResumes);
   }, []); // Empty dependency array means this runs once on component mount
 
   return (

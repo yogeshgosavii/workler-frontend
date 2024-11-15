@@ -35,7 +35,6 @@ const interviewService = {
         throw new Error("Approach check failed");
       }
       const data = await response.json();
-      console.log("approached",data);
       
       return data; // Return any additional data from the API response if needed
     } catch (error) {
@@ -54,7 +53,6 @@ const interviewService = {
         throw new Error("Interview check failed");
       }
       const data = await response.json();
-      console.log("approached",data);
       
       return data; // Return any additional data from the API response if needed
     } catch (error) {
@@ -73,7 +71,6 @@ const interviewService = {
         throw new Error("Interview check failed");
       }
       const data = await response.json();
-      console.log("interview",data);
       
       return data; // Return any additional data from the API response if needed
     } catch (error) {
@@ -94,7 +91,6 @@ const interviewService = {
         throw new Error("Approach check failed");
       }
       const data = await response.json();
-      console.log("approaches",data);
       
       return data; // Return any additional data from the API response if needed
     } catch (error) {

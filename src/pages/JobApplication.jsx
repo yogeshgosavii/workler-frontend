@@ -96,7 +96,6 @@ function JobApplication() {
           await profileService.qualification.getQualificationById(
             selectedProfile
           );
-        console.log(qualificationData);
 
         setQualification(qualificationData);
       } catch (error) {
@@ -116,7 +115,6 @@ function JobApplication() {
   //   try {
   //     const applicants =
   //       await applicationService.getApplicantsCount(applications);
-  //     console.log("applicants:", applicants);
   //     setApplicantsCount(applicants);
   //   } catch (error) {
   //     console.error("Failed to fetch applicants data", error);
@@ -159,7 +157,6 @@ function JobApplication() {
           currentUser._id
         );
         setInterviewList(interviews);
-        console.log("interviews", interviews);
       } catch (error) {
         console.error("Failed to fetch approaches:", error);
       } finally {

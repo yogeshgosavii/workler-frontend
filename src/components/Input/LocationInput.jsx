@@ -49,7 +49,6 @@ const LocationInput = ({
 
   // Debugging input location
   useEffect(() => {
-    console.log("Debounced Input:", debouncedInputLocation);
   }, [debouncedInputLocation]);
 
   useEffect(() => {
@@ -63,7 +62,6 @@ const LocationInput = ({
       try {
         const response = await locationService.place(debouncedInputLocation);
         setLocations(response);
-        console.log("Fetched Locations:", response);
       } catch (error) {
         console.error("Error fetching locations:", error);
         setLocations([]);
@@ -76,7 +74,6 @@ const LocationInput = ({
   }, [debouncedInputLocation]);
 
   const createError = () => {
-    console.log("Creating error with inputLocation:", inputLocation, "Value:", value);
     if (visited) {
       if (isRequired && !inputLocation) {
         setMessage({ type: "error", text: "This is a required field" });

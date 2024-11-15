@@ -3,7 +3,6 @@ import "../../css/button.css";
 
 function Toast({ message,setShowToast,className, duration = 3000, show }) {
   const [visible, setVisible] = useState(false);
-  console.log(show);
   
   useEffect(() => {
     if (show) {
@@ -16,7 +15,6 @@ function Toast({ message,setShowToast,className, duration = 3000, show }) {
     } else {
       setVisible(false); // Hide toast if show prop is false
       setTimeout(() => {
-        console.log("hello");
         
         setShowToast(false)
       }, 2000);

@@ -26,7 +26,6 @@ function SkillUpdateForm({ data, onClose, setData }) {
       setData((prevData) =>
         prevData.map((item) => (item._id === data._id ? updateddata : item))
       );
-      console.log("Updated skill", updateddata);
       onClose();
     } catch (error) {
       console.error("Error in updateSkill:", error);

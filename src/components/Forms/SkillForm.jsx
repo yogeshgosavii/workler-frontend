@@ -23,12 +23,9 @@ function SkillForm({ onClose, setSkills }) {
   const handleAddSkill = async (e) => {
     setloading(true)
     e.preventDefault();
-    console.log("Skill:", skill);
-    console.log("Level:", level);
     const token = localStorage.getItem("token");
     try {
       await profileApi.skills.add({ name: skill, level }, token);
-      console.log("Skill added successfully");
       onClose(); // Close the form after successfully adding the skill
     } catch (error) {
       console.error("Error in addSkill:", error);

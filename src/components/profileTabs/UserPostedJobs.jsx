@@ -69,7 +69,6 @@ function UserPostedJobs({
       {jobData?.map((job, index) => (
         <div
           onClick={() => {
-            console.log(job);
             setUpdateData({ job: job });
             setupdateFormType("job");
           }}

@@ -7,6 +7,7 @@ import searchService from "../services/searchService";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import useJobApi from "../services/jobService";
+import { filter } from "lodash";
 
 function Jobs() {
   const { jobQuery } = useParams(); // Grabbing job query from params
@@ -66,11 +67,11 @@ function Jobs() {
       setLoading(true)
       try {
         if (searchText) {
+          
           const jobs = await searchService.secrchJobByKeyword(searchText+" "+filters);
           setSubmitJobList(jobs);
         } else {
           const jobs = await jobService.job.getAll();
-          console.log("logo", jobs[0].company_logo);
 
           setSubmitJobList(jobs);
         }

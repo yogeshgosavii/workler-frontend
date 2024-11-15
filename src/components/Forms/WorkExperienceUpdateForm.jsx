@@ -121,7 +121,6 @@ function WorkExperienceUpdateForm({ onClose, data, setData }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(value);
     // Utility function to determine and convert value type
     const convertValue = (value) => {
       if (!isNaN(value) && value !== "") {
@@ -195,7 +194,6 @@ function WorkExperienceUpdateForm({ onClose, data, setData }) {
       employmentType
     } = formData;
 
-    console.log(formData);
     if (!companyName || !jobTitle) {
       return false;
     }
@@ -263,7 +261,6 @@ function WorkExperienceUpdateForm({ onClose, data, setData }) {
       const updatedWorkExperience = await profileApi.workExperience.delete(data._id, token);
       setData(prevData => prevData.filter(exp => exp._id !== data._id ));
  
-      console.log('Updated education data:', updatedWorkExperience);
       onClose();
     } catch (error) {
       console.error('Error updating education data:', error);

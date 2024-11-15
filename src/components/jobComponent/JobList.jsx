@@ -13,7 +13,6 @@ function JobList({jobs}) {
   const [currentPage, setCurrentPage] = useState(1);
   // const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(false);
-  console.log("jobs:",jobs);
   const navigate = useNavigate()
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 

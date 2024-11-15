@@ -17,7 +17,6 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
           userId: currentUser?._id,
           saved_content: job?._id,
         });
-        console.log("saved:", saveData);
         setSaved(saveData.exists);
       } catch (error) {
         console.error("Failed to fetch saved data", error);
@@ -46,19 +45,16 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
       contentType: "job",
       saved_content: job._id,
     });
-    console.log("saved data:", response);
   };
 
   const unsaveJob = async () => {
     setSaved(false);
     const response = await savedService.unsave(job._id);
-    console.log("unsaved data:", response);
   };
 
   return (
     <div
       onClick={() => {
-        console.log("Navigating with job:", job);
         navigate(`/job/${job._id}`, { state: { jobDetails: job } });
       }}
       className={` sm:rounded-2xl  py-6 sm:max-w-full  transition-all cursor-pointer ${className}`}

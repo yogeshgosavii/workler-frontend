@@ -1,5 +1,5 @@
-const API_URL = "https://workler-backend.vercel.app/api/auth";
-// const API_URL = "http://localhost:5002/api/auth";
+// const API_URL = "https://workler-backend.vercel.app/api/auth";
+const API_URL = "http://localhost:5002/api/auth";
 
 const getToken = () => localStorage.getItem("token");
 
@@ -49,7 +49,6 @@ const authService = {
         return data;
 
     } catch (error) {
-        console.log("Error in changing password:", error.message);
         throw error;
     }
 },
@@ -133,7 +132,6 @@ const authService = {
   },
 
   updateUserDetails: async (data) => {
-    console.log("Inspect", data); // Inspect the data being sent
     let response;
     try {
       // if (data.files) {

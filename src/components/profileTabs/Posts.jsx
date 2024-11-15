@@ -41,7 +41,6 @@ function Posts({
   const [postSettings, setPostSettings] = useState(null);
   const [postMentions, setPostMentions] = useState(null);
 
-  console.log(postData);
 
   const handleCommentButtonClick = (index) => {
     setCommentButtonClicked(commentButtonClicked === index ? null : index);
@@ -49,7 +48,6 @@ function Posts({
   useEffect(() => {
     const getSaveds = async () => {
       const savedResponse = await savedService.getSpecificSaved("post");
-      console.log("saveds", savedResponse);
       setSavedList(savedResponse);
     };
 
@@ -70,18 +68,15 @@ function Posts({
       contentType: "post",
       saved_content: postId,
     });
-    console.log("saved data:", response);
   };
 
   const unsavePost = async (postId) => {
     setSavedList(savedList.filter((post) => post.saved_content._id != postId));
     const response = await savedService.unsave(postId);
-    console.log("unsaved data:", response);
   };
 
   const handleSendClick = async (index) => {
     setSendClicked(index);
-    console.log(postData[index]);
 
     const response = await addComment({
       ...postData[index],

@@ -114,7 +114,6 @@ const UserProfile = () => {
       setLoading((prev) => ({ ...prev, userDetails: true }));
       try {
         const data = await authService.fetchUserDetails();
-        console.log(data);
         setuserDetails(data);
         setdescriptionInputText(data.description);
       } catch (error) {
@@ -184,7 +183,6 @@ const UserProfile = () => {
       setEducationData(data);
 
       if (data.length === 0) {
-        console.log("No education data available.");
         return;
       }
       const currentDate = new Date();
@@ -198,7 +196,6 @@ const UserProfile = () => {
           : closest;
       });
 
-      console.log("latestEducationData", latestEducationData);
       setlatestEducation(latestEducationData);
     } catch (error) {
       console.error("Error fetching education data:", error);
@@ -251,7 +248,6 @@ const UserProfile = () => {
 
       try {
         const data = await authService.fetchUserDetails(); // Fetch user details
-        console.log(data);
         setuserDetails(data); // Update userDetails state with fetched data
         setdescriptionInput(data.description); // Update descriptionInputText state with description from fetched data
       } catch (error) {
@@ -302,13 +298,11 @@ const UserProfile = () => {
   );
 
   const addDescription = async () => {
-    console.log(descriptionInputText);
     try {
       const response = await authService.updateUserDetails({
         ...userDetails,
         description: descriptionInputText,
       });
-      console.log(response);
       setdescriptionInputText(response.description);
       setuserDetails(response);
       setdescriptionInput(false);
@@ -339,7 +333,6 @@ const UserProfile = () => {
   useEffect(() => {
     // Function to handle popstate event
     const handlePopState = (event) => {
-      console.log("Back button pressed. Event:", event);
 
       setsettings(false);
       if (event.state && event.state.formType) {
@@ -389,7 +382,6 @@ const UserProfile = () => {
   useEffect(() => {
     // Function to handle popstate event
     const handlePopState = (event) => {
-      console.log("Hello");
       if (!settings) {
         if (event.state && event.state.updateFormType) {
           setupdateFormType(event.state.updateFormType);
@@ -500,7 +492,7 @@ const UserProfile = () => {
           <Posts
             setFormType={setFormType}
             postData={postData}
-            className={"pb-5 "}
+            className={"pb-5 h-full bg-white"}
             columns={"grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"}
             postClassName={" h-full"}
             userDetails={userDetails}
@@ -568,7 +560,6 @@ const UserProfile = () => {
                 className="fixed z-20 w-full border h-full sm:h-fit sm:max-w-md mx-auto"
                 onClick={(e) => e.stopPropagation()}
               >
-                {console.log(formType)}
                 {React.createElement(FormComponents[formType], {
                   onClose: handleClose,
                   setData:
@@ -685,7 +676,6 @@ const UserProfile = () => {
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                   onClick={() => {
-                    console.log("Hello");
                     setsettings(!settings);
                     if (!settings) {
                       navigate("settings");
@@ -722,7 +712,6 @@ const UserProfile = () => {
                     viewBox="0 0 24 24"
                     stroke="currentColor"
                     onClick={() => {
-                      console.log("Hello");
                       setsettings(!settings);
                       if (!settings) {
                         navigate("settings");
@@ -905,7 +894,7 @@ const UserProfile = () => {
                   }}
                   className={`flex-grow z-20 absolute max-w-full overflow-x-auto border-b sm:border-x ${
                     atTop > 340 ? "md:border-t" : ""
-                  } w-full -mt-px sticky top-16 sm:top-0 gap-3 bg-white font-medium flex`}
+                  } w-full -mt-px sticky top-16 sm:top-0 gap-3 text-gray-800 bg-white font-medium flex`}
                 >
                   <div className="flex w-screen md:w-full pt-1">
                     {[

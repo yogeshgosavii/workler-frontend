@@ -48,7 +48,6 @@ function Signup() {
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     // Handle the file upload logic here
-    console.log("File uploaded:", file.name);
   };
 
   const [userData, setuserData] = useState({});
@@ -63,8 +62,6 @@ function Signup() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log("User Data:", userData);
-    console.log("Personal Details:", personal_details);
 
     // Update userData state
     setuserData((prevState) => ({ ...prevState, [name]: value }));
@@ -88,7 +85,6 @@ function Signup() {
   };
 
   const isFormValid = () => {
-    console.log(userData, personal_details, company_details);
     if (
       userData.username &&
       userNameAvailable &&
@@ -97,10 +93,8 @@ function Signup() {
       userData.account_type
     ) {
       if (userData.account_type == "Candidate") {
-        console.log("HI", personal_details);
 
         if (personal_details.birthdate && personal_details.firstname) {
-          console.log("form valid");
           return true;
         }
       } else {
@@ -109,7 +103,6 @@ function Signup() {
           company_details.location &&
           company_details.found_in_date
         ) {
-          console.log("form valid");
         }
         return (
           company_details.company_name &&
@@ -185,35 +178,29 @@ function Signup() {
     var emailBorder = document.getElementById("userEmailFull");
 
     if (emailInput.value.match(validRegex)) {
-      console.log("Hello");
       emailBorder.focus();
       emailBorder.classList.remove("border-red-400", "bg-red-50");
 
       try {
         setemailChecking(true);
         const response = await authService.checkEmail(emailInput.value)
-        // console.log(response);
         
         const data = response;
 
         if (!data.exists) {
           // const data = await response.json();
-          console.log(data);
 
           // if (!data.exists) {
           //   document.getElementById("error").classList.add("invisible");
           //   const otp = Math.floor(100000 + Math.random() * 900000); // Generate a random 6-digit OTP
-          //   console.log("otp : ", otp);
             setotpValue(data.otp);
             setemail(emailInput.value);
             setotpInput(true);
           // } else {
           //   setErrorMessage("Email already exists");
-          //   console.log("Email already exists");
           // }
         } else {
                 setErrorMessage("Email already exists");
-            console.log("Email already exists");
           const errorMessage = "Failed to send email";
           console.error("Error checking email:", errorMessage);
         }
@@ -229,7 +216,6 @@ function Signup() {
 
   const create = async (e) => {
     e.preventDefault();
-    console.log("submit");
     setloader(true);
 
     try {
@@ -265,7 +251,6 @@ function Signup() {
       const user = await authService.fetchUserDetails(token);
       localStorage.removeItem("token");
       localStorage.setItem("token", token);
-      console.log(user);
       dispatch(loginSuccess(user));
       setloader(false);
 
@@ -456,7 +441,6 @@ function Signup() {
       <form
         onSubmit={(e) => {
           e.preventDefault(); // Prevent default form submission to handle via JavaScript
-          console.log("create");
           create(e);
         }}
         className={`sm:border w-full flex-1  sm:flex-none flex overflow-y-auto flex-col h-fit sm:w-full sm:max-w-fit px-6 md:mt-32 md:mb-10 py-10 sm:p-10 ${
@@ -642,7 +626,7 @@ function Signup() {
               <div className="flex flex-wrap gap-4 sm:gap-6 w-full">
                 <NumberInput
                   name={"phone"}
-                  max={10}
+                  max={9999999999}
                   className={"flex-grow min-w-32"}
                   value={personal_details.phone}
                   onChange={(e) => {

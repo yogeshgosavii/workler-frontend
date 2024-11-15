@@ -5,7 +5,6 @@ const token = localStorage.getItem("token");
 
 const imageService = {
   uploadImages: async (formData) => {
-    console.log(formData); // Ensure this logs the correct FormData object
 
     try {
       const response = await fetch(`${API_URL}/upload-images`, {
@@ -16,7 +15,6 @@ const imageService = {
         },
         body: formData, // Send the FormData object directly
       });
-      console.log(response);
       
       if (!response.ok) {
         throw new Error("Failed to upload images");

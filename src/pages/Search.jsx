@@ -35,7 +35,6 @@ function Search() {
    }, []);
 
   useEffect(() => {
-    console.log(location.pathname);
 
     const handleScroll = () => {
       if (profileRef.current) {
@@ -64,7 +63,6 @@ function Search() {
 
       try {
         userSearchResponse = await searchService.searchByUsername(searchQuery);
-        console.log(userSearchResponse);
       } catch (error) {
         if (error.response && error.response.status === 404) {
           console.warn("User search not found.");
@@ -73,16 +71,15 @@ function Search() {
         }
       }
 
-      // try {
-      //   jobSearchResponse = await searchService.secrchJobByKeyword(searchQuery);
-      //   console.log(jobSearchResponse);
-      // } catch (error) {
-      //   if (error.response && error.response.status === 404) {
-      //     console.warn("Job search not found.");
-      //   } else {
-      //     console.error("An error occurred during job search:", error);
-      //   }
-      // }
+      try {
+        jobSearchResponse = await searchService.secrchJobByKeyword(searchQuery);
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          console.warn("Job search not found.");
+        } else {
+          console.error("An error occurred during job search:", error);
+        }
+      }
 
       setSearchedUsers(userSearchResponse || []);
       setSearchedJobs(jobSearchResponse || []);
@@ -127,6 +124,7 @@ function Search() {
           >
             <input
               autoFocus
+              type='search'
               onFocus={() => setSearchInputFocus(true)}
               onBlur={() => setTimeout(() => setSearchInputFocus(false), 100)}
               className="outline-none w-full py-1"
@@ -299,7 +297,7 @@ function Search() {
                           
                           className="flex gap-4 cursor-pointer">
                             <UserImageInput
-                              image={user.profileImage.compressedImage[0]}
+                              image={user.profileImage?.compressedImage[0]}
                               isEditable={false}
                             />
                             <div className="-mt-1">
@@ -340,7 +338,7 @@ function Search() {
                               image={
                                 job.company_logo ||
                                 (job.company_details &&
-                                  job.user.profileImage.compressedImage[0]) ||
+                                  job.user.profileImage?.compressedImage[0]) ||
                                 companyImageDefault
                               }
                               onError={(e) => {

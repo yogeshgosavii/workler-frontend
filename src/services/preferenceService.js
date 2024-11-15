@@ -42,7 +42,6 @@ export const getPreference = async (userId) => {
 
 
 export const updatePreference = async (userId, updatedData) => {
-    console.log(userId);
     
   const response = await fetch(`${API_URL}/${userId}`, {
     method: "PUT",

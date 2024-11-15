@@ -113,7 +113,6 @@ function UserDetailsForm({ onClose, setData, data }) {
   
     setLoading(true);
     try {
-      console.log(formData);
       await authService.updateUserDetails(newFormData);
       setData(formData);
       onClose();

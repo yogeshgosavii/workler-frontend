@@ -12,12 +12,10 @@ import NumberInput from "../Input/NumberInput";
 import LocationInput from "../Input/LocationInput";
 
 function JobUpdateForm({ onClose,data, setData }) {
-  console.log("data",data);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({...data});
 
-  console.log("data",data);
-  console.log("formdata",formData);
+
 
   const [inputValue, setInputValue] = useState("");
   const profileApi = useProfileApi();
@@ -27,7 +25,6 @@ function JobUpdateForm({ onClose,data, setData }) {
   // Ensure dependencies are correct
 
   // useEffect(() => {
-  //   console.log(formData);
     
   // }, [formData]);
   const deepEqual = (obj1, obj2) => {
@@ -53,9 +50,7 @@ function JobUpdateForm({ onClose,data, setData }) {
     return true;
   };
 
-  console.log(deepEqual(formData,data));
   const handleChange = (e) => {
-    console.log(formData);
     if(formData.job_type == "Current portal"){
       setFormData((prev)=>({...prev,job_url :""}))
     }
@@ -67,7 +62,6 @@ function JobUpdateForm({ onClose,data, setData }) {
   };
 
   const handleLocationChange = useCallback((location) => {
-    console.log(location.target.value);
     setFormData((prev) => ({
       ...prev,
       location : location.target.value,
@@ -122,15 +116,7 @@ function JobUpdateForm({ onClose,data, setData }) {
       skills_required.length === 0 ||  // Ensure skills_required is checked correctly
       deepEqual(data, formData)
     ) {
-      console.log('Form is invalid:', {
-        job_role,
-        description,
-        company_name,
-        location,
-        company_logo,
-        skills_required,
-        isDeepEqual: deepEqual(data, formData)
-      });
+   
       return false;
     }
   

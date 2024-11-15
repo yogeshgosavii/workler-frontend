@@ -8,8 +8,7 @@ import TextAreaInput from "../Input/TextAreaInput";
 import TextInput from "../Input/TextInput";
 
 function ProjectUpdateForm({ data, setData, onClose }) {
-  console.log(data);
-  console.log(onClose);
+
   const [loading, setloading] = useState(false);
   const [previousData, setpreviousData] = useState({
     project_name: data.project_name || "",
@@ -149,7 +148,6 @@ function ProjectUpdateForm({ data, setData, onClose }) {
           .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 
         await profileApi.projectDetails.update(data._id, filteredData);
-        console.log();
         setData((prevData) =>
             prevData.map((item) =>
               item._id === data._id ? { ...filteredData, _id: data._id } : item

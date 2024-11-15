@@ -25,7 +25,6 @@ const App = () => {
       try {
         const response = await authService.fetchUserDetails();
         setUserDetails(response);
-        console.log(response);
       } catch (error) {
         console.error("Error fetching user details:", error);
       }
@@ -34,7 +33,6 @@ const App = () => {
       try {
         const response = await getUserNotificationCount();
         setNotificationCount(response.unreadCount);
-        console.log("count", response);
       } catch (error) {
         console.error("Error fetching notification count:", error);
       }
@@ -42,7 +40,6 @@ const App = () => {
     const fetchAllJobs = async () => {
       try {
         const response = await jobService.job.getAll();
-        console.log("All jobs", response);
       } catch (error) {
         console.error("Error fetching notification count:", error);
       }
@@ -310,7 +307,7 @@ const App = () => {
                 } right-1/2 p-0.5 pt-0  font-medium bg-red-500 text-white rounded-full text-xs h-5 w-5 flex items-center justify-center`}
               ></div>
               <div className="absolute text-center -top-2 right-1/2  p-0.5 pt-0  font-medium bg-red-500 text-white rounded-full text-xs h-5 w-5 flex items-center justify-center">
-                <p>{notificationCount}</p>
+                <p>{notificationCount>99?"99+":notificationCount}</p>
               </div>
               {/* Add the icon or bell here for notifications */}
               <i className="fas fa-bell text-gray-700"></i>

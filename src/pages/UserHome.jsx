@@ -30,27 +30,26 @@ function UserHome() {
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
+      const posts = await getAllPosts();
+
       try {
         if (selectedType === "Posts") {
-          const posts = await getAllPosts();
 
           setContent(posts.filter((post) => post.post_type !== "job"));
-        } else if (selectedType === "Job Posts") {
-          const posts = await getAllPosts();
-
-          const jobPosts = await jobService.job.getAll();
-          setContent(posts.filter((post) => post.post_type === "job"));
+        } else if (selectedType === "Jobs Posts") {
+          
+          // const jobPosts = await jobService.job.getAll();
+          setContent(posts.filter((post) => false));
+          
         } else if (
           selectedType === "Preferred Jobs"
         ) {
           const response = await searchService.secrchJobByKeyword(
             `${preferences.experienceLevel}  ${preferences.jobType} ${preferences.location?.address} ${preferences.location?.state}  ${preferences.location?.country} `
           );
-          console.log("res", response);
 
           setPreferedJobs(response);
         }
-        // console.log("posts", posts);
       } catch (error) {
         setError("Failed to load content ,Refresh and try again.");
         console.error("Error fetching content:", error);
@@ -67,7 +66,6 @@ function UserHome() {
       try {
         if (currentUser.accountType == "Candidate") {
           const existingPreferences = await getPreference(currentUser._id);
-          console.log("pref", existingPreferences);
 
           if (existingPreferences) {
             setPreferences(existingPreferences);
@@ -124,12 +122,16 @@ function UserHome() {
           .map((type) => (
             <p
               key={type}
-              onClick={() => setSelectedType(type)}
+              onClick={() =>{ setSelectedType(type)
+
+              }
+                
+              }
               className={`${
                 selectedType === type
                   ? "bg-gray-800 border-gray-800 text-white "
                   : "bg-white"
-              } px-4 z-40 py-1 border cursor-pointer text-nowrap text-sm rounded-lg font-medium`}
+              } px-4 z-40 py-1  border cursor-pointer text-nowrap  rounded-lg font-medium`}
             >
               {type}
             </p>
@@ -167,6 +169,7 @@ function UserHome() {
           </div>
         ) : selectedType == "Preferred Jobs" ? (
           preferedJobs.lehgth <= 0 ? (
+            preferences?
             <p className="max-w-xl pt-20 text-center bg-gray-50 sm:h-full h-fit px-6 md:px-6">
               <p className="text-2xl font-bold text-gray-500">
                 No jobs listed based on your preferences
@@ -181,11 +184,28 @@ function UserHome() {
                 }}
                 className="text-blue-500 font-medium cursor-pointer"
               >
-                Update preferences
+                Create preferences
               </p>
             </p>
+            :
+            <p className="max-w-xl pt-20 text-center bg-gray-50 sm:h-full h-fit px-6 md:px-6">
+            <p className="text-2xl font-bold text-gray-500">
+              No preferences added
+            </p>
+            <p className="mt-1 text-gray-400">
+             Add your preferences so we can recommend jobs based on them
+            </p>
+            <p
+              onClick={() => {
+                navigate("/profile/settings/preferences");
+              }}
+              className="text-blue-500 font-medium cursor-pointer"
+            >
+              Update preferences
+            </p>
+          </p>
           ) : (
-            <div className="w-full pt-6 flex flex-col gap-5">
+            <div className="w-full pt-6 sm:pt-10 pb-10 overflow-x-hidden flex max-w-xl flex-col gap-5">
               {preferedJobs.map((job, index) => (
                 <JobListItem
                   key={index}
@@ -209,7 +229,7 @@ function UserHome() {
               postPaddingbottom={"pb-10"}
               postClassName={"sm:shadow-lg   sm:rounded-xl"}
               no_post_error={
-                selectedType == "Job Posts" ? (
+                selectedType == "Jobs Posts" ? (
                   <p className="max-w-xl pt-20 bg-gray-50 h-full text-center px-6 md:px-6">
                     <p className="text-2xl font-bold text-gray-500">
                       No Job Posts Available

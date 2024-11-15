@@ -12,7 +12,6 @@ import NumberInput from "../Input/NumberInput";
 import LocationInput from "../Input/LocationInput";
 
 function JobForm({ onClose, data, setData }) {
-  console.log(data);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     job_role: "",
@@ -55,7 +54,6 @@ function JobForm({ onClose, data, setData }) {
   }, []); // Ensure dependencies are correct
 
   useEffect(() => {
-    console.log(formData);
   }, [formData]);
   const handleChange = useCallback((e) => {
     const { name, value, type } = e.target;

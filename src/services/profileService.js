@@ -8,7 +8,6 @@ const apiBaseUrl = "https://workler-backend.vercel.app/api/profile";
 const makeApiRequest = async (url, options) => {
   try {
     const response = await fetch(url, options);
-    console.log(response);
     if (!response.ok) {
       throw new Error(`Error: ${response.statusText}`);
     }

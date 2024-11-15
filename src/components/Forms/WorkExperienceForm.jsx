@@ -18,11 +18,9 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
     "Sales",
   ];
 
-  console.log(data);
   const currentWorkingSomeWhere = data.some(
     (experience) => experience.currentlyWorking == "Yes"
   );
-  console.log(currentWorkingSomeWhere);
   const noticePeriodOptions = [
     "15 days or less",
     "1 Month",
@@ -70,7 +68,6 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
   }, []);
 
   useEffect(() => {
-    console.log("Work experience type updated:", workExperienceType);
   }, [workExperienceType]);
 
   const handleNext = () => {
@@ -104,7 +101,6 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
         Object.entries(formData).filter(([key, value]) => value !== "")
       );
       const data = await profileApi.workExperience.add(nonEmptyData);
-      console.log("data", data);
       setData((prev) => [...prev, data]);
       onClose();
     } catch (error) {
@@ -157,7 +153,6 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    console.log(value);
     // Utility function to determine and convert value type
     const convertValue = (value) => {
       if (!isNaN(value) && value !== "") {
@@ -181,9 +176,7 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
   };
 
   const handleWorkExperienceTypeChange = (type) => {
-    console.log("Selected employment type:", type);
     setWorkExperienceType(type);
-    console.log("Updated employment type:", workExperienceType);
   };
 
   const isFormValid = () => {
@@ -197,7 +190,6 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
       leavingDate,
       stipend,
     } = formData;
-    console.log(formData);
 
     if (!companyName || !jobTitle) {
       return false;

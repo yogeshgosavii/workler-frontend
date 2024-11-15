@@ -24,19 +24,16 @@ function Manager() {
   });
 
   useEffect(() => {
-      document.title = "Job manager";
-    
-    
-   }, []);
- 
+    document.title = "Job manager";
+  }, []);
+
   useEffect(() => {
     const handlePopState = () => {
       if (selectedJob) {
-        console.log("Job unselected");
-        setSelectedJob(null);  // Close the job detail view
+        setSelectedJob(null); // Close the job detail view
       } else {
         // Navigate to the previous URL in history
-        navigate(-1);  // Or use window.history.back() if preferred
+        navigate(-1); // Or use window.history.back() if preferred
       }
     };
 
@@ -44,26 +41,25 @@ function Manager() {
 
     // Only push state when a job is selected
     if (selectedJob) {
-      window.history.pushState({ jobId: selectedJob?._id }, `/${selectedJob?._id}`);
+      window.history.pushState(
+        { jobId: selectedJob?._id },
+        `/${selectedJob?._id}`
+      );
     }
 
-    console.log("Popstate event listener added");
 
     return () => {
       window.removeEventListener("popstate", handlePopState);
-      console.log("Popstate event listener removed");
     };
   }, [navigate, selectedJob]);
 
-  
   // Somewhere in your component, simulate a back navigation:
   // useEffect(() => {
   //   setTimeout(() => {
   //     window.history.back();
   //   }, 3000);  // Simulates pressing the back button after 3 seconds
   // }, []);
-  
-  
+
   const jobService = useJobApi(); // Assuming useJobApi is a custom hook to handle API calls
   const currentUser = useSelector((state) => state.auth.user);
 
@@ -96,9 +92,8 @@ function Manager() {
       try {
         const applications = await applicationService.getEmployeerApplications(
           currentUser._id
-        ); 
+        );
         setApplications(applications);
-        console.log("aplica5ions", applications);
       } catch (error) {
         console.error("Failed to fetch applications:", error);
       } finally {
@@ -142,66 +137,77 @@ function Manager() {
             >
               <p className="font-medium text-lg">{job.job_role}</p>
               <p className="text-gray-500">{job.location?.address}</p>
-              {applications
-                    .filter((application) => application.job._id == job._id).length >0  && <div className="bg-white mt-2 flex justify-between p-2 rounded-md border">
-                <div>
-                  <p>Applications</p>
-                  <p className="text-sm text-gray-400">
-                    List of candidates applied
-                  </p>
+              {applications.filter(
+                (application) => application.job._id == job._id
+              ).length > 0 && (
+                <div className="bg-white mt-2 flex justify-between p-2 rounded-md border">
+                  <div>
+                    <p>Applications</p>
+                    <p className="text-sm text-gray-400">
+                      List of candidates applied
+                    </p>
+                  </div>
+                  <div className="flex -space-x-4 rtl:space-x-reverse">
+                    {applications
+                      .filter((application) => application.job._id == job._id)
+                      .slice(0, 3)
+                      .map((application, index) => (
+                        <img
+                          key={index}
+                          className="w-10 h-10 border  rounded-full "
+                          src={application.user.profileImage?.compressedImage}
+                          alt=""
+                        />
+                      ))}
+
+                    {applications.filter(
+                      (application) => application.job._id == job._id
+                    ) > 3 && (
+                      <a
+                        className="flex items-center justify-center w-10 h-10 text-xs font-medium border  text-gray-500 bg-gray-100   rounded-full "
+                        href="#"
+                      >
+                        +{applications - 3}
+                      </a>
+                    )}
+                  </div>
                 </div>
-                <div className="flex -space-x-4 rtl:space-x-reverse">
-                  {applications
-                    .filter((application) => application.job._id == job._id)
-                    .slice(0, 3)
-                    .map((application, index) => (
-                      <img
-                        key={index}
-                        className="w-10 h-10 border  rounded-full "
-                        src={application.user.profileImage?.compressedImage}
-                        alt=""
-                      />
-                    ))}
-                    
-                 {applications
-                    .filter((application) => application.job._id == job._id) >3 && <a
-                    className="flex items-center justify-center w-10 h-10 text-xs font-medium border  text-gray-500 bg-gray-100   rounded-full "
-                    href="#"
-                  >
-                    +{applications-3}
-                  </a>}
+              )}
+              {approaches.filter((approach) => approach.job._id == job._id)
+                .length > 0 && (
+                <div className="bg-white mt-2 flex justify-between p-2 px-3 rounded-lg border">
+                  <div>
+                    <p className="font-medium">Approaches</p>
+                    <p className="text-sm text-gray-400">
+                      List of candidates applied
+                    </p>
+                  </div>
+                  <div className="flex -space-x-4 rtl:space-x-reverse">
+                    {approaches
+                      .filter((approach) => approach.job._id == job._id)
+                      .slice(0, 3)
+                      .map((approach, index) => (
+                        <img
+                          key={index}
+                          className="w-10 h-10 border  rounded-full "
+                          src={approach.user.profileImage?.compressedImage}
+                          alt=""
+                        />
+                      ))}
+
+                    {approaches.filter(
+                      (approach) => approach.job._id == job._id
+                    ) > 3 && (
+                      <a
+                        className="flex items-center justify-center w-10 h-10 text-xs font-medium border  text-gray-500 bg-gray-100   rounded-full "
+                        href="#"
+                      >
+                        +{approaches - 3}
+                      </a>
+                    )}
+                  </div>
                 </div>
-              </div>}
-              {approaches
-                    .filter((approach) => approach.job._id == job._id).length >0  && <div className="bg-white mt-2 flex justify-between p-2 px-3 rounded-lg border">
-                <div>
-                  <p className="font-medium">Approaches</p>
-                  <p className="text-sm text-gray-400">
-                    List of candidates applied
-                  </p>
-                </div>
-                <div className="flex -space-x-4 rtl:space-x-reverse">
-                  {approaches
-                    .filter((approach) => approach.job._id == job._id)
-                    .slice(0, 3)
-                    .map((approach, index) => (
-                      <img
-                        key={index}
-                        className="w-10 h-10 border  rounded-full "
-                        src={approach.user.profileImage?.compressedImage}
-                        alt=""
-                      />
-                    ))}
-                    
-                 {approaches
-                    .filter((approach) => approach.job._id == job._id) >3 && <a
-                    className="flex items-center justify-center w-10 h-10 text-xs font-medium border  text-gray-500 bg-gray-100   rounded-full "
-                    href="#"
-                  >
-                    +{approaches-3}
-                  </a>}
-                </div>
-              </div>}
+              )}
             </div>
           ))}
         </div>
@@ -210,30 +216,31 @@ function Manager() {
     case "applications":
       content = loading.applicationList ? (
         <div class="grid min-h-[140px] w-full  h-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
-              <svg
-                class="text-transparent animate-spin"
-                viewBox="0 0 64 64"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                width="50"
-                height="50"
-              >
-                <path
-                  d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
-                  stroke="currentColor"
-                  stroke-width="5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></path>
-                <path
-                  d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="text-gray-400"
-                ></path>
-              </svg></div>
+          <svg
+            class="text-transparent animate-spin"
+            viewBox="0 0 64 64"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            width="50"
+            height="50"
+          >
+            <path
+              d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+              stroke="currentColor"
+              stroke-width="5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-gray-400"
+            ></path>
+          </svg>
+        </div>
       ) : (
         <div className="flex flex-col gap-4">
           {applications.map((application) => (
@@ -281,30 +288,31 @@ function Manager() {
     case "approaches":
       content = loading.approachList ? (
         <div class="grid min-h-[140px] w-full  h-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
-              <svg
-                class="text-transparent animate-spin"
-                viewBox="0 0 64 64"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                width="50"
-                height="50"
-              >
-                <path
-                  d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
-                  stroke="currentColor"
-                  stroke-width="5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></path>
-                <path
-                  d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="text-gray-400"
-                ></path>
-              </svg></div>
+          <svg
+            class="text-transparent animate-spin"
+            viewBox="0 0 64 64"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            width="50"
+            height="50"
+          >
+            <path
+              d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+              stroke="currentColor"
+              stroke-width="5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-gray-400"
+            ></path>
+          </svg>
+        </div>
       ) : (
         <div className="flex flex-col gap-4">
           {approaches.map((approach) => (
@@ -330,30 +338,31 @@ function Manager() {
     case "interviews":
       content = loading.interviewList ? (
         <div class="grid min-h-[140px] w-full  h-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
-              <svg
-                class="text-transparent animate-spin"
-                viewBox="0 0 64 64"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                width="50"
-                height="50"
-              >
-                <path
-                  d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
-                  stroke="currentColor"
-                  stroke-width="5"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                ></path>
-                <path
-                  d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="text-gray-400"
-                ></path>
-              </svg></div>
+          <svg
+            class="text-transparent animate-spin"
+            viewBox="0 0 64 64"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            width="50"
+            height="50"
+          >
+            <path
+              d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+              stroke="currentColor"
+              stroke-width="5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-gray-400"
+            ></path>
+          </svg>
+        </div>
       ) : (
         <div className="flex flex-col gap-4">
           {interviewList.map((interview) => (
@@ -400,23 +409,28 @@ function Manager() {
         <div className="mb-5">
           <p
             className={`${
-              innerTab == "jobs" && "bg-gray-800 border-gray-800 w-fit rounded-md text-white"
+              innerTab == "jobs" &&
+              "bg-gray-800 border-gray-800 w-fit rounded-md text-white"
             } px-3 border font-medium text-sm py-1`}
           >
             Jobs
           </p>
         </div>
-        {
-          applications<=0 && approaches<=0 && jobs.length<=0 &&  <p className="max-w-xl pt-20 sm:h-full text-center h-fit px-6 md:px-6">
-          <p className="text-3xl font-bold text-gray-500">
-            No jobs yet
-          </p>
-          <p className="mt-2 text-gray-400 ">
-            When jobs posted the actions taken on the jobs, like applications and approaches will be shown here
-          </p>
-        </p>
-        }
-        <div className="w-full">{(loading.applicationList || loading.approachList)?<div class="grid min-h-[140px] w-full  h-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+        {applications <= 0 &&
+          approaches <= 0 &&
+          jobs.length <= 0 &&
+          !loading.applicationList && !loading.approachList && (
+            <p className="max-w-xl pt-20 sm:h-full text-center h-fit px-6 md:px-6">
+              <p className="text-3xl font-bold text-gray-500">No jobs yet</p>
+              <p className="mt-2 text-gray-400 ">
+                When jobs posted the actions taken on the jobs, like
+                applications and approaches will be shown here
+              </p>
+            </p>
+          )}
+        <div className="w-full">
+          {loading.applicationList || loading.approachList ? (
+            <div class="grid min-h-[140px] w-full  h-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
               <svg
                 class="text-transparent animate-spin"
                 viewBox="0 0 64 64"
@@ -440,20 +454,27 @@ function Manager() {
                   stroke-linejoin="round"
                   class="text-gray-400"
                 ></path>
-              </svg></div>: content}</div>
+              </svg>
+            </div>
+          ) : (
+            content
+          )}
+        </div>
       </div>
-     { selectedJob && <div className=" mt-5 w-full sm:w-fit ">
-        <Employment
-          job={selectedJob}
-          applications={applications.filter(
-            (application) => application.job._id == selectedJob?._id
-          )}
-          approaches={approaches?.filter(
-            (application) => application.job._id == selectedJob?._id
-          )}
-          setInnerTab={setInnerTab}
-        />
-      </div>}
+      {selectedJob && (
+        <div className=" mt-5 w-full sm:w-fit ">
+          <Employment
+            job={selectedJob}
+            applications={applications.filter(
+              (application) => application.job._id == selectedJob?._id
+            )}
+            approaches={approaches?.filter(
+              (application) => application.job._id == selectedJob?._id
+            )}
+            setInnerTab={setInnerTab}
+          />
+        </div>
+      )}
     </div>
   );
 }

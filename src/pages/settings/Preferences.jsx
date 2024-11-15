@@ -107,11 +107,14 @@ const Preferences = () => {
         />
 
         <OptionInput
-          placeholder={"Experience level"}
-          value={preferences.experienceLevel + " level"}
-          name={"experienceLevel"}
-          onChange={(e) => setExperienceLevel(e.target.value)}
-          options={["Entry level", "Mid level", "Senior level"]}
+          //  value={preferences.jobType}
+           name={"experience_level"}
+           value={preferences.experienceLevel + " level"}
+          //  name={"experienceLevel"}
+           initialValue="Select experience level"
+           onChange={(e) => setExperienceLevel(e.target.value)}
+           options={["Entry level", "Mid level", "Senior level"]}
+           placeholder={"Experience level"}
         />
 
         <button

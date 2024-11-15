@@ -35,7 +35,6 @@ const applicationService = {
         throw new Error("Approach check failed");
       }
       const data = await response.json();
-      console.log("approached",data);
       
       return data; // Return any additional data from the API response if needed
     } catch (error) {
@@ -54,7 +53,6 @@ const applicationService = {
         throw new Error("Approach check failed");
       }
       const data = await response.json();
-      console.log("application",data);
       
       return data; // Return any additional data from the API response if needed
     } catch (error) {
@@ -73,7 +71,6 @@ const applicationService = {
         throw new Error("Application check failed");
       }
       const data = await response.json();
-      console.log("application",data);
       
       return data; // Return any additional data from the API response if needed
     } catch (error) {
@@ -92,7 +89,6 @@ const applicationService = {
         throw new Error("Application check failed");
       }
       const data = await response.json();
-      console.log("application",data);
       
       return data; // Return any additional data from the API response if needed
     } catch (error) {
@@ -113,7 +109,6 @@ const applicationService = {
         throw new Error("Approach check failed");
       }
       const data = await response.json();
-      console.log("application",data);
       
       return data; // Return any additional data from the API response if needed
     } catch (error) {

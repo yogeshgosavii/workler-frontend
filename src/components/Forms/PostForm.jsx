@@ -48,7 +48,6 @@ function PostForm({ userDetails, setData, onClose }) {
   }, []);
 
   useEffect(() => {
-    console.log("text", mentionSecrchText);
 
     const fetchSearchedUser = async () => {
       const response = await searchService.searchByUsername(mentionSecrchText);
@@ -108,10 +107,7 @@ function PostForm({ userDetails, setData, onClose }) {
         //   posts : [...userDetails.posts , data._id]
 
         // })
-        console.log(images);
-        
-        console.log("data", data);
-
+       
         // setData(prev =>([...prev,{...data,user : {profileImage : user.profileImage,username:user.username}}]))
         // onClose()
         navigate("/profile", { replace: true });
@@ -124,7 +120,6 @@ function PostForm({ userDetails, setData, onClose }) {
     } else {
       const response = await jobService.job.addMultiple(jobs);
       const jobIds = response.map((job) => job._id);
-      console.log(jobIds);
 
       try {
         const data = await createJobPost({
@@ -132,7 +127,6 @@ function PostForm({ userDetails, setData, onClose }) {
           post_type: postType,
           jobs: jobIds,
         });
-        console.log("res", data);
 
         // const user = await authservice.updateUserDetails({
         //   ...userDetails,
@@ -147,7 +141,6 @@ function PostForm({ userDetails, setData, onClose }) {
         setFormData({ content: "", images: [] });
         setImages([]);
       } catch (error) {
-        console.log("error", error);
 
         setError("Failed to create post");
       } finally {
@@ -407,7 +400,6 @@ function PostForm({ userDetails, setData, onClose }) {
                       if (!mentionList.some((listUser) => listUser === user)) {
                         setmentionList((prev) => [...prev, user]);
                       }
-                      console.log(mentionList);
                     }}
                     className="flex gap-3 items-center py-2"
                   >

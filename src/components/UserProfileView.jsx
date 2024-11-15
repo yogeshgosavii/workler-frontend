@@ -43,12 +43,14 @@ function UserProfileView({ userId = useParams().userId }) {
   const [followers, setFollowers] = useState([]);
   const [followings, setFollowings] = useState(0);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [followLoading, setFollowLoading] = useState(true);
   const currentUserDetails = useSelector((state) => state.auth.user);
   const [currentUserJobData, setcurrentUserJobData] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [worksAt, setWorksAt] = useState("");
   const [latestEducation, setLatestEducation] = useState("");
+  const [savedCheckLoading, setSavedCheckLoading] = useState(true);
 
   // const handleBackButton = () => {
   //   console.log("Hello");
@@ -76,18 +78,14 @@ function UserProfileView({ userId = useParams().userId }) {
   //   };
   // }, [selectedJob]);
 
-  console.log("details", currentUserDetails, userId);
   const [saved, setSaved] = useState(false);
   const profileRef = useRef();
-  console.log(userId);
 
   useEffect(() => {
-    
     const fetchData = async () => {
       setLoading((prev) => ({ ...prev, userDetails: true }));
       try {
         const response = await authService.fetchUserDetailsById(userId);
-        console.log("response:", response);
         setUserDetails(response);
       } catch (error) {
         console.error("Failed to fetch user details", error);
@@ -99,7 +97,6 @@ function UserProfileView({ userId = useParams().userId }) {
     const fetchPostData = async () => {
       try {
         const response = await getPostByUserId(userId);
-        console.log("userPosts:", response);
         setpostData(response);
       } catch (error) {
         console.error("Failed to fetch user details", error);
@@ -112,9 +109,7 @@ function UserProfileView({ userId = useParams().userId }) {
       setLoading((prev) => ({ ...prev, jobData: true }));
       try {
         const response = await jobService.job.getByUserIds(userId);
-        console.log("job details:", response);
         setcurrentUserJobData(response);
-        console.log("jobdata", response);
       } catch (error) {
         console.error("Failed to fetch job details", error);
       } finally {
@@ -130,7 +125,7 @@ function UserProfileView({ userId = useParams().userId }) {
         setIsFollowing(
           response.some((follow) => follow.following._id === userId)
         );
-        console.log("followData", response);
+        setFollowLoading(false);
       } catch (error) {
         console.error("Failed to fetch follow details", error);
       } finally {
@@ -138,26 +133,23 @@ function UserProfileView({ userId = useParams().userId }) {
       }
     };
 
-    const fetchConnections = async () =>{
+    const fetchConnections = async () => {
       try {
-        const followingResponse = await followService.getFollowing(userDetails._id)
-        setFollowings(followingResponse.length)
-
-       
+        const followingResponse = await followService.getFollowing(
+          userDetails._id
+        );
+        setFollowings(followingResponse.length);
       } catch (error) {
         console.error("Error fetching connections:", error);
-
       }
-    }
+    };
 
     if (userId) {
       fetchJobData();
       fetchData();
       fetchPostData();
       fetchFollowers();
-      fetchConnections()
-
-      console.log(currentUserDetails, userDetails);
+      fetchConnections();
 
       if (
         currentUserDetails?.accountType == "Candidate" &&
@@ -165,14 +157,13 @@ function UserProfileView({ userId = useParams().userId }) {
       ) {
       }
     }
-   }, [userId]);
+  }, [userId]);
 
-   useEffect(() => {
-    if(userDetails){
+  useEffect(() => {
+    if (userDetails) {
       document.title = userDetails?.username;
     }
-    
-   }, [userDetails]);
+  }, [userDetails]);
 
   useEffect(() => {
     const fetchApplications = async () => {
@@ -188,7 +179,6 @@ function UserProfileView({ userId = useParams().userId }) {
       try {
         const qualificationData =
           await profileService.qualification.getQualificationById(userId);
-        console.log("qualification:", qualificationData);
         setQualification(qualificationData);
 
         qualificationData.workExperience.map((item) => {
@@ -220,7 +210,6 @@ function UserProfileView({ userId = useParams().userId }) {
       setLoading((prev) => ({ ...prev, jobPost: true }));
       try {
         const jobData = await jobService.job.getByUserIds(userId);
-        console.log("jobData:", jobData);
         setJobData(jobData);
       } catch (error) {
         console.error("Failed to fetch qualification data", error);
@@ -230,19 +219,17 @@ function UserProfileView({ userId = useParams().userId }) {
     };
 
     const checkSaved = async () => {
-      console.log("Hello");
-
       setLoading((prev) => ({ ...prev, checkSaved: true }));
       try {
         const saveData = await savedService.checkSaved({
           userId: currentUserDetails._id,
           saved_content: userDetails._id,
         });
-        console.log("saved:", saveData);
         setSaved(saveData.exists);
       } catch (error) {
         console.error("Failed to fetch saved data", error);
       } finally {
+        setSavedCheckLoading(false);
         setLoading((prev) => ({ ...prev, checkSaved: false }));
       }
     };
@@ -255,7 +242,6 @@ function UserProfileView({ userId = useParams().userId }) {
           employeerId: currentUserDetails._id,
         });
         setApproached(response.data[0]);
-        console.log("approached", response);
         setLoading((prev) => ({ ...prev, checkApproached: false }));
       } catch (error) {}
     };
@@ -268,13 +254,10 @@ function UserProfileView({ userId = useParams().userId }) {
       checkApproached();
       fetchUserJobsPosts();
       fetchApplications();
-    } else if (
-      userDetails?.account_type != "Employeer"
-    ) {
+    } else if (userDetails?.account_type != "Employeer") {
       fetchQualificationData();
     }
-          // fetchQualificationData();
-
+    // fetchQualificationData();
   }, [userDetails]);
 
   const saveProfie = async () => {
@@ -295,7 +278,6 @@ function UserProfileView({ userId = useParams().userId }) {
       //     })
       //   );
       // }
-      console.log(response);
     } catch (error) {
       console.error("Failed to save candidate", error);
     }
@@ -303,10 +285,7 @@ function UserProfileView({ userId = useParams().userId }) {
 
   const createApproach = async (job) => {
     try {
-      console.log(job);
-
       setApproaching(false);
-      console.log(approached);
 
       if (
         approached &&
@@ -327,18 +306,13 @@ function UserProfileView({ userId = useParams().userId }) {
         });
         setApproached(response);
       }
-
-      console.log(response);
     } catch (error) {}
   };
 
   const unsaveProfie = async () => {
     try {
-      console.log();
-
       setSaved(false);
       const response = await savedService.unsave(userDetails._id);
-      console.log(response);
     } catch (error) {
       console.error("Failed to unsave candidate", error);
     }
@@ -347,7 +321,6 @@ function UserProfileView({ userId = useParams().userId }) {
     const handleScroll = () => {
       if (profileRef.current) {
         const currentScrollY = profileRef.current.scrollTop;
-        console.log("Hello");
 
         setAtTop(currentScrollY); // Allow for a small range near the top
       }
@@ -436,8 +409,8 @@ function UserProfileView({ userId = useParams().userId }) {
       case "About":
         return <About isEditable={false} userDetails={userDetails} />;
       case "Jobs":
-        return (
-          currentUserJobData.length>0 ?<div className="px-4  py-4">
+        return currentUserJobData.length > 0 ? (
+          <div className="px-4  py-4">
             <p className="font-medium text-sm mb-2">Recently posted jobs</p>
             {currentUserJobData?.map((job, index) => (
               <div
@@ -490,16 +463,17 @@ function UserProfileView({ userId = useParams().userId }) {
                 </div>
               </div>
             ))}
-          </div>:
+          </div>
+        ) : (
           <p className="max-w-xl pt-12 text-center sm:h-full h-fit px-6 md:px-6">
-          <p className="text-2xl font-bold text-gray-500">
-            No Jobs Posted Yet
+            <p className="text-2xl font-bold text-gray-500">
+              No Jobs Posted Yet
+            </p>
+            <p className="mt-1 text-gray-400">
+              Job posted by this account will appear here once they submit it
+            </p>
+            {/* <p onClick={()=>{navigate("/jobs")}} className="text-blue-500 font-medium cursor-pointer">Explore Jobs</p> */}
           </p>
-          <p className="mt-1 text-gray-400">
-            Job posted by this account will appear here once they submit it
-          </p>
-          {/* <p onClick={()=>{navigate("/jobs")}} className="text-blue-500 font-medium cursor-pointer">Explore Jobs</p> */}
-        </p>
         );
       default:
         return null;
@@ -518,15 +492,17 @@ function UserProfileView({ userId = useParams().userId }) {
     );
   }
   const follow = async () => {
+    setFollowLoading(true);
     const followResponse = await followService.createFollow({
       user: currentUserDetails._id,
       following: userId,
     });
     setIsFollowing(true);
     setFollowers((prev) => [...prev, followResponse]);
-    console.log(followResponse);
+    setFollowLoading(false);
   };
   const unfollow = async () => {
+    setLoading(true);
     const unfollowResponse = await followService.unfollow(
       currentUserDetails._id,
       userId
@@ -535,22 +511,26 @@ function UserProfileView({ userId = useParams().userId }) {
     setFollowers(
       followers.filter((follow) => follow.user._id != currentUserDetails._id)
     );
-    console.log(unfollowResponse);
+    setLoading(false);
   };
   return (
     <div className=" flex gap-8 sm:p-10 sm:py-6 bg-gray-50 h-full  w-full justify-center">
       {showProfileImage && (
-          <div
-            onClick={() => setShowProfileImage(false)}
-            className="h-screen  w-full top-0 bg-white blur-lg  opacity-85 z-30 fixed"
-          ></div>
-        )}
+        <div
+          onClick={() => {
+            setShowProfileImage(false);
+          }}
+          className={`h-screen  w-full top-0 absolute inset-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60    max-w-3xl  z-50  `}
+        ></div>
+      )}
       <div
         ref={profileRef}
         style={{
           scrollbarWidth: "none",
         }}
-        className={`${!userId && "hidden"} max-w-2xl w-full flex-1 transition-all  ${
+        className={`${
+          !userId && "hidden"
+        } max-w-2xl w-full flex-1 transition-all  ${
           approaching ? "overflow-y-hidden" : "overflow-y-auto"
         }  flex-grow sm:rounded-3xl ${showProfileImage && "pointer-events"}`}
       >
@@ -558,10 +538,10 @@ function UserProfileView({ userId = useParams().userId }) {
           <div
             className={`absolute sm:w-[50%] flex flex-col gap-4 px-4 md:px-6 py-4 w-full md:w-[53%] transition-all ${
               !approaching ? "translate-y-full" : "translate-y-0"
-            } h-full z-30 -mt-5  border  bg-white`}
+            } h-full z-30   border  bg-white`}
           >
             <div className="flex justify-between gap-4">
-              <p className="mb-5 text-lg">
+              <p className="mb-5 text-lg font-medium">
                 {" "}
                 Approch the user for one the following job
               </p>
@@ -583,6 +563,16 @@ function UserProfileView({ userId = useParams().userId }) {
                 />
               </svg>
             </div>
+            {
+            currentUserJobData.length<=0 &&  <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+              <p className="text-2xl font-bold text-gray-500">
+                No Job Posted Yet
+              </p>
+              <p className="mt-1 text-gray-400">
+                Post a job first to approach candidates.
+              </p>
+            </p>
+            }
             {currentUserJobData.map((job) => (
               <div className="border bg-gray-50 flex flex-col gap-2 p-3 rounded-lg">
                 <p className="font-medium text-lg">{job.job_role}</p>
@@ -610,7 +600,7 @@ function UserProfileView({ userId = useParams().userId }) {
             ))}
           </div>
         )}
-        
+
         <div className="flex relative  flex-wrap">
           <div
             className={` w-full border-t sm:rounded-t-3xl  fixed sm:sticky  sm:border-x  z-20 top-0   px-4 sm:px-6 py-4 sm:py-6 bg-white flex `}
@@ -707,7 +697,12 @@ function UserProfileView({ userId = useParams().userId }) {
                 </div>
 
                 <div className="order-3 flex flex-col gap-2">
-                  <div onClick={()=>{navigate("/connections/"+userDetails._id)}} className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm ">
+                  <div
+                    onClick={() => {
+                      navigate("/connections/" + userDetails._id);
+                    }}
+                    className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm "
+                  >
                     <p>
                       {/* <span>{userDetails.location?.address} · </span> */}
                       {followers.length > 0 ? followers.length : 0}
@@ -717,9 +712,7 @@ function UserProfileView({ userId = useParams().userId }) {
                       </span>{" "}
                       {userDetails?.account_type == "Candidate" && (
                         <span>
-                          ·{" "}
-                          {followings ||
-                             0}{" "}
+                          · {followings || 0}{" "}
                           <span className="  font-normal">following</span>
                         </span>
                       )}
@@ -790,50 +783,54 @@ function UserProfileView({ userId = useParams().userId }) {
               );
             })}
             {!loading.userDetails && (
-              <div className="flex gap-4 flex-wrap">
-                {currentUserDetails._id != userDetails._id &&(currentUserDetails.account_type == "Candidate" ||
-                  currentUserDetails.account_type == "Explorer" ||
-                  currentUserDetails.account_type == "Employeer" ||
-                  currentUserDetails.account_type ==
-                    userDetails?.account_type) &&
-                  (isFollowing ? (
-                    <button
-                      // href={jobDetails?.job_url}
-                      onClick={() => {
-                        unfollow();
-                      }}
-                      className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center  border-gray-800 text-gray-800 border-2 py-1 rounded-full "
-                    >
-                      Following
-                    </button>
-                  ) : (
-                    <button
-                      // href={jobDetails?.job_url}
-                      onClick={() => {
-                        follow();
-                      }}
-                      className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5  items-center justify-center text-white bg-gray-800 sm:hover:bg-blue-600 py-1 rounded-full "
-                    >
-                      Follow
-                    </button>
-                  ))}
-
-                {currentUserDetails._id != userDetails._id  && currentUserDetails.account_type === "Employeer" &&
-                  userDetails?.account_type === "Candidate" &&
-                  (approached?.status === "declined" || !approached) &&
-                  !loading.checkApproached &&
-                  !applications?.some(
-                    (application) => application.user._id === userDetails._id
-                  ) && (
-                    <button
-                      onClick={() => {
-                        setApproaching((prev) => !prev);
-                      }}
-                      className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5 items-center justify-center text-white bg-gray-800 sm:hover:bg-blue-600 py-1 rounded-full"
-                    >
-                      Approach
-                    </button>
-                  )}
+              <div className="flex gap-4 flex-wrap justify-between  items-center">
+                <div className="flex gap-4">
+                  {currentUserDetails._id != userDetails._id &&
+                    (currentUserDetails.account_type == "Candidate" ||
+                      currentUserDetails.account_type == "Explorer" ||
+                      currentUserDetails.account_type == "Employeer" ||
+                      currentUserDetails.account_type ==
+                        userDetails?.account_type) &&
+                    (isFollowing ? (
+                      <button
+                        // href={jobDetails?.job_url}
+                        onClick={() => {
+                          unfollow();
+                        }}
+                        className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium   items-center justify-center  border-gray-800 text-gray-800 border-2 py-1.5 rounded-full "
+                      >
+                        Following
+                      </button>
+                    ) : (
+                      <button
+                        // href={jobDetails?.job_url}
+                        disabled={followLoading}
+                        onClick={() => {
+                          follow();
+                        }}
+                        className="w-fit px-5 flex h-fit cursor-pointer md:order-2 disabled:bg-gray-600 text-center order-last gap-2 font-medium   items-center justify-center text-white bg-gray-800 sm:hover:bg-blue-600 py-1.5 rounded-full "
+                      >
+                        Follow
+                      </button>
+                    ))}
+                  {currentUserDetails._id != userDetails._id &&
+                    currentUserDetails.account_type === "Employeer" &&
+                    userDetails?.account_type === "Candidate" &&
+                    (approached?.status === "declined" || !approached) &&
+                    !loading.checkApproached &&
+                    !applications?.some(
+                      (application) => application.user._id === userDetails._id
+                    ) && (
+                      <button
+                        onClick={() => {
+                          setApproaching((prev) => !prev);
+                        }}
+                        className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium  items-center justify-center text-white bg-gray-800 sm:hover:bg-blue-600 py-1.5 rounded-full"
+                      >
+                        Approach
+                      </button>
+                    )}
+                </div>
                 {/* {applications?.map(
                 application =>{
                   return(
@@ -848,7 +845,7 @@ function UserProfileView({ userId = useParams().userId }) {
                   return <p>Applied for {application.job.job_role}</p>;
                 }
               })} */}
-                {!loading.userDetails && currentUserDetails._id != userDetails._id  &&
+                {/* {!loading.userDetails && currentUserDetails._id != userDetails._id  &&
                   (saved ? (
                     <button
                       onClick={() => unsaveProfie()}
@@ -863,6 +860,49 @@ function UserProfileView({ userId = useParams().userId }) {
                     >
                       Save
                     </button>
+                  ))} */}
+                {!loading.userDetails &&
+                  currentUserDetails._id != userDetails._id &&
+                  (savedCheckLoading ? (
+                    <svg
+                      className=" h-14 w-[60px] rounded-lg  px-2.5 p-3 text-transparent animate-spin fill-blue-500 "
+                      viewBox="0 0 100 101"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                        fill="currentColor"
+                      />
+                      <path
+                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                        fill="currentFill"
+                      />
+                    </svg>
+                  ) : saved ? (
+                    <svg
+                      onClick={(e) => {
+                        unsaveProfie();
+                        e.stopPropagation();
+                      }}
+                      xmlns="http://www.w3.org/2000/svg"
+                      className=" size-12 rounded-lg fill-gray-800 px-2.5 p-3 self-start unliked-animation"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
+                    </svg>
+                  ) : (
+                    <svg
+                      onClick={(e) => {
+                        saveProfie();
+                        e.stopPropagation();
+                      }}
+                      xmlns="http://www.w3.org/2000/svg"
+                      className=" size-12 rounded-lg  fill-gray-800  px-2.5 p-3 self-start liked-animation"
+                      viewBox="0 0 16 16"
+                    >
+                      <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z" />
+                    </svg>
                   ))}
               </div>
             )}
@@ -878,7 +918,7 @@ function UserProfileView({ userId = useParams().userId }) {
             }}
             className={`flex-grow z-20 absolute max-w-full overflow-x-auto border-b sm:border-x ${
               atTop > 340 ? "sm:border-t sm:rounded-t-3xl" : ""
-            } w-full  sticky top-16 sm:top-0 gap-3 bg-white font-medium flex`}
+            } w-full  sticky top-16 sm:top-0 gap-3 bg-white text-gray-800 font-medium flex`}
           >
             <div className="flex w-full pt-1">
               {[
@@ -888,7 +928,7 @@ function UserProfileView({ userId = useParams().userId }) {
                       "Posts",
                       currentUserDetails.account_type != "Employeer"
                         ? "Jobs"
-                        : null
+                        : null,
                     ]
                   : ["Home", "Posts", "Qualification"]),
               ]
@@ -935,7 +975,7 @@ function UserProfileView({ userId = useParams().userId }) {
           ></div>
         </div>
 
-        <div>{renderTabContent()}</div>
+        <div className="">{renderTabContent()}</div>
       </div>
       {/* <div className="hidden sticky top-20 w-full max-w-lg flex-col gap-5 xl:flex">
         <div className="border bg-white p-4">
