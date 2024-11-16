@@ -473,15 +473,18 @@ function PostView({ postId = useParams().postId, index, className }) {
                     return (
                       <div
                         key={job._id}
+                        onClick={()=>{
+                          navigate("/job/"+job._id)
+                        }}
                         style={{
                           flex: "0 0 auto", // Ensure items do not shrink
                           scrollSnapAlign: "start", // Snap to the start of each item
                           minWidth: "100%", // Ensure items take full width
                         }}
-                        className="mt-2 border p-5 w-full rounded-2xl flex-shrink-0"
+                        className="mt-2 border p-5 w-full flex flex-col justify-between rounded-2xl flex-shrink-0"
                       >
                         <div className="flex gap-4">
-                          <p className="bg-pink-950 text-white font-bold text-3xl -ml-px rounded-full flex items-center justify-center w-14 h-14">
+                          <p className="bg-pink-950 text-white font-bold text-3xl -ml-px rounded-full flex items-center justify-center min-w-14 w-14 h-14">
                             {logoLetter}
                           </p>
                           <div>
@@ -491,9 +494,9 @@ function PostView({ postId = useParams().postId, index, className }) {
                             <p className="text-gray-500">{job.company_name}</p>
                           </div>
                         </div>
-                        <p className="text-sm mt-2 line-clamp-3 max-w-fit text-wrap truncate">
-                          {job.description}
-                        </p>
+                        {/* // <p className="text-sm mt-2 line-clamp-3 max-w-fit text-wrap truncate">
+                        //   {job.description}
+                        // </p> */}
                         <a
                           href={job.job_url}
                           target="_blank"

@@ -469,11 +469,16 @@ function Posts({
                                   scrollSnapAlign: "start", // Snap to the start of each item
                                   minWidth: "100%", // Ensure items take full width
                                 }}
+                                onClick={(e)=>{
+                                  navigate("/job/"+job._id)
+                                  e.stopPropagation()
+
+                                }}
                                 className="mt-2 border p-5 w-full rounded-2xl flex flex-col justify-between flex-shrink-0"
                               >
                                 <div>
                                   <div className="flex gap-4">
-                                    <p className="bg-pink-950 text-white font-bold text-3xl -ml-px rounded-full flex items-center justify-center w-14 h-14">
+                                    <p className="bg-pink-950 text-white font-bold text-3xl -ml-px rounded-full flex items-center justify-center min-w-14 w-14 h-14">
                                       {logoLetter}
                                     </p>
                                     <div>

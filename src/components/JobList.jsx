@@ -230,11 +230,11 @@ const JobList = ({ jobs, setJobs, settagsText, tagsText }) => {
           />}
           <TextAreaInput
             key={job.jobId + "_description"}
-            name={job.jobId + "_description"}
+            name={"description"}
             value={job.job_description}
             onChange={(e) => {
               const updatedJobs = jobs.map((j) =>
-                j.jobId === job.jobId ? { ...j, job_description: e.target.value } : j
+                j.jobId === job.jobId ? { ...j, description: e.target.value } : j
               );
               setJobs(updatedJobs);
             }}

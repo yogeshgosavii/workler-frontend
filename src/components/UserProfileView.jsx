@@ -134,7 +134,7 @@ function UserProfileView({ userId = useParams().userId }) {
     };
 
     
-    if (userId) {
+    if (userId && currentUserDetails && userDetails) {
       fetchJobData();
       fetchData();
       fetchPostData();
@@ -146,6 +146,9 @@ function UserProfileView({ userId = useParams().userId }) {
         userDetails?.accountType == "Employeer"
       ) {
       }
+    }
+    else{
+      navigate("/not-found")
     }
   }, [userId]);
 

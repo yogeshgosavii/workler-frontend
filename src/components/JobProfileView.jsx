@@ -62,6 +62,12 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleDescription = () => setIsExpanded(!isExpanded);
 
+  useEffect(() => {
+    if(!jobDetails){
+      navigate("/not-found")
+    }
+
+  }, []);
   const jobService = useJobApi();
   const profileRef = useRef();
   const navigate = useNavigate();
@@ -87,7 +93,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       const approaches = await approachService.getUserApproaches(
         userDetails._id
       );
-     
+
       setApproaches(approaches.filter((approach) => approach.job._id == jobId));
     };
 
@@ -105,8 +111,8 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   }, []);
 
   useEffect(() => {
-    document.title = jobDetails?.job_role 
- }, [jobDetails]);
+    document.title = jobDetails?.job_role;
+  }, [jobDetails]);
   useEffect(() => {
     const fetchData = async () => {
       setLoading((prev) => ({ ...prev, jobDetails: true }));
@@ -214,7 +220,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       // Ensure userId exists before making requests
       // fetchUserData();
 
-
       checkApplied();
       // checkSaved();
       fetchData();
@@ -225,7 +230,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       setJobInterview(
         interviews.find((interview) => interview.job._id === jobId)
       );
-     
 
       fetchApplicantsCount();
     }
@@ -284,7 +288,6 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
     });
     setapplied(true);
     setSelectResume(null);
-
   };
   useEffect(() => {
     const fetchUserResumes = async () => {
@@ -1042,9 +1045,9 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                       <span className="mr-1">
                         This job is fetched from a job post.{" "}
                       </span>
-                      <a className="text-gray-800 cursor-pointer flex gap-1 font-medium items-center">
+                      {/* <a className="text-gray-800 cursor-pointer flex gap-1 font-medium items-center">
                         View post{" "}
-                      </a>
+                      </a> */}
                     </p>
                   </div>
                 )}
@@ -1645,13 +1648,11 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
           </div>
         </div>
 
-        <div className={`pb-12 sm:pb-0`}>
-          {renderTabContent()}
-        </div>
+        <div className={`pb-12 sm:pb-0`}>{renderTabContent()}</div>
         <div
           className={`fixed ${
             userDetails && "mb-[55px] sm:mb-0"
-          } sm:sticky rounded-b-3xl  w-full self-center flex gap-3  bottom-0 z-30 bg-white border px-4 py-5 items-center`}
+          } sm:sticky sm:rounded-b-3xl  w-full self-center flex gap-3  bottom-0 z-30 bg-white sm:border border-t px-4 py-5 items-center`}
         >
           {copied && (
             <p
@@ -1663,8 +1664,22 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
             </p>
           )}
           <svg
-            onClick={() => {
-              copyToClipboard();
+            // onClick={() => {
+            //   copyToClipboard();
+            // }}
+            onClick={async () => {
+              if (navigator.share) {
+                try {
+                  await navigator.share({
+                    title: jobDetails.job_role,
+                    url: jobDetails.job_url,
+                  });
+                } catch (error) {
+                  console.error("Error sharing:", error);
+                }
+              } else {
+                copyToClipboard();
+              }
             }}
             className="h-12 w-[70px] p-2 px-2.5 border text-gray-400 rounded-lg"
             width="24"
