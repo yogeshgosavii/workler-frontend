@@ -295,7 +295,7 @@ function Saved() {
   );
 
   const renderProfiles = () => (
-    <div className="px-4 sm:px-0 grid grid-cols-1 w-full gap-4">
+    <div className=" sm:px-0 grid grid-cols-1 w-full gap-4">
         {
           savedItems.profiles.length <=0 && <p className="max-w-xl w-full pt-20 text-center sm:h-full h-fit px-6 md:px-6">
           <p className="text-2xl font-bold text-gray-500">

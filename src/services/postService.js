@@ -1,7 +1,7 @@
 import { setAuthHeaders } from "../../utility";
 
-const API_URL = 'https://workler-backend.vercel.app/api/posts';
-// const API_URL = "http://localhost:5002/api/posts";
+// const API_URL = 'https://workler-backend.vercel.app/api/posts';
+const API_URL = "http://localhost:5002/api/posts";
 
 const getToken = () => localStorage.getItem('token');
 
@@ -125,6 +125,16 @@ export const getUserPosts = async () => {
 export const getAllPosts = async () => {
   const response = await handleRequest(`${API_URL}/all-posts`, {
     method: 'GET',
+
+  });
+  return response;
+};
+
+export const getUserFollowingPosts = async () => {
+  const response = await handleRequest(`${API_URL}/post/following`, {
+    method: 'GET',
+    headers: setAuthHeaders(getToken()),
+
   });
   return response;
 };

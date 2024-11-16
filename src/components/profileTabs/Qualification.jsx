@@ -72,9 +72,13 @@ function Qualification({
         title: "Skills",
         content:
           skillData?.length === 0 ? (
-            <p className="text-sm text-gray-400">
-              Adding the skills helps recruiters know your most useful work
-            </p>
+            isEditable ? (
+              <p className="text-sm text-gray-400">
+                Adding the skills helps recruiters know your most useful work
+              </p>
+            ) : (
+              []
+            )
           ) : (
             <div className="flex gap-2 flex-wrap">
               {skillData?.map((data, index) => (
@@ -105,10 +109,14 @@ function Qualification({
         title: "Education",
         content:
           educationData?.length === 0 ? (
-            <p className="text-sm text-gray-400 ">
-              Adding education or course type helps recruiters know your
-              educational background
-            </p>
+            isEditable ? (
+              <p className="text-sm text-gray-400 ">
+                Adding education or course type helps recruiters know your
+                educational background
+              </p>
+            ) : (
+              []
+            )
           ) : (
             educationData?.map((data, index) => {
               if (
@@ -233,9 +241,14 @@ function Qualification({
         title: "Projects",
         content:
           projectData?.length === 0 ? (
-            <p className="text-sm text-gray-400 ">
-              Adding projects helps recruiters know about your previous projects
-            </p>
+            isEditable ? (
+              <p className="text-sm text-gray-400 ">
+                Adding projects helps recruiters know about your previous
+                projects
+              </p>
+            ) : (
+              []
+            )
           ) : (
             <div className="flex flex-col gap-3">
               {projectData?.map((data, index) => {
@@ -264,7 +277,11 @@ function Qualification({
                       }
                     />
                     <div className="-mt-1">
-                      <a href={currentUser._id !=user._id &&data.url} target="_blank" className="text-xl font-semibold">
+                      <a
+                        href={currentUser._id != user._id && data.url}
+                        target="_blank"
+                        className="text-xl font-semibold"
+                      >
                         {data.project_name}
                       </a>
                       <p className="text-sm">{data.project_description}</p>
@@ -458,6 +475,19 @@ function Qualification({
           {/* <button className="bg-blue-500 text-white w-full text-center text-lg font-medium rounded-lg px-4 py-3 mt-3">Upload</button> */}
         </div>
       )}
+      {skillData.length == 0 &&
+        educationData.length == 0 &&
+        workExperienceData.length == 0 &&
+        projectData.length == 0 && (
+          <p className="max-w-xl pt-14 text-center sm:h-full h-fit px-6 md:px-6">
+            <p className="text-2xl font-bold text-gray-500">
+              No Qualifications Added Yet 
+            </p>
+            <p className="mt-1 text-gray-400">
+              User qualification like skills, projects , work experience and educations  will be show here once user adds it 
+            </p>
+          </p>
+        )}
       {userDetailsList.map((item) => (
         <Section
           key={item.id}

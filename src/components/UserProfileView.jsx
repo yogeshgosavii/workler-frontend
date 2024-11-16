@@ -133,23 +133,13 @@ function UserProfileView({ userId = useParams().userId }) {
       }
     };
 
-    const fetchConnections = async () => {
-      try {
-        const followingResponse = await followService.getFollowing(
-          userDetails._id
-        );
-        setFollowings(followingResponse.length);
-      } catch (error) {
-        console.error("Error fetching connections:", error);
-      }
-    };
-
+    
     if (userId) {
       fetchJobData();
       fetchData();
       fetchPostData();
       fetchFollowers();
-      fetchConnections();
+   
 
       if (
         currentUserDetails?.accountType == "Candidate" &&
@@ -163,6 +153,21 @@ function UserProfileView({ userId = useParams().userId }) {
     if (userDetails) {
       document.title = userDetails?.username;
     }
+
+    const fetchConnections = async () => {
+      try {
+        const followingResponse = await followService.getFollowing(
+          userDetails._id
+        );
+        
+        setFollowings(followingResponse.length);
+      } catch (error) {
+        console.error("Error fetching connections:", error);
+      }
+    };
+
+
+    fetchConnections();
   }, [userDetails]);
 
   useEffect(() => {
@@ -225,6 +230,7 @@ function UserProfileView({ userId = useParams().userId }) {
           userId: currentUserDetails._id,
           saved_content: userDetails._id,
         });
+        
         setSaved(saveData.exists);
       } catch (error) {
         console.error("Failed to fetch saved data", error);
@@ -520,7 +526,7 @@ function UserProfileView({ userId = useParams().userId }) {
           onClick={() => {
             setShowProfileImage(false);
           }}
-          className={`h-screen  w-full top-0 absolute inset-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60    max-w-3xl  z-50  `}
+          className={`h-screen  w-full top-0 absolute inset-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60      z-50  `}
         ></div>
       )}
       <div

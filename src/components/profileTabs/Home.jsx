@@ -15,9 +15,9 @@ function Home({
   
 }) {
   return (
-    <div className="  flex flex-col gap-4 mb-4 border text-gray-800 bg-white h-full">
+    <div className="  flex flex-col gap-4 mb-4 border  text-gray-800 bg-white h-full">
       {user?.account_type == "Employeer" ? (
-        <div className="flex flex-col  md:border    gap-2">
+        <div className="flex flex-col    gap-2">
           <p className="text-xl font-bold px-4 mt-4 md:px-6">About</p>
           {loading.user ? (
             <div className="px-4 md:px-6 py-4">
@@ -95,7 +95,7 @@ function Home({
           </p>
         </div>
       ) : (
-        <div className="relative  md:border md:px-6 overflow-hidden h-full px-4 py-4 pb-6">
+        <div className="relative   md:px-6 overflow-hidden h-full px-4 py-4 pb-6">
           <div className="flex justify-between items-center mb-2 ">
             <p className="text-xl font-bold ">About</p>
             {isEditable && (

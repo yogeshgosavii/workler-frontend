@@ -191,7 +191,7 @@ function UserPostUpdateSettings({
             <div
               onClick={() => {
                 setPostData(
-                  postData.filter((post) => post.id == postSettings._id)
+                  postData.filter((post) => post.id !== postSettings._id)
                 );
 
                 deletePost(postSettings._id);

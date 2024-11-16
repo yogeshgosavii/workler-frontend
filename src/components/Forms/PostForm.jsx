@@ -29,7 +29,7 @@ function PostForm({ userDetails, setData, onClose }) {
   const [mentionSecrchText, setMentionSecrchText] = useState("");
   const [mentionList, setmentionList] = useState([]);
   const [mentionSearchList, setMentionSearchList] = useState([]);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const jobService = useJobApi();
   const [tagsText, settagsText] = useState([]);
@@ -48,7 +48,6 @@ function PostForm({ userDetails, setData, onClose }) {
   }, []);
 
   useEffect(() => {
-
     const fetchSearchedUser = async () => {
       const response = await searchService.searchByUsername(mentionSecrchText);
       setMentionSearchList(response);
@@ -87,17 +86,16 @@ function PostForm({ userDetails, setData, onClose }) {
         .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Convert **bold text** to <strong>
         .replace(/(?:\r\n|\r|\n)/g, "<br />")
     );
-    if(mentionList.length >0){
+    if (mentionList.length > 0) {
       formDataToSend.append(
         "mentions",
         mentionList.map((user) => user._id)
       );
     }
-   
+
     images.forEach((image) => {
       formDataToSend.append("files", image);
     });
-    
 
     if (postType == "content") {
       try {
@@ -107,7 +105,7 @@ function PostForm({ userDetails, setData, onClose }) {
         //   posts : [...userDetails.posts , data._id]
 
         // })
-       
+
         // setData(prev =>([...prev,{...data,user : {profileImage : user.profileImage,username:user.username}}]))
         // onClose()
         navigate("/profile", { replace: true });
@@ -137,11 +135,9 @@ function PostForm({ userDetails, setData, onClose }) {
         // onClose();
         navigate("/profile", { replace: true });
 
-
         setFormData({ content: "", images: [] });
         setImages([]);
       } catch (error) {
-
         setError("Failed to create post");
       } finally {
         setLoading(false);
@@ -166,7 +162,8 @@ function PostForm({ userDetails, setData, onClose }) {
               <svg
                 class="h-8 w-8 text-gray-700 -ml-[1px]"
                 onClick={() => {
-                window.history.back()}}
+                  window.history.back();
+                }}
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -300,31 +297,35 @@ function PostForm({ userDetails, setData, onClose }) {
                   className="w-full h-max caret-gray-800 mt-1 focus:outline-none resize-none overflow-hidden"
                 />
               </div>
-              {mentionList.length>0 &&<div className="px-4 sm:px-6 my-3 flex gap-2 -mb-2 text-sm flex-wrap">
-                {mentionList.map((user) => (
-                  <div className=" bg-gray-50 border gap-2 flex items-center border-blue-500 px-2 py-1.5 rounded-md text-blue-500">
-                    <p className="  rounded-md font-medium">@{user.username}</p>
-                    <svg
-                      onClick={() =>
-                        setmentionList(
-                          mentionList.filter((user) => user != user)
-                        )
-                      }
-                      className="h-5 w-5   cursor-pointer"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-label="Close"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
-                  </div>
-                ))}
-              </div>}
+              {mentionList.length > 0 && (
+                <div className="px-4 sm:px-6 my-3 flex gap-2 -mb-2 text-sm flex-wrap">
+                  {mentionList.map((user) => (
+                    <div className=" bg-gray-50 border gap-2 flex items-center border-blue-500 px-2 py-1.5 rounded-md text-blue-500">
+                      <p className="  rounded-md font-medium">
+                        @{user.username}
+                      </p>
+                      <svg
+                        onClick={() =>
+                          setmentionList(
+                            mentionList.filter((user) => user != user)
+                          )
+                        }
+                        className="h-5 w-5   cursor-pointer"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-label="Close"
+                      >
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                      </svg>
+                    </div>
+                  ))}
+                </div>
+              )}
               {postType == "content" ? (
                 <div className="flex w-full mt-4  overflow-auto px-4">
                   <ImageCarousel
@@ -338,13 +339,13 @@ function PostForm({ userDetails, setData, onClose }) {
                   />
                 </div>
               ) : (
-               <div className="mt-5 w-full">
-                 <JobList
-                  jobs={jobs}
-                  setJobs={setJobs}
-                  tagsText={tagsText}
-                  settagsText={settagsText}
-                />
+                <div className="mt-5 w-full">
+                  <JobList
+                    jobs={jobs}
+                    setJobs={setJobs}
+                    tagsText={tagsText}
+                    settagsText={settagsText}
+                  />
                 </div>
               )}
             </div>
@@ -358,64 +359,68 @@ function PostForm({ userDetails, setData, onClose }) {
                 className="absolute h-full w-full bg-black opacity-45  top-0 left-0"
               ></div> */}
 
-            { showSelectMention  &&<div 
-              className={`${
-                selectMentions ? "animate-popup" : "animate-popdown"
-              } transition-all border py-1 border-gray-200  z-20 rounded-xl shadow-md`}
-            >
-              <div className="flex items-center px-2 rounded-lg">
-                <input
-                  value={mentionSecrchText}
-                  onChange={(e) => {
-                    setMentionSecrchText(e.target.value);
-                  }}
-                  className="w-full py-2.5 outline-none px-3 caret-blue-500 rounded-lg"
-                  placeholder="Search for user to mention"
-                />
-                <svg
-                  onClick={() => {setSelectMentions(false) 
-
-                  setTimeout(() => {
-                    setShowSelectMention(false)
-                  }, 2000);
-                  }
-                  }
-                  className="h-6 w-6 mx-3 text-gray-400 cursor-pointer"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-label="Close"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18" />
-                  <line x1="6" y1="6" x2="18" y2="18" />
-                </svg>
-              </div>
-              <div className="px-4">
-                {mentionSearchList.map((user) => (
-                  <div
-                    onClick={() => {
-                      if (!mentionList.some((listUser) => listUser === user)) {
-                        setmentionList((prev) => [...prev, user]);
-                      }
+            {showSelectMention && (
+              <div
+                className={`${
+                  selectMentions ? "animate-popup" : "animate-popdown"
+                } transition-all border py-1 border-gray-200  z-20 rounded-xl shadow-md`}
+              >
+                <div className="flex items-center px-2 rounded-lg">
+                  <input
+                    value={mentionSecrchText}
+                    onChange={(e) => {
+                      setMentionSecrchText(e.target.value);
                     }}
-                    className="flex gap-3 items-center py-2"
+                    className="w-full py-2.5 outline-none px-3 caret-blue-500 rounded-lg"
+                    placeholder="Search for user to mention"
+                  />
+                  <svg
+                    onClick={() => {
+                      setSelectMentions(false);
+
+                      setTimeout(() => {
+                        setShowSelectMention(false);
+                      }, 2000);
+                    }}
+                    className="h-6 w-6 mx-3 text-gray-400 cursor-pointer"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-label="Close"
                   >
-                    <UserImageInput
-                      imageHeight={30}
-                      isEditable={false}
-                      image={user.profileImage.compressedImage}
-                    />
-                    <p className="font-medium">{user.username}</p>
-                  </div>
-                ))}
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </div>
+                <div className="px-4">
+                  {mentionSearchList.map((user) => (
+                    <div
+                      onClick={() => {
+                        if (
+                          !mentionList.some((listUser) => listUser === user)
+                        ) {
+                          setmentionList((prev) => [...prev, user]);
+                        }
+                      }}
+                      className="flex gap-3 items-center py-2"
+                    >
+                      <UserImageInput
+                        imageHeight={30}
+                        isEditable={false}
+                        image={user.profileImage.compressedImage}
+                      />
+                      <p className="font-medium">{user.username}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>}
+            )}
           </div>
           <div className="flex sticky bg-white bottom-0 gap-4 text-gray-800  py-4 px-4 md:px-6 items-center">
-            <div className={`${postType=="job" &&"text-gray-600"}`}>
+            <div className={`${postType == "job" && "text-gray-600"}`}>
               <svg
                 className="h-8 w-8 z-20  cursor-pointer"
                 viewBox="0 0 24 24"
@@ -436,8 +441,9 @@ function PostForm({ userDetails, setData, onClose }) {
                 id="fileInput"
                 name="images"
                 multiple
-                disabled={postType=="job"?true:false}
+                disabled={postType === "job" ? true : false}
                 onChange={handleImageChange}
+                accept=".jpg,.jpeg,.png"
                 className="hidden"
               />
             </div>
@@ -445,7 +451,7 @@ function PostForm({ userDetails, setData, onClose }) {
             <svg
               onClick={() => {
                 setSelectMentions(true);
-                setShowSelectMention(true)
+                setShowSelectMention(true);
               }}
               class={`h-7 w-7 ${showSelectMention && "text-gray-400"} `}
               viewBox="0 0 24 24"

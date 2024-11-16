@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getAllPosts } from "../services/postService";
+import { getAllPosts, getUserFollowingPosts } from "../services/postService";
 import Posts from "../components/profileTabs/Posts";
 import useJobApi from "../services/jobService";
 import PostView from "../components/PostView";
@@ -30,20 +30,15 @@ function UserHome() {
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
-      const posts = await getAllPosts();
+      const posts = await getUserFollowingPosts();
 
       try {
         if (selectedType === "Posts") {
-
           setContent(posts.filter((post) => post.post_type !== "job"));
         } else if (selectedType === "Jobs Posts") {
-          
           // const jobPosts = await jobService.job.getAll();
           setContent(posts.filter((post) => false));
-          
-        } else if (
-          selectedType === "Preferred Jobs"
-        ) {
+        } else if (selectedType === "Preferred Jobs") {
           const response = await searchService.secrchJobByKeyword(
             `${preferences.experienceLevel}  ${preferences.jobType} ${preferences.location?.address} ${preferences.location?.state}  ${preferences.location?.country} `
           );
@@ -53,6 +48,7 @@ function UserHome() {
       } catch (error) {
         setError("Failed to load content ,Refresh and try again.");
         console.error("Error fetching content:", error);
+        setLoading(false);
       } finally {
         setLoading(false);
       }
@@ -104,16 +100,19 @@ function UserHome() {
   return (
     <div className="w-full flex  flex-col bg-gray-50 h-full ">
       <div
-        className={` px-4 sm:px-10  fixed  flex gap-4 overflow-x-auto  sm:ml-1.5  w-full sm:w-[99%]  py-4  bg-transparent z-30 top-0  ${
+        className={`  sm:px-10  fixed  flex gap-4 overflow-x-auto  sm:ml-1.5  w-full sm:w-[99%]  py-4  bg-transparent z-30 top-0  ${
           selectedPost && "hidden sm:block"
         }`}
         style={{ scrollbarWidth: "none" }}
       >
         <div
-          className={`absolute inset-0 flex  bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 -z-10 `}
+          className={`absolute  right-0 inset-0 flex w-full  bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 -z-10 `}
         />
 
-        {[
+       <div className = "flex px-4 overflow-x-auto gap-4"
+       style={{ scrollbarWidth: "none" }}
+       >
+       {[
           "Posts",
           currentUser.account_type == "Candidate" && "Jobs Posts",
           currentUser.account_type == "Candidate" && "Preferred Jobs",
@@ -122,11 +121,9 @@ function UserHome() {
           .map((type) => (
             <p
               key={type}
-              onClick={() =>{ setSelectedType(type)
-
-              }
-                
-              }
+              onClick={() => {
+                setSelectedType(type);
+              }}
               className={`${
                 selectedType === type
                   ? "bg-gray-800 border-gray-800 text-white "
@@ -136,6 +133,7 @@ function UserHome() {
               {type}
             </p>
           ))}
+        </div>
       </div>
       <div className="flex overflow-y-auto  h-full flex-1 pt-10 justify-center  gap-4">
         {loading ? (
@@ -169,43 +167,44 @@ function UserHome() {
           </div>
         ) : selectedType == "Preferred Jobs" ? (
           preferedJobs.lehgth <= 0 ? (
-            preferences?
-            <p className="max-w-xl pt-20 text-center bg-gray-50 sm:h-full h-fit px-6 md:px-6">
-              <p className="text-2xl font-bold text-gray-500">
-                No jobs listed based on your preferences
+            preferences ? (
+              <p className="max-w-xl pt-20 text-center bg-gray-50 sm:h-full h-fit px-6 md:px-6">
+                <p className="text-2xl font-bold text-gray-500">
+                  No jobs listed based on your preferences
+                </p>
+                <p className="mt-1 text-gray-400">
+                  Update your preferences to a basic level to see more job
+                  listings here
+                </p>
+                <p
+                  onClick={() => {
+                    navigate("/profile/settings/preferences");
+                  }}
+                  className="text-blue-500 font-medium cursor-pointer"
+                >
+                  Create preferences
+                </p>
               </p>
-              <p className="mt-1 text-gray-400">
-                Update your preferences to a basic level to see more job
-                listings here
+            ) : (
+              <p className="max-w-xl pt-20 text-center bg-gray-50 sm:h-full h-fit px-6 md:px-6">
+                <p className="text-2xl font-bold text-gray-500">
+                  No preferences added
+                </p>
+                <p className="mt-1 text-gray-400">
+                  Add your preferences so we can recommend jobs based on them
+                </p>
+                <p
+                  onClick={() => {
+                    navigate("/profile/settings/preferences");
+                  }}
+                  className="text-blue-500 font-medium cursor-pointer"
+                >
+                  Update preferences
+                </p>
               </p>
-              <p
-                onClick={() => {
-                  navigate("/profile/settings/preferences");
-                }}
-                className="text-blue-500 font-medium cursor-pointer"
-              >
-                Create preferences
-              </p>
-            </p>
-            :
-            <p className="max-w-xl pt-20 text-center bg-gray-50 sm:h-full h-fit px-6 md:px-6">
-            <p className="text-2xl font-bold text-gray-500">
-              No preferences added
-            </p>
-            <p className="mt-1 text-gray-400">
-             Add your preferences so we can recommend jobs based on them
-            </p>
-            <p
-              onClick={() => {
-                navigate("/profile/settings/preferences");
-              }}
-              className="text-blue-500 font-medium cursor-pointer"
-            >
-              Update preferences
-            </p>
-          </p>
+            )
           ) : (
-            <div className="w-full pt-6 sm:pt-10 pb-10 overflow-x-hidden flex max-w-xl flex-col gap-5">
+            <div className="w-full pt-8 sm:pt-10 pb-10 overflow-x-hidden flex max-w-xl flex-col gap-5">
               {preferedJobs.map((job, index) => (
                 <JobListItem
                   key={index}
@@ -217,8 +216,9 @@ function UserHome() {
             </div>
           )
         ) : (
-          <div
-            className={`  w-full pt-6 sm:pt-5 mb-10  justify-center flex ${
+          <div>
+            <div
+            className={`  w-full pt-8 sm:pt-5 mb-10  justify-center flex ${
               selectedPost && "hidden sm:block"
             }`}
           >
@@ -227,7 +227,7 @@ function UserHome() {
               postData={content}
               className={"sm:max-w-lg w-full "}
               postPaddingbottom={"pb-10"}
-              postClassName={"sm:shadow-lg   sm:rounded-xl"}
+              postClassName={"sm:shadow-lg   border-y sm:rounded-xl"}
               no_post_error={
                 selectedType == "Jobs Posts" ? (
                   <p className="max-w-xl pt-20 bg-gray-50 h-full text-center px-6 md:px-6">
@@ -235,7 +235,8 @@ function UserHome() {
                       No Job Posts Available
                     </p>
                     <p className="mt-1 text-gray-400 ">
-                      Once available, relevant job posts will appear here.
+                      The job posts posted by the people you follow will be
+                      shown here
                     </p>
                     <p
                       onClick={() => {
@@ -249,16 +250,27 @@ function UserHome() {
                 ) : (
                   <p className="sm:max-w-xl pt-20   h-full bg-gray-50 text-center  px-6 md:px-6">
                     <p className="text-2xl font-bold text-gray-500">
-                      No Posts Available
+                      No Posts To Show
                     </p>
                     <p className="mt-1 text-gray-400 ">
-                      Once available, relevant posts will appear here.
+                      Posts by the accounts you follow will be shown here ,
+                      explore more accounts to see more posts
+                    </p>
+                    <p
+                      onClick={() => {
+                        navigate("/search");
+                      }}
+                      className="text-blue-500 font-medium cursor-pointer"
+                    >
+                      Explore accounts
                     </p>
                   </p>
                 )
               }
               columns={"grid-cols-1 "}
             />
+
+
             {/* <Posts
              isEditable={false}
             // setFormType={setFormType}
@@ -270,6 +282,22 @@ function UserHome() {
             // setPostData={setPostData}
           /> */}
           </div>
+          <p className="sm:max-w-xl  bg-gray-50 text-center  px-6 md:px-6">
+                   
+                    <p className="mt-1 text-gray-400 ">
+                     To see more posts on your home page explore more accounts who are actively posting{" "}
+                     <span
+                      onClick={() => {
+                        navigate("/search");
+                      }}
+                      className="text-blue-500 font-medium cursor-pointer"
+                    >
+                      Explore accounts
+                    </span>
+                    </p>
+                   
+                  </p>
+          </div>
         )}
         {/* {selectedPost && (
           <PostView
@@ -279,6 +307,7 @@ function UserHome() {
           />
         )} */}
       </div>
+      
     </div>
   );
 }
