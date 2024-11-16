@@ -60,6 +60,31 @@ const resumeService = {
       console.error("Error in getting resume:", error);
       throw error; // Throw the error to handle it in the component
     }
+  },
+
+  deleteResumesById : async (id) => {
+    try {
+      // Create a FormData object
+     
+      // Send the FormData object with the fetch request
+      const response = await fetch(`${API_URL}/deleteResume/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Resume delete failed");
+      }
+
+      const data = await response.json();
+      
+      return data; // Return any additional data from the API response if needed
+    } catch (error) {
+      console.error("Error in getting resume:", error);
+      throw error; // Throw the error to handle it in the component
+    }
   }
 };
 

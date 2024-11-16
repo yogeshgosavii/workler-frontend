@@ -581,7 +581,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                 >
                   <UserImageInput
                   imageHeight={45}
-                    image={user.user.profileImage.compressedImage[0]}
+                    image={user.user.profileImage?.compressedImage[0]}
                     isEditable={false}
                   />
                   <div className="-mt-1">

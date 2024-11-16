@@ -49,7 +49,7 @@ function Connections({ userId = useParams().userId }) {
                   className="flex gap-4 cursor-pointer"
                 >
                   <UserImageInput
-                    image={user.user.profileImage.compressedImage[0]}
+                    image={user.user.profileImage?.compressedImage[0]}
                     isEditable={false}
                   />
                   <div className="-mt-1">
