@@ -282,7 +282,7 @@ function UserHome() {
             // setPostData={setPostData}
           /> */}
           </div>
-          <p className="sm:max-w-xl  bg-gray-50 text-center  px-6 md:px-6">
+         {content.length>0 && <p className="sm:max-w-xl  bg-gray-50 text-center  px-6 md:px-6">
                    
                     <p className="mt-1 text-gray-400 ">
                      To see more posts on your home page explore more accounts who are actively posting{" "}
@@ -296,7 +296,7 @@ function UserHome() {
                     </span>
                     </p>
                    
-                  </p>
+                  </p>}
           </div>
         )}
         {/* {selectedPost && (
