@@ -33,7 +33,7 @@ function UserProfileView({ userId = useParams().userId }) {
   const [currentTab, setCurrentTab] = useState("Posts");
   const [tabIndex, setTabIndex] = useState(1);
   const [jobData, setJobData] = useState(null);
-  const [loading, setLoading] = useState({ userDetails: true, posts: true });
+  const [loading, setLoading] = useState({ userDetails: false, posts: true });
   const [selectedJob, setSelectedJob] = useState("");
   const [approached, setApproached] = useState(null);
   const [applications, setapplications] = useState([]);
@@ -86,6 +86,8 @@ function UserProfileView({ userId = useParams().userId }) {
       setLoading((prev) => ({ ...prev, userDetails: true }));
       try {
         const response = await authService.fetchUserDetailsById(userId);
+        console.log(response);
+        
         setUserDetails(response);
       } catch (error) {
         console.error("Failed to fetch user details", error);
@@ -133,22 +135,22 @@ function UserProfileView({ userId = useParams().userId }) {
       }
     };
 
-    
-    if (userId && currentUserDetails && userDetails) {
+    if (userId) {
       fetchJobData();
       fetchData();
       fetchPostData();
       fetchFollowers();
-   
 
       if (
         currentUserDetails?.accountType == "Candidate" &&
         userDetails?.accountType == "Employeer"
       ) {
       }
-    }
-    else{
-      navigate("/not-found")
+    } else {
+      
+      // if (!loading.userDetails) {
+      //   navigate("/not-found", { replace: true });
+      // }
     }
   }, [userId]);
 
@@ -162,15 +164,16 @@ function UserProfileView({ userId = useParams().userId }) {
         const followingResponse = await followService.getFollowing(
           userDetails._id
         );
-        
+
         setFollowings(followingResponse.length);
       } catch (error) {
         console.error("Error fetching connections:", error);
       }
     };
 
-
-    fetchConnections();
+    if (userDetails) {
+      fetchConnections();
+    }
   }, [userDetails]);
 
   useEffect(() => {
@@ -230,10 +233,10 @@ function UserProfileView({ userId = useParams().userId }) {
       setLoading((prev) => ({ ...prev, checkSaved: true }));
       try {
         const saveData = await savedService.checkSaved({
-          userId: currentUserDetails._id,
-          saved_content: userDetails._id,
+          userId: currentUserDetails?._id,
+          saved_content: userDetails?._id,
         });
-        
+
         setSaved(saveData.exists);
       } catch (error) {
         console.error("Failed to fetch saved data", error);
@@ -572,16 +575,16 @@ function UserProfileView({ userId = useParams().userId }) {
                 />
               </svg>
             </div>
-            {
-            currentUserJobData.length<=0 &&  <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
-              <p className="text-2xl font-bold text-gray-500">
-                No Job Posted Yet
+            {currentUserJobData.length <= 0 && (
+              <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+                <p className="text-2xl font-bold text-gray-500">
+                  No Job Posted Yet
+                </p>
+                <p className="mt-1 text-gray-400">
+                  Post a job first to approach candidates.
+                </p>
               </p>
-              <p className="mt-1 text-gray-400">
-                Post a job first to approach candidates.
-              </p>
-            </p>
-            }
+            )}
             {currentUserJobData.map((job) => (
               <div className="border bg-gray-50 flex flex-col gap-2 p-3 rounded-lg">
                 <p className="font-medium text-lg">{job.job_role}</p>
@@ -639,7 +642,7 @@ function UserProfileView({ userId = useParams().userId }) {
             </div>
           </div>
           <div className="flex border-t sm:border-t-0 pt-8 pb-6 mt-10 sm:mt-0 flex-grow sm:border-x px-4 md:px-6 gap-3 bg-white justify-center flex-col">
-            {loading.userDetails || !userDetails ? (
+            {loading.userDetails ? (
               <div className="animate-pulse mt-2">
                 <div className="flex  items-center">
                   <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
@@ -666,7 +669,7 @@ function UserProfileView({ userId = useParams().userId }) {
                 </div>
               </div>
             ) : (
-              <div className="mt-2 flex relative  flex-col ">
+              userDetails &&<div className="mt-2 flex relative  flex-col ">
                 <div className="flex mb-4 mt-1  w-full gap-4  items-center">
                   <UserImageInput
                     onClick={() => {
@@ -728,7 +731,7 @@ function UserProfileView({ userId = useParams().userId }) {
                     </p>
                   </div>
                   {
-                    userDetails.bio && (
+                    userDetails?.bio && (
                       <div onClick={() => setFormType("userDetails")}>
                         {userDetails.bio}
                       </div>
@@ -791,7 +794,7 @@ function UserProfileView({ userId = useParams().userId }) {
                 )
               );
             })}
-            {!loading.userDetails && (
+            {!loading.userDetails && userDetails && (
               <div className="flex gap-4 flex-wrap justify-between  items-center">
                 <div className="flex gap-4">
                   {currentUserDetails._id != userDetails._id &&

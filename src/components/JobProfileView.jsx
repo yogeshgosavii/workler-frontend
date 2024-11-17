@@ -63,8 +63,8 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   const toggleDescription = () => setIsExpanded(!isExpanded);
 
   useEffect(() => {
-    if(!jobDetails){
-      navigate("/not-found")
+    if(!loading.jobDetails && !jobDetails){
+      navigate("/not-found", { replace: true })
     }
 
   }, []);
@@ -1672,7 +1672,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                 try {
                   await navigator.share({
                     title: jobDetails.job_role,
-                    url: jobDetails.job_url,
+                    url: "http://workler.in/job/"+jobDetails._id,
                   });
                 } catch (error) {
                   console.error("Error sharing:", error);
