@@ -206,7 +206,7 @@ function UserHome() {
           ) : (
             <div
             style={{ scrollbarWidth: "none" }}
-            className="w-full pt-8 sm:pt-10 sm: px-10 pb-10 overflow-x-hidden flex max-w-xl flex-col gap-5">
+            className="w-full pt-8 sm:pt-10 sm:px-10 pb-10 overflow-x-hidden flex max-w-xl flex-col gap-5">
               {preferedJobs.map((job, index) => (
                 <JobListItem
                   key={index}
