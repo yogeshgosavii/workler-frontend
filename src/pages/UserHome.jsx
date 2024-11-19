@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 
 function UserHome() {
   const [content, setContent] = useState([]);
-  const [selectedType, setSelectedType] = useState("Posts");
+  const [selectedType, setSelectedType] = useState(window.location.pathname.pathname?.split('/').filter(Boolean).pop() ||"posts");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
@@ -27,18 +27,20 @@ function UserHome() {
     document.title = "Home";
   }, []);
 
+  
+
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
       const posts = await getUserFollowingPosts();
 
       try {
-        if (selectedType === "Posts") {
+        if (selectedType === "posts") {
           setContent(posts.filter((post) => post.post_type !== "job"));
-        } else if (selectedType === "Jobs Posts") {
+        } else if (selectedType === "job_posts") {
           // const jobPosts = await jobService.job.getAll();
           setContent(posts.filter((post) => post.post_type === "job"));
-        } else if (selectedType === "Preferred Jobs") {
+        } else if (selectedType === "prefered_jobs") {
           const response = await searchService.secrchJobByKeyword(
             `${preferences.experienceLevel}  ${preferences.jobType} ${preferences.location?.address} ${preferences.location?.state}  ${preferences.location?.country} `
           );
@@ -58,6 +60,14 @@ function UserHome() {
   }, [selectedType]);
 
   useEffect(() => {
+    console.log(window.location.pathname);
+
+    if(window.location.pathname?.split('/').filter(Boolean).pop() == "home"){
+      navigate("posts")
+      setSelectedType("posts")
+    }
+
+    
     async function fetchPreferences() {
       try {
         if (currentUser.accountType == "Candidate") {
@@ -109,7 +119,7 @@ function UserHome() {
           className={`absolute  right-0 inset-0 flex w-full  bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 -z-10 `}
         />
 
-       <div className = "flex px-4 overflow-x-auto gap-4"
+       {/* <div className = "flex px-4 overflow-x-auto gap-4"
        style={{ scrollbarWidth: "none" }}
        >
        {[
@@ -122,7 +132,13 @@ function UserHome() {
             <p
               key={type}
               onClick={() => {
-                setSelectedType(type);
+                if(type == "Posts"){
+                  setSelectedType("posts");
+
+                }
+                else if(type == "Jobs Posts"){
+
+                }
               }}
               className={`${
                 selectedType === type
@@ -133,6 +149,42 @@ function UserHome() {
               {type}
             </p>
           ))}
+        </div> */}
+         <div className="flex gap-4  px-4 sm:px-0 py-1">
+          <p
+            onClick={() =>{{ navigate("posts")
+              setSelectedType("posts")
+            }}}
+            className={`px-3 py-1 cursor-pointer bg rounded-md font-medium border ${
+              selectedType == "posts" ?
+              "bg-gray-800 border-gray-800 text-white":"bg-white"
+            }`}
+          >
+            Posts
+          </p>
+          <p
+            onClick={() => {navigate("job_posts")
+              setSelectedType("job_posts")
+
+            }}
+            className={`px-3 py-1 cursor-pointer rounded-md font-medium border ${
+              selectedType == "job_posts" ?
+              "bg-gray-800 border-gray-800 text-white":"bg-white"
+            }`}
+          >
+            Job posts
+          </p>
+          <p
+            onClick={() => {navigate("prefered_jobs")
+              setSelectedType("prefered_jobs")
+            }}
+            className={`px-3 py-1 cursor-pointer rounded-md font-medium border ${
+              selectedType == "prefered_jobs" ?
+              "bg-gray-800 border-gray-800 text-white":"bg-white"
+            }`}
+          >
+            Prefered jobs
+          </p>
         </div>
       </div>
       <div className="flex overflow-y-auto  h-full flex-1 pt-10 justify-center  gap-4">
@@ -165,7 +217,7 @@ function UserHome() {
               </svg>
             </div>
           </div>
-        ) : selectedType == "Preferred Jobs" ? (
+        ) : selectedType == "prefered_jobs" ? (
           preferedJobs.lehgth <= 0 ? (
             preferences ? (
               <p className="max-w-xl pt-20 text-center bg-gray-50 sm:h-full h-fit px-6 md:px-6">
@@ -231,7 +283,7 @@ function UserHome() {
               postPaddingbottom={"pb-10"}
               postClassName={"sm:shadow-lg   border-y sm:rounded-xl"}
               no_post_error={
-                selectedType == "Jobs Posts" ? (
+                selectedType == "job_posts" ? (
                   <p className="max-w-xl pt-20 bg-gray-50 h-full text-center px-6 md:px-6">
                     <p className="text-2xl font-bold text-gray-500">
                       No Job Posts Available

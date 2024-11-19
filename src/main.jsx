@@ -67,6 +67,32 @@ const router = createBrowserRouter([
             <UserHome />
           </LoginVerification>
         ),
+        children: [
+          {
+            path: "posts",
+            element: (
+              <LoginVerification>
+                <UserHome />
+              </LoginVerification>
+            ),
+          },
+          {
+            path: "job_posts",
+            element: (
+              <LoginVerification>
+                <UserHome />
+              </LoginVerification>
+            ),
+          },
+          {
+            path: "prefered_jobs",
+            element: (
+              <LoginVerification>
+                <UserHome />
+              </LoginVerification>
+            ),
+          },
+        ],
       },
       {
         path: "/notifications",
@@ -123,9 +149,9 @@ const router = createBrowserRouter([
       // },
     ],
   },
-  { path: "/forgot-password", element: <ForgotPassword/> }, 
+  { path: "/forgot-password", element: <ForgotPassword /> },
 
-  { path: "/password-reset/:token", element: <ResetPassword /> }, 
+  { path: "/password-reset/:token", element: <ResetPassword /> },
 
   { path: "/jobs/:jobId", element: <JobProfile /> },
 
@@ -133,7 +159,7 @@ const router = createBrowserRouter([
     path: "/profile",
     element: (
       <LoginVerification>
-          <UserProfile />
+        <UserProfile />
       </LoginVerification>
     ),
     children: [
@@ -141,7 +167,7 @@ const router = createBrowserRouter([
         path: "post",
         element: (
           <LoginVerification>
-              <PostForm />
+            <PostForm />
           </LoginVerification>
         ),
       },
@@ -149,7 +175,7 @@ const router = createBrowserRouter([
         path: "settings/preferences",
         element: (
           <LoginVerification>
-              <Preferences />
+            <Preferences />
           </LoginVerification>
         ),
       },
@@ -157,7 +183,7 @@ const router = createBrowserRouter([
         path: "settings/account-settings",
         element: (
           <LoginVerification>
-              <AccountSettings />
+            <AccountSettings />
           </LoginVerification>
         ),
       },
@@ -165,17 +191,16 @@ const router = createBrowserRouter([
         path: "settings",
         element: (
           <LoginVerification>
-              <Settings />
+            <Settings />
           </LoginVerification>
         ),
-        
       },
 
       {
         path: "settings/saveds",
         element: (
           <LoginVerification>
-              <Saved />
+            <Saved />
           </LoginVerification>
         ),
       },

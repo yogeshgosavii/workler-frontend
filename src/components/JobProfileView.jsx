@@ -1842,7 +1842,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
       </div>
     </div>:(
     loading.jobDetails?
-     <div className="h-full">
+     <div className="h-full flex justify-center">
           <div class="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
             <svg
               class="text-transparent animate-spin"

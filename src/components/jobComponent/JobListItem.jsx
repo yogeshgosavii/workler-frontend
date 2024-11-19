@@ -33,7 +33,9 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
   const logoRef = useRef(null);
 
   const logoSrc = job.company_logo
-    ? `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(job.company_logo)}`
+    ? `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(
+        job.company_logo
+      )}`
     : job.user?.company_details && job.user.profileImage.compressedImage
     ? job.user.profileImage.compressedImage
     : companyDefaultImage;
@@ -62,18 +64,18 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
       <div className="flex gap-4 px-6">
         {/* Company Logo */}
         <img
-      ref={logoRef}
-      className="w-14 h-14 object-contain border bg-gray-200 rounded-lg"
-      crossOrigin="anonymous"
-      referrerPolicy="no-referrer"
-      src={logoSrc}
-      alt={`${job.company_name} logo`}
-      onError={(e) => {
-        e.target.classList.add("bg-gray-50", "p-2");
-        e.target.src = companyDefaultImage;
-        e.target.onerror = null; // Remove error handler to avoid infinite loop
-      }}
-    />
+          ref={logoRef}
+          className="w-14 h-14 object-contain border bg-gray-200 rounded-lg"
+          crossOrigin="anonymous"
+          referrerPolicy="no-referrer"
+          src={logoSrc}
+          alt={`${job.company_name} logo`}
+          onError={(e) => {
+            e.target.classList.add("bg-gray-50", "p-2");
+            e.target.src = companyDefaultImage;
+            e.target.onerror = null; // Remove error handler to avoid infinite loop
+          }}
+        />
 
         {/* Job Details */}
         <div className="flex-1 flex flex-col overflow-x-hidden ">
@@ -106,10 +108,10 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
 
       {/* Job Description */}
       {job.description && (
-       <p
-       className="mt-4 px-6 text-gray-400 leading-tight  overflow-hidden sm:max-w-sm md:max-w-lg break-words whitespace-normal line-clamp-3"
-       dangerouslySetInnerHTML={{ __html: job.description }}
-     />
+        <p
+          className="mt-4 px-6 text-gray-400 leading-tight  overflow-hidden sm:max-w-sm md:max-w-lg break-words whitespace-normal line-clamp-3"
+          dangerouslySetInnerHTML={{ __html: job.description }}
+        />
       )}
       {/* <div className="border-t w-full mt-5"></div> */}
 
@@ -245,7 +247,7 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
               : "Not disclosed"}
             {(job.min_salary || job.max_salary) && job.salary_type && (
               <span className="text-gray-400 truncate   text-wrap  font-normal ml-2">
-                per {job.salary_type}
+                {!job.salary_type.includes("per") && "per "} {job.salary_type}
               </span>
             )}
           </p>
