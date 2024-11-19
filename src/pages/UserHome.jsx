@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 
 function UserHome() {
   const [content, setContent] = useState([]);
-  const [selectedType, setSelectedType] = useState(window.location.pathname.pathname?.split('/').filter(Boolean).pop() ||"posts");
+  const [selectedType, setSelectedType] = useState(window.location.pathname?.split('/').filter(Boolean).pop());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
