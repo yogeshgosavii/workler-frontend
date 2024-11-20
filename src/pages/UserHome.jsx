@@ -45,7 +45,9 @@ function UserHome() {
             `${preferences.experienceLevel}  ${preferences.jobType} ${preferences.location?.address} ${preferences.location?.state}  ${preferences.location?.country} `
           );
 
-          setPreferedJobs(response);
+          
+
+          setPreferedJobs(response.jobs);
         }
       } catch (error) {
         setError("Failed to load content ,Refresh and try again.");
@@ -60,7 +62,6 @@ function UserHome() {
   }, [selectedType]);
 
   useEffect(() => {
-    console.log(window.location.pathname);
 
     if(window.location.pathname?.split('/').filter(Boolean).pop() == "home"){
       navigate("posts")
@@ -70,7 +71,7 @@ function UserHome() {
     
     async function fetchPreferences() {
       try {
-        if (currentUser.accountType == "Candidate") {
+        if (currentUser.account_type == "Candidate") {
           const existingPreferences = await getPreference(currentUser._id);
 
           if (existingPreferences) {
@@ -218,7 +219,7 @@ function UserHome() {
             </div>
           </div>
         ) : selectedType == "prefered_jobs" ? (
-          preferedJobs.lehgth <= 0 ? (
+          preferedJobs.length <= 0 ? (
             preferences ? (
               <p className="max-w-xl pt-20 text-center bg-gray-50 sm:h-full h-fit px-6 md:px-6">
                 <p className="text-2xl font-bold text-gray-500">
@@ -258,8 +259,8 @@ function UserHome() {
           ) : (
             <div
             style={{ scrollbarWidth: "none" }}
-            className="w-full pt-8 sm:pt-10 sm:px-10 pb-10 overflow-x-hidden flex max-w-xl flex-col gap-5">
-              {preferedJobs.map((job, index) => (
+            className="w-full pt-10 sm:pt-14 sm:px-10 pb-10 overflow-x-hidden flex max-w-xl flex-col gap-5">
+              {preferedJobs?.length>0 && preferedJobs?.map((job, index) => (
                 <JobListItem
                   key={index}
                   job={job}

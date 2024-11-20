@@ -1,89 +1,159 @@
-import React, { useEffect, useState, Suspense, lazy, useMemo } from 'react';
+import React, { useEffect, useState, useRef, lazy, useLayoutEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import companyDefaultImage from '../../assets/companyDefaultImage.png';
-import Pagination from '../..//components/Pagination';
-import JobSkeletonLoader  from './JobSkeletonLoader'; // Import the SkeletonLoader component
 import searchService from '../../services/searchService';
-import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const JobListItem = lazy(() => import('../jobComponent/JobListItem'));
 
-function JobList({jobs}) {
-  const jobsPerPage = 8;
-  const [currentPage, setCurrentPage] = useState(1);
-  // const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate()
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
-
-  
-
-  const joblistSkeleton = () => {
-    return (
-      <div className=" flex flex-col gap-6 w-full mb-10 animate-pulse">
-        {[1,2,3].map((job) => (
-          <div className="py-6 border-y">
-            <div className="px-6 flex gap-2">
-              <div className="h-14 w-16 rounded-md bg-gray-100"></div>
-              <div className=" w-full justify-center flex flex-col gap-2">
-                <div className="h-5 w-1/2 bg-gray-100 rounded-full"></div>
-                <div className="h-4 w-1/3 bg-gray-100 rounded-full"></div>
-              </div>
-            </div>
-            <div className="flex w-full gap-3 mt-5 px-6">
-              <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
-              <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
-            </div>
-            <div className=" w-full border-t mt-5"></div>
-            <div className="mt-6 flex px-6 justify-between">
-              <div className="h-7 w-1/3 bg-gray-100 rounded-full"></div>
-              <div className="h-8 w-8 rounded-full bg-gray-100"></div>
-            </div>
-          </div>
-        ))}
+function JobList({ query,className, joblistSkeleton =  <div className=" flex flex-col gap-6 w-full mb-10 animate-pulse">
+  {[1,2,3].map((job) => (
+    <div className="py-6 border-y sm:border sm:rounded-xl">
+      <div className="px-6 flex gap-2">
+        <div className="h-14 w-16 rounded-md bg-gray-100"></div>
+        <div className=" w-full justify-center flex flex-col gap-2">
+          <div className="h-5 w-1/2 bg-gray-100 rounded-full"></div>
+          <div className="h-4 w-1/3 bg-gray-100 rounded-full"></div>
+        </div>
       </div>
-    );
+      <div className="flex w-full gap-3 mt-5 px-6">
+        <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
+        <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
+      </div>
+      <div className=" w-full border-t mt-5"></div>
+      <div className="mt-6 flex px-6 justify-between">
+        <div className="h-7 w-1/3 bg-gray-100 rounded-full"></div>
+        <div className="h-8 w-8 rounded-full bg-gray-100"></div>
+      </div>
+    </div>
+  ))}
+</div> }) {
+  const jobsPerPage = 8;
+  const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
+  const containerRef = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isRestoringState, setIsRestoringState] = useState(false);
+
+  // Restore state from location
+  useLayoutEffect(() => {
+    if (location.state?.savedState) {
+      const { savedJobs, savedPage, scrollPosition } = location.state.savedState;
+      setJobs(savedJobs);
+      setCurrentPage(savedPage);
+      setIsRestoringState(true);
+      if (containerRef.current) {
+        containerRef.current.scrollTop = scrollPosition; // Restore scroll position
+      }
+    }
+  }, [location.state]);
+
+  // Reset jobs when query changes
+  useEffect(() => {
+    if (!isRestoringState) {
+      setJobs([]); // Reset jobs when query changes
+      setCurrentPage(1); // Reset to first page
+    } else {
+      setIsRestoringState(false);
+    }
+  }, []);
+
+  // Fetch jobs when currentPage or query changes
+  useEffect(() => {
+    const fetchJobs = async () => {
+      if (loading || isRestoringState) return;
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        const fetchedJobs = query
+          ? await searchService.secrchJobByKeyword(query, currentPage, jobsPerPage) // Fixed typo
+          : await searchService.secrchJobByKeyword(['undefined'], currentPage, jobsPerPage);
+
+        if (fetchedJobs.jobs.length === 0) return; // Stop fetching if no more jobs
+        setJobs((prevJobs) => [...prevJobs, ...fetchedJobs.jobs]);
+      } catch (err) {
+        setError('Failed to fetch jobs. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, [query, currentPage, isRestoringState]);
+
+  // Handle scroll for infinite scrolling
+  useEffect(() => {
+    const handleScroll = () => {
+      const container = containerRef.current;
+      if (!container) return;
+
+      const isBottom =
+        (container.scrollHeight - container.scrollTop <= container.clientHeight + 50)-50;
+
+      if (isBottom && !loading) {
+        setCurrentPage((prevPage) => prevPage + 1);
+      }
+    };
+
+    const container = containerRef.current;
+    container?.addEventListener('scroll', handleScroll);
+
+    return () => {
+      container?.removeEventListener('scroll', handleScroll);
+    };
+  }, [loading]);
+
+  // Save state and navigate to job profile
+  const handleJobClick = (job) => {
+    const scrollPosition = containerRef.current?.scrollTop || 0;
+
+    const savedState = {
+      savedJobs: jobs,
+      savedPage: currentPage,
+      scrollPosition,
+    };
+
+    // Use navigate with state to pass the saved state
+    navigate(`/job/${job._id}`, { state: { savedState } });
   };
-
-  const indexOfLastJob = currentPage * jobsPerPage;
-  const indexOfFirstJob = indexOfLastJob - jobsPerPage;
-  const currentJobs = useMemo(() => jobs.slice(indexOfFirstJob, indexOfLastJob), [jobs, indexOfFirstJob, indexOfLastJob]);
-
-  const handlePrevPage = () => {
-    setCurrentPage((prevPage) => Math.max(1, prevPage - 1));
-  };
-
-  const handleNextPage = () => {
-    const totalPages = Math.ceil(jobs.length / jobsPerPage);
-    setCurrentPage((prevPage) => Math.min(totalPages, prevPage + 1));
-  };
-
-  const paginate = pageNumber => setCurrentPage(pageNumber);
 
   return (
-    <div className={`flex flex-1  ${isAuthenticated?"sm:ml-[330px]":"sm:ml-[300px]"} flex-col gap-8 pb-10 w-full mt-20 sm:mt-0 `}>
-      {loading ? (
-        <div>
-          {Array.from({ length: jobsPerPage }).map((_, index) => (
-            <JobSkeletonLoader key={index} />
-          ))}
-        </div>
+    <div
+      ref={containerRef}
+      style={{ scrollbarWidth: 'none' }}
+      className={`flex flex-1 bg-gray-50 sm:px-5 sm:pt-5 border-blue-500 overflow-y-auto ${
+        isAuthenticated ? 'sm:ml-[330px]' : 'sm:ml-[300px]'
+      } ${className} flex-col gap-8  w-full mt-0 sm:mt-0`}
+    >
+      {loading && jobs.length === 0 ? (
+        <div>{joblistSkeleton}</div>
+      ) : error ? (
+        <div className="text-red-500">{error}</div>
       ) : (
-        <Suspense fallback={<div>{joblistSkeleton()}</div>}>
-         
-          {currentJobs.map((job, index) => (
-            <JobListItem onCl key={index} job={job} companyDefaultImage={companyDefaultImage} className="border bg-white  sm:shadow-none hover:sm:shadow-xl  hover:scale-105" />
-          ))}
-           {/* {currentJobs.map((job, index) => (
-            <JobListItem key={index} job={job} companyDefaultImage={companyDefaultImage} />
-          ))}
-           {currentJobs.map((job, index) => (
-            <JobListItem key={index} job={job} companyDefaultImage={companyDefaultImage} />
-          ))} */}
-        </Suspense>
+        jobs.map((job, index) => (
+          <div
+            key={index}
+            // onClick={() => handleJobClick(job)}
+            className="cursor-pointer"
+          >
+            <JobListItem
+              job={job}
+              companyDefaultImage={companyDefaultImage}
+              className="bg-white border-y sm:border sm:rounded-xl hover:scale-105 hover:sm:shadow-lg"
+            />
+          </div>
+        ))
       )}
-      {/* Pagination */}
-      <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} cardList={jobs} cardsPerPage={jobsPerPage} />
+      {loading && jobs.length > 0 && (
+        <div className="w-full text-center py-4">Loading more jobs...</div>
+      )}
     </div>
   );
 }

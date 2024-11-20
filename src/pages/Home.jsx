@@ -9,8 +9,7 @@ import Tabs from "../components/TabsComponent";
 import useJobApi from "../services/jobService";
 import UserImageInput from "../components/Input/UserImageInput";
 import JobCategories from "../components/JobCategories";
-import companyDefaultImage from '../assets/companyDefaultImage.png';
-
+import companyDefaultImage from "../assets/companyDefaultImage.png";
 
 function Home() {
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -44,11 +43,8 @@ function Home() {
   }, [currentTab]);
 
   useEffect(() => {
-  
-      document.title = "Find your dream job at workler";
-
-    
-   }, []);
+    document.title = "Find your dream job at workler";
+  }, []);
 
   useEffect(() => {
     const scrollElement = jobsScrollRef.current;
@@ -119,38 +115,90 @@ function Home() {
     };
 
     fetchOportunities();
-
   }, []);
   const jobService = useJobApi();
   useEffect(() => {
     const fetchLatestJobs = async () => {
       try {
         setLoading(true);
-        const response = await jobService.job.getAll();
+        const response = await searchService.secrchJobByKeyword(
+          ["undefined"],
+          1,
+          20
+        );
 
         // Filter jobs with salary info for "Latest Jobs" category
-        const filteredJobs = response
+        const filteredJobs = response.jobs
           .filter((job) => job.min_salary || job.max_salary) // Include jobs with either min or max salary
           .slice(0, 6); // Limit to the first 6 jobs
         setLatestJobs(filteredJobs); // Set the latest jobs in state
 
+        async function fetchTopPayingJobs() {
+          let topPayingJobs = [];
+          let page = 1;
 
-        // Filter for "Top Paying Jobs" category (assuming salaries are strings with "K" in them)
-        const topPayingFilteredJobs = response
-          .filter(
-            (job) =>
-              (job.min_salary && job.min_salary > 100000) ||
-              (job.max_salary && job.max_salary > 100000)
-          ) // High-paying jobs with "K"
-          .slice(0, 6); // Limit to the first 6 jobs
-        setTopPayingJobs(topPayingFilteredJobs); // Set top-paying jobs in state
+          while (topPayingJobs.length < 6) {
+            // Fetch the jobs with the given keyword and pagination (20 jobs at a time)
+            const response = await searchService.secrchJobByKeyword(
+              ["undefined"],
+              page,
+              20
+            );
 
+            // Filter for high-paying jobs (assuming salaries are in the "min_salary" or "max_salary" fields)
+            const topPayingFilteredJobs = response.jobs.filter(
+              (job) =>
+                (job.min_salary && job.min_salary > 100000) ||
+                (job.max_salary && job.max_salary > 100000)
+            );
+            
 
-        const variousLocationFilteredJobs = response
-          .filter((job) => job.location && job.location.country) // High-paying jobs with "K"
-          .slice(0, 6); // Limit to the first 6 jobs
-        setVariousLocatioJobs(variousLocationFilteredJobs); // Set top-paying jobs in state
+            // Add the filtered jobs to the result (avoid duplicates)
+            topPayingJobs = [...topPayingJobs, ...topPayingFilteredJobs];
 
+            // If we have enough high-paying jobs, break the loop
+            if (topPayingJobs.length >= 6) {
+              break;
+            }
+
+            // Move to the next page
+            page++;
+          }
+
+          // Ensure we have exactly 6 jobs (in case more than 6 are fetched)
+          setTopPayingJobs(topPayingJobs.slice(0, 6));
+        }
+        fetchTopPayingJobs();
+
+        async function fetchVariousLocationJobs() {
+          let variousLocationJobs = [];
+          let page = 1;
+      
+          while (variousLocationJobs.length < 6) {
+              // Fetch the jobs with the given keyword and pagination (20 jobs at a time)
+              const response = await searchService.secrchJobByKeyword(['undefined'], page, 20);
+      
+              // Filter for jobs that have location and a country
+              const variousLocationFilteredJobs = response
+                  .jobs.filter((job) => job.location && job.location.country);
+      
+              // Add the filtered jobs to the result (avoid duplicates)
+              variousLocationJobs = [...variousLocationJobs, ...variousLocationFilteredJobs];
+      
+              // If we have enough jobs, break the loop
+              if (variousLocationJobs.length >= 6) {
+                  break;
+              }
+      
+              // Move to the next page
+              page++;
+          }
+      
+          // Ensure we have exactly 6 jobs (in case more than 6 are fetched)
+          setVariousLocatioJobs(variousLocationJobs.slice(0, 6));
+      }
+      fetchVariousLocationJobs()
+      
       } catch (error) {
         console.error("Failed to fetch jobs:", error);
       } finally {
@@ -184,8 +232,8 @@ function Home() {
     debounce(async (text) => {
       setIsLoading(true);
       try {
-        const jobs = await searchService.secrchJobByKeyword(text);
-        setJobList(jobs);
+        const jobs = await searchService.secrchJobByKeyword(text,1,10);
+        setJobList(jobs.jobs);
         setErrorMessage(""); // Clear any previous error
       } catch (error) {
         console.error("Error fetching jobs: ", error);
@@ -196,6 +244,8 @@ function Home() {
     }, 300),
     []
   );
+
+  
 
   useEffect(() => {
     if (searchText) {
@@ -388,7 +438,7 @@ function Home() {
                 <div className="flex gap-4  items-center  text-left ">
                   <UserImageInput
                     imageHeight={60}
-                    image={job.conpany_logo ||companyDefaultImage}
+                    image={job.conpany_logo || companyDefaultImage}
                     isEditable={false}
                     onError={(e) => {
                       e.target.src = companyDefaultImage;
@@ -511,12 +561,12 @@ function Home() {
                               : job.max_salary
                           }`
                         : "Not disclosed"}
-                      {(job.min_salary || job.max_salary) &&
+                      {/* {(job.min_salary || job.max_salary) &&
                         job.salary_type && (
                           <span className="text-gray-400 truncate   text-wrap  font-normal ml-2">
                             per {job.salary_type}
                           </span>
-                        )}
+                        )} */}
                     </p>
                   </div>
                 </div>

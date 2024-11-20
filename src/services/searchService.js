@@ -44,9 +44,16 @@ const searchService = {
     }
   },
 
-  secrchJobByKeyword: async (keyword) => {
+  secrchJobByKeyword: async (keyword,page = 1,limit=10) => {
+
+    const queryParams = new URLSearchParams({
+      keyword: keyword || "", // Provide a default empty string if no keyword
+      page: page.toString()|| 1,
+      limit: limit.toString() || 10,
+    });
+    
     try {
-      const response = await fetch(`${API_URL}/search-job-by-keyword?keyword=${keyword}`, {
+      const response = await fetch(`${API_URL}/search-job-by-keyword?keyword=${keyword}&&page=${page}&&limit=${limit}`, {
         method: "GET",
         headers: setAuthHeaders(getToken()),
       });

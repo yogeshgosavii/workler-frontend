@@ -4,7 +4,7 @@ import remotiveLogo from "../../assets/wordmark_H_orange.svg";
 import savedService from "../../services/savedService";
 import { useSelector } from "react-redux";
 
-const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
+const JobListItem = React.memo(({ job, companyDefaultImage, className,savedState }) => {
   const navigate = useNavigate();
   const [saved, setSaved] = useState(false);
   const currentUser = useSelector((state) => state.auth.user);
@@ -30,6 +30,7 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
     }
   }, []);
 
+  
   const logoRef = useRef(null);
 
   const logoSrc = job.company_logo
@@ -39,6 +40,8 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
     : job.user?.company_details && job.user.profileImage.compressedImage
     ? job.user.profileImage.compressedImage
     : companyDefaultImage;
+
+    
 
   const saveJob = async () => {
     setSaved(true);
@@ -57,15 +60,15 @@ const JobListItem = React.memo(({ job, companyDefaultImage, className }) => {
   return (
     <div
       onClick={() => {
-        navigate(`/job/${job._id}`, { state: { jobDetails: job } });
+        window.open(`/job/${job._id}`, "_blank");
       }}
-      className={` sm:rounded-2xl  py-6 sm:max-w-full  transition-all cursor-pointer ${className}`}
+      className={` sm:rounded-2xl  py-6  sm:max-w-full  transition-all cursor-pointer ${className}`}
     >
       <div className="flex gap-4 px-6">
         {/* Company Logo */}
         <img
           ref={logoRef}
-          className="w-14 h-14 object-contain border bg-gray-200 rounded-lg"
+          className={`w-14 h-14 object-contain border ${!job.company_logo ? "bg-gray-50 p-2":"bg-gray-200"}  rounded-lg`}
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
           src={logoSrc}

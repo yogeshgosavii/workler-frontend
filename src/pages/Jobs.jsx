@@ -25,7 +25,6 @@ function Jobs() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
 
-  useEffect(() => {
     if(jobQuery){
       document.title = jobQuery +" jobs";
     }
@@ -34,25 +33,7 @@ function Jobs() {
 
     }
     
-   }, []);
-  // Fetch jobs based on search text
-  // useEffect(() => {
-  //   const fetchJobs = async () => {
-  //     setLoading(true)
-  //     try {
-  //       const jobs = await searchService.secrchJobByKeyword(searchText);
-  //       setJobList(jobs);
-  //     } catch (error) {
-  //       console.error("Error fetching jobs: ", error);
-  //     }
-  //     finally{
-  //       setLoading(false)
-  //     }
-  //   };
-  //   if (searchText) {
-  //     fetchJobs();
-  //   }
-  // }, [searchText]);
+  
   if(user?.account_type == "Employeer"){
     navigate("/not-found", { replace: true });
   }
@@ -62,27 +43,27 @@ function Jobs() {
       navigate("/not-found", { replace: true });
     }
   }, []);
-  useEffect(() => {
-    const fetchJobs = async () => {
-      setLoading(true)
-      try {
-        if (searchText) {
+  // useEffect(() => {
+  //   const fetchJobs = async () => {
+  //     setLoading(true)
+  //     try {
+  //       if (searchText) {
           
-          const jobs = await searchService.secrchJobByKeyword(searchText+" "+filters);
-          setSubmitJobList(jobs);
-        } else {
-          const jobs = await jobService.job.getAll();
+  //         const jobs = await searchService.secrchJobByKeyword(searchText+" "+filters);
+  //         setSubmitJobList(jobs);
+  //       } else {
+  //         const jobs = await jobService.job.getAll();
 
-          setSubmitJobList(jobs);
-        }
-      } catch (error) {
-        console.error("Error fetching jobs: ", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchJobs();
-  }, [filters]);
+  //         setSubmitJobList(jobs);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching jobs: ", error);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchJobs();
+  // }, [filters]);
 
   // Handle search submission
   const handleSearchSubmit = (e) => {
@@ -170,9 +151,9 @@ function Jobs() {
       <div className="flex gap-6 ">
         {/* Left Sidebar (JobFilter) */}
         <div
-          className={`flex justify-center overflow-x-hidden  mr- sm:mr-6 md:mr-0 sm:px-0 w-full mt-4 ${
+          className={`flex justify-center overflow-x-hidden bg-gray-50  h-screen  overflow-y-hidden sm:mr-6 md:mr-0 sm:px-0 w-full ${
             isAuthenticated ? " pt-16" : " sm:ml-9 pt-16 sm:pt-24"
-          } sm:pr-10 pb-10 sm:gap-10`}
+          } sm:pr-10  sm:gap-10`}
         >
           <div
             style={{ scrollbarWidth: "none" }}
@@ -185,11 +166,8 @@ function Jobs() {
             <JobFilter filterText={filters} setfilterText={setfilters} />
           </div>
 
-          {loading ? (
-            <div className=" sm:ml-[321px] mt-20 sm:mt-0 w-full">{joblistSkeleton()}</div>
-          ) : (
-            <JobList jobs={submitJobList} />
-          )}
+        
+            <JobList joblistSkeleton={joblistSkeleton} query={searchText} className={"pt-24"} />
         </div>
 
         {/* Right News Section */}

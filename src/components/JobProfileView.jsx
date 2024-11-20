@@ -18,6 +18,7 @@ import JobListItem from "./jobComponent/JobListItem";
 import companyDefaultImage from "../assets/companyDefaultImage.png";
 import savedService from "../services/savedService";
 import "../css/button.css";
+import JobList from "./jobComponent/JobList";
 
 function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   const [showProfileImage, setShowProfileImage] = useState(false);
@@ -238,16 +239,17 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   useEffect(() => {
     const fetchRelatedJobs = async () => {
       const relatedJobs = await searchService.secrchJobByKeyword(
-        jobDetails?.job_role
+        jobDetails?.job_role,1,10
       );
-      setrelatedJobs(relatedJobs.filter((job) => job._id != jobDetails?._id));
+      
+      setrelatedJobs(relatedJobs.jobs.filter((job) => job._id != jobDetails?._id));
     };
     const checkSaved = async () => {
       setLoading((prev) => ({ ...prev, checkSaved: true }));
       try {
         const saveData = await savedService.checkSaved({
           userId: userDetails._id,
-          saved_content: jobDetails._id,
+          saved_content: jobDetails?._id,
         });
         setSaved(saveData.exists);
       } catch (error) {
@@ -587,20 +589,21 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
         );
       case "Related jobs":
         return (
-          <div className="p-4 sm:px-0 pb-14 flex flex-col gap-5 ">
+          <div className=" sm:px-0 pb-14 flex flex-col gap-5 ">
             {relatedJobs.length <= 0 ? (
-              <div className="w-full text-center text-lg text-gray-500">
+              <div className="w-full text-center p-4 text-lg text-gray-500">
                 {" "}
                 No related jobs
               </div>
             ) : (
-              relatedJobs.map((job) => (
-                <JobListItem
-                  job={job}
-                  companyDefaultImage={companyDefaultImage}
-                  className="border bg-white rounded-lg sm:rounded-none sm:shadow-none"
-                />
-              ))
+              // relatedJobs.map((job) => (
+              //   <JobListItem
+              //     job={job}
+              //     companyDefaultImage={companyDefaultImage}
+              //     className="border bg-white rounded-lg sm:rounded-none sm:shadow-none"
+              //   />
+              // ))
+              <JobList query={jobDetails.job_role} className={"pt-5"} />
             )}
           </div>
         );
@@ -1031,11 +1034,11 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                                 : jobDetails.max_salary
                             }`
                           : "Not disclosed"}
-                        {jobDetails.salary_type && (
-                          <span className="text-gray-400 font-normal ml-2">
-                            per {jobDetails.salary_type}
-                          </span>
-                        )}
+                        { jobDetails.salary_type && (
+              <span className="text-gray-400 truncate   text-wrap  font-normal ml-2">
+                {!jobDetails.salary_type.includes("per") && "per "} {jobDetails.salary_type}
+              </span>
+            )}
                       </p>
                     </div>
                   </div>
