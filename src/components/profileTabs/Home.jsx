@@ -12,7 +12,6 @@ function Home({
   setUpdateData,
   postData,
   isEditable,
-  
 }) {
   return (
     <div className="  flex flex-col gap-4 mb-4 border  text-gray-800 bg-white h-full">
@@ -98,6 +97,8 @@ function Home({
         <div className="relative   md:px-6 overflow-hidden h-full px-4 py-4 pb-6">
           <div className="flex justify-between items-center mb-2 ">
             <p className="text-xl font-bold ">About</p>
+            
+
             {isEditable && (
               <svg
                 class="h-5 w-5 text-blue-500"
@@ -121,6 +122,15 @@ function Home({
               </svg>
             )}
           </div>
+          {(!user.description ||
+                !user.linkedInLink ||
+                !user.location ||
+                !user.githubLink) && (
+                  <p className="text-gray-400 text-sm -mt-2">
+                    Add some more details to let people know more about you
+                  </p>
+                )}
+
           {!loading.userDetails ? (
             <div className="flex flex-col gap-4 mt-5">
               {isEditable ||
@@ -146,7 +156,7 @@ function Home({
                 ))}
               {user?.linkedInLink && (
                 <div className={`text-sm font-normal  `}>
-                  <p className="font-bold">LinkedIn</p>
+                  <p className="font-medium">LinkedIn</p>
                   {!loading.user && (
                     <a
                       className="text-sm font-normal text-blue-500 w-full"
@@ -159,7 +169,7 @@ function Home({
               )}
               {user.githubLink && (
                 <div className={`text-sm font-normal  `}>
-                  <p className="font-bold">Github</p>
+                  <p className="font-medium">Github</p>
                   {!loading.user && (
                     <a
                       className="text-sm font-normal text-blue-500 w-full"
@@ -170,9 +180,11 @@ function Home({
                   )}
                 </div>
               )}
+
+              
               {user?.location && (
                 <div className={`text-sm font-normal  `}>
-                  <p className="font-bold">Address</p>
+                  <p className="font-medium">Address</p>
                   {!loading.user && (
                     <div className="text-sm font-normal text-gray-400 w-full">
                       {user?.location?.address}
@@ -182,7 +194,7 @@ function Home({
               )}
               {user?.personal_details?.phone && (
                 <div className={`text-sm font-normal  `}>
-                  <p className="font-bold">Phone</p>
+                  <p className="font-medium">Phone</p>
                   {!loading.user && (
                     <div className="text-sm font-normal text-gray-400 w-full">
                       {user?.personal_details?.phone}
@@ -190,6 +202,7 @@ function Home({
                   )}
                 </div>
               )}
+             
             </div>
           ) : (
             <div className="animate-pulse flex flex-col gap-3 z-10 mt-5">
@@ -217,7 +230,6 @@ function Home({
           )}
         </div>
       )}
-     
     </div>
   );
 }

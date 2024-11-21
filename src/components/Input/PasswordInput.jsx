@@ -1,17 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 function PasswordInput({
   name,
   placeholder,
   value,
+  promptMessage,
   onChange,
   isRequired,
   className,
 }) {
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState(promptMessage || "");
 
+
+  useEffect(() => {
+  setMessage(promptMessage)
+  }, [promptMessage]);
+  const handleChange = (e) => {
+    onChange(e);
+    if (isRequired && !e.target.value) {
+      setMessage({ type: "error", text: "This is a required field" });
+    } 
+    if(promptMessage){
+      setMessage(promptMessage)
+    }
+    else {
+      setMessage(null);
+    }
+  };
   return (
-    <div className={`relative flex items-center ${className}`}>
+    <div className={`relative flex flex-col ${className}`}>
+      <div className="flex relative items-center">
       <input
         type={showPassword ? "text" : "password"}
         name={name}
@@ -19,7 +38,7 @@ function PasswordInput({
         className="block px-3 py-3 pr-[75px] w-full font-normal bg-white rounded-sm border appearance-none focus:outline-none focus:ring-0 focus:border-blue-500 peer"
         placeholder=""
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         style={{
           WebkitAutofill: "number",
           WebkitBoxShadow: "0 0 0px 1000px white inset",
@@ -75,7 +94,20 @@ function PasswordInput({
             />
           </svg>
         )}
+
       </div>
+      </div>
+      {message && (
+        <p
+          className={`w-fit ml-1 mt-0.5 text-xs mb-1 rounded-sm ${
+            message.type === "error"
+              ? "text-red-500"
+              : "text-green-500"
+          }`}
+        >
+          {message.text}
+        </p>
+      )}
     </div>
   );
 }

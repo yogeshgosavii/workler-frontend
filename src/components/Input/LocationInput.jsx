@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import locationService from "../../services/locationService";
 
-// Custom hook for debouncing
+// Debounce custom hook
 function useDebounce(value, delay) {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
@@ -10,50 +10,57 @@ function useDebounce(value, delay) {
       setDebouncedValue(value);
     }, delay);
 
-    return () => {
-      clearTimeout(handler);
-    };
+    return () => clearTimeout(handler);
   }, [value, delay]);
 
   return debouncedValue;
 }
 
+// Spinner Component
+const Spinner = () => (
+  <div className="w-full text-center">
+    <svg
+      aria-hidden="true"
+      className="inline w-6 h-6 m-5 text-transparent animate-spin fill-blue-500"
+      viewBox="0 0 100 101"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M100 50.59C100 78.205 77.614 100.591 50 100.591 22.386 100.591 0 78.205 0 50.59 0 22.977 22.386 0.591 50 0.591 77.614 0.591 100 22.977 100 50.59ZM9.081 50.59C9.081 73.19 27.401 91.509 50 91.509 72.599 91.509 90.919 73.19 90.919 50.59 90.919 27.992 72.599 9.672 50 9.672 27.401 9.672 9.081 27.992 9.081 50.59Z"
+        fill="currentColor"
+      />
+      <path
+        d="M93.968 39.041C96.393 38.404 97.862 35.912 97.008 33.554 95.293 28.823 92.871 24.369 89.817 20.348 85.845 15.119 80.883 10.724 75.212 7.413 69.542 4.102 63.275 1.94 56.77 1.051 51.767 0.368 46.698 0.447 41.735 1.279 39.261 1.693 37.813 4.198 38.45 6.623 39.087 9.049 41.569 10.472 44.051 10.107 47.851 9.549 51.719 9.527 55.54 10.049 60.864 10.792 65.979 12.732 70.527 15.768 75.076 18.803 78.943 22.875 81.852 27.718 84.279 31.734 86.056 36.138 87.114 40.745 87.764 43.158 90.156 44.678 93.968 44.041Z"
+        fill="currentFill"
+      />
+    </svg>
+  </div>
+);
+
 const LocationInput = ({
   name,
   placeholder,
-  value, // previously saved location object with address
+  value,
   onChange,
   isRequired,
-  className,
+  className = "",
   promptMessage,
   onFocus,
-  onBlur
+  onBlur,
 }) => {
   const [locations, setLocations] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [inputLocation, setInputLocation] = useState(""); // Default empty
-  const [inputFocus, setInputFocus] = useState(false);
+  const [inputLocation, setInputLocation] = useState(value?.address || "");
   const [message, setMessage] = useState(promptMessage);
   const [visited, setVisited] = useState(false);
+  const [inputFocus, setInputFocus] = useState(false);
 
-  // Debounced input location
   const debouncedInputLocation = useDebounce(inputLocation, 500);
-  
-  // Update inputLocation when value (previously saved location) changes
-  useEffect(() => {
-    if (value && value.address) {
-      setInputLocation(value.address); // Set saved location to input
-    }
-  }, [value]);
 
-  // Debugging input location
-  useEffect(() => {
-  }, [debouncedInputLocation]);
-
+  // Fetch locations
   useEffect(() => {
     const fetchLocations = async () => {
-      if (debouncedInputLocation === "") {
+      if (!debouncedInputLocation.trim()) {
         setLocations([]);
         return;
       }
@@ -73,17 +80,24 @@ const LocationInput = ({
     fetchLocations();
   }, [debouncedInputLocation]);
 
-  const createError = () => {
-    if (visited) {
-      if (isRequired && !inputLocation) {
-        setMessage({ type: "error", text: "This is a required field" });
-      } else if (isRequired && !locations.some(loc => loc.address === inputLocation)) {
-        setMessage({ type: "error", text: "Select a location from the list" });
-      } else {
-        setMessage(null);
-      }
+  // Validate input
+  const validateInput = useMemo(() => {
+    if (!visited) return null;
+    if (isRequired && !inputLocation) {
+      return { type: "error", text: "This is a required field" };
     }
-  };
+    if (
+      isRequired &&
+      !locations.some((loc) => loc.address === inputLocation)
+    ) {
+      return { type: "error", text: "Select a location from the list" };
+    }
+    return null;
+  }, [inputLocation, visited, isRequired, locations]);
+
+  useEffect(() => {
+    setMessage(validateInput);
+  }, [validateInput]);
 
   const handleInputChange = (e) => {
     setVisited(true);
@@ -91,21 +105,11 @@ const LocationInput = ({
   };
 
   const handleLocationSelect = (location) => {
-    setSelectedLocation(location);
     setInputLocation(location.address);
     setInputFocus(false);
     setMessage(null);
-    onChange({
-      target: {
-        name: name,
-        value: location
-      }
-    });
+    onChange?.({ target: { name, value: location } });
   };
-
-  useEffect(() => {
-    createError();
-  }, [inputLocation, selectedLocation]);
 
   return (
     <div className={`relative ${className}`}>
@@ -115,71 +119,49 @@ const LocationInput = ({
           name={name}
           id={name}
           placeholder={placeholder}
+          value={inputLocation}
           onChange={handleInputChange}
-          value={inputLocation} // Ensure inputLocation is set correctly
           onFocus={() => {
             setInputFocus(true);
-            if (onFocus) onFocus();
+            onFocus?.();
           }}
           onBlur={() => {
             setInputFocus(false);
-            if (onBlur) onBlur();
-            createError(); // Validate on blur
+            onBlur?.();
           }}
-          className={`flex-1 block px-3 py-3 font-normal bg-white rounded-sm border appearance-none focus:outline-none focus:ring-0 focus:border-blue-600 peer ${className}`}
-          style={{
-            WebkitAutofill: "number",
-            WebkitBoxShadow: "0 0 0px 1000px white inset",
-          }}
+          className={`flex-1 peer outline-none block focus:border-blue-500 px-3 py-3 rounded-sm border ${className}`}
         />
         <label
           htmlFor={name}
-          className="absolute ml-px duration-200 cursor-text px-2 text-gray-400 bg-white font-normal transform -translate-y-5 scale-90 top-2 z-10 peer-focus:px-2 peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-90 peer-focus:-translate-y-5"
-        >
-          {placeholder}{isRequired && <span className="text-red-500">*</span>}
+          className="absolute duration-200 cursor-text px-2 text-gray-400 bg-white font-normal transform -translate-y-5 scale-90 top-2 z-10 peer-focus:px-2 peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-90 peer-focus:-translate-y-5 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+          >
+          {placeholder} {isRequired && <span className="text-red-500">*</span>}
         </label>
       </div>
       {message && (
         <p
           className={`w-fit ml-1 mt-0.5 text-xs mb-1 rounded-sm ${
-            message.type === "error" ? "text-red-500" : "text-green-500 bg-green-50"
+            message.type === "error" ? "text-red-500" : "text-green-500"
           }`}
         >
           {message.text}
         </p>
       )}
-      {inputFocus && locations.length > 0 && (
-        <ul className="absolute z-50 mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-          {!loading ? (
-            locations.map((location) => (
+      {inputFocus && inputLocation.length>0 && (
+        <ul className="absolute z-50 mt-2 w-full bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto">
+          {loading ? (
+            <Spinner />
+          ) : (
+           locations.length>0 ? locations.map((loc) => (
               <li
-                key={location.id}
-                onClick={(e) => e.stopPropagation()}
-                onMouseDown={() => handleLocationSelect(location)}
+                key={loc.id}
+                onMouseDown={() => handleLocationSelect(loc)}
                 className="p-3 hover:bg-gray-100 cursor-pointer"
               >
-                {location.address}
+                {loc.address}
               </li>
-            ))
-          ) : (
-            <div className="w-full text-center">
-              <svg
-                aria-hidden="true"
-                className="inline w-6 h-6 m-5 text-transparent animate-spin fill-blue-500"
-                viewBox="0 0 100 101"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7916 65.9787 12.7325 70.5273 15.7678C75.076 18.803 78.9425 22.8747 81.8523 27.7178C84.2795 31.7335 86.0561 36.1378 87.1142 40.7445C87.7644 43.158 90.1558 44.6781 93.9676 44.0409Z"
-                  fill="currentFill"
-                />
-              </svg>
-            </div>
+            )):
+            <p className="p-3 text-gray-400">No result found, add more detailed location</p>
           )}
         </ul>
       )}

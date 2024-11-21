@@ -31,6 +31,10 @@ function Signup() {
   const [usernameChecking, setusernameChecking] = useState(false);
   const [usernameChecked, setusernameChecked] = useState(false);
   const [userNameAvailable, setuserNameAvailable] = useState(false);
+  const [passwordMessage, setPasswordMessage] = useState({
+    type: "",
+    text: "",
+  });
   const [accountErrorMessage, setAccountErrorMessage] = useState();
   const [errorMessage, setErrorMessage] = useState();
   const [successMessage, setSuccessMessage] = useState();
@@ -39,6 +43,29 @@ function Signup() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
+  useEffect(() => {
+    const handleBackButton = () => {
+
+      if (next) {
+        resetFormStates();
+        setNext(false); // Reset state or handle custom logic
+      } else {
+        navigate(-1); // Navigate to a specific route
+      }
+    };
+
+    const onPopState = () => {
+      handleBackButton();
+    };
+
+    // Add an event listener for the browser's back button
+    window.addEventListener("popstate", onPopState);
+
+    return () => {
+      // Cleanup the listener on component unmount
+      window.removeEventListener("popstate", onPopState);
+    };
+  }, []);
 
   const handleIconClick = () => {
     // Trigger click event on the file input element
@@ -56,12 +83,12 @@ function Signup() {
   const [company_details, setcompany_details] = useState({});
 
   useEffect(() => {
-      document.title = "Signup";
-    
-   }, []);
+    document.title = "Signup";
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    
 
     // Update userData state
     setuserData((prevState) => ({ ...prevState, [name]: value }));
@@ -83,18 +110,69 @@ function Signup() {
       }
     }
   };
+  const verifyPassword = (newPassword) => {
 
+    // A list of common passwords (this is just a small sample, you can extend it)
+    const commonPasswords = [
+      "123456",
+      "password",
+      "123456789",
+      "qwerty",
+      "abc123",
+      "password1",
+    ];
+
+    // Check that the new password is not the same as the current password
+
+    // Check if password length is at least 6 characters
+    if (newPassword?.length < 6) {
+      return {
+        valid: false,
+        message: "Password must be at least 6 characters long",
+      };
+    }
+
+    // Check for at least one uppercase letter, one lowercase letter, one number, and one special character
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+    if (!regex.test(newPassword)) {
+      return {
+        valid: false,
+        message:
+          "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+      };
+    }
+
+    // Check if the password is in the list of common passwords
+    if (commonPasswords.includes(newPassword)) {
+      return {
+        valid: false,
+        message: "Password is too common, choose a more secure password",
+      };
+    }
+
+    // If all checks pass
+    return { valid: true, text: "Password is strong" };
+  };
   const isFormValid = () => {
     if (
       userData.username &&
       userNameAvailable &&
       userData.email &&
-      userData.password &&
-      userData.account_type
+      userData.password?.length >= 6 &&
+      userData.account_type &&
+      userData.location
     ) {
+      
+      // if (!verifyPassword(userData.password.valid)){
+      //   // setPasswordMessage({type:"error",text:verifyPassword(userData.password).message})
+      // }
       if (userData.account_type == "Candidate") {
-
-        if (personal_details.birthdate && personal_details.firstname) {
+        if (
+          personal_details.birthdate &&
+          personal_details.firstname &&
+          verifyPassword(userData.password).valid
+        ) {
           return true;
         }
       } else {
@@ -116,6 +194,7 @@ function Signup() {
   const resetFormStates = () => {
     setuserData((prev) => ({
       ...prev,
+      username: "",
       password: "",
     }));
     setpersonal_details((prev) => ({
@@ -183,8 +262,8 @@ function Signup() {
 
       try {
         setemailChecking(true);
-        const response = await authService.checkEmail(emailInput.value)
-        
+        const response = await authService.checkEmail(emailInput.value);
+
         const data = response;
 
         if (!data.exists) {
@@ -193,14 +272,14 @@ function Signup() {
           // if (!data.exists) {
           //   document.getElementById("error").classList.add("invisible");
           //   const otp = Math.floor(100000 + Math.random() * 900000); // Generate a random 6-digit OTP
-            setotpValue(data.otp);
-            setemail(emailInput.value);
-            setotpInput(true);
+          setotpValue(data.otp);
+          setemail(emailInput.value);
+          setotpInput(true);
           // } else {
           //   setErrorMessage("Email already exists");
           // }
         } else {
-                setErrorMessage("Email already exists");
+          setErrorMessage("Email already exists");
           const errorMessage = "Failed to send email";
           console.error("Error checking email:", errorMessage);
         }
@@ -292,12 +371,13 @@ function Signup() {
             <Logo className={"size-24"} />
           </div>
           <div className=" text-center mt-4 w-full">
-            <p className="text-2xl font-semibold text-gray-800 ">Hello User 👋</p>
+            <p className="text-2xl font-semibold text-gray-800 ">
+              Hello User 👋
+            </p>
             <p className=" text-gray-400">
               Enter you email address to get started
             </p>
           </div>
-         
 
           <div
             className={`flex flex-col mt-8 w-full ${
@@ -443,17 +523,37 @@ function Signup() {
           e.preventDefault(); // Prevent default form submission to handle via JavaScript
           create(e);
         }}
-        className={`sm:border w-full flex-1  sm:flex-none flex overflow-y-auto flex-col h-fit sm:w-full sm:max-w-fit px-6 md:mt-32 md:mb-10 py-10 sm:p-10 ${
+        className={`sm:border w-full flex-1  sm:flex-none flex overflow-y-auto flex-col h-fit sm:w-full sm:max-w-fit px-4 md:mt-32 md:mb-10 py-10 sm:p-10 ${
           next ? null : "hidden"
         }`}
       >
-        <div>
-          <p className="text-2xl font-semibold text-gray-800">
-            Let's setup your account
-          </p>
-          <p className="text-sm text-gray-400">
-            Enter your details to create your account
-          </p>
+        <div className="flex gap-3">
+          <svg
+            onClick={() => {
+              setNext(false);
+            }}
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-8"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15.75 19.5 8.25 12l7.5-7.5"
+            />
+          </svg>
+
+          <div className="-mt-1">
+            <p className="text-2xl font-semibold text-gray-800">
+              Let's setup your account
+            </p>
+            <p className="text-sm text-gray-400">
+              Enter your details to create your account
+            </p>
+          </div>
         </div>
         <p
           id="errorAccount"
@@ -492,7 +592,7 @@ function Signup() {
                   htmlFor="username"
                   className="absolute duration-200 cursor-text px-2 text-gray-400 bg-white font-normal transform -translate-y-5 scale-90 top-2 z-10 peer-focus:px-2 peer-focus:text-gray-800 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-90 peer-focus:-translate-y-5 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
                 >
-                  User name
+                  User name <span className="text-red-500">*</span>
                 </label>
 
                 <div className="text-gray-300 absolute bg-white px-3.5 flex items-center justify-center h-10 cursor-pointer right-px">
@@ -551,19 +651,30 @@ function Signup() {
               <p className="text-xs text-red-500 ml-1">{usernameError}</p>
             </div>
 
-            <PasswordInput
-              name={"password"}
-              className={`transition-transform flex-grow duration-300 ease-in-out ${
-                userNameAvailable
-                  ? "md:flex opacity-100 translate-y-0"
-                  : "md:hidden opacity-0 -translate-y-5"
-              }`}
-              onChange={handleInputChange}
-              placeholder={"Password"}
-              value={userData.password}
-            />
+            {userNameAvailable && (
+              <PasswordInput
+                name={"password"}
+                className={`transition-transform flex-grow duration-300 ease-in-out `}
+                promptMessage={passwordMessage}
+                isRequired={true}
+                onChange={(e) => {
+                  handleInputChange(e);
+
+                  if (!verifyPassword(e.target.value).valid) {
+                    setPasswordMessage({
+                      type: "error",
+                      text: verifyPassword(e.target.value).message,
+                    });
+                  } else {
+                    setPasswordMessage(null);
+                  }
+                }}
+                placeholder={"Password"}
+                value={userData.password}
+              />
+            )}
           </div>
-          {userData.account_type == "Candidate" && (
+          {userNameAvailable && userData.account_type == "Candidate" && (
             <div
               className={`transition-transform  flex flex-col gap-6 duration-300 ease-in-out ${
                 userNameAvailable
@@ -574,6 +685,7 @@ function Signup() {
               <div className="flex flex-wrap gap-6 w-full">
                 <TextInput
                   name={"firstname"}
+                  isRequired={true}
                   className={"flex-grow"}
                   value={personal_details.firstname}
                   onChange={(e) => {
@@ -602,24 +714,28 @@ function Signup() {
                   type={"date"}
                   className={"flex-grow"}
                   name={"birthdate"}
+                  isRequired={true}
                   onChange={(e) => {
+                    
                     setpersonal_details((prev) => ({
                       ...prev,
                       birthdate: e.target.value,
                     }));
                   }}
                   placeholder={"Date of Birth"}
-                  value={personal_details.date_of_birth}
+                  value={personal_details.birthdate}
                 />
                 <LocationInput
                   className={"flex-grow"}
                   placeholder={"Location"}
-                  value={personal_details.location}
-                  onChange={(value) => {
-                    setpersonal_details((prev) => ({
+                  value={userData.location}
+                  isRequired={true}
+                  onChange={(e) => {
+                    setuserData((prev) => ({
                       ...prev,
-                      location: value,
+                      location: e.target.value,
                     }));
+
                   }}
                 />
               </div>
@@ -630,10 +746,11 @@ function Signup() {
                   className={"flex-grow min-w-32"}
                   value={personal_details.phone}
                   onChange={(e) => {
-                    setpersonal_details((prev) => ({
+                    if(e.target.value.length<=10)
+                   { setpersonal_details((prev) => ({
                       ...prev,
                       phone: e.target.value,
-                    }));
+                    }));}
                   }}
                   placeholder={"Phone Number"}
                 />
@@ -670,13 +787,9 @@ function Signup() {
               </div>
             </div>
           )}
-          {userData.account_type == "Employeer" && (
+          {userNameAvailable && userData.account_type == "Employeer" && (
             <div
-              className={`transition-transform  flex flex-col gap-6 duration-300 ease-in-out ${
-                userNameAvailable
-                  ? "md:flex opacity-100 translate-y-0"
-                  : "md:hidden opacity-0 -translate-y-5"
-              }`}
+              className={`transition-transform  flex flex-col gap-6 duration-300 ease-in-out `}
             >
               <div className="flex gap-6 flex-wrap">
                 <TextInput
@@ -775,13 +888,7 @@ function Signup() {
         </div>
         <Button
           type="submit"
-          className={`flex items-center text-xl justify-center   bg-gray-800 text-white py-2  rounded disabled:opacity-50 mt-6 ${
-            userNameAvailable
-              ? "-translate-y-0"
-              : userData.account_type == "Candidate"
-              ? "-translate-y-[512px]"
-              : "-translate-y-[370px]"
-          }`}
+          className={`flex items-center text-xl justify-center   bg-gray-800 text-white py-2  rounded disabled:bg-gray-600 mt-6`}
           disabled={!isFormValid() || loader} // Ensure the form validation is active
         >
           {loader ? (

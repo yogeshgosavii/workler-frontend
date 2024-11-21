@@ -343,7 +343,7 @@ function Qualification({
         />
       </div> */}
       {isEditable && (
-        <div className="bg-white sm:border  px-4 py-4 mb-5 md:px-6">
+        <div className="bg-white sm:border border-b  px-4 py-4 mb-5 md:px-6">
           <p className="font-medium text-lg mb-2">Resumes</p>
           <div className="mb-5 flex flex-col gap-2">
             {userResumes?.map((resume, index) => (
@@ -497,7 +497,7 @@ function Qualification({
           {/* <button className="bg-blue-500 text-white w-full text-center text-lg font-medium rounded-lg px-4 py-3 mt-3">Upload</button> */}
         </div>
       )}
-      {skillData.length == 0 &&
+      {!isEditable && skillData.length == 0 &&
         educationData.length == 0 &&
         workExperienceData.length == 0 &&
         projectData.length == 0 && (

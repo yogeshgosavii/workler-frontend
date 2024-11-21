@@ -97,8 +97,6 @@ const UserProfile = () => {
     };
   }, [lastScrollY]);
 
-  
-
   const [loading, setLoading] = useState({
     education: true,
     skills: true,
@@ -123,21 +121,20 @@ const UserProfile = () => {
       }
     };
 
-    const fetchConnections = async () =>{
+    const fetchConnections = async () => {
       try {
-        const followingResponse = await followService.getFollowing(user._id)
-        setfollowings(followingResponse.length)
+        const followingResponse = await followService.getFollowing(user._id);
+        setfollowings(followingResponse.length);
 
-        const followerResponse = await followService.getFollowers(user._id)
-        setFollowers(followerResponse.length)
+        const followerResponse = await followService.getFollowers(user._id);
+        setFollowers(followerResponse.length);
       } catch (error) {
         console.error("Error fetching connections:", error);
-
       }
-    }
+    };
 
     fetchData();
-    fetchConnections()
+    fetchConnections();
   }, []);
 
   const [updateForm, setUpdateForm] = useState({
@@ -333,7 +330,6 @@ const UserProfile = () => {
   useEffect(() => {
     // Function to handle popstate event
     const handlePopState = (event) => {
-
       setsettings(false);
       if (event.state && event.state.formType) {
         setFormType(event.state.formType);
@@ -462,6 +458,7 @@ const UserProfile = () => {
             loading={loading}
             userDetails={userDetails}
             setcurrentTab={setCurrentTab}
+            isEditable={true}
             postData={postData.slice(0, 2)}
             setupdateFormType={setupdateFormType}
             setUpdateData={setUpdateData}
@@ -792,11 +789,11 @@ const UserProfile = () => {
                       <div className="flex w-full ml-20  justify-between items-center">
                         <div>
                           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-                            {user.account_type == "Employeer"
+                            {user.account_type === "Employeer"
                               ? user.company_details?.company_name
-                              : user.personal_details?.firstname +
-                                " " +
-                                user.personal_details?.lastname}
+                              : `${user.personal_details?.firstname || ""} ${
+                                  user.personal_details?.lastname || ""
+                                }`.trim()}
                           </h1>
                           <div className="flex  gap-2">
                             <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
@@ -808,16 +805,19 @@ const UserProfile = () => {
                     </div>
 
                     <div className="order-3 flex flex-col gap-2">
-                      <div onClick={()=>{navigate("/connections/"+user._id)}} className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm ">
+                      <div
+                        onClick={() => {
+                          navigate("/connections/" + user._id);
+                        }}
+                        className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm "
+                      >
                         <p>
                           {/* <span>{user.location?.address} · </span> */}
                           {followers || 0}
                           <span className="  font-normal"> followers</span>{" "}
                           {user.account_type == "Candidate" && (
                             <span>
-                              ·{" "}
-                              {followings
-                                || 0}{" "}
+                              · {followings || 0}{" "}
                               <span className="  font-normal">following</span>
                             </span>
                           )}

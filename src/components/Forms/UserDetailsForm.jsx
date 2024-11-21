@@ -23,7 +23,7 @@ function UserDetailsForm({ onClose, setData, data }) {
       // username: data.username || "",
       // email: data.email || "",
       // about: data.about || "",
-      account_type : data.account_type,
+      account_type: data.account_type,
       tags: data.tags || [],
       githubLink: data.githubLink || "",
       linkedInLink: data.linkedInLink || "",
@@ -101,7 +101,7 @@ function UserDetailsForm({ onClose, setData, data }) {
   const handleUpdateUserDetails = async () => {
     let newFormData = new FormData();
     const flattenedData = flattenObject(formData);
-  
+
     Object.keys(flattenedData).forEach((key) => {
       if (key === "profileImage") {
         // Wrap the image in an array for consistency with multiple image uploads
@@ -110,7 +110,7 @@ function UserDetailsForm({ onClose, setData, data }) {
         newFormData.append(key, flattenedData[key]);
       }
     });
-  
+
     setLoading(true);
     try {
       await authService.updateUserDetails(newFormData);
@@ -122,7 +122,6 @@ function UserDetailsForm({ onClose, setData, data }) {
       setLoading(false);
     }
   };
-  
 
   const handleAddTags = () => {
     if (
@@ -232,12 +231,29 @@ function UserDetailsForm({ onClose, setData, data }) {
             isRequired={true}
           />
         )}
+
+        {formData.account_type === "Candidate" && (
+          <DateInput
+            name="birthdate"
+            type={"date"}
+            value={formData.personal_details?.birthdate?.split("T")[0] || ""}
+            onChange={(e) =>
+              handleDetailsChange(
+                "personal_details",
+                "birthdate",
+                e.target.value
+              )
+            }
+            placeholder="BirthDate"
+            isRequired={true}
+          />
+        )}
+
         <LocationInput
           name="location"
           value={formData.location}
           onChange={handleInputChange}
           placeholder="Location"
-          isRequired={true}
         />
         <TextAreaInput
           name="bio"
