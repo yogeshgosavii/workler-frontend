@@ -14,6 +14,7 @@ function PersonalDetailsForm({ onClose, data, setData }) {
   const user = useSelector((state) => state.auth.user);
 
   const [formData, setFormData] = useState(data || {});
+  const [description, setDescription] = useState(user.description);
 
   const deepEqual = (obj1, obj2) => {
     // Check if both values are strictly equal
@@ -61,7 +62,7 @@ function PersonalDetailsForm({ onClose, data, setData }) {
   };
 
   const isFormValid = () => {
-    if (formData.location !== "" && !deepEqual(data,formData) ) {
+    if (formData.location !== "" && !deepEqual(data,formData)  ) {
       return true;
     }
     return false;
@@ -73,7 +74,8 @@ function PersonalDetailsForm({ onClose, data, setData }) {
       if (value.length <= 10) {
         setFormData((prev) => ({ ...prev, [name]: value }));
       }
-    } else {
+    }
+    else {
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
@@ -89,11 +91,14 @@ function PersonalDetailsForm({ onClose, data, setData }) {
         .filter(([key, value]) => value !== null && value !== "")
         .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 
+
+        console.log("filteer data",filteredData)
       const personalData = await authService.updateUserDetails(
         filteredData,
       );
-      setData(formData)
-      onClose()
+      setData(personalData)
+      window.history.back()
+      // onClose()
 
     } catch (error) {
       console.error("Error saving personal details:", error);
@@ -118,12 +123,20 @@ function PersonalDetailsForm({ onClose, data, setData }) {
         <div className="flex flex-col w-full px-4 sm:px-8  gap-6 mt-5">
           <TextAreaInput
             name="description"
-            value={formData?.description}
-            onChange={handleInputChange}
+            value={formData.description}
+            onChange={(e) => {
+              console.log(formData);
+              
+              setFormData((prev) => ({
+                ...prev,
+                description:e.target.value
+              }));
+            }}
             placeholder="Description"
           />
           <NumberInput
             name="phone"
+            max={9999999999}
             value={formData?.personal_details?.phone}
             placeholder="Phone"
             onChange={(e) => {

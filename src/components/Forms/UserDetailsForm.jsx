@@ -23,6 +23,7 @@ function UserDetailsForm({ onClose, setData, data }) {
       // username: data.username || "",
       // email: data.email || "",
       // about: data.about || "",
+      description:data.description || "",
       account_type: data.account_type,
       tags: data.tags || [],
       githubLink: data.githubLink || "",

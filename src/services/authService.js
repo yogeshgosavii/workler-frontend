@@ -35,7 +35,6 @@ const authService = {
             body: JSON.stringify(passwordDetails),
         });
 
-        // console.log(response.body);
         
         if (!response.ok) {
             // Try to extract the error message from the response body
@@ -134,7 +133,7 @@ const authService = {
   updateUserDetails: async (data) => {
     let response;
     try {
-      // if (data.files) {
+      if (data.files) {
         response = await fetch(`${API_URL}/update-user`, {
           method: "PUT", // Ensure method is set correctly
           headers: {
@@ -142,16 +141,16 @@ const authService = {
           },
           body: data, // Send the cleaned data
         });
-      // } else {
-      //   response = await fetch(`${API_URL}/update-user`, {
-      //     method: "PUT", // Ensure method is set correctly
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       Authorization: `Bearer ${getToken()}`,
-      //     },
-      //     body: JSON.stringify(data), // Send the cleaned data
-      //   });
-      // }
+      } else {
+        response = await fetch(`${API_URL}/update-user`, {
+          method: "PUT", // Ensure method is set correctly
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+          body: JSON.stringify(data), // Send the cleaned data
+        });
+      }
       if (!response.ok) {
         throw new Error("Failed to update user details");
       }

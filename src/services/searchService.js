@@ -44,6 +44,24 @@ const searchService = {
     }
   },
 
+  searchUserByKeyword : async (keyword)=>{
+    try {
+      const response = await fetch(`${API_URL}/search-user-by-keyword?keyword=${keyword}`, {
+        method: "GET",
+        headers: setAuthHeaders(getToken()),
+        // body: JSON.stringify({ username }),
+      });
+      if (!response.ok) {
+        throw new Error("Username check failed");
+      }
+      const data = await response.json();
+      return data; // Return any additional data from the API response if needed
+    } catch (error) {
+      console.error("Error in checkUsername:", error);
+      throw error; // Throw the error to handle it in the component
+    }
+  },
+
   secrchJobByKeyword: async (keyword,page = 1,limit=10) => {
 
     const queryParams = new URLSearchParams({

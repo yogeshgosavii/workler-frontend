@@ -51,7 +51,7 @@ const UserProfile = () => {
   const [workExperienceData, setWorkExperienceData] = useState([]);
   const [worksAt, setworksAt] = useState(null);
   const [projectData, setprojectData] = useState([]);
-  const [userDetails, setuserDetails] = useState([]);
+  const [userDetails, setuserDetails] = useState([] ||user);
   const [postData, setPostData] = useState([]);
   const [tabIndex, settabIndex] = useState(1);
   const [followers, setFollowers] = useState(0);
@@ -115,7 +115,7 @@ const UserProfile = () => {
         setuserDetails(data);
         setdescriptionInputText(data.description);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching userDetails data:", error);
       } finally {
         setLoading((prev) => ({ ...prev, userDetails: false }));
       }
@@ -123,10 +123,10 @@ const UserProfile = () => {
 
     const fetchConnections = async () => {
       try {
-        const followingResponse = await followService.getFollowing(user._id);
+        const followingResponse = await followService.getFollowing(userDetails._id);
         setfollowings(followingResponse.length);
 
-        const followerResponse = await followService.getFollowers(user._id);
+        const followerResponse = await followService.getFollowers(userDetails._id);
         setFollowers(followerResponse.length);
       } catch (error) {
         console.error("Error fetching connections:", error);
@@ -155,7 +155,7 @@ const UserProfile = () => {
 
   const fetchJobData = useCallback(async () => {
     try {
-      const data = await jobApi.job.getByUserIds(user._id);
+      const data = await jobApi.job.getByUserIds(userDetails._id);
       setjobData(data);
     } catch (error) {
       console.error("Error fetching education data:", error);
@@ -199,7 +199,7 @@ const UserProfile = () => {
     } finally {
       setLoading((prev) => ({ ...prev, education: false }));
     }
-  }, [profileApi.education, user]);
+  }, [profileApi.education, userDetails]);
 
   const fetchProjectData = useCallback(async () => {
     try {
@@ -210,7 +210,7 @@ const UserProfile = () => {
     } finally {
       setLoading((prev) => ({ ...prev, projects: false }));
     }
-  }, [profileApi.projectDetails, user]);
+  }, [profileApi.projectDetails, userDetails]);
 
   const fetchSkillData = useCallback(async () => {
     try {
@@ -221,7 +221,7 @@ const UserProfile = () => {
     } finally {
       setLoading((prev) => ({ ...prev, skills: false }));
     }
-  }, [profileApi.skills, user]);
+  }, [profileApi.skills, userDetails]);
 
   const fetchWorkExperienceData = useCallback(async () => {
     try {
@@ -237,24 +237,24 @@ const UserProfile = () => {
     } finally {
       setLoading((prev) => ({ ...prev, workExperience: false }));
     }
-  }, [profileApi.workExperience, user]);
+  }, [profileApi.workExperience, userDetails]);
 
   const fetchUserDetails = useCallback(
     async () => {
       setLoading((prev) => ({ ...prev, userDetails: true })); // Set loading state for userDetails to true
 
       try {
-        const data = await authService.fetchUserDetails(); // Fetch user details
+        const data = await authService.fetchUserDetails(); // Fetch userDetails details
         setuserDetails(data); // Update userDetails state with fetched data
         setdescriptionInput(data.description); // Update descriptionInputText state with description from fetched data
       } catch (error) {
-        console.error("Error fetching user data:", error); // Log any errors
+        console.error("Error fetching userDetails data:", error); // Log any errors
       } finally {
         setLoading((prev) => ({ ...prev, userDetails: false })); // Set loading state for userDetails to false
       }
     },
     authService.fetchUserDetails,
-    user
+    userDetails
   );
 
   useEffect(() => {
@@ -454,9 +454,9 @@ const UserProfile = () => {
       case "Home":
         return (
           <Home
-            user={user}
-            loading={loading}
             userDetails={userDetails}
+            loading={loading}
+            user={userDetails}
             setcurrentTab={setCurrentTab}
             isEditable={true}
             postData={postData.slice(0, 2)}
@@ -475,7 +475,7 @@ const UserProfile = () => {
             workExperienceData={workExperienceData}
             setWorkExperienceData={setWorkExperienceData}
             projectData={projectData}
-            user={user}
+            userDetails={userDetails}
             setProjectData={setprojectData}
             loading={loading}
             setFormType={setFormType}
@@ -657,7 +657,7 @@ const UserProfile = () => {
                   )}
                   <div className="flex flex-col justify-center">
                     <p className="text-xl font-semibold">
-                      {atTop >= 100 ? user.username : "Profile"}
+                      {atTop >= 100 ? userDetails.username : "Profile"}
                     </p>
                     {/* <div className="flex gap-1 mt-0.5 items-center">
                       <span className="h-2 w-2 rounded-full shadow-lg bg-green-500"></span>
@@ -789,15 +789,15 @@ const UserProfile = () => {
                       <div className="flex w-full ml-20  justify-between items-center">
                         <div>
                           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-                            {user.account_type === "Employeer"
-                              ? user.company_details?.company_name
-                              : `${user.personal_details?.firstname || ""} ${
-                                  user.personal_details?.lastname || ""
+                            {userDetails.account_type === "Employeer"
+                              ? userDetails.company_details?.company_name
+                              : `${userDetails.personal_details?.firstname || ""} ${
+                                  userDetails.personal_details?.lastname || ""
                                 }`.trim()}
                           </h1>
                           <div className="flex  gap-2">
                             <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
-                              {user?.username || "Username"}
+                              {userDetails?.username || "Username"}
                             </p>
                           </div>
                         </div>
@@ -807,15 +807,15 @@ const UserProfile = () => {
                     <div className="order-3 flex flex-col gap-2">
                       <div
                         onClick={() => {
-                          navigate("/connections/" + user._id);
+                          navigate("/connections/" + userDetails._id);
                         }}
                         className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm "
                       >
                         <p>
-                          {/* <span>{user.location?.address} · </span> */}
+                          {/* <span>{userDetails.location?.address} · </span> */}
                           {followers || 0}
                           <span className="  font-normal"> followers</span>{" "}
-                          {user.account_type == "Candidate" && (
+                          {userDetails.account_type == "Candidate" && (
                             <span>
                               · {followings || 0}{" "}
                               <span className="  font-normal">following</span>
@@ -835,7 +835,7 @@ const UserProfile = () => {
                           Add a bio +
                         </div>
                       )}
-                      {user.account_type == "Candidate" && (
+                      {userDetails.account_type == "Candidate" && (
                         <div className="order-2 text-sm -mt-1">
                           <p className=" text-wrap truncate">
                             {worksAt && (
@@ -855,17 +855,17 @@ const UserProfile = () => {
                         </div>
                       )}
 
-                      {user.tags.length > 0 && (
+                      {userDetails.tags.length > 0 && (
                         <div className=" mt-4 order-last ">
                           <div className="flex gap-1 max-w-full flex-wrap ">
-                            {user.tags?.map((tag) => (
-                              <p className="flex rounded-md w-fit px-px  text-gray-800 text-nowrap">
-                                #{tag}
+                            {userDetails.tags?.map((tag) => (
+                              <p className="flex rounded-md w-fit px-2 py-0.5 border bg-amber-50 border-amber-600 text-sm text-amber-600 text-nowrap">
+                                {tag}
                               </p>
                             ))}
                           </div>
-                          <p className="text-xs text-gray-400">
-                            The tags won't be visible on you profile to others
+                          <p className="text-sm mt-1 text-gray-400">
+                            These tags will help get you discovered more by relevent people
                           </p>
                         </div>
                       )}
@@ -898,7 +898,7 @@ const UserProfile = () => {
                 >
                   <div className="flex w-screen md:w-full pt-1">
                     {[
-                      ...(user.account_type === "Employeer"
+                      ...(userDetails.account_type === "Employeer"
                         ? ["About", "Posts", "Jobs"]
                         : ["Home", "Posts", "Qualification"]),
                     ].map((tab, index, arr) => (
@@ -913,7 +913,7 @@ const UserProfile = () => {
                         } text-center py-2`}
                         style={{
                           width: `${
-                            100 / (user.account_type === "Employeer" ? 3 : 3)
+                            100 / (userDetails.account_type === "Employeer" ? 3 : 3)
                           }%`,
                         }}
                       >
@@ -925,13 +925,13 @@ const UserProfile = () => {
                 <div
                   style={{
                     left: `${
-                      (100 / (user.account_type === "Employeer" ? 3 : 3)) *
+                      (100 / (userDetails.account_type === "Employeer" ? 3 : 3)) *
                       tabIndex
                     }%`,
                     transition: "left 0.2s ease-in-out",
                   }}
                   className={`w-1/${
-                    user.account_type === "Employeer" ? "3" : "3"
+                    userDetails.account_type === "Employeer" ? "3" : "3"
                   } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-gray-800 absolute`}
                 ></div>
               </div>
@@ -940,7 +940,7 @@ const UserProfile = () => {
             {/* <div className=" w-full">
               {currentTab == "Home" && (
                 <Home
-                  user={user}
+                  userDetails={userDetails}
                   loading={loading}
                   userDetails={userDetails}
                   setcurrentTab={setCurrentTab}

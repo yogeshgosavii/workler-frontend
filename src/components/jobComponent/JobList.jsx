@@ -74,7 +74,7 @@ function JobList({ query,className, joblistSkeleton =  <div className=" flex fle
       try {
         const fetchedJobs = query
           ? await searchService.secrchJobByKeyword(query, currentPage, jobsPerPage) // Fixed typo
-          : await searchService.secrchJobByKeyword(['undefined'], currentPage, jobsPerPage);
+          : await searchService.secrchJobByKeyword(['any'], currentPage, jobsPerPage);
 
         if (fetchedJobs.jobs.length === 0) return; // Stop fetching if no more jobs
         setJobs((prevJobs) => [...prevJobs, ...fetchedJobs.jobs]);
@@ -133,7 +133,28 @@ function JobList({ query,className, joblistSkeleton =  <div className=" flex fle
       } ${className} flex-col gap-8  w-full mt-0 sm:mt-0`}
     >
       {loading && jobs.length === 0 ? (
-        <div>{joblistSkeleton}</div>
+        <div><div className=" flex flex-col gap-6 w-full mb-10 animate-pulse">
+        {[1,2,3].map((job) => (
+          <div className="py-6 border-y sm:border sm:rounded-xl">
+            <div className="px-6 flex gap-2">
+              <div className="h-14 w-16 rounded-md bg-gray-100"></div>
+              <div className=" w-full justify-center flex flex-col gap-2">
+                <div className="h-5 w-1/2 bg-gray-100 rounded-full"></div>
+                <div className="h-4 w-1/3 bg-gray-100 rounded-full"></div>
+              </div>
+            </div>
+            <div className="flex w-full gap-3 mt-5 px-6">
+              <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
+              <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
+            </div>
+            <div className=" w-full border-t mt-5"></div>
+            <div className="mt-6 flex px-6 justify-between">
+              <div className="h-7 w-1/3 bg-gray-100 rounded-full"></div>
+              <div className="h-8 w-8 rounded-full bg-gray-100"></div>
+            </div>
+          </div>
+        ))}
+      </div></div>
       ) : error ? (
         <div className="text-red-500">{error}</div>
       ) : (

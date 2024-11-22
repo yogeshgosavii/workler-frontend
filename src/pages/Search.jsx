@@ -22,6 +22,7 @@ function Search() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState("");
+  const [selectedType, setSelectedType] = useState("Accounts");
   const [atTop, setAtTop] = useState(0);
   const profileRef = useRef();
   const [searchedUsers, setSearchedUsers] = useState([]);
@@ -30,12 +31,10 @@ function Search() {
   const jobService = useJobApi();
 
   useEffect(() => {
-      document.title = "User Search";
-    
-   }, []);
+    document.title = "User Search";
+  }, []);
 
   useEffect(() => {
-
     const handleScroll = () => {
       if (profileRef.current) {
         const currentScrollY = profileRef.current.scrollTop;
@@ -62,7 +61,9 @@ function Search() {
       let jobSearchResponse = null;
 
       try {
-        userSearchResponse = await searchService.searchByUsername(searchQuery);
+        userSearchResponse = await searchService.searchUserByKeyword(
+          searchQuery
+        );
       } catch (error) {
         if (error.response && error.response.status === 404) {
           console.warn("User search not found.");
@@ -72,9 +73,12 @@ function Search() {
       }
 
       try {
-        jobSearchResponse = await searchService.secrchJobByKeyword(searchQuery,1,3);
+        jobSearchResponse = await searchService.secrchJobByKeyword(
+          searchQuery,
+          1,
+          3
+        );
         // setSearchedJobs(jobSearchResponse.jobs || []);
-
       } catch (error) {
         if (error.response && error.response.status === 404) {
           console.warn("Job search not found.");
@@ -87,6 +91,8 @@ function Search() {
       setSearchedJobs(jobSearchResponse.jobs || []);
       setHasSearched(true);
     } finally {
+      setHasSearched(true);
+
       setIsLoading(false);
     }
   };
@@ -113,7 +119,7 @@ function Search() {
           location.pathname.split("/").length > 2 && " hidden sm:block"
         } sm:px-0 w-full sm:max-w-lg `}
       >
-        <div className=" sticky top-0 z-20 bg-white px-4 pt-5">
+        <div className=" sticky top-0 z-30 bg-white px-4 pt-5">
           <form
             onSubmit={(e) => {
               if (searchType != "user") {
@@ -126,7 +132,7 @@ function Search() {
           >
             <input
               autoFocus
-              type='search'
+              type="search"
               onFocus={() => setSearchInputFocus(true)}
               onBlur={() => setTimeout(() => setSearchInputFocus(false), 100)}
               className="outline-none w-full py-1"
@@ -154,38 +160,44 @@ function Search() {
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
-          
           </form>
-        
         </div>
+
         {/* Display search results */}
         {query.length > 0 && (
-          <div className="w-full mt-4 flex flex-col gap-4">
+          <div className="w-full  flex flex-col gap-4">
+            <div className="flex gap-4 sticky top-[74px] pt-4 pb-2  z-20 bg-white  px-4  py-1">
+              <p
+                onClick={() => {
+                  {
+                    setSelectedType("Accounts");
+                  }
+                }}
+                className={`px-3 py-1 cursor-pointer rounded-lg font-medium border ${
+                  selectedType == "Accounts"
+                    ? "bg-gray-800 border-gray-800 text-white"
+                    : "bg-white"
+                }`}
+              >
+                Accounts
+              </p>
+              <p
+                onClick={() => {
+                  setSelectedType("Jobs");
+                }}
+                className={`px-3 py-1 cursor-pointer rounded-lg font-medium border ${
+                  selectedType == "Jobs"
+                    ? "bg-gray-800 border-gray-800 text-white"
+                    : "bg-white"
+                }`}
+              >
+                Jobs
+              </p>
+            </div>
             {isLoading ? (
-             
               <div className="animate-pulse px-4 flex flex-col overflow-y-hidden gap-2 mt-2">
-                <div className=" flex justify-between mb-5">
-                  <div className="h-4 w-1/3 bg-gray-200 rounded-lg "></div>
-                  <div className="h-4 w-1/3 bg-gray-200 rounded-lg"></div>
-                </div>
                 {[...Array(3)].map((_, index) => (
                   <div key={index} className="flex items-center">
-                    <div className="h-[40px] bg-gray-200 w-[40px] rounded-full mb-2"></div>
-                    <div className=" w-1/2 ml-2">
-                      <div className="h-3 bg-gray-200 rounded-md mb-2"></div>
-                      <div className="h-3 w-1/2 bg-gray-200 rounded-md mb-2"></div>
-                    </div>
-                  </div>
-                ))}
-                <div className=" flex justify-between mb-5 mt-5">
-                  <div className="h-4 w-1/3 bg-gray-200 rounded-lg "></div>
-                  <div className="h-4 w-1/3 bg-gray-200 rounded-lg"></div>
-                </div>
-                {[...Array(3)].map((_, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center border p-4 rounded-lg bg-gray-50"
-                  >
                     <div className="h-[40px] bg-gray-200 w-[40px] rounded-full mb-2"></div>
                     <div className=" w-1/2 ml-2">
                       <div className="h-3 bg-gray-200 rounded-md mb-2"></div>
@@ -197,94 +209,113 @@ function Search() {
             ) : (
               hasSearched && (
                 <div className=" flex flex-col px-4 gap-6">
-                  <div className="">
-                    <div className="flex justify-between items-center mb-5">
-                      <p className="text-2xl font-semibold ">Accounts</p>
-                      {searchedUsers.length > 5 && (
-                        <p
-                          onClick={() => {
-                            navigate("/jobs/" + query);
-                          }}
-                          className="text-blue-500 cursor-pointer"
-                        >
-                          See all users
-                        </p>
+                  {selectedType == "Accounts" && (
+                    <div className="">
+                      {searchedUsers.length > 0 ? (
+                        <div className="flex flex-col gap-4">
+                          {searchedUsers.map((user) => (
+                            <div
+                              onClick={() => {
+                                navigate("/user/" + user._id);
+                              }}
+                              className="flex gap-4 cursor-pointer items-center"
+                            >
+                              <UserImageInput
+                                imageHeight={45}
+                                image={user.profileImage?.compressedImage[0]}
+                                isEditable={false}
+                              />
+                              <div className=" -mt-1">
+                                <p className="font-medium text-lg">
+                                  {user.username}
+                                </p>
+                                {user.personal_details ? (
+                                  <p className="text-gray-400">
+                                    {user.personal_details?.firstname}{" "}
+                                    {user.personal_details?.lastname}
+                                  </p>
+                                ) : (
+                                  <p className="text-gray-400">
+                                    {user.company_details.company_name}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="">
+                          <p className="text-xl text-gray-500 font-semibold">
+                            {" "}
+                            No results found
+                          </p>
+                          <p className="text-gray-400 font-normal mt-1 leading-tight">
+                            No result found , Be more specfic or check for typos
+                            and try again{" "}
+                          </p>
+                        </div>
                       )}
                     </div>
-                    {searchedUsers.length > 0 ? (
-                      <div >
-                        {searchedUsers.map((user) => (
-                          <div
-                          
-                          onClick={()=>{
-                            navigate("/user/"+user._id)
-                          }}
-                          
-                          className="flex gap-4 cursor-pointer">
-                            <UserImageInput
-                              image={user.profileImage?.compressedImage[0]}
-                              isEditable={false}
-                            />
-                            <div className="-mt-1">
-                              <p className="font-medium text-lg">{user.username}</p>
-                              {user.personal_details ?<p className="text-gray-400">{user.personal_details?.firstname} {" "}{user.personal_details?.lastname}</p>:<p className="text-gray-400">{user.company_details.company_name}</p>}
-                            </div>
+                  )}
+                  {user.account_type == "Candidate" &&
+                    selectedType == "Jobs" && (
+                      <div>
+                        {searchedJobs.length > 0 ? (
+                          <div className="flex flex-col pb-20">
+                            {searchedJobs.slice(0, 5).map((job,index,arr) => (
+                              <div
+                                onClick={() => {
+                                  navigate("/job/" + job._id);
+                                }}
+                                className={`flex gap-4 ${index!==arr.length-1 && "border-b" } py-4 cursor-pointer `}
+                              >
+                                <UserImageInput
+                                  isEditable={false}
+                                  image={
+                                    job.company_logo ||
+                                    (job.company_details &&
+                                      job.user.profileImage
+                                        ?.compressedImage[0]) ||
+                                    companyImageDefault
+                                  }
+                                  onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = companyImageDefault;
+                                  }}
+                                />
+                                <div>
+                                  <p className="text-lg text-wrap font-medium">
+                                    {job.job_role}
+                                  </p>
+                                  <p className="text-gray-400 -mt-1">
+                                    {job.company_name}
+                                  </p>
+                                </div>
+                              </div>
+                            ))}
+                            <p
+                              onClick={() => {
+                                window.open(`/jobs/${query}?`, "_blank");
+                              }}
+                              className="w-full text-center mt-2 font-medium bg-blue-50 rounded-full text-blue-500 py-2.5 text-lg"
+                            >
+                              See all
+                            </p>
                           </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="-mt-2 text-gray-400"> No user found</p>
-                    )}
-                  </div>
-                  {user.account_type == "Candidate" && (
-                    <div>
-                      <div className=" flex mt-5 mb-5 gap-4 justify-between">
-                        <p className="text-2xl font-semibold">Jobs</p>
-                        {searchedJobs.length > 5 && (
-                          <p
-                            onClick={() => {
-                              navigate("/jobs/" + query);
-                            }}
-                            className="text-blue-500 cursor-pointer"
-                          >
-                            See all jobs
-                          </p>
+                        ) : (
+                          <div>
+                            <p className="text-lg font-medium">
+                              {" "}
+                              No results found
+                            </p>
+                            <p className="text-gray-400 -mt-2">
+                              No result found , Be more specfic or check for
+                              typos{" "}
+                            </p>
+                          </div>
                         )}
                       </div>
-                      {searchedJobs.length>0 ?<div className="flex flex-col gap-4 pb-20">
-                        {searchedJobs.slice(0, 5).map((job) => (
-                          <div
-                          onClick={()=>{
-                            navigate("/job/"+job._id)
-                          }}
-                           className="flex gap-4 p-4 border cursor-pointer bg-gray-50 rounded-lg">
-                            <UserImageInput
-                              isEditable={false}
-                              image={
-                                job.company_logo ||
-                                (job.company_details &&
-                                  job.user.profileImage?.compressedImage[0]) ||
-                                companyImageDefault
-                              }
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = companyImageDefault;
-                              }}
-                            />
-                            <div>
-                              <p className="text-lg text-wrap font-medium">
-                                {job.job_role}
-                              </p>
-                              <p className="text-gray-400 -mt-1">
-                                {job.company_name}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>:
-                      <p className="text-gray-400 -mt-2">No jobs found</p>}
-                    </div>
-                  )}
+                    )}
                 </div>
               )
             )}

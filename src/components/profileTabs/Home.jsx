@@ -6,13 +6,14 @@ import ImageCarousel from "../ImageCarousel";
 
 function Home({
   user,
-  loading,
+  loading =null,
   setcurrentTab,
   setupdateFormType,
   setUpdateData,
   postData,
   isEditable,
 }) {
+  
   return (
     <div className="  flex flex-col gap-4 mb-4 border  text-gray-800 bg-white h-full">
       {user?.account_type == "Employeer" ? (
@@ -97,7 +98,6 @@ function Home({
         <div className="relative   md:px-6 overflow-hidden h-full px-4 py-4 pb-6">
           <div className="flex justify-between items-center mb-2 ">
             <p className="text-xl font-bold ">About</p>
-            
 
             {isEditable && (
               <svg
@@ -123,23 +123,22 @@ function Home({
             )}
           </div>
           {(!user.description ||
-                !user.linkedInLink ||
-                !user.location ||
-                !user.githubLink) && (
-                  <p className="text-gray-400 text-sm -mt-2">
-                    Add some more details to let people know more about you
-                  </p>
-                )}
+            !user.linkedInLink ||
+            !user.location ||
+            !user.githubLink) && (
+            <p className="text-gray-400 text-sm -mt-2">
+              Add some more details to let people know more about you
+            </p>
+          )}
 
           {!loading.userDetails ? (
             <div className="flex flex-col gap-4 mt-5">
-              {isEditable ||
-                (user.description && (
+              {isEditable && (
                   <div className={`text-sm font-normal  `}>
-                    <p className="font-semibold mb-1">Description</p>
+                    <p className="font-medium text-base mb-1">Description</p>
                     {user.description ? (
                       <div onClick={() => setdescriptionInput(true)}>
-                        <p className="text-gray-400">{user.description}</p>
+                        <p className="text-gray-600">{user.description}</p>
                       </div>
                     ) : user.account_type == "Employeer" ? (
                       <div className="text-sm font-normal text-gray-300 w-full">
@@ -153,7 +152,7 @@ function Home({
                       </div>
                     )}
                   </div>
-                ))}
+                )}
               {user?.linkedInLink && (
                 <div className={`text-sm font-normal  `}>
                   <p className="font-medium">LinkedIn</p>
@@ -167,6 +166,21 @@ function Home({
                   )}
                 </div>
               )}
+
+              {user.personal_details.portfolio && (
+                <div className={`text-sm font-normal  `}>
+                  <p className="font-medium">Portfolio</p>
+                  {!loading.user && (
+                    <a
+                      className="text-sm font-normal text-blue-500 w-full"
+                      href={user?.personal_details.portfolio}
+                    >
+                      {user?.personal_details.portfolio}
+                    </a>
+                  )}
+                </div>
+              )}
+
               {user.githubLink && (
                 <div className={`text-sm font-normal  `}>
                   <p className="font-medium">Github</p>
@@ -181,7 +195,6 @@ function Home({
                 </div>
               )}
 
-              
               {user?.location && (
                 <div className={`text-sm font-normal  `}>
                   <p className="font-medium">Address</p>
@@ -202,7 +215,6 @@ function Home({
                   )}
                 </div>
               )}
-             
             </div>
           ) : (
             <div className="animate-pulse flex flex-col gap-3 z-10 mt-5">
