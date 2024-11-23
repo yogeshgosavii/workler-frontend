@@ -201,8 +201,11 @@ function JobList({
             ))}
           </div>
         </div>
-      ) : error ? (
-        <div className="text-red-500">{error}</div>
+      ) : true ? (
+        <div className="text-gray-400 text-center px-4">
+          <p className="text-gray-600 font-semibold text-2xl">No Jobs Found</p>
+          <p>No job results found with your query be more specfic or check for typos and try again</p>
+        </div>
       ) : (
         jobs?.map((job, index) => (
           <div
