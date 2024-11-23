@@ -43,27 +43,28 @@ function Jobs() {
       navigate("/not-found", { replace: true });
     }
   }, []);
-  // useEffect(() => {
-  //   const fetchJobs = async () => {
-  //     setLoading(true)
-  //     try {
-  //       if (searchText) {
+  useEffect(() => {
+    // const fetchJobs = async () => {
+    //   setLoading(true)
+    //   try {
+    //     if (searchText) {
           
-  //         const jobs = await searchService.secrchJobByKeyword(searchText+" "+filters);
-  //         setSubmitJobList(jobs);
-  //       } else {
-  //         const jobs = await jobService.job.getAll();
+    //       const jobs = await searchService.secrchJobByKeyword(searchText+" "+filters);
+    //       setSubmitJobList(jobs);
+    //     } else {
+    //       const jobs = await jobService.job.getAll();
 
-  //         setSubmitJobList(jobs);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching jobs: ", error);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchJobs();
-  // }, [filters]);
+    //       setSubmitJobList(jobs);
+    //     }
+    //   } catch (error) {
+    //     console.error("Error fetching jobs: ", error);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
+    // fetchJobs();
+    setSearchText(filters)
+  }, [filters]);
 
   // Handle search submission
   const handleSearchSubmit = (e) => {
@@ -167,7 +168,7 @@ function Jobs() {
           </div>
 
         
-            <JobList joblistSkeleton={joblistSkeleton} query={searchText} className={"pt-24"} />
+            <JobList filter={filters} joblistSkeleton={joblistSkeleton} query={searchText} className={"pt-24"} />
         </div>
 
         {/* Right News Section */}

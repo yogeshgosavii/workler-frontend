@@ -1,35 +1,49 @@
-import React, { useEffect, useState, useRef, lazy, useLayoutEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import companyDefaultImage from '../../assets/companyDefaultImage.png';
-import searchService from '../../services/searchService';
-import { useSelector } from 'react-redux';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  lazy,
+  useLayoutEffect,
+} from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import companyDefaultImage from "../../assets/companyDefaultImage.png";
+import searchService from "../../services/searchService";
+import { useSelector } from "react-redux";
 
-const JobListItem = lazy(() => import('../jobComponent/JobListItem'));
+const JobListItem = lazy(() => import("../jobComponent/JobListItem"));
 
-function JobList({ query,className, joblistSkeleton =  <div className=" flex flex-col gap-6 w-full mb-10 animate-pulse">
-  {[1,2,3].map((job) => (
-    <div className="py-6 border-y sm:border sm:rounded-xl">
-      <div className="px-6 flex gap-2">
-        <div className="h-14 w-16 rounded-md bg-gray-100"></div>
-        <div className=" w-full justify-center flex flex-col gap-2">
-          <div className="h-5 w-1/2 bg-gray-100 rounded-full"></div>
-          <div className="h-4 w-1/3 bg-gray-100 rounded-full"></div>
+function JobList({
+  query,
+  className,
+  filter,
+  joblistSkeleton = (
+    <div className=" flex flex-col gap-6 w-full mb-10 animate-pulse">
+      {[1, 2, 3].map((job) => (
+        <div className="py-6 border-y sm:border sm:rounded-xl">
+          <div className="px-6 flex gap-2">
+            <div className="h-14 w-16 rounded-md bg-gray-100"></div>
+            <div className=" w-full justify-center flex flex-col gap-2">
+              <div className="h-5 w-1/2 bg-gray-100 rounded-full"></div>
+              <div className="h-4 w-1/3 bg-gray-100 rounded-full"></div>
+            </div>
+          </div>
+          <div className="flex w-full gap-3 mt-5 px-6">
+            <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
+            <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
+          </div>
+          <div className=" w-full border-t mt-5"></div>
+          <div className="mt-6 flex px-6 justify-between">
+            <div className="h-7 w-1/3 bg-gray-100 rounded-full"></div>
+            <div className="h-8 w-8 rounded-full bg-gray-100"></div>
+          </div>
         </div>
-      </div>
-      <div className="flex w-full gap-3 mt-5 px-6">
-        <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
-        <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
-      </div>
-      <div className=" w-full border-t mt-5"></div>
-      <div className="mt-6 flex px-6 justify-between">
-        <div className="h-7 w-1/3 bg-gray-100 rounded-full"></div>
-        <div className="h-8 w-8 rounded-full bg-gray-100"></div>
-      </div>
+      ))}
     </div>
-  ))}
-</div> }) {
+  ),
+}) {
   const jobsPerPage = 8;
   const [jobs, setJobs] = useState([]);
+  const [currentFilter, setcurrentFilter] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,7 +57,8 @@ function JobList({ query,className, joblistSkeleton =  <div className=" flex fle
   // Restore state from location
   useLayoutEffect(() => {
     if (location.state?.savedState) {
-      const { savedJobs, savedPage, scrollPosition } = location.state.savedState;
+      const { savedJobs, savedPage, scrollPosition } =
+        location.state.savedState;
       setJobs(savedJobs);
       setCurrentPage(savedPage);
       setIsRestoringState(true);
@@ -54,17 +69,19 @@ function JobList({ query,className, joblistSkeleton =  <div className=" flex fle
   }, [location.state]);
 
   // Reset jobs when query changes
-  useEffect(() => {
-    if (!isRestoringState) {
-      setJobs([]); // Reset jobs when query changes
-      setCurrentPage(1); // Reset to first page
-    } else {
-      setIsRestoringState(false);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (!isRestoringState) {
+  //     setJobs([]); // Reset jobs when query changes
+  //     setCurrentPage(1); // Reset to first page
+  //   } else {
+  //     setIsRestoringState(false);
+  //   }
+  // }, []);
 
   // Fetch jobs when currentPage or query changes
   useEffect(() => {
+    console.log("sdfghjk", query);
+
     const fetchJobs = async () => {
       if (loading || isRestoringState) return;
 
@@ -73,20 +90,45 @@ function JobList({ query,className, joblistSkeleton =  <div className=" flex fle
 
       try {
         const fetchedJobs = query
-          ? await searchService.secrchJobByKeyword(query, currentPage, jobsPerPage) // Fixed typo
-          : await searchService.secrchJobByKeyword(['any'], currentPage, jobsPerPage);
+          ? await searchService.secrchJobByKeyword(
+              query,
+              currentPage,
+              jobsPerPage
+            ) // Fixed typo
+          : await searchService.secrchJobByKeyword(
+              ["any"],
+              currentPage,
+              jobsPerPage
+            );
 
         if (fetchedJobs.jobs.length === 0) return; // Stop fetching if no more jobs
-        setJobs((prevJobs) => [...prevJobs, ...fetchedJobs.jobs]);
+        if (currentFilter !== filter) {
+          setJobs((prevJobs) => [...fetchedJobs.jobs]);
+        } else {
+          setJobs((prevJobs) => [...prevJobs, ...fetchedJobs.jobs]);
+        }
+        setcurrentFilter(filter);
       } catch (err) {
-        setError('Failed to fetch jobs. Please try again.');
+        setError("Failed to fetch jobs. Please try again.");
       } finally {
         setLoading(false);
       }
     };
 
     fetchJobs();
-  }, [query, currentPage, isRestoringState]);
+
+    console.log("jibs", jobs);
+  }, [query, currentPage]);
+
+  // useEffect(() => {
+  // const fetchFilteredJobs = async()=>{
+  //   const fetchedJobs = filter
+  //   && await searchService.secrchJobByKeyword(query, currentPage, jobsPerPage)
+  //   setJobs(fetchedJobs.jobs)
+  // }
+
+  // fetchFilteredJobs()
+  // }, [filter]);
 
   // Handle scroll for infinite scrolling
   useEffect(() => {
@@ -95,7 +137,9 @@ function JobList({ query,className, joblistSkeleton =  <div className=" flex fle
       if (!container) return;
 
       const isBottom =
-        (container.scrollHeight - container.scrollTop <= container.clientHeight + 50)-50;
+        (container.scrollHeight - container.scrollTop <=
+          container.clientHeight + 50) -
+        50;
 
       if (isBottom && !loading) {
         setCurrentPage((prevPage) => prevPage + 1);
@@ -103,10 +147,10 @@ function JobList({ query,className, joblistSkeleton =  <div className=" flex fle
     };
 
     const container = containerRef.current;
-    container?.addEventListener('scroll', handleScroll);
+    container?.addEventListener("scroll", handleScroll);
 
     return () => {
-      container?.removeEventListener('scroll', handleScroll);
+      container?.removeEventListener("scroll", handleScroll);
     };
   }, [loading]);
 
@@ -127,38 +171,40 @@ function JobList({ query,className, joblistSkeleton =  <div className=" flex fle
   return (
     <div
       ref={containerRef}
-      style={{ scrollbarWidth: 'none' }}
+      style={{ scrollbarWidth: "none" }}
       className={`flex flex-1 bg-gray-50 sm:px-5 sm:pt-5 border-blue-500 overflow-y-auto ${
-        isAuthenticated ? 'sm:ml-[330px]' : 'sm:ml-[300px]'
+        isAuthenticated ? "sm:ml-[330px]" : "sm:ml-[300px]"
       } ${className} flex-col gap-8  w-full mt-0 sm:mt-0`}
     >
       {loading && jobs.length === 0 ? (
-        <div><div className=" flex flex-col gap-6 w-full mb-10 animate-pulse">
-        {[1,2,3].map((job) => (
-          <div className="py-6 border-y sm:border sm:rounded-xl">
-            <div className="px-6 flex gap-2">
-              <div className="h-14 w-16 rounded-md bg-gray-100"></div>
-              <div className=" w-full justify-center flex flex-col gap-2">
-                <div className="h-5 w-1/2 bg-gray-100 rounded-full"></div>
-                <div className="h-4 w-1/3 bg-gray-100 rounded-full"></div>
+        <div>
+          <div className=" flex flex-col gap-6 w-full mb-10 animate-pulse">
+            {[1, 2, 3].map((job) => (
+              <div className="py-6 border-y sm:border sm:rounded-xl">
+                <div className="px-6 flex gap-2">
+                  <div className="h-14 w-16 rounded-md bg-gray-100"></div>
+                  <div className=" w-full justify-center flex flex-col gap-2">
+                    <div className="h-5 w-1/2 bg-gray-100 rounded-full"></div>
+                    <div className="h-4 w-1/3 bg-gray-100 rounded-full"></div>
+                  </div>
+                </div>
+                <div className="flex w-full gap-3 mt-5 px-6">
+                  <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
+                  <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
+                </div>
+                <div className=" w-full border-t mt-5"></div>
+                <div className="mt-6 flex px-6 justify-between">
+                  <div className="h-7 w-1/3 bg-gray-100 rounded-full"></div>
+                  <div className="h-8 w-8 rounded-full bg-gray-100"></div>
+                </div>
               </div>
-            </div>
-            <div className="flex w-full gap-3 mt-5 px-6">
-              <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
-              <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
-            </div>
-            <div className=" w-full border-t mt-5"></div>
-            <div className="mt-6 flex px-6 justify-between">
-              <div className="h-7 w-1/3 bg-gray-100 rounded-full"></div>
-              <div className="h-8 w-8 rounded-full bg-gray-100"></div>
-            </div>
+            ))}
           </div>
-        ))}
-      </div></div>
+        </div>
       ) : error ? (
         <div className="text-red-500">{error}</div>
       ) : (
-        jobs.map((job, index) => (
+        jobs?.map((job, index) => (
           <div
             key={index}
             // onClick={() => handleJobClick(job)}
