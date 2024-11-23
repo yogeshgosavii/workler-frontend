@@ -122,14 +122,16 @@ function Home() {
       try {
         setLoading(true);
         const response = await searchService.secrchJobByKeyword(
-          ["undefined"],
+          ["all"],
           1,
           20
         );
+        console.log(response);
+        
 
         // Filter jobs with salary info for "Latest Jobs" category
         const filteredJobs = response.jobs
-          .filter((job) => job.min_salary || job.max_salary) // Include jobs with either min or max salary
+          // .filter((job) => job.min_salary || job.max_salary) // Include jobs with either min or max salary
           .slice(0, 6); // Limit to the first 6 jobs
         setLatestJobs(filteredJobs); // Set the latest jobs in state
 
@@ -140,7 +142,7 @@ function Home() {
           while (topPayingJobs.length < 6) {
             // Fetch the jobs with the given keyword and pagination (20 jobs at a time)
             const response = await searchService.secrchJobByKeyword(
-              ["undefined"],
+              ["all"],
               page,
               20
             );
@@ -148,10 +150,9 @@ function Home() {
             // Filter for high-paying jobs (assuming salaries are in the "min_salary" or "max_salary" fields)
             const topPayingFilteredJobs = response.jobs.filter(
               (job) =>
-                (job.min_salary && job.min_salary > 100000) ||
-                (job.max_salary && job.max_salary > 100000)
+                ((job.min_salary && job.min_salary > 100000) ||
+                (job.max_salary && job.max_salary > 100000))
             );
-            
 
             // Add the filtered jobs to the result (avoid duplicates)
             topPayingJobs = [...topPayingJobs, ...topPayingFilteredJobs];
@@ -173,32 +174,53 @@ function Home() {
         async function fetchVariousLocationJobs() {
           let variousLocationJobs = [];
           let page = 1;
-      
+        
           while (variousLocationJobs.length < 6) {
-              // Fetch the jobs with the given keyword and pagination (20 jobs at a time)
-              const response = await searchService.secrchJobByKeyword(['undefined'], page, 20);
-      
-              // Filter for jobs that have location and a country
-              const variousLocationFilteredJobs = response
-                  .jobs.filter((job) => job.location && job.location.country);
-      
-              // Add the filtered jobs to the result (avoid duplicates)
-              variousLocationJobs = [...variousLocationJobs, ...variousLocationFilteredJobs];
-      
-              // If we have enough jobs, break the loop
-              if (variousLocationJobs.length >= 6) {
-                  break;
-              }
-      
-              // Move to the next page
-              page++;
+            // Fetch the jobs with the given keyword and pagination (20 jobs at a time)
+            const response = await searchService.secrchJobByKeyword(
+              ["all"],
+              page,
+              20
+            );
+        
+            // Filter for jobs that have location and a country
+            const variousLocationFilteredJobs = response.jobs.filter((job) => {
+              // Check for valid location and country
+              const hasValidLocation = job.location && job.location.country;
+        
+              // Ensure the job is not already in the variousLocationJobs array
+              const isUnique = !variousLocationJobs.some(
+                (existingJob) =>
+                  existingJob.location?.country === job.location.country &&
+                  existingJob.id === job.id // Use a unique property like `id` to avoid duplicates
+              );
+        
+              return hasValidLocation && isUnique;
+            });
+        
+            // Add the filtered jobs to the result
+            variousLocationJobs = [...variousLocationJobs, ...variousLocationFilteredJobs];
+        
+            // If we have enough jobs, break the loop
+            if (variousLocationJobs.length >= 6) {
+              break;
+            }
+        
+            // Move to the next page
+            page++;
+        
+            // Break the loop if no more jobs are available
+            if (response.jobs.length === 0) {
+              break;
+            }
           }
-      
+        
           // Ensure we have exactly 6 jobs (in case more than 6 are fetched)
           setVariousLocatioJobs(variousLocationJobs.slice(0, 6));
-      }
-      fetchVariousLocationJobs()
-      
+        }
+        
+
+        fetchVariousLocationJobs();
       } catch (error) {
         console.error("Failed to fetch jobs:", error);
       } finally {
@@ -232,7 +254,7 @@ function Home() {
     debounce(async (text) => {
       setIsLoading(true);
       try {
-        const jobs = await searchService.secrchJobByKeyword(text,1,10);
+        const jobs = await searchService.secrchJobByKeyword(text, 1, 10);
         setJobList(jobs.jobs);
         setErrorMessage(""); // Clear any previous error
       } catch (error) {
@@ -244,8 +266,6 @@ function Home() {
     }, 300),
     []
   );
-
-  
 
   useEffect(() => {
     if (searchText) {
