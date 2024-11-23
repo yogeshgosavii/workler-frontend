@@ -123,10 +123,12 @@ const UserProfile = () => {
 
     const fetchConnections = async () => {
       try {
-        const followingResponse = await followService.getFollowing(userDetails._id);
+        const followingResponse = await followService.getFollowing(user._id);
+        console.log("follow",followingResponse);
+        
         setfollowings(followingResponse.length);
 
-        const followerResponse = await followService.getFollowers(userDetails._id);
+        const followerResponse = await followService.getFollowers(user._id);
         setFollowers(followerResponse.length);
       } catch (error) {
         console.error("Error fetching connections:", error);
