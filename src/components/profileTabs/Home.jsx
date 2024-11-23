@@ -122,7 +122,7 @@ function Home({
               </svg>
             )}
           </div>
-          {(!user.description ||
+          {isEditable && (!user.description ||
             !user.linkedInLink ||
             !user.location ||
             !user.githubLink) && (
@@ -133,7 +133,7 @@ function Home({
 
           {!loading.userDetails ? (
             <div className="flex flex-col gap-4 mt-5">
-              {isEditable && (
+              {isEditable ? (
                   <div className={`text-sm font-normal  `}>
                     <p className="font-medium text-base mb-1">Description</p>
                     {user.description ? (
@@ -151,6 +151,13 @@ function Home({
                         professional with a strong background in developing."
                       </div>
                     )}
+                  </div>
+                ):(
+                  <div className={`text-sm font-normal  `}>
+                    <p className="font-medium text-base mb-1">Description</p>
+                      <div onClick={() => setdescriptionInput(true)}>
+                        <p className="text-gray-600">{user.description}</p>
+                      </div>
                   </div>
                 )}
               {user?.linkedInLink && (

@@ -18,7 +18,7 @@ function UserHome() {
   const [error, setError] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
   const [preferedJobs, setPreferedJobs] = useState([]);
-  // const [preferences, setPreferences] = useState([]);
+  const [preferences, setPreferences] = useState([]);
   const currentUser = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
 
@@ -43,13 +43,13 @@ function UserHome() {
         } else if (selectedType === "prefered_jobs") {
             try {
               if (currentUser.account_type == "Candidate") {
-                const preferences = await getPreference(currentUser._id);
-                console.log(preferences);
-                const response = preferences && await searchService.secrchJobByKeyword(
-                  `${preferences.experienceLevel} ${preferences.jobType} ${preferences.location?.address} ${preferences.location?.state} ${preferences.location?.country}`
+                const userPreferences = await getPreference(currentUser._id);
+                console.log(userPreferences);
+                const response = userPreferences && await searchService.secrchJobByKeyword(
+                  `${userPreferences.experienceLevel} ${userPreferences.jobType} ${userPreferences.location?.address} ${userPreferences.location?.state} ${userPreferences.location?.country}`
                 );
                 // if (existingPreferences) {
-                //   setPreferences(existingPreferences);
+                  setPreferences(preferences);
                 // }
                 response && setPreferedJobs(response.jobs);
 
