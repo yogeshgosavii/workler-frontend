@@ -92,7 +92,6 @@ function PersonalDetailsForm({ onClose, data, setData }) {
         .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
 
 
-        console.log("filteer data",filteredData)
       const personalData = await authService.updateUserDetails(
         filteredData,
       );
@@ -125,7 +124,6 @@ function PersonalDetailsForm({ onClose, data, setData }) {
             name="description"
             value={formData.description}
             onChange={(e) => {
-              console.log(formData);
               
               setFormData((prev) => ({
                 ...prev,

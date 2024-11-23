@@ -18,7 +18,7 @@ function UserHome() {
   const [error, setError] = useState(null);
   const [selectedPost, setSelectedPost] = useState(null);
   const [preferedJobs, setPreferedJobs] = useState([]);
-  const [preferences, setPreferences] = useState([]);
+  // const [preferences, setPreferences] = useState([]);
   const currentUser = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
 
@@ -41,13 +41,26 @@ function UserHome() {
           // const jobPosts = await jobService.job.getAll();
           setContent(posts.filter((post) => post.post_type === "job"));
         } else if (selectedType === "prefered_jobs") {
-          const response = await searchService.secrchJobByKeyword(
-            `${preferences.experienceLevel}  ${preferences.jobType} ${preferences.location?.address} ${preferences.location?.state}  ${preferences.location?.country} `
-          );
+            try {
+              if (currentUser.account_type == "Candidate") {
+                const preferences = await getPreference(currentUser._id);
+                console.log(preferences);
+                const response = preferences && await searchService.secrchJobByKeyword(
+                  `${preferences.experienceLevel} ${preferences.jobType} ${preferences.location?.address} ${preferences.location?.state} ${preferences.location?.country}`
+                );
+                // if (existingPreferences) {
+                //   setPreferences(existingPreferences);
+                // }
+                response && setPreferedJobs(response.jobs);
 
+              }
+            } catch (error) {
+              console.error("Error fetching preferences:", error);
+            }
           
-
-          setPreferedJobs(response.jobs);
+          
+        
+          
         }
       } catch (error) {
         setError("Failed to load content ,Refresh and try again.");
@@ -69,21 +82,8 @@ function UserHome() {
     }
 
     
-    async function fetchPreferences() {
-      try {
-        if (currentUser.account_type == "Candidate") {
-          const existingPreferences = await getPreference(currentUser._id);
-
-          if (existingPreferences) {
-            setPreferences(existingPreferences);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching preferences:", error);
-      }
-    }
-    fetchPreferences();
-  }, []);
+   
+  }, [selectedType]);
 
   if (error)
     return (

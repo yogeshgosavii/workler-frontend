@@ -48,9 +48,11 @@ const LocationInput = ({
   onFocus,
   onBlur,
 }) => {
+  console.log(value);
+  
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [inputLocation, setInputLocation] = useState(value?.address || "");
+  const [inputLocation, setInputLocation] = useState( value?.address ||"");
   const [message, setMessage] = useState(promptMessage);
   const [visited, setVisited] = useState(false);
   const [inputFocus, setInputFocus] = useState(false);
@@ -118,7 +120,7 @@ const LocationInput = ({
           type="text"
           name={name}
           id={name}
-          placeholder={placeholder}
+          placeholder={""}
           value={inputLocation}
           onChange={handleInputChange}
           onFocus={() => {

@@ -13,10 +13,9 @@ import Toast from "../../components/toast/Toast";
 const Preferences = () => {
   const currentUser = useSelector((state) => state.auth.user);
 
-
   useEffect(() => {
-    document.title = "User job preferences"  
- }, []);
+    document.title = "User job preferences";
+  }, []);
   const [hasPreferences, setHasPreferences] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
@@ -66,7 +65,7 @@ const Preferences = () => {
     } finally {
       setIsLoading(false);
       setTimeout(() => {
-        setShowToast(false)
+        setShowToast(false);
       }, 4000);
     }
   };
@@ -86,17 +85,8 @@ const Preferences = () => {
         }}
         className="fixed w-full h-full bg-black opacity-30 z-20 top-0 left-0"
       ></div>
-      <div className="fixed w-full sm:max-w-lg right-0 flex flex-col gap-5 border h-full px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30 overflow-y-auto">
+      <div className="fixed w-full sm:max-w-lg right-0 flex flex-col gap-6 border h-full px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30 overflow-y-auto">
         <h2 className="text-2xl font-bold mb-10">Preference</h2>
-
-        <div className="-mt-3">
-          <LocationInput
-            name={"location"}
-            placeholder={"Location"}
-            value={preferences?.location}
-            onChange={(e) => setLocation(e.target.value)}
-          />
-        </div>
 
         <OptionInput
           value={preferences.jobType}
@@ -108,15 +98,25 @@ const Preferences = () => {
 
         <OptionInput
           //  value={preferences.jobType}
-           name={"experience_level"}
-           value={preferences.experienceLevel + " level"}
+          name={"experience_level"}
+          value={preferences.experienceLevel + " level"}
           //  name={"experienceLevel"}
-           initialValue="Select experience level"
-           onChange={(e) => setExperienceLevel(e.target.value)}
-           options={["Entry level", "Mid level", "Senior level"]}
-           placeholder={"Experience level"}
+          initialValue="Select experience level"
+          onChange={(e) => setExperienceLevel(e.target.value)}
+          options={["Entry level", "Mid level", "Senior level"]}
+          placeholder={"Experience level"}
         />
 
+        {preferences.location && (
+          <LocationInput
+            name="location"
+            placeholder="Location"
+            value={preferences.location} // Ensure preferences.location is being updated
+            onChange={(e) =>
+              setPreferences((prev) => ({ ...prev, location: e.target.value }))
+            }
+          />
+        )}
         <button
           disabled={isLoading}
           onClick={handleSavePreferences}
@@ -146,7 +146,11 @@ const Preferences = () => {
           )}
         </button>
       </div>
-      <Toast message={toastMassage} show={showToast} setShowToast={setShowToast} />
+      <Toast
+        message={toastMassage}
+        show={showToast}
+        setShowToast={setShowToast}
+      />
     </div>
   );
 };
