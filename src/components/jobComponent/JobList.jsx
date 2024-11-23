@@ -201,7 +201,7 @@ function JobList({
             ))}
           </div>
         </div>
-      ) : true ? (
+      ) : error ? (
         <div className="text-gray-400 text-center px-4">
           <p className="text-gray-600 font-semibold text-2xl">No Jobs Found</p>
           <p>No job results found with your query be more specfic or check for typos and try again</p>
