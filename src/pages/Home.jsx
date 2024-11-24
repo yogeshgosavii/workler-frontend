@@ -25,6 +25,7 @@ function Home() {
   const [errorMessage, setErrorMessage] = useState("");
   const [latestJobs, setLatestJobs] = useState([]);
   const [topPayingJobs, setTopPayingJobs] = useState([]);
+  const [loadingTopPayingJobs, setloadingTopPayingJobs] = useState();
   const [variousLocatioJobs, setVariousLocatioJobs] = useState([]);
   const [currentTab, setcurrentTab] = useState("Latest Oportunities");
   const [bgblur, setBgblur] = useState(false);
@@ -121,13 +122,8 @@ function Home() {
     const fetchLatestJobs = async () => {
       try {
         setLoading(true);
-        const response = await searchService.secrchJobByKeyword(
-          ["all"],
-          1,
-          20
-        );
+        const response = await searchService.secrchJobByKeyword(["all"], 1, 20);
         console.log(response);
-        
 
         // Filter jobs with salary info for "Latest Jobs" category
         const filteredJobs = response.jobs
@@ -137,6 +133,7 @@ function Home() {
 
         async function fetchTopPayingJobs() {
           let topPayingJobs = [];
+          setloadingTopPayingJobs(true);
           let page = 1;
 
           while (topPayingJobs.length < 6) {
@@ -150,8 +147,8 @@ function Home() {
             // Filter for high-paying jobs (assuming salaries are in the "min_salary" or "max_salary" fields)
             const topPayingFilteredJobs = response.jobs.filter(
               (job) =>
-                ((job.min_salary && job.min_salary > 100000) ||
-                (job.max_salary && job.max_salary > 100000))
+                (job.min_salary && job.min_salary > 100000) ||
+                (job.max_salary && job.max_salary > 100000)
             );
 
             // Add the filtered jobs to the result (avoid duplicates)
@@ -167,6 +164,8 @@ function Home() {
           }
 
           // Ensure we have exactly 6 jobs (in case more than 6 are fetched)
+          // console.log("top paying:",topPayingJobs.slice(0, 6));
+          setloadingTopPayingJobs(false);
           setTopPayingJobs(topPayingJobs.slice(0, 6));
         }
         fetchTopPayingJobs();
@@ -174,7 +173,7 @@ function Home() {
         async function fetchVariousLocationJobs() {
           let variousLocationJobs = [];
           let page = 1;
-        
+
           while (variousLocationJobs.length < 6) {
             // Fetch the jobs with the given keyword and pagination (20 jobs at a time)
             const response = await searchService.secrchJobByKeyword(
@@ -182,43 +181,45 @@ function Home() {
               page,
               20
             );
-        
+
             // Filter for jobs that have location and a country
             const variousLocationFilteredJobs = response.jobs.filter((job) => {
               // Check for valid location and country
               const hasValidLocation = job.location && job.location.country;
-        
+
               // Ensure the job is not already in the variousLocationJobs array
               const isUnique = !variousLocationJobs.some(
                 (existingJob) =>
                   existingJob.location?.country === job.location.country &&
                   existingJob.id === job.id // Use a unique property like `id` to avoid duplicates
               );
-        
+
               return hasValidLocation && isUnique;
             });
-        
+
             // Add the filtered jobs to the result
-            variousLocationJobs = [...variousLocationJobs, ...variousLocationFilteredJobs];
-        
+            variousLocationJobs = [
+              ...variousLocationJobs,
+              ...variousLocationFilteredJobs,
+            ];
+
             // If we have enough jobs, break the loop
             if (variousLocationJobs.length >= 6) {
               break;
             }
-        
+
             // Move to the next page
             page++;
-        
+
             // Break the loop if no more jobs are available
             if (response.jobs.length === 0) {
               break;
             }
           }
-        
+
           // Ensure we have exactly 6 jobs (in case more than 6 are fetched)
           setVariousLocatioJobs(variousLocationJobs.slice(0, 6));
         }
-        
 
         fetchVariousLocationJobs();
       } catch (error) {
@@ -499,7 +500,9 @@ function Home() {
         {currentTab == "Top Paying" && (
           <div
             ref={jobsScrollRef}
-            className=" flex sm:grid gap-5 overflow-x-auto w-full mt-16 sm:border sm:p-5 sm:bg-gray-100 sm:shadow-inner sm:rounded-3xl max-w-screen-lg  grid-cols-1 sm:grid-cols-2 md:grid-cols-3"
+            className={` flex sm:grid gap-5  overflow-x-auto w-full mt-16 sm:border sm:p-5 sm:bg-gray-100 sm:shadow-inner sm:rounded-3xl max-w-screen-lg  ${
+              !loadingTopPayingJobs ? "grid-cols-1 sm:grid-cols-2 md:grid-cols-3" : ""
+            }`}
             style={{
               scrollbarWidth: "none",
               overflowX: "auto",
@@ -507,6 +510,34 @@ function Home() {
               WebkitOverflowScrolling: "touch",
             }}
           >
+            {loadingTopPayingJobs && (
+              <div class="flex min-h-[140px]  place-content-center place-self-center w-full  h-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+                <svg
+                  class="text-transparent animate-spin"
+                  viewBox="0 0 64 64"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="50"
+                  height="50"
+                >
+                  <path
+                    d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+                    stroke="currentColor"
+                    stroke-width="5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                  <path
+                    d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="text-gray-400"
+                  ></path>
+                </svg>
+              </div>
+            )}
             {topPayingJobs.map((job) => (
               <div
                 onClick={() => {

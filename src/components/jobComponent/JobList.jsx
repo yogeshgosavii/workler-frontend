@@ -80,7 +80,6 @@ function JobList({
 
   // Fetch jobs when currentPage or query changes
   useEffect(() => {
-    console.log("sdfghjk", query);
 
     const fetchJobs = async () => {
       if (loading || isRestoringState) return;
