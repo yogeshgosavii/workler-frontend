@@ -109,6 +109,7 @@ function PostForm({ userDetails, setData, onClose }) {
         // setData(prev =>([...prev,{...data,user : {profileImage : user.profileImage,username:user.username}}]))
         // onClose()
         navigate("/profile", { replace: true });
+        navigate(0)
         // window.history.back();
         setFormData({ content: "", images: [] });
         setImages([]);
@@ -134,7 +135,7 @@ function PostForm({ userDetails, setData, onClose }) {
         // setData(prev =>([...prev,data]))
         // onClose();
         navigate("/profile", { replace: true });
-
+        navigate(0)
         setFormData({ content: "", images: [] });
         setImages([]);
       } catch (error) {
@@ -330,6 +331,7 @@ function PostForm({ userDetails, setData, onClose }) {
                 <div className="flex w-full mt-4  overflow-auto px-4">
                   <ImageCarousel
                     // className={"ml-10"}
+                    showCount={false}
                     dots={false}
                     isEditable={true}
                     edges={"rounded-2xl"}

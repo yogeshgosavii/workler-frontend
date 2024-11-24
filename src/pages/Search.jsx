@@ -113,7 +113,7 @@ function Search() {
   }, [query, searchType]);
 
   return (
-    <div className="flex gap-4 justify-center w-full ">
+    <div className="flex gap-4 bg-white h-dvh justify-center w-full ">
       <div
         className={`${
           location.pathname.split("/").length > 2 && " hidden sm:block"
@@ -181,7 +181,7 @@ function Search() {
               >
                 Accounts
               </p>
-              <p
+             {user.account_type == "Candidate" && <p
                 onClick={() => {
                   setSelectedType("Jobs");
                 }}
@@ -192,7 +192,7 @@ function Search() {
                 }`}
               >
                 Jobs
-              </p>
+              </p>}
             </div>
             {isLoading ? (
               <div className="animate-pulse px-4 flex flex-col overflow-y-hidden gap-2 mt-2">

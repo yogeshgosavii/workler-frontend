@@ -6,6 +6,7 @@ const ImageCarousel = ({
   imageClassName,
   dots = true,
   gap = 0,
+  showCount= true,
   setImages,
   edges = "",
   isEditable = false,
@@ -66,7 +67,7 @@ const ImageCarousel = ({
 
   return (
     <div className={`relative ${className}`}>
-     {animatingImages.length>1 && <div className="px-4 py-1 text-white rounded-2xl bg-black opacity-75 absolute top-4 right-4 z-10">
+     {animatingImages.length>1 && showCount && <div className="px-4 py-1 text-white rounded-2xl bg-black opacity-75 absolute top-4 right-4 z-10">
         {currentIndex}/{animatingImages.length}
       </div>}
 

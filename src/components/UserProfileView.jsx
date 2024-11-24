@@ -87,7 +87,7 @@ function UserProfileView({ userId = useParams().userId }) {
       try {
         const response = await authService.fetchUserDetailsById(userId);
         console.log(response);
-        
+
         setUserDetails(response);
       } catch (error) {
         console.error("Failed to fetch user details", error);
@@ -119,27 +119,31 @@ function UserProfileView({ userId = useParams().userId }) {
       }
     };
 
-    const fetchFollowers = async () => {
-      setLoading((prev) => ({ ...prev, followersData: true }));
-      try {
-        const response = await followService.getFollowers(userId);
-        setFollowers(response);
-        setIsFollowing(
-          response.some((follow) => follow.following._id === userId)
-        );
-        setFollowLoading(false);
-      } catch (error) {
-        console.error("Failed to fetch follow details", error);
-      } finally {
-        setLoading((prev) => ({ ...prev, followersData: false }));
-      }
-    };
+    // const fetchFollowers = async () => {
+    //   setLoading((prev) => ({ ...prev, followersData: true }));
+    //   try {
+    //     const response = await followService.getFollowers(userDetails?._id);
+    //     console.log(response);
+
+    //     // setFollowers(response);
+    //     setIsFollowing(
+    //       response.some((follow) => follow.user._id === currentUserDetails._id)
+    //     );
+    //     setFollowLoading(false);
+    //   } catch (error) {
+    //     console.error("Failed to fetch follow details", error);
+    //   } finally {
+    //     setLoading((prev) => ({ ...prev, followersData: false }));
+    //     setFollowLoading(false);
+
+    //   }
+    // };
 
     if (userId) {
       fetchJobData();
       fetchData();
       fetchPostData();
-      fetchFollowers();
+      // fetchFollowers();
 
       if (
         currentUserDetails?.accountType == "Candidate" &&
@@ -147,7 +151,6 @@ function UserProfileView({ userId = useParams().userId }) {
       ) {
       }
     } else {
-      
       // if (!loading.userDetails) {
       //   navigate("/not-found", { replace: true });
       // }
@@ -165,7 +168,18 @@ function UserProfileView({ userId = useParams().userId }) {
           userDetails._id
         );
 
+        const followerResponse = await followService.getFollowers(userId);
+
+        console.log("follow", followerResponse);
+
+        setFollowers(followerResponse);
         setFollowings(followingResponse.length);
+        setIsFollowing(
+          followerResponse.some(
+            (follow) => follow.user._id === currentUserDetails._id
+          )
+        );
+        setFollowLoading(false);
       } catch (error) {
         console.error("Error fetching connections:", error);
       }
@@ -410,7 +424,7 @@ function UserProfileView({ userId = useParams().userId }) {
         return (
           <Posts
             className={"pb-8 "}
-            columns={"grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3"}
+            columns={"grid-cols-1  2xl:grid-cols-3"}
             postClassName={"w-full"}
             postData={postData}
             setPostData={setpostData}
@@ -514,6 +528,7 @@ function UserProfileView({ userId = useParams().userId }) {
     setFollowLoading(false);
   };
   const unfollow = async () => {
+    setFollowLoading(true);
     setLoading(true);
     const unfollowResponse = await followService.unfollow(
       currentUserDetails._id,
@@ -524,6 +539,7 @@ function UserProfileView({ userId = useParams().userId }) {
       followers.filter((follow) => follow.user._id != currentUserDetails._id)
     );
     setLoading(false);
+    setFollowLoading(false);
   };
   return (
     <div className=" flex gap-8 sm:p-10 sm:py-6 bg-gray-50 h-full  w-full justify-center">
@@ -542,7 +558,7 @@ function UserProfileView({ userId = useParams().userId }) {
         }}
         className={`${
           !userId && "hidden"
-        } max-w-2xl w-full flex-1 transition-all  ${
+        } max-w-xl w-full flex-1 transition-all  ${
           approaching ? "overflow-y-hidden" : "overflow-y-auto"
         }  flex-grow sm:rounded-3xl ${showProfileImage && "pointer-events"}`}
       >
@@ -669,102 +685,105 @@ function UserProfileView({ userId = useParams().userId }) {
                 </div>
               </div>
             ) : (
-              userDetails &&<div className="mt-2 flex relative  flex-col ">
-                <div className="flex mb-4 mt-1  w-full gap-4  items-center">
-                  <UserImageInput
-                    onClick={() => {
-                      setShowProfileImage(true);
-                    }}
-                    imageBorder={showProfileImage ? "none" : "2"}
-                    className={`transition-all ease-in-out absolute  blur-none  duration-300 ${
-                      showProfileImage
-                        ? " ml-[40%] md:ml-[45%]  z-50 translate-y-[200%] scale-[3.5] "
-                        : ""
-                    }`}
-                    imageClassName={showProfileImage ? "shadow-3xl" : ""}
-                    isEditable={false}
-                    image={
-                      userDetails?.profileImage?.originalImage ||
-                      userDetails?.profileImage ||
-                      profileImageDefault
-                    }
-                    imageHeight="70"
-                  />
-                  <div className="flex w-full ml-20  justify-between items-center">
-                    <div>
-                      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-                        {userDetails?.account_type == "Employeer"
-                          ? userDetails.company_details?.company_name
-                          : userDetails?.personal_details?.firstname +
-                            " " +
-                            userDetails?.personal_details?.lastname}
-                      </h1>
-                      <div className="flex  gap-2">
-                        <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
-                          {userDetails?.username || "Username"}
-                        </p>
+              userDetails && (
+                <div className="mt-2 flex relative  flex-col ">
+                  <div className="flex mb-4 mt-1  w-full gap-4  items-center">
+                    <UserImageInput
+                      onClick={() => {
+                        setShowProfileImage(true);
+                      }}
+                      imageBorder={showProfileImage ? "none" : "2"}
+                      className={`transition-all ease-in-out absolute  blur-none  duration-300 ${
+                        showProfileImage
+                          ? " ml-[40%] md:ml-[45%]  z-50 translate-y-[200%] scale-[3.5] "
+                          : ""
+                      }`}
+                      imageClassName={showProfileImage ? "shadow-3xl" : ""}
+                      isEditable={false}
+                      image={
+                        userDetails?.profileImage?.originalImage ||
+                        userDetails?.profileImage ||
+                        profileImageDefault
+                      }
+                      imageHeight="70"
+                    />
+                    <div className="flex w-full ml-20  justify-between items-center">
+                      <div>
+                        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+                          {userDetails?.account_type == "Employeer"
+                            ? userDetails.company_details?.company_name
+                            : userDetails?.personal_details?.firstname +
+                              " " +
+                              userDetails?.personal_details?.lastname}
+                        </h1>
+                        <div className="flex  gap-2">
+                          <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
+                            {userDetails?.username || "Username"}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="order-3 flex flex-col gap-2">
-                  <div
-                    onClick={() => {
-                      navigate("/connections/" + userDetails._id);
-                    }}
-                    className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm "
-                  >
-                    <p>
-                      {/* <span>{userDetails.location?.address} · </span> */}
-                      {followers.length > 0 ? followers.length : 0}
-                      <span className="  font-normal">
-                        {" "}
-                        {followers > 1 ? "followers" : "follower"}
-                      </span>{" "}
-                      {userDetails?.account_type == "Candidate" && (
-                        <span>
-                          · {followings || 0}{" "}
-                          <span className="  font-normal">following</span>
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                  {
-                    userDetails?.bio && (
-                      <div onClick={() => setFormType("userDetails")}>
-                        {userDetails.bio}
-                      </div>
-                    )
-                    // : (
-                    //   <div
-                    //     onClick={() => setFormType("userDetails")}
-                    //     className=" text-sm font-normal text-gray-300 px-2 py-1 rounded-lg border w-fit  border-dashed"
-                    //   >
-                    //     Add a bio +
-                    //   </div>
-                    // )
-                  }
-                  {userDetails.account_type == "Candidate" && (
-                    <div className="order-2 text-sm -mt-1">
-                      <p className=" text-wrap truncate">
-                        {worksAt && (
+                  <div className="order-3 flex flex-col gap-2">
+                    <div
+                      onClick={() => {
+                        navigate("/connections/" + userDetails._id);
+                      }}
+                      className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm "
+                    >
+                      <p>
+                        {/* <span>{userDetails.location?.address} · </span> */}
+                        {followers.length}
+                        <span className="  font-normal">
+                          {" "}
+                          {followers > 1 ? "followers" : "follower"}
+                        </span>{" "}
+                        {userDetails?.account_type == "Candidate" && (
                           <span>
-                            Works at {worksAt}{" "}
-                            <span className="font-extrabold "></span>
-                          </span>
-                        )}{" "}
-                        {latestEducation && (
-                          <span>
-                            {worksAt && "·"} Completed {latestEducation.course}{" "}
-                            from {latestEducation.university}
+                            · {followings || 0}{" "}
+                            <span className="  font-normal">following</span>
                           </span>
                         )}
                       </p>
                     </div>
-                  )}
+                    {
+                      userDetails?.bio && (
+                        <div onClick={() => setFormType("userDetails")}>
+                          {userDetails.bio}
+                        </div>
+                      )
+                      // : (
+                      //   <div
+                      //     onClick={() => setFormType("userDetails")}
+                      //     className=" text-sm font-normal text-gray-300 px-2 py-1 rounded-lg border w-fit  border-dashed"
+                      //   >
+                      //     Add a bio +
+                      //   </div>
+                      // )
+                    }
+                    {userDetails.account_type == "Candidate" && (
+                      <div className="order-2 text-sm -mt-1">
+                        <p className=" text-wrap truncate">
+                          {worksAt && (
+                            <span>
+                              Works at {worksAt}{" "}
+                              <span className="font-extrabold "></span>
+                            </span>
+                          )}{" "}
+                          {latestEducation && (
+                            <span>
+                              {worksAt && "·"} Completed{" "}
+                              {latestEducation.course} from{" "}
+                              {latestEducation.university}
+                            </span>
+                          )}
+                        </p>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )
             )}
             {!loading.userDetails && approached != null && (
               <p
@@ -789,7 +808,8 @@ function UserProfileView({ userId = useParams().userId }) {
                     Applied for{" "}
                     <span className="font-medium">
                       {application.job.job_role}
-                    </span>
+                    </span>{" "}
+                    role
                   </p>
                 )
               );
@@ -809,9 +829,27 @@ function UserProfileView({ userId = useParams().userId }) {
                         onClick={() => {
                           unfollow();
                         }}
-                        className="w-fit px-5 flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium   items-center justify-center  border-gray-800 text-gray-800 border-2 py-1.5 rounded-full "
+                        className="w-fit flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium   items-center justify-center  border-gray-800 text-gray-800 border-2 py-1.5 rounded-full "
                       >
-                        Following
+                        {followLoading ? (
+                          <svg
+                            className="inline mx-[8px] w-7 h-7 text-transparent animate-spin fill-gray-800"
+                            viewBox="0 0 100 101"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                              fill="currentColor"
+                            />
+                            <path
+                              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                              fill="currentFill"
+                            />
+                          </svg>
+                        ) : (
+                          <p className="mx-5">Following</p>
+                        )}
                       </button>
                     ) : (
                       <button
@@ -820,9 +858,27 @@ function UserProfileView({ userId = useParams().userId }) {
                         onClick={() => {
                           follow();
                         }}
-                        className="w-fit px-5 flex h-fit cursor-pointer md:order-2 disabled:bg-gray-600 text-center order-last gap-2 font-medium   items-center justify-center text-white bg-gray-800 sm:hover:bg-blue-600 py-1.5 rounded-full "
+                        className="w-fit  flex h-fit cursor-pointer md:order-2 disabled:bg-gray-600 text-center order-last gap-2 font-medium   items-center justify-center text-white bg-gray-800 sm:hover:bg-blue-600 py-1.5 rounded-full "
                       >
-                        Follow
+                        {followLoading ? (
+                          <svg
+                            className="inline mx-[8px] w-7 h-7 text-transparent animate-spin fill-white"
+                            viewBox="0 0 100 101"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                              fill="currentColor"
+                            />
+                            <path
+                              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                              fill="currentFill"
+                            />
+                          </svg>
+                        ) : (
+                          <p className="mx-5">Follow</p>
+                        )}
                       </button>
                     ))}
                   {currentUserDetails._id != userDetails._id &&
@@ -832,7 +888,7 @@ function UserProfileView({ userId = useParams().userId }) {
                     !loading.checkApproached &&
                     !applications?.some(
                       (application) => application.user._id === userDetails._id
-                    ) && (
+                    ) &&  (
                       <button
                         onClick={() => {
                           setApproaching((prev) => !prev);

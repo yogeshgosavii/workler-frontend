@@ -14,6 +14,7 @@ import NumberInput from "../components/Input/NumberInput";
 import interviewService from "../services/interviewService";
 import applicationService from "../services/applicationService";
 import { formatDistanceToNow } from "date-fns";
+import { useNavigate } from "react-router-dom";
 
 function Employment({ job, applications, approaches }) {
   const currentUser = useSelector((state) => state.auth.user);
@@ -29,6 +30,7 @@ function Employment({ job, applications, approaches }) {
   const [showInterviewForm, setShowInterviewForm] = useState(false);
   const [interviewList, setInterviewList] = useState();
   const [interviewCreateLoading, setInterviewCreateLoading] = useState(false);
+  const navigate = useNavigate();
 
   const profileService = useProfileApi();
   // const [applications, setApplications] = useState([]);
@@ -226,7 +228,12 @@ function Employment({ job, applications, approaches }) {
                       isEditable={false}
                       image={approach.user.profileImage?.compressedImage}
                     />
-                    <div className="flex flex-col justify-center">
+                    <div
+                      onClick={() => {
+                        window.open("/user/" + approach.user._id, "_blank");
+                      }}
+                      className="flex flex-col justify-center"
+                    >
                       <p className=" font-medium text-lg">
                         {approach.user.personal_details.firstname}{" "}
                         {approach.user.personal_details.lastname}
@@ -371,12 +378,12 @@ function Employment({ job, applications, approaches }) {
           {loading.applicationList ? (
             renderSkeleton()
           ) : applications.length > 0 ? (
-            <div className="flex flex-col w-full gap-4">
+            <div className="flex flex-col w-full">
               {applications.map((application) => (
                 <div
                   key={applications._id}
                   onClick={() => handleProfileSelect(application.user)}
-                  className="border  p-3 flex flex-col gap-2 "
+                  className="border-b  p-3 flex flex-col gap-2 "
                 >
                   <div>
                     <div className="flex gap-4 mb-2">
@@ -384,7 +391,15 @@ function Employment({ job, applications, approaches }) {
                         isEditable={false}
                         image={application.user.profileImage.compressedImage}
                       />
-                      <div className="flex flex-col justify-center">
+                      <div
+                        onClick={() => {
+                          window.open(
+                            "/user/" + application.user._id,
+                            "_black"
+                          );
+                        }}
+                        className="flex flex-col justify-center"
+                      >
                         <p className="font-medium">
                           {application.user.username}
                         </p>
@@ -399,22 +414,41 @@ function Employment({ job, applications, approaches }) {
                     </div>
                     <p>{}</p>
                   </div>
-                  <div className=" font-medium mb-2 border p-3 rounded-md flex ">
+                  <div
+                    onClick={() => {
+                      window.open(application.resume.resumeFile[0], "_black");
+                    }}
+                    className=" font-medium mb-2 border gap-3 items-center p-3 px-4 rounded-md flex justify-between "
+                  >
+                    <div className="flex gap-2">
+                      <svg
+                        className="w-6 h-6 text-red-500 mr-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M6 2a1 1 0 00-1 1v14a1 1 0 001 1h12a1 1 0 001-1V7l-6-5H6z"
+                        />
+                      </svg>
+                      <p className="">{application.resume.fileName}</p>
+                    </div>
                     <svg
-                      className="w-6 h-6 text-red-500 mr-2"
                       xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
                       viewBox="0 0 24 24"
-                      stroke="currentColor"
+                      fill="currentColor"
+                      class="size-6"
                     >
                       <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M6 2a1 1 0 00-1 1v14a1 1 0 001 1h12a1 1 0 001-1V7l-6-5H6z"
+                        fill-rule="evenodd"
+                        d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 1 .75.75v2.25a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5V16.5a.75.75 0 0 1 1.5 0v2.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V16.5a.75.75 0 0 1 .75-.75Z"
+                        clip-rule="evenodd"
                       />
                     </svg>
-                    <p className="">{application.resume.fileName}</p>
                   </div>
 
                   <div className="flex gap-2 flex-wrap w-full  items-center justify-between">
@@ -445,7 +479,7 @@ function Employment({ job, applications, approaches }) {
                               e.stopPropagation();
                               setShowInterviewForm(application);
                             }}
-                            className="bg-blue-500 shadow-md w-full hover:bg-blue-600 transition-colors font-medium text-white px-3 py-1.5 rounded-full"
+                            className="text-base w-full bg-gray-800 transition-colors font-medium text-white px-3 py-1.5 rounded-lg"
                           >
                             Schedule interview
                           </button>
@@ -457,7 +491,7 @@ function Employment({ job, applications, approaches }) {
                                 status: "rejected",
                               });
                             }}
-                            className="bg-red-500 shadow-md hover:bg-red-600 w-full transition-colors font-medium text-white px-3 py-1.5 rounded-full"
+                            className=" text-base   w-full transition text-red-500 font-medium border border-red-500 px-3 py-1.5 rounded-lg"
                           >
                             Reject
                           </button>
@@ -598,11 +632,11 @@ function Employment({ job, applications, approaches }) {
           ></div>
         )}
         <div
-          className={`fixed inset-x-0 z-50 p-4 md:p-6 max-w-sm transition-transform transform ${
+          className={`fixed inset-x-0 z-50 p-4 md:p-6 sm:max-w-sm transition-transform transform ${
             showInterviewForm ? "translate-y-0" : "translate-y-full"
-          } bottom-0 md:top-1/2 md:left-1/2 h-fit md:-translate-x-1/2 md:-translate-y-1/2 ${
-            !showInterviewForm && "md:hidden"
-          } bg-white border rounded-t-xl md:rounded-lg shadow-lg`}
+          } bottom-0 sm:top-1/2 sm:left-1/2 h-fit sm:-translate-x-1/2 sm:-translate-y-1/2 ${
+            !showInterviewForm && "sm:hidden"
+          } bg-white border rounded-t-xl sm:rounded-lg shadow-lg`}
         >
           <h3 className="text-lg font-medium mb-10 mt-2">Set Up Interview</h3>
           <form onSubmit={setupInterview} className="flex flex-col gap-6">
@@ -728,17 +762,17 @@ function Employment({ job, applications, approaches }) {
       {/* )} */}
       <div className=" w-full sm:pr-5">
         <div className="flex flex-col mb-5 fixed left-0 z-40  md:-mt-0  -mt-6 w-full sm:static p-4 border sm:rounded-xl bg-gray-50">
-          <p className="font-medium">{job?.job_role}</p>
+          <p className="font-medium text-xl">{job?.job_role}</p>
           <p className="text-sm text-gray-500 truncate text-wrap max-w-full">
             {job?.location.address}
           </p>
-          <div className={`w-full text-sm mt-4 `}>
+          <div className={`w-full  mt-4 `}>
             <div className="flex gap-4 ">
               <p
                 onClick={() => setInnerTab("approach")}
-                className={`px-3 cursor-pointer py-1.5 rounded-md border bg-gray-50   ${
+                className={`px-3 cursor-pointer py-1.5 rounded-lg border bg-gray-50   ${
                   innerTab === "approach"
-                    ? "shadow-inner bg-white font-medium  border-gray-200 "
+                    ? " bg-white font-medium  border-gray-200 "
                     : "border-gray-50"
                 }`}
               >
@@ -746,9 +780,9 @@ function Employment({ job, applications, approaches }) {
               </p>
               <p
                 onClick={() => setInnerTab("applications")}
-                className={`px-3 cursor-pointer py-1.5  rounded-md border  ${
+                className={`px-3 cursor-pointer py-1.5 rounded-lg border  ${
                   innerTab === "applications"
-                    ? "shadow-inner font-medium bg-white   border-gray-200 "
+                    ? " font-medium bg-white   border-gray-200 "
                     : "border-gray-50"
                 }`}
               >
@@ -758,7 +792,7 @@ function Employment({ job, applications, approaches }) {
           </div>
         </div>
 
-        <div className="mt-24  w-full sm:mt-0">{content}</div>
+        <div className="mt-28  w-full sm:mt-0">{content}</div>
       </div>
     </div>
   );

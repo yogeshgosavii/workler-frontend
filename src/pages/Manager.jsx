@@ -93,6 +93,8 @@ function Manager() {
         const applications = await applicationService.getEmployeerApplications(
           currentUser._id
         );
+        console.log("applications",applications);
+        
         setApplications(applications);
       } catch (error) {
         console.error("Failed to fetch applications:", error);
@@ -400,18 +402,18 @@ function Manager() {
   // }
 
   return (
-    <div className="flex gap-6 w-full justify-center">
+    <div className="flex gap-6 bg-white h-full w-full justify-center">
       <div
         className={`flex px-4 md:px-6 mt-3 max-w-lg flex-col w-full ${
-          selectedJob && "hidden md:block"
+          selectedJob && "hidden lg:block"
         }`}
       >
         <div className="mb-5">
           <p
             className={`${
               innerTab == "jobs" &&
-              "bg-gray-800 border-gray-800 w-fit rounded-md text-white"
-            } px-3 border font-medium text-sm py-1`}
+              "bg-gray-800  border-gray-800 w-fit rounded-lg text-white"
+            } px-3 border font-medium py-1`}
           >
             Jobs
           </p>

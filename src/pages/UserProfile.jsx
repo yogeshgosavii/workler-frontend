@@ -157,8 +157,9 @@ const UserProfile = () => {
 
   const fetchJobData = useCallback(async () => {
     try {
-      const data = await jobApi.job.getByUserIds(userDetails._id);
-      setjobData(data);
+      const data = await jobApi.job.getByUserIds(user._id);
+      
+      setjobData(data ||[]);
     } catch (error) {
       console.error("Error fetching education data:", error);
     } finally {
@@ -491,8 +492,8 @@ const UserProfile = () => {
           <Posts
             setFormType={setFormType}
             postData={postData}
-            className={"pb-5 h-full bg-white"}
-            columns={"grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"}
+            className={"pb-5 h-full "}
+            columns={"grid-cols-1  2xl:grid-cols-3"}
             postClassName={" h-full"}
             userDetails={userDetails}
             setPostData={setPostData}
@@ -520,6 +521,7 @@ const UserProfile = () => {
             setupdateFormType={setupdateFormType}
             jobData={jobData}
             isEditable={true}
+            user={userDetails}
           />
         );
       default:
@@ -630,7 +632,7 @@ const UserProfile = () => {
           ) : null}
           {/* Profile page */}
           <div
-            className={` w-full  lg:max-w-[62%]   ${
+            className={` w-full  lg:max-w-xl   ${
               (formType || settings || showProfileImage || updateFormType) &&
               "fixed"
             }   md:flex-row transition-all md:p-6 duration-300 relative  flex-1 h-full `}

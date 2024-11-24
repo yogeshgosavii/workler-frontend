@@ -64,10 +64,9 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   const toggleDescription = () => setIsExpanded(!isExpanded);
 
   useEffect(() => {
-    if(!loading.jobDetails && !jobDetails){
-      navigate("/not-found", { replace: true })
+    if (!loading.jobDetails && !jobDetails) {
+      navigate("/not-found", { replace: true });
     }
-
   }, []);
   const jobService = useJobApi();
   const profileRef = useRef();
@@ -239,10 +238,14 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   useEffect(() => {
     const fetchRelatedJobs = async () => {
       const relatedJobs = await searchService.secrchJobByKeyword(
-        jobDetails?.job_role,1,10
+        jobDetails?.job_role,
+        1,
+        10
       );
-      
-      setrelatedJobs(relatedJobs.jobs.filter((job) => job._id != jobDetails?._id));
+
+      setrelatedJobs(
+        relatedJobs.jobs.filter((job) => job._id != jobDetails?._id)
+      );
     };
     const checkSaved = async () => {
       setLoading((prev) => ({ ...prev, checkSaved: true }));
@@ -364,7 +367,8 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
     switch (currentTab) {
       case "Job details":
         return (
-          !loading.jobDetails && jobDetails && (
+          !loading.jobDetails &&
+          jobDetails && (
             <div className="flex flex-col sm:px-0 sm:gap-4 ">
               {/* <div className="border  px-4 flex flex-col gap-4 md:px-6 py-6">
                 {jobDetails.location && (
@@ -624,8 +628,8 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   //     </div>
   //   );
   // }
-  return (
-    jobDetails ?<div
+  return jobDetails ? (
+    <div
       className={` w-full h-full sm:p-10 bg-gray-50 sm:py-6 flex justify-center overflow-y-auto gap-8 ${
         !userDetails && ""
       }`}
@@ -890,43 +894,44 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                 </div> */}
               </div>
             ) : (
-              jobDetails &&<div className="mt-2 flex relative  flex-col ">
-                <div className="flex mb-4 mt-1  w-full gap-4  items-center">
-                  <UserImageInput
-                    imageBorder={showProfileImage ? "none" : "2"}
-                    className={`transition-all ease-in-out absolute blur-none bg-white p-2 rounded-full duration-300 
+              jobDetails && (
+                <div className="mt-2 flex relative  flex-col ">
+                  <div className="flex mb-4 mt-1  w-full gap-4  items-center">
+                    <UserImageInput
+                      imageBorder={showProfileImage ? "none" : "2"}
+                      className={`transition-all ease-in-out absolute blur-none bg-white p-2 rounded-full duration-300 
                      `}
-                    imageClassName={showProfileImage ? "shadow-3xl" : ""}
-                    isEditable={false}
-                    image={
-                      jobDetails?.profileImage?.originalImage ||
-                      (jobDetails?.user?.company_details &&
-                        jobDetails?.user?.profileImage.originalImage) ||
-                      jobDetails?.company_logo ||
-                      companyDefaultImage
-                    }
-                    imageHeight="100"
-                    onError={(e) => {
-                      e.target.src = companyDefaultImage; // Replace with default image on error
-                    }}
-                  />
+                      imageClassName={showProfileImage ? "shadow-3xl" : ""}
+                      isEditable={false}
+                      image={
+                        jobDetails?.profileImage?.originalImage ||
+                        (jobDetails?.user?.company_details &&
+                          jobDetails?.user?.profileImage.originalImage) ||
+                        jobDetails?.company_logo ||
+                        companyDefaultImage
+                      }
+                      imageHeight="100"
+                      onError={(e) => {
+                        e.target.src = companyDefaultImage; // Replace with default image on error
+                      }}
+                    />
 
-                  <div className="flex w-full ml-32 mt-2  gap-2 justify-between items-center">
-                    <div>
-                      <h1 className="text-2xl  text-wrap md:text-3xl leading-[32px] font-semibold text-gray-900">
-                        {jobDetails?.job_role}
-                      </h1>
-                      <div className="flex  gap-2 mt-2">
-                        <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-400">
-                          {jobDetails?.company_name}
-                        </p>
+                    <div className="flex w-full ml-32 mt-2  gap-2 justify-between items-center">
+                      <div>
+                        <h1 className="text-2xl  text-wrap md:text-3xl leading-[32px] font-semibold text-gray-900">
+                          {jobDetails?.job_role}
+                        </h1>
+                        <div className="flex  gap-2 mt-2">
+                          <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-400">
+                            {jobDetails?.company_name}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                {jobDetails.job_source != "job_post" ? (
-                  <div className="flex flex-wrap sm:text-xl text-lg self-center  text-gray-700 font-medium  gap-3 flex-row text-nowrap mt-5">
-                    {/* <div className="flex gap-2 border px-3 py-1.5 bg-gray-50 rounded-lg items-center">
+                  {jobDetails.job_source != "job_post" ? (
+                    <div className="flex flex-wrap sm:text-xl text-lg self-center  text-gray-700 font-medium  gap-3 flex-row text-nowrap mt-5">
+                      {/* <div className="flex gap-2 border px-3 py-1.5 bg-gray-50 rounded-lg items-center">
                     <svg
                       className="h-6 w-6 "
                       fill="none"
@@ -946,116 +951,119 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                         : "Not disclosed"}
                     </p>
                   </div> */}
-                    {/* <div className="min-h-full border-l mx-1 w-px"></div> */}
-                    <div className="flex gap-3 font-medium  items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        fill="currentColor"
-                        class="bi bi-briefcase-fill text-gray-400"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v1.384l7.614 2.03a1.5 1.5 0 0 0 .772 0L16 5.884V4.5A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5" />
-                        <path d="M0 12.5A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5V6.85L8.129 8.947a.5.5 0 0 1-.258 0L0 6.85z" />
-                      </svg>
-                      <p className="text-nowrap">
-                        {jobDetails.min_experience || jobDetails.max_experience
-                          ? `${jobDetails.min_experience} - ${jobDetails.max_experience}`
-                          : "Experience not specified"}
-                      </p>
-                    </div>
-                    <div className="mx-3 border-l"></div>
-
-                    {jobDetails.location && (
-                      <div className="flex gap-2 items-center ">
+                      {/* <div className="min-h-full border-l mx-1 w-px"></div> */}
+                      <div className="flex gap-3 font-medium  items-center">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          width="18"
-                          height="18"
+                          width="20"
+                          height="20"
                           fill="currentColor"
-                          class="bi bi-geo-alt-fill text-gray-400"
+                          class="bi bi-briefcase-fill text-gray-400"
                           viewBox="0 0 16 16"
                         >
-                          <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
+                          <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v1.384l7.614 2.03a1.5 1.5 0 0 0 .772 0L16 5.884V4.5A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5" />
+                          <path d="M0 12.5A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5V6.85L8.129 8.947a.5.5 0 0 1-.258 0L0 6.85z" />
                         </svg>
-                        <p className="text-wrap">
-                          {jobDetails.location?.city ||
-                            jobDetails.location?.state ||
-                            jobDetails.location?.country ||
-                            jobDetails.location?.address}
+                        <p className="text-nowrap">
+                          {jobDetails.min_experience ||
+                          jobDetails.max_experience
+                            ? `${jobDetails.min_experience} - ${jobDetails.max_experience}`
+                            : "Experience not specified"}
                         </p>
                       </div>
-                    )}
-                    <div className="mx-3 border-l"></div>
+                      <div className="mx-3 border-l"></div>
 
-                    <div className="flex gap-2 items-center">
-                      {jobDetails.currency_type == "$" ||
-                      jobDetails.currency_type == "USD" ? (
-                        <svg
-                          class="h-6 w-6 text-gray-800"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                      ) : jobDetails.currency_type == "₹" ? (
-                        <svg
-                          className="h-7 w-7 text-gray-800 "
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                      ) : (
-                        jobDetails.currency_type
+                      {jobDetails.location && (
+                        <div className="flex gap-2 items-center ">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="18"
+                            height="18"
+                            fill="currentColor"
+                            class="bi bi-geo-alt-fill text-gray-400"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
+                          </svg>
+                          <p className="text-wrap">
+                            {jobDetails.location?.city ||
+                              jobDetails.location?.state ||
+                              jobDetails.location?.country ||
+                              jobDetails.location?.address}
+                          </p>
+                        </div>
                       )}
-                      <p className="text-nowrap    ">
-                        {jobDetails.min_salary || jobDetails.max_salary
-                          ? ` ${
-                              jobDetails.min_salary > 1000
-                                ? jobDetails.min_salary / 1000 + "K"
-                                : jobDetails.min_salary
-                            }  - ${
-                              jobDetails.max_salary > 1000
-                                ? jobDetails.max_salary / 1000 + "K"
-                                : jobDetails.max_salary
-                            }`
-                          : "Not disclosed"}
-                        { jobDetails.salary_type && (
-              <span className="text-gray-400 truncate   text-wrap  font-normal ml-2">
-                {!jobDetails.salary_type.includes("per") && "per "} {jobDetails.salary_type}
-              </span>
-            )}
-                      </p>
+                      <div className="mx-3 border-l"></div>
+
+                      <div className="flex gap-2 items-center">
+                        {jobDetails.currency_type == "$" ||
+                        jobDetails.currency_type == "USD" ? (
+                          <svg
+                            class="h-6 w-6 text-gray-800"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        ) : jobDetails.currency_type == "₹" ? (
+                          <svg
+                            className="h-7 w-7 text-gray-800 "
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        ) : (
+                          jobDetails.currency_type
+                        )}
+                        <p className="text-nowrap    ">
+                          {jobDetails.min_salary || jobDetails.max_salary
+                            ? ` ${
+                                jobDetails.min_salary > 1000
+                                  ? jobDetails.min_salary / 1000 + "K"
+                                  : jobDetails.min_salary
+                              }  - ${
+                                jobDetails.max_salary > 1000
+                                  ? jobDetails.max_salary / 1000 + "K"
+                                  : jobDetails.max_salary
+                              }`
+                            : "Not disclosed"}
+                          {jobDetails.salary_type && (
+                            <span className="text-gray-400 truncate   text-wrap  font-normal ml-2">
+                              {!jobDetails.salary_type.includes("per") &&
+                                "per "}{" "}
+                              {jobDetails.salary_type}
+                            </span>
+                          )}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="bg-gray-50 rounded-lg border mt-5 p-2  px-4">
-                    <p className=" inline-flex flex-wrap">
-                      <span className="mr-1">
-                        This job is fetched from a job post.{" "}
-                      </span>
-                      {/* <a className="text-gray-800 cursor-pointer flex gap-1 font-medium items-center">
+                  ) : (
+                    <div className="bg-gray-50 rounded-lg border mt-5 p-2  px-4">
+                      <p className=" inline-flex flex-wrap">
+                        <span className="mr-1">
+                          This job is fetched from a job post.{" "}
+                        </span>
+                        {/* <a className="text-gray-800 cursor-pointer flex gap-1 font-medium items-center">
                         View post{" "}
                       </a> */}
-                    </p>
-                  </div>
-                )}
+                      </p>
+                    </div>
+                  )}
 
-                {/* <div className="order-3 flex flex-col gap-2">
+                  {/* <div className="order-3 flex flex-col gap-2">
               <div classNa <svg
                           class="h-5 w-5 text-gray-800"
                           fill="none"
@@ -1143,7 +1151,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
               )}
             </div> */}
 
-                {/* <div className="order-3 flex flex-col gap-2">
+                  {/* <div className="order-3 flex flex-col gap-2">
               <div classNa <svg
                           class="h-5 w-5 text-gray-800"
                           fill="none"
@@ -1230,7 +1238,8 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                 </div>
               )}
             </div> */}
-              </div>
+                </div>
+              )
             )}
             {approaches?.status === "approached" ? (
               <div className="bg-blue-50 text-gray-800 shadow-md font-medium text-sm flex gap-2 flex-wrap justify-between items-center p-4 rounded-lg">
@@ -1675,7 +1684,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                 try {
                   await navigator.share({
                     title: jobDetails.job_role,
-                    url: "http://workler.in/job/"+jobDetails._id,
+                    url: "http://workler.in/job/" + jobDetails._id,
                   });
                 } catch (error) {
                   console.error("Error sharing:", error);
@@ -1694,9 +1703,12 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <path stroke="none" d="M0 0h24v24H0z" />
-            <rect x="8" y="8" width="12" height="12" rx="2" />
-            <path d="M16 8v-2a2 2 0 0 0 -2 -2h-8a2 2 0 0 0 -2 2v8a2 2 0 0 0 2 2h2" />
+            {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6"> */}
+            <path
+              fill-rule="evenodd"
+              d="M15.75 4.5a3 3 0 1 1 .825 2.066l-8.421 4.679a3.002 3.002 0 0 1 0 1.51l8.421 4.679a3 3 0 1 1-.729 1.31l-8.421-4.678a3 3 0 1 1 0-4.132l8.421-4.679a3 3 0 0 1-.096-.755Z"
+              clip-rule="evenodd"
+            />
           </svg>
 
           <button
@@ -1843,55 +1855,56 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
           </div>
         </div>
       </div>
-    </div>:(
-    loading.jobDetails?
-     <div className="h-full flex justify-center">
-          <div class="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
-            <svg
-              class="text-transparent animate-spin"
-              viewBox="0 0 64 64"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              width="50"
-              height="50"
-            >
-              <path
-                d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
-                stroke="currentColor"
-                stroke-width="5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              ></path>
-              <path
-                d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="text-gray-400"
-              ></path>
-            </svg>
-          </div>
-        </div>: <div className="w-full text-center mt-10">
-        {" "}
-        <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
-          <p className="text-2xl font-bold text-gray-500">
-            Failed to load content
-          </p>
-          <p className="mt-1 text-red-400">
-            Refresh to load the content and try again to load content
-          </p>
-          <p
-            onClick={() => {
-              window.location.reload();
-            }}
-            className="text-blue-500 font-medium cursor-pointer"
-          >
-            Refresh
-          </p>
-        </p>
+    </div>
+  ) : loading.jobDetails ? (
+    <div className="h-full flex justify-center">
+      <div class="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+        <svg
+          class="text-transparent animate-spin"
+          viewBox="0 0 64 64"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          width="50"
+          height="50"
+        >
+          <path
+            d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+            stroke="currentColor"
+            stroke-width="5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          ></path>
+          <path
+            d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="text-gray-400"
+          ></path>
+        </svg>
       </div>
-    )
+    </div>
+  ) : (
+    <div className="w-full text-center mt-10">
+      {" "}
+      <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+        <p className="text-2xl font-bold text-gray-500">
+          Failed to load content
+        </p>
+        <p className="mt-1 text-red-400">
+          Refresh to load the content and try again to load content
+        </p>
+        <p
+          onClick={() => {
+            window.location.reload();
+          }}
+          className="text-blue-500 font-medium cursor-pointer"
+        >
+          Refresh
+        </p>
+      </p>
+    </div>
   );
 }
 

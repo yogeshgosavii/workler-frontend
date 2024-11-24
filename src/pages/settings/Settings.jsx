@@ -9,8 +9,8 @@ function Settings() {
   const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.auth.user);
   useEffect(() => {
-      document.title = "User settings"  
-   }, []);
+    document.title = "User settings";
+  }, []);
   return (
     <div className="">
       <div
@@ -20,9 +20,35 @@ function Settings() {
         className="fixed w-full h-full bg-black opacity-30 z-20 top-0 left-0"
       ></div>
       <div className="fixed w-full text-gray-800 sm:max-w-lg right-0   h-full  px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
-        <div className=" flex  h-full justify-between flex-col">
+        <div className=" flex pb-12 sm:pb-0  h-full justify-between flex-col">
           <div>
-            <h2 className="text-2xl font-bold mb-10 ">Settings</h2>
+            <h2 className="text-2xl font-bold mb-10 flex justify-between ">
+              Settings{" "}
+              <a
+                onClick={() => {
+                  console.log("logout");
+                  dispatch(logout());
+                  navigate("/", { replace: true });
+                }}
+                className="flex cursor-pointer sm:bg-red-50  px-2 sm:px-5 sm:pl-4 rounded-full py-1.5 gap-4 items-center"
+              >
+                <svg
+                  class="size-7 text-red-500"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  {" "}
+                  <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />{" "}
+                  <polyline points="10 17 15 12 10 7" />{" "}
+                  <line x1="15" y1="12" x2="3" y2="12" />
+                </svg>
+                <p className=" text-red-500 font-medium text-lg hidden sm:block ">Sign out</p>
+              </a>
+            </h2>
             <div className="flex-1  flex flex-col text-lg gap-5">
               {/* <div
                 onClick={() => {
@@ -101,54 +127,56 @@ function Settings() {
                 </svg>
                 <p className="-mt-0.5">Preferences</p>
               </div> */}
-              {currentUser.account_type =="Candidate" && <button
-                onClick={(e) => {
-                  navigate("/profile/settings/preferences");
-                }}
-                className={`w-full pb-4 flex justify-between items-center border-b`}
-              >
-                <div className="flex gap-4 items-center">
-                  <svg
-                    class="h-6 w-6 "
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    stroke-width="2"
-                    stroke="currentColor"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <path stroke="none" d="M0 0h24v24H0z" />{" "}
-                    <circle cx="14" cy="6" r="2" />{" "}
-                    <line x1="4" y1="6" x2="12" y2="6" />{" "}
-                    <line x1="16" y1="6" x2="20" y2="6" />{" "}
-                    <circle cx="8" cy="12" r="2" />{" "}
-                    <line x1="4" y1="12" x2="6" y2="12" />{" "}
-                    <line x1="10" y1="12" x2="20" y2="12" />{" "}
-                    <circle cx="17" cy="18" r="2" />{" "}
-                    <line x1="4" y1="18" x2="15" y2="18" />{" "}
-                    <line x1="19" y1="18" x2="20" y2="18" />
-                  </svg>
-                  <p className="font-medium -mt-px">Preferences</p>
-                </div>
-                <span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    className="bi bi-chevron-up rotate-90"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"
-                    />
-                  </svg>
-                </span>
-              </button>}
+              {currentUser.account_type == "Candidate" && (
+                <button
+                  onClick={(e) => {
+                    navigate("/profile/settings/preferences");
+                  }}
+                  className={`w-full pb-4 flex justify-between items-center border-b`}
+                >
+                  <div className="flex gap-4 items-center">
+                    <svg
+                      class="h-6 w-6 "
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      stroke-width="2"
+                      stroke="currentColor"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      {" "}
+                      <path stroke="none" d="M0 0h24v24H0z" />{" "}
+                      <circle cx="14" cy="6" r="2" />{" "}
+                      <line x1="4" y1="6" x2="12" y2="6" />{" "}
+                      <line x1="16" y1="6" x2="20" y2="6" />{" "}
+                      <circle cx="8" cy="12" r="2" />{" "}
+                      <line x1="4" y1="12" x2="6" y2="12" />{" "}
+                      <line x1="10" y1="12" x2="20" y2="12" />{" "}
+                      <circle cx="17" cy="18" r="2" />{" "}
+                      <line x1="4" y1="18" x2="15" y2="18" />{" "}
+                      <line x1="19" y1="18" x2="20" y2="18" />
+                    </svg>
+                    <p className="font-medium -mt-px">Preferences</p>
+                  </div>
+                  <span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      className="bi bi-chevron-up rotate-90"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              )}
 
               {/* <div
                 onClick={(e) => {
@@ -208,7 +236,7 @@ function Settings() {
             </div>
           </div>
 
-          <a
+          {/* <a
             onClick={() => {
               console.log("logout");
               dispatch(logout());
@@ -231,7 +259,7 @@ function Settings() {
               <line x1="15" y1="12" x2="3" y2="12" />
             </svg>
             <p className="-mt-0.5 text-red-500 font-medium text-lg">Sign out</p>
-          </a>
+          </a> */}
         </div>
       </div>
 

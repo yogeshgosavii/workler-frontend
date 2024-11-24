@@ -33,6 +33,8 @@ function JobForm({ onClose, data, setData }) {
   const [inputValue, setInputValue] = useState("");
   const jobApi = useJobApi();
   const userData = useSelector((state) => state.auth.user);
+  console.log(userData);
+  
 
   useEffect(() => {
     const fetchData = () => {
@@ -206,7 +208,7 @@ function JobForm({ onClose, data, setData }) {
           name="location"
           onChange={handleLocationChange}
           placeholder="Location"
-          value={formData.location}
+          value={formData.location  || userData.location}
           isRequired={true}
         />
         <AddInput

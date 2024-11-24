@@ -191,10 +191,15 @@ function UserPostUpdateSettings({
             <div
               onClick={() => {
                 console.log(postData,postSettings );
-                
-                setPostData(
-                  postData.filter((post) => post._id !== postSettings._id)
-                );
+                if(postData){
+                  setPostData(
+                    postData.filter((post) => post._id !== postSettings._id)
+                  );
+                }else{
+                  window.history.back()
+                }
+              
+               
 
                 deletePost(postSettings._id);
                 unsavePost(postSettings._id);

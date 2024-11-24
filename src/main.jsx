@@ -121,6 +121,57 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "/profile",
+        element: (
+          <LoginVerification>
+            <UserProfile />
+          </LoginVerification>
+        ),
+        children: [
+          {
+            path: "post",
+            element: (
+              <LoginVerification>
+                <PostForm />
+              </LoginVerification>
+            ),
+          },
+          {
+            path: "settings/preferences",
+            element: (
+              <LoginVerification>
+                <Preferences />
+              </LoginVerification>
+            ),
+          },
+          {
+            path: "settings/account-settings",
+            element: (
+              <LoginVerification>
+                <AccountSettings />
+              </LoginVerification>
+            ),
+          },
+          {
+            path: "settings",
+            element: (
+              <LoginVerification>
+                <Settings />
+              </LoginVerification>
+            ),
+          },
+    
+          {
+            path: "settings/saveds",
+            element: (
+              <LoginVerification>
+                <Saved />
+              </LoginVerification>
+            ),
+          },
+        ],
+      },
+      {
         path: "/job-applications",
         element: (
           <LoginVerification>
@@ -155,57 +206,7 @@ const router = createBrowserRouter([
 
   { path: "/jobs/:jobId", element: <JobProfile /> },
 
-  {
-    path: "/profile",
-    element: (
-      <LoginVerification>
-        <UserProfile />
-      </LoginVerification>
-    ),
-    children: [
-      {
-        path: "post",
-        element: (
-          <LoginVerification>
-            <PostForm />
-          </LoginVerification>
-        ),
-      },
-      {
-        path: "settings/preferences",
-        element: (
-          <LoginVerification>
-            <Preferences />
-          </LoginVerification>
-        ),
-      },
-      {
-        path: "settings/account-settings",
-        element: (
-          <LoginVerification>
-            <AccountSettings />
-          </LoginVerification>
-        ),
-      },
-      {
-        path: "settings",
-        element: (
-          <LoginVerification>
-            <Settings />
-          </LoginVerification>
-        ),
-      },
-
-      {
-        path: "settings/saveds",
-        element: (
-          <LoginVerification>
-            <Saved />
-          </LoginVerification>
-        ),
-      },
-    ],
-  },
+  
 
   {
     path: "/connections/:userId",

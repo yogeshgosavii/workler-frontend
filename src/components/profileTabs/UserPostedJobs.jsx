@@ -7,9 +7,12 @@ function UserPostedJobs({
   setFormType,
   setupdateFormType,
   setUpdateData,
-  jobData,
+  jobData =[],
   isEditable,
+  user
 }) {
+  console.log(jobData);
+  
   return (
     <div className="bg-white border-x h-full px-4 py-4 md:px-6 md:border md:-mt-0 w-full flex-1">
       {jobData?.length > 0 ? (
@@ -27,8 +30,7 @@ function UserPostedJobs({
           )}
         </div>
       ) : isEditable && jobData?.length <= 0 ? (
-        <div className="flex w-full  flex-col items-center bg-white">
-          <p className="max-w-xl pt-10 text-center sm:h-full h-fit px-6 md:px-6">
+        <div className="flex w-full justify-center py-10 text-center pt-8 flex-col items-center bg-white">
             <p className="text-2xl font-bold text-gray-500">
               No Job Posted Yet
             </p>
@@ -37,11 +39,10 @@ function UserPostedJobs({
             </p>
             <p
               onClick={() => setFormType("job")}
-              className="text-blue-500 font-medium cursor-pointer"
+              className="text-blue-500 bg-blue-50 w-fit px-8  py-2.5 mt-4 max-w-lg rounded-full text-xl font-medium cursor-pointer"
             >
               Create Job
             </p>
-          </p>
         </div>
       ) : (
         <p>No jobs post yet</p>
@@ -79,7 +80,7 @@ function UserPostedJobs({
         >
           <div className="flex gap-2 ">
             <UserImageInput
-              image={job.company_Logo || companyDefaultImage}
+              image={job.company_Logo || user?.profileImage?.compressedImage[0] || companyDefaultImage}
               isEditable={false}
               imageHeight={40}
             />

@@ -132,8 +132,10 @@ const authService = {
 
   updateUserDetails: async (data) => {
     let response;
+    console.log(data);
+    
     try {
-      if (data.files) {
+      if (!data.FormData) {
         response = await fetch(`${API_URL}/update-user`, {
           method: "PUT", // Ensure method is set correctly
           headers: {

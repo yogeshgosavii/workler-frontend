@@ -156,7 +156,7 @@ function UserHome() {
             onClick={() =>{{ navigate("posts")
               setSelectedType("posts")
             }}}
-            className={`px-3 py-1 cursor-pointer bg rounded-md font-medium border ${
+            className={`px-3 py-1 cursor-pointer bg rounded-lg font-medium border ${
               selectedType == "posts" ?
               "bg-gray-800 border-gray-800 text-white":"bg-white"
             }`}
@@ -168,24 +168,24 @@ function UserHome() {
               setSelectedType("job_posts")
 
             }}
-            className={`px-3 py-1 cursor-pointer rounded-md font-medium border ${
+            className={`px-3 py-1 cursor-pointer rounded-lg font-medium border ${
               selectedType == "job_posts" ?
               "bg-gray-800 border-gray-800 text-white":"bg-white"
             }`}
           >
             Job posts
           </p>
-          <p
+         {currentUser.account_type == "Candidate" && <p
             onClick={() => {navigate("prefered_jobs")
               setSelectedType("prefered_jobs")
             }}
-            className={`px-3 py-1 cursor-pointer rounded-md font-medium border ${
+            className={`px-3 py-1 cursor-pointer rounded-lg font-medium border ${
               selectedType == "prefered_jobs" ?
               "bg-gray-800 border-gray-800 text-white":"bg-white"
             }`}
           >
             Prefered jobs
-          </p>
+          </p>}
         </div>
       </div>
       <div className="flex overflow-y-auto  h-full flex-1 pt-10 justify-center  gap-4">

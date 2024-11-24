@@ -148,7 +148,7 @@ function PostView({ postId = useParams().postId, index, className }) {
   };
   return (
     <div
-      className={`${className}  flex justify-center bg-white   h-full min-h-screen    gap-8 `}
+      className={`${className}  flex justify-center  bg-white   h-full min-h-screen    gap-8 `}
     >
       {post && (
         <div
@@ -550,7 +550,7 @@ function PostView({ postId = useParams().postId, index, className }) {
               </span>
             </p>
           </div>
-          <div className="flex gap-4 mt-2  px-4 sm:px-0 py-1">
+          <div className="flex gap-4 mt-2  px-4 sm:px-4 py-1">
             <p
               onClick={() => setTab("likes")}
               className={`px-3 py-1 cursor-pointer bg rounded-lg font-medium border ${
@@ -604,7 +604,7 @@ function PostView({ postId = useParams().postId, index, className }) {
               ))}
             </div>
           ) : (
-            <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+            <p className="max-w-xl pt-20 pb-20 text-center sm:h-full h-fit px-6 md:px-6">
               <p className="text-2xl font-bold text-gray-500">
                 No likes Yet
               </p>
@@ -711,7 +711,7 @@ function PostView({ postId = useParams().postId, index, className }) {
               </div>
               <div className="pb-14 sm:pb-0 h-full">
                 {comments.length <= 0 && (
-                  <p className="max-w-xl pt-14  text-center sm:h-full  px-6 md:px-6">
+                  <p className="max-w-xl pt-14 pb-14  text-center sm:h-full  px-6 md:px-6">
                     <p className="text-2xl font-bold text-gray-500">
                       No Comments Yet
                     </p>

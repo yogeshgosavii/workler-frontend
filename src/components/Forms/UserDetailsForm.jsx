@@ -17,12 +17,14 @@ function UserDetailsForm({ onClose, setData, data }) {
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState(null);
   const userData = useSelector((state) => state.auth.user);
+  console.log(data);
+  
 
   useEffect(() => {
     setFormData({
-      // username: data.username || "",
-      // email: data.email || "",
-      // about: data.about || "",
+      username: data.username || "",
+      email: data.email || "",
+      about: data.about || "",
       description:data.description || "",
       account_type: data.account_type,
       tags: data.tags || [],

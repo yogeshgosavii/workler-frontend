@@ -21,6 +21,8 @@ function JobUpdateForm({ onClose,data, setData }) {
   const profileApi = useProfileApi();
   const jobApi = useJobApi();
   const userData = useSelector((state) => state.auth.user);
+  console.log(userData.location);
+  
 
   // Ensure dependencies are correct
 
@@ -57,7 +59,7 @@ function JobUpdateForm({ onClose,data, setData }) {
     const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "number" ? parseFloat(value) : value,
+      [name]: type === "number" ? parseFloat(value) : value,Lo
     }));
   };
 
@@ -226,7 +228,7 @@ function JobUpdateForm({ onClose,data, setData }) {
           name="location"
           onChange={handleLocationChange}
           placeholder="Location"
-          value={formData.location}
+          value={formData.location || userData.location}
           isRequired={true}
         />
         <AddInput

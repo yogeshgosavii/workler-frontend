@@ -40,7 +40,7 @@ function Connections({ userId = useParams().userId }) {
       content = (
         <div>
           {followers.length > 0 ? (
-            <div className="flex flex-col gap-1 px-4 pt-2">
+            <div className="flex flex-col gap-4 px-4 sm:px-0 pt-2">
               {followers.map((user) => (
                 <div
                   onClick={() => {
@@ -110,9 +110,9 @@ function Connections({ userId = useParams().userId }) {
       break;
     case "followings":
       content = (
-        <div className="flex flex-col pt-2 gap-1 px-4">
+        <div className="flex flex-col pt-2 gap-1 px-4 sm:px-0">
           {followings.length > 0 ? (
-            <div>
+            <div className="flex flex-col gap-4">
               {followings.map((user) => (
                 <div
                   key={user._id}
@@ -191,9 +191,27 @@ function Connections({ userId = useParams().userId }) {
   }
 
   return (
-    <div className="bg-gray-50 flex justify-center h-dvh">
-      <div className={`w-full max-w-xl py-3 sm:w-full  h-full `}>
-        <div className="flex gap-4 mb-3  px-4 sm:px-0 py-1">
+    <div className="bg-gray-50 flex justify-center sm:py-10 h-dvh">
+      <div
+        className={`w-full max-w-xl border sm:shadow-xl py-3 sm:p-8 bg-white  sm:w-full  h-full `}
+      >
+        <div className="flex gap-4 items-center mb-5 pl-2  pr-4 sm:px-0 py-1">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            class="size-8"
+            onClick={()=>{
+              window.history.back()
+            }}
+          >
+            <path
+              fill-rule="evenodd"
+              d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
+              clip-rule="evenodd"
+            />
+          </svg>
+
           <p
             onClick={() => setTab("followers")}
             className={`px-3 py-1 cursor-pointer bg rounded-lg font-medium border ${
