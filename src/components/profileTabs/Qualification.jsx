@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import resumeService from "../../services/resumeService";
+import imageCompression from 'browser-image-compression';  // Image compression library
+import { PDFDocument } from 'pdf-lib'; 
 
 function Qualification({
   educationData,
@@ -23,6 +25,7 @@ function Qualification({
   const [selectedResume, setSelectedResume] = useState(null);
   const [userResumes, setUserResumes] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [resumeUploadError, setResumeUploadError] = useState(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -303,15 +306,86 @@ function Qualification({
     [educationData, projectData, skillData, user, workExperienceData]
   );
 
-  const uploadResume = async () => {
-    setUploading(true);
-    const resumeResponse = await resumeService.addResume(selectedResume);
-    if (resumeResponse) {
-      setSelectedResume(null);
-      setUploading(false);
+  const compressImage = async (imageFile) => {
+    const options = {
+      maxSizeMB: 1,          // Limit file size to 1 MB
+      maxWidthOrHeight: 1024,  // Resize image dimensions
+      useWebWorker: true,     // Use a Web Worker for better performance
+    };
+  
+    try {
+      const compressedFile = await imageCompression(imageFile, options);
+      return compressedFile;  // Return the compressed image file
+    } catch (error) {
+      console.error("Error compressing image:", error);
+      throw new Error('Image compression failed');
     }
   };
+  
+  // Function to compress PDF
+  const compressPDF = async (file) => {
+    const maxSize = 100 * 1024; // 100 KB
+    let pdfBytes = await file.arrayBuffer();
+    let pdfDoc = await PDFDocument.load(pdfBytes);
+  
+    let compressedPdfBytes = await pdfDoc.save();
 
+    // If file is larger than max size, keep compressing iteratively
+      console.log("compressing");
+      
+      // For iterative compression, you might remove unused resources, downsample images, etc.
+      pdfDoc = await PDFDocument.load(pdfBytes);
+      compressedPdfBytes = await pdfDoc.save();
+      // For now, we're simply trying the same compression over and over
+
+    console.log([compressedPdfBytes], file.name, {
+      type: 'application/pdf',
+    });
+    
+  
+    return new File([compressedPdfBytes], file.name, {
+      type: 'application/pdf',
+    });
+  };
+  
+  
+  // The upload function that compresses and uploads the file
+  const uploadResume = async () => {
+    setUploading(true);  // Start loading state
+    setResumeUploadError(null);  // Reset previous errors
+  
+    console.log(selectedResume);
+  
+    try {
+      // Define maximum file size (in bytes)
+      const maxFileSize = 50 * 1024;  // 100 KB
+  
+      // Compress the file based on type (PDF or image)
+      let compressedFile;
+  
+        compressedFile = await compressPDF(selectedResume);  // Compress PDF
+      
+  
+      // Check if the compressed file size is below 100 KB
+      if (compressedFile.size > maxFileSize) {
+        throw new Error('File too big , select the file with size less than 50 KB');
+      }
+  
+      // Upload the compressed file
+      const resumeResponse = await resumeService.addResume(compressedFile);
+  
+      if (resumeResponse) {
+        setUserResumes(prev => [...prev, resumeResponse.resume]);
+        setSelectedResume(null);  // Reset selected resume
+      }
+  
+      setUploading(false);  // Set loading state to false
+    } catch (e) {
+      setUploading(false);
+      setResumeUploadError(e.message || 'An error occurred during the upload');
+    }
+  };
+  
   useEffect(() => {
     const fetchUserResumes = async () => {
       try {
@@ -437,6 +511,7 @@ function Qualification({
                     />
                     )
                   </svg>
+                  
                 </>
               ) : (
                 <>
@@ -494,6 +569,8 @@ function Qualification({
                 </svg>
               ))}{" "}
           </div>
+                        {resumeUploadError && <p className="text-red-500 mt-1">{resumeUploadError}</p>}
+
           {/* <button className="bg-blue-500 text-white w-full text-center text-lg font-medium rounded-lg px-4 py-3 mt-3">Upload</button> */}
         </div>
       )}

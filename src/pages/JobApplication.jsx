@@ -450,127 +450,13 @@ function JobApplication() {
           ) : applications.length > 0 ? (
             <div className="flex flex-col gap-4">
               {applications.map((application) => (
-                <div
-                  key={applications._id}
-                  onClick={() => handleJobSelect(application.job)}
-                  className="border rounded-lg cursor-pointer p-3 flex flex-col gap-2 "
-                >
-                  <div>
-                    <div className="flex gap-4 mb-2">
-                      <UserImageInput
-                        isEditable={false}
-                        image={application.job.companyLogo}
-                      />
-                      <div className="flex flex-col justify-center">
-                        <p className="font-medium">
-                          {application.job.job_role}
-                        </p>
-                        <p className="text-sm">
-                          {application.job.company_name}
-                        </p>
-                        <p className="text-sm text-gray-400 truncate w-full text-wrap">
-                          {/* {application.job.location.address} */}
-                        </p>
-                      </div>
-                    </div>
-                    <p>{}</p>
-                  </div>
-                  {application.job.location && (
-                    <div className="flex gap-2  text-sm">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        className="h-4 w-4"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
-                        <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                      </svg>
-                      <p className="-mt-1">
-                        {" "}
-                        {application.job.location?.address}{" "}
-                      </p>
-                    </div>
-                  )}
-
-                  {/* {application.job.location && (
-                    <div className="flex gap-2  text-sm">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        className="h-4 w-4"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A32 32 0 0 1 8 14.58a32 32 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10" />
-                        <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4m0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                      </svg>
-                      <p className="-mt-1">
-                        {" "}
-                        {application.job.location?.address}{" "}
-                      </p>
-                    </div>
-                  )}
-                  {application.job.experience_type == "Experienced" && (
-                    <div className="flex gap-2 text-sm items-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        className="h-4 w-4"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v8A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5m1.886 6.914L15 7.151V12.5a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5V7.15l6.614 1.764a1.5 1.5 0 0 0 .772 0M1.5 4h13a.5.5 0 0 1 .5.5v1.616L8.129 7.948a.5.5 0 0 1-.258 0L1 6.116V4.5a.5.5 0 0 1 .5-.5" />
-                      </svg>
-                      {application.job.experience_type == "Experienced" ? (
-                        <p>
-                          {" "}
-                          {application.job.min_experience}{" "}
-                          {application.job.max_experience !=
-                            application.job.min_experience &&
-                            "-" + application.job.max_experience}{" "}
-                          years
-                        </p>
-                      ) : (
-                        <p>Not mentioned</p>
-                      )}
-                    </div>
-                  )}
-                  {(application.job.min_salary ||
-                    application.job.max_salary) && (
-                    <div className="flex gap-2 text-sm">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="currentColor"
-                        className="h-4 w-4"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M12.136.326A1.5 1.5 0 0 1 14 1.78V3h.5A1.5 1.5 0 0 1 16 4.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 13.5v-9a1.5 1.5 0 0 1 1.432-1.499zM5.562 3H13V1.78a.5.5 0 0 0-.621-.484zM1.5 4a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5z" />
-                      </svg>
-                      {application.job.min_salary ||
-                      application.job.max_salary ? (
-                        <p>
-                          {" "}
-                          {application.job.min_salary}{" "}
-                          {application.job.max_salary !=
-                            application.job.min_salary &&
-                            "- " + application.job.max_salary}{" "}
-                          {application.job.max_salary?.length <= 5
-                            ? "per year"
-                            : "per year"}
-                        </p>
-                      ) : (
-                        <p className="-mt-0.5">Not mentioned</p>
-                      )}
-                    </div>
-                  )}
-                  <div>
-                    <p className="font-medium">Description</p>
-                    <p className="text-gray-400 text-sm truncate line-clamp-2 text-wrap">
-                      {application.job.description}
-                    </p>
-                  </div> */}
-
-                  <div className="flex gap-2 flex-wrap items-center justify-between">
-                    <div className="flex items-center text-sm gap-4 rounded-md">
+                <div className="bg-white sm:border sm:rounded-2xl sm:shadow-xl border-y">
+                  <JobListItem
+                  job={application.job}
+                  className=""
+                  />
+                  <div className="flex gap-2 flex-wrap items-center px-4 sm:px-6 pb-4 justify-between">
+                    <div className="flex items-center  gap-4 rounded-md">
                       {application.status === "sent" ? (
                         <p className="text-green-600 bg-gray-50 px-4 py-1 rounded-md font-medium ">
                           Application sent
@@ -679,7 +565,7 @@ function JobApplication() {
                       {formatDistanceToNow(application.createdAt.split("T")[0])}
                     </div>
                   </div>
-                </div>
+                  </div>
               ))}
             </div>
           ) : (

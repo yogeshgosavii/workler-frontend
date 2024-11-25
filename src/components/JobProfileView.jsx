@@ -607,7 +607,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
               //     className="border bg-white rounded-lg sm:rounded-none sm:shadow-none"
               //   />
               // ))
-              <JobList query={jobDetails.job_role} className={"pt-5"} />
+              <JobList query={jobDetails.job_role} className={"pt-5 sm:ml-[0px] sm:px-[0px]"} />
             )}
           </div>
         );

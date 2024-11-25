@@ -51,7 +51,7 @@ const UserProfile = () => {
   const [workExperienceData, setWorkExperienceData] = useState([]);
   const [worksAt, setworksAt] = useState(null);
   const [projectData, setprojectData] = useState([]);
-  const [userDetails, setuserDetails] = useState([] ||user);
+  const [userDetails, setuserDetails] = useState([] || user);
   const [postData, setPostData] = useState([]);
   const [tabIndex, settabIndex] = useState(1);
   const [followers, setFollowers] = useState(0);
@@ -124,8 +124,8 @@ const UserProfile = () => {
     const fetchConnections = async () => {
       try {
         const followingResponse = await followService.getFollowing(user._id);
-        console.log("follow",followingResponse);
-        
+        console.log("follow", followingResponse);
+
         setfollowings(followingResponse.length);
 
         const followerResponse = await followService.getFollowers(user._id);
@@ -158,8 +158,8 @@ const UserProfile = () => {
   const fetchJobData = useCallback(async () => {
     try {
       const data = await jobApi.job.getByUserIds(user._id);
-      
-      setjobData(data ||[]);
+
+      setjobData(data || []);
     } catch (error) {
       console.error("Error fetching education data:", error);
     } finally {
@@ -542,23 +542,23 @@ const UserProfile = () => {
         location.pathname === "/profile/settings/saveds" ||
         location.pathname === "/profile/post"
       }
-      className={`w-full flex bg-gray-50 justify-center gap-5`}
+      className={`  flex bg-gray-50 justify-center gap-5`}
     >
       {pageLoading ? (
         <div>Loading...</div>
       ) : (
         <div
-          className={`w-full flex-1 flex justify-center flex-grow ${
+          className={`w-screen flex-1 flex justify-center flex-grow ${
             settings ? "pointer-events-none " : "pointer-events-auto"
           }`}
         >
           {formType && (
             <div
-              className="fixed inset-0 z-30 flex justify-center items-center bg-black bg-opacity-50"
+              className="fixed inset-0 z-50 flex justify-center items-center h-screen  w-full top-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60    "
               onClick={handleClose}
             >
               <div
-                className="fixed z-20 w-full border h-full sm:h-fit sm:max-w-md mx-auto"
+                className="fixed z-20 w-full border h-full shadow-2xl sm:h-fit sm:max-w-md mx-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 {React.createElement(FormComponents[formType], {
@@ -602,11 +602,11 @@ const UserProfile = () => {
 
           {updateFormType ? (
             <div
-              className="fixed inset-0 z-30 flex justify-center items-center bg-black bg-opacity-50"
+              className="fixed inset-0 z-50 flex justify-center items-center h-screen  w-full top-0 bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60   "
               onClick={handleClose}
             >
               <div
-                className="fixed z-20 w-full border h-full sm:h-fit sm:max-w-md mx-auto"
+                className="fixed z-20 w-full border h-full shadow-2xl sm:h-fit sm:max-w-md mx-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 {React.createElement(UpdateFormComponents[updateFormType], {
@@ -635,7 +635,7 @@ const UserProfile = () => {
             className={` w-full  lg:max-w-xl   ${
               (formType || settings || showProfileImage || updateFormType) &&
               "fixed"
-            }   md:flex-row transition-all md:p-6 duration-300 relative  flex-1 h-full `}
+            }   md:flex-row transition-all sm:p-6 duration-300 relative  flex-1 h-full `}
           >
             {showProfileImage && (
               <div
@@ -652,6 +652,21 @@ const UserProfile = () => {
                 } fixed  z-20 md:min-w-[57.6%]  md:border-x md:mt-5 top-0 mb-4 px-4 py-4 bg-white flex justify-between`}
               >
                 <div className="flex items-center gap-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-8"
+                    onClick={() => {
+                      window.history.back();
+                    }}
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
                   {atTop >= 100 && (
                     <UserImageInput
                       isEditable={false}
@@ -706,7 +721,24 @@ const UserProfile = () => {
               </div>
               <div className="flex border-t pt-8 pb-6 mt-10 md:mt-0   flex-grow  sm:border-x  px-4 md:px-6 gap-3 bg-white justify-center flex-col">
                 <div className="w-full hidden md:flex mb-4 bg-white justify-between ">
-                  <p className="text-2xl font-semibold">Profile</p>
+                  <div className="flex gap-4">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      class="size-8"
+                      onClick={() => {
+                        window.history.back();
+                      }}
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    <p className="text-2xl font-semibold">Profile</p>
+                  </div>
                   <svg
                     className="h-8 w-8 text-gray-800 pointer-events-auto transition-all duration-500 ease-in-out transform"
                     fill="none"
@@ -795,7 +827,9 @@ const UserProfile = () => {
                           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
                             {userDetails.account_type === "Employeer"
                               ? userDetails.company_details?.company_name
-                              : `${userDetails.personal_details?.firstname || ""} ${
+                              : `${
+                                  userDetails.personal_details?.firstname || ""
+                                } ${
                                   userDetails.personal_details?.lastname || ""
                                 }`.trim()}
                           </h1>
@@ -869,7 +903,8 @@ const UserProfile = () => {
                             ))}
                           </div>
                           <p className="text-sm mt-1 text-gray-400">
-                            These tags will help get you discovered more by relevent people
+                            These tags will help get you discovered more by
+                            relevent people
                           </p>
                         </div>
                       )}
@@ -917,7 +952,8 @@ const UserProfile = () => {
                         } text-center py-2`}
                         style={{
                           width: `${
-                            100 / (userDetails.account_type === "Employeer" ? 3 : 3)
+                            100 /
+                            (userDetails.account_type === "Employeer" ? 3 : 3)
                           }%`,
                         }}
                       >
@@ -929,7 +965,8 @@ const UserProfile = () => {
                 <div
                   style={{
                     left: `${
-                      (100 / (userDetails.account_type === "Employeer" ? 3 : 3)) *
+                      (100 /
+                        (userDetails.account_type === "Employeer" ? 3 : 3)) *
                       tabIndex
                     }%`,
                     transition: "left 0.2s ease-in-out",

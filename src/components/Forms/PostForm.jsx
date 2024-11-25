@@ -69,7 +69,17 @@ function PostForm({ userDetails, setData, onClose }) {
   };
 
   const handleImageChange = (e) => {
-    const files = Array.from(e.target.files);
+    const remainingSlots = 10 - images.length;
+
+    if (remainingSlots <= 0) {
+      alert("You can only upload up to 10 images.");
+      return;
+    }
+  
+    // Slice the selected files to fit within the limit
+    // const files = selectedFiles.slice(0, remainingSlots);
+    const files = Array.from(e.target.files).slice(0,remainingSlots);
+
     setImages((prevImages) => [...prevImages, ...files]);
     setFormData((prevState) => ({ ...prevState, images: files }));
   };
@@ -78,7 +88,7 @@ function PostForm({ userDetails, setData, onClose }) {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
+  
     const formDataToSend = new FormData();
     formDataToSend.append(
       "content",
@@ -86,73 +96,52 @@ function PostForm({ userDetails, setData, onClose }) {
         .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Convert **bold text** to <strong>
         .replace(/(?:\r\n|\r|\n)/g, "<br />")
     );
+  
     if (mentionList.length > 0) {
-      formDataToSend.append(
-        "mentions",
-        mentionList.map((user) => user._id)
-      );
+      formDataToSend.append("mentions", JSON.stringify(mentionList.map((user) => user._id)));
     }
-
+  
     images.forEach((image) => {
       formDataToSend.append("files", image);
     });
-
-    if (postType == "content") {
-      try {
+  
+    try {
+      if (postType === "content") {
         const data = await createPost(formDataToSend);
-        // const user = await authservice.updateUserDetails({
-        //   ...userDetails,
-        //   posts : [...userDetails.posts , data._id]
-
-        // })
-
-        // setData(prev =>([...prev,{...data,user : {profileImage : user.profileImage,username:user.username}}]))
-        // onClose()
-        navigate("/profile", { replace: true });
-        navigate(0)
-        // window.history.back();
-        setFormData({ content: "", images: [] });
-        setImages([]);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      const response = await jobService.job.addMultiple(jobs);
-      const jobIds = response.map((job) => job._id);
-
-      try {
+        // Example: update user details or handle response
+        // const user = await authservice.updateUserDetails({...});
+      } else {
+        const response = await jobService.job.addMultiple(jobs);
+        const jobIds = response.map((job) => job._id);
+  
         const data = await createJobPost({
           content: formData.content,
           post_type: postType,
           jobs: jobIds,
         });
-
-        // const user = await authservice.updateUserDetails({
-        //   ...userDetails,
-        //   posts : [...userDetails.posts , data._id]
-
-        // })
-        // setData(prev =>([...prev,data]))
-        // onClose();
-        navigate("/profile", { replace: true });
-        navigate(0)
-        setFormData({ content: "", images: [] });
-        setImages([]);
-      } catch (error) {
-        setError("Failed to create post");
-      } finally {
-        setLoading(false);
+        // Example: update user details or handle response
+        // const user = await authservice.updateUserDetails({...});
       }
+  
+      navigate("/profile", { replace: true }); // Navigate after successful submission
+      setFormData({ content: "", images: [] });
+      setImages([]);
+    } catch (error) {
+      console.error(error);
+      setError("Failed to create post. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
+  
 
   return (
     <div>
       <div
         onClick={() => window.history.back()}
-        className="fixed w-full h-full transition-all bg-black opacity-30 z-20 top-0 left-0"
+        className="fixed w-full h-full transition-all   top-0  inset-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60     z-30  left-0"
       ></div>
-      <div className="fixed w-full sm:max-w-lg right-0 h-full      bg-white top-0 z-30  overflow-y-auto">
+      <div className="fixed w-full border  shadow-2xl sm:max-w-lg right-0 h-full z-40      bg-white top-0   overflow-y-auto">
         <form
           onSubmit={handleSubmit}
           className="flex flex-col justify-between h-full  min-w-full  gap-4 "
@@ -328,7 +317,8 @@ function PostForm({ userDetails, setData, onClose }) {
                 </div>
               )}
               {postType == "content" ? (
-                <div className="flex w-full mt-4  overflow-auto px-4">
+                <div className="w-full">
+                  <div className="flex w-full mt-4  overflow-auto px-4">
                   <ImageCarousel
                     // className={"ml-10"}
                     showCount={false}
@@ -340,6 +330,10 @@ function PostForm({ userDetails, setData, onClose }) {
                     images={images}
                   />
                 </div>
+               {images.length>0 && <div className="w-full flex px-4 justify-end">
+                <p className=" px-4 py-1 bg-gray-100  border rounded-full text-gray-800 mt-3 text-lg">10/{images.length}</p>
+                  </div>}
+                  </div>
               ) : (
                 <div className="mt-5 w-full">
                   <JobList
@@ -422,7 +416,7 @@ function PostForm({ userDetails, setData, onClose }) {
             )}
           </div>
           <div className="flex sticky bg-white bottom-0 gap-4 text-gray-800  py-4 px-4 md:px-6 items-center">
-            <div className={`${postType == "job" && "text-gray-600"}`}>
+            <div className={`${(postType == "job" ||images.length>=10) && "text-gray-600"}`}>
               <svg
                 className="h-8 w-8 z-20  cursor-pointer"
                 viewBox="0 0 24 24"
@@ -443,7 +437,7 @@ function PostForm({ userDetails, setData, onClose }) {
                 id="fileInput"
                 name="images"
                 multiple
-                disabled={postType === "job" ? true : false}
+                disabled={postType === "job" || images.length>=10 ? true : false}
                 onChange={handleImageChange}
                 accept=".jpg,.jpeg,.png"
                 className="hidden"

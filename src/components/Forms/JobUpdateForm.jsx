@@ -303,6 +303,13 @@ function JobUpdateForm({ onClose,data, setData }) {
             onChange={handleChange}
           />
         </div>
+        <TextInput
+          name="salary_type"
+          placeholder="Salary type (per month, etc)"
+          value={formData.salary_type}
+          className="flex-grow min-w-48"
+          onChange={handleChange}
+        />
         <ToggleInput
           name="job_type"
           onChange={handleChange}

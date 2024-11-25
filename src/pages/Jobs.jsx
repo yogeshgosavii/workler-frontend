@@ -106,10 +106,10 @@ function Jobs() {
       )}
 
       {/* Search Input Section */}
-      <div className="fixed  z-40">
+      <div className="fixed  pointer-events-none  z-40">
         <form
           onSubmit={handleSearchSubmit}
-          className={`flex w-screen  ${
+          className={`flex w-screen  pointer-events-auto ${
             !isAuthenticated && "sm:max-w-lg"
           }   justify-center  sm:justify-start py-3  ${
             isAuthenticated ? "  bg-gray-50" : "bg-transparent"

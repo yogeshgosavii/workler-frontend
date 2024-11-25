@@ -30,6 +30,7 @@ function Employment({ job, applications, approaches }) {
   const [showInterviewForm, setShowInterviewForm] = useState(false);
   const [interviewList, setInterviewList] = useState();
   const [interviewCreateLoading, setInterviewCreateLoading] = useState(false);
+  const [autoGenerateMeetLink, setautoGenerateMeetLink] = useState(false);
   const navigate = useNavigate();
 
   const profileService = useProfileApi();
@@ -451,8 +452,8 @@ function Employment({ job, applications, approaches }) {
                     </svg>
                   </div>
 
-                  <div className="flex gap-2 flex-wrap w-full  items-center justify-between">
-                    <div className="flex items-center text-sm w-full gap-4 rounded-md">
+                  <div className="flex gap-2  flex-wrap w-full text-sm  items-center justify-between">
+                    <div className="flex w-full items-center  gap-4 rounded-md">
                       {interviewList?.some(
                         (interview) =>
                           interview.job._id == application.job._id &&
@@ -594,7 +595,7 @@ function Employment({ job, applications, approaches }) {
                         </p>
                       )}
                     </div>
-                    <div className="flex gap-2 text-gray-400 text-xs">
+                    <div className="flex gap-2 w-fit text-gray-400 ">
                       Applied{" "}
                       {formatDistanceToNow(application.createdAt.split("T")[0])}
                     </div>
@@ -639,8 +640,8 @@ function Employment({ job, applications, approaches }) {
           } bg-white border rounded-t-xl sm:rounded-lg shadow-lg`}
         >
           <h3 className="text-lg font-medium mb-10 mt-2">Set Up Interview</h3>
-          <form onSubmit={setupInterview} className="flex flex-col gap-6">
-            <div className="flex gap-4">
+          <form onSubmit={setupInterview} className="flex flex-col  gap-6">
+            <div className="flex flex-wrap gap-4">
               <DateInput
                 type={"date"}
                 value={interviewForm.interview_date}
@@ -650,9 +651,11 @@ function Employment({ job, applications, approaches }) {
                     interview_date: e.target.value,
                   }));
                 }}
+                isRequired={true}
                 minDate={"today"}
                 name={"interview_date"}
                 placeholder={"Interview Date"}
+                className={"flex-grow"}
               />
               <div className=" peer  flex-grow">
                 <input
@@ -665,12 +668,14 @@ function Employment({ job, applications, approaches }) {
                     }));
                   }}
                   placeholder="Time"
-                  className=" block border rounded-sm h-full focus:border-blue-500 outline-none w-full p-2"
+                  className=" block border bg-white rounded-sm h-full focus:border-blue-500 outline-none w-full p-2"
                 />
               </div>
             </div>
 
             <OptionInput
+                            isRequired={true}
+
               name="interview_mode"
               value={interviewForm.interview_mode}
               onChange={(e) => {
@@ -692,8 +697,11 @@ function Employment({ job, applications, approaches }) {
             )} */}
             {interviewForm.interview_mode == "Online" && (
               <UrlInput
+              // isRequired={true}
+
                 value={interviewForm.interview_link}
                 name={"meet_link"}
+                disabled={autoGenerateMeetLink}
                 onChange={(e) => {
                   setInterviewForm((prev) => ({
                     ...prev,
@@ -703,11 +711,22 @@ function Employment({ job, applications, approaches }) {
                 placeholder={"Enter your meet link"}
               />
             )}
+           {interviewForm.interview_mode == "Online" && <div className="w-full text-end flex justify-end"><p  onClick={()=>{
+              if(autoGenerateMeetLink){
+                setInterviewForm((prev) => ({
+                  ...prev,
+                  interview_link: "",
+                }));
+              }
+              setautoGenerateMeetLink(!autoGenerateMeetLink)
+            }} className={` -mt-4 w-fit text-sm rounded-full border px-4 py-1 ${autoGenerateMeetLink?'border-blue-500 text-blue-500 ':"text-gray-400"}`}>Autogenerate Meet Link</p></div>}
             {interviewForm.interview_mode == "In-person" && (
               <div className="flex flex-col gap-6">
                 <TextAreaInput
                   placeholder={"Interview address"}
                   name={"interview_address"}
+                  isRequired={true}
+
                   onChange={(e) => {
                     setInterviewForm((prev) => ({
                       ...prev,
@@ -716,6 +735,7 @@ function Employment({ job, applications, approaches }) {
                   }}
                 />
                 <TextInput
+
                   placeholder={"Location link (Optional)"}
                   name={"location_link"}
                   onChange={(e) => {

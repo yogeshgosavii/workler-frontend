@@ -30,6 +30,7 @@
     "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "match-sorter": "^6.3.4",
+    "pdf-lib": "^1.17.1",
     "quill": "^2.0.2",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",

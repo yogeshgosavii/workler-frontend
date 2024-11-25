@@ -3,8 +3,9 @@ import { useNavigate } from "react-router-dom";
 import remotiveLogo from "../../assets/wordmark_H_orange.svg";
 import savedService from "../../services/savedService";
 import { useSelector } from "react-redux";
+import companyDefautImage from "../../assets/companyDefaultImage.png"
 
-const JobListItem = React.memo(({ job, companyDefaultImage, className,savedState }) => {
+const JobListItem = React.memo(({ job, companyDefaultImage=companyDefautImage, className,savedState }) => {
   const navigate = useNavigate();
   const [saved, setSaved] = useState(false);
   const currentUser = useSelector((state) => state.auth.user);

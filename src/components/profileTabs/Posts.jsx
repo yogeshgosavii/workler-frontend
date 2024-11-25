@@ -126,7 +126,7 @@ function Posts({
           </p>
         )
       ) : (
-        <div className="flex flex-col  sm:gap-4">
+        <div className="flex flex-col  sm:gap-2">
           {isEditable && (
             <div className="flex px-4   bg-white justify-between py-4 sm:border items-center">
               <p className="font-medium">Recent posts</p>

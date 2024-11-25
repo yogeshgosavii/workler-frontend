@@ -120,7 +120,37 @@ const router = createBrowserRouter([
           </LoginVerification>
         ),
       },
+     
       {
+        path: "/job-applications",
+        element: (
+          <LoginVerification>
+            <JobApplication />
+          </LoginVerification>
+        ),
+      },
+      {
+        path: "/search",
+        element: (
+          <LoginVerification>
+            <Search />
+          </LoginVerification>
+        ),
+        children: [],
+      },
+      // {
+      //   path: "/post",
+      //   element: (
+      //     <LoginVerification>
+      //       <PageTransition>
+      //         <PostForm />
+      //       </PageTransition>
+      //     </LoginVerification>
+      //   ),
+      // },
+    ],
+  },
+   {
         path: "/profile",
         element: (
           <LoginVerification>
@@ -171,35 +201,6 @@ const router = createBrowserRouter([
           },
         ],
       },
-      {
-        path: "/job-applications",
-        element: (
-          <LoginVerification>
-            <JobApplication />
-          </LoginVerification>
-        ),
-      },
-      {
-        path: "/search",
-        element: (
-          <LoginVerification>
-            <Search />
-          </LoginVerification>
-        ),
-        children: [],
-      },
-      // {
-      //   path: "/post",
-      //   element: (
-      //     <LoginVerification>
-      //       <PageTransition>
-      //         <PostForm />
-      //       </PageTransition>
-      //     </LoginVerification>
-      //   ),
-      // },
-    ],
-  },
   { path: "/forgot-password", element: <ForgotPassword /> },
 
   { path: "/password-reset/:token", element: <ResetPassword /> },
@@ -219,16 +220,16 @@ const router = createBrowserRouter([
     ),
   },
 
-  {
-    path: "/post",
-    element: (
-      <LoginVerification>
-        <PageTransition>
-          <PostForm />
-        </PageTransition>
-      </LoginVerification>
-    ),
-  },
+  // {
+  //   path: "/post",
+  //   element: (
+  //     <LoginVerification>
+  //       <PageTransition>
+  //         <PostForm />
+  //       </PageTransition>
+  //     </LoginVerification>
+  //   ),
+  // },
 
   {
     path: "/login",
