@@ -560,7 +560,7 @@ const UserProfile = () => {
               onClick={handleClose}
             >
               <div
-                className="fixed z-20 w-full border  shadow-2xl sm:h-fit sm:max-w-md mx-auto"
+                className="fixed z-20 w-full border  h-full shadow-2xl sm:h-fit sm:max-w-md mx-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 {React.createElement(FormComponents[formType], {
