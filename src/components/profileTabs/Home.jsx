@@ -153,7 +153,7 @@ function Home({
                     )}
                   </div>
                 ):(
-                  <div className={`text-sm font-normal  `}>
+                  user.description && <div className={`text-sm font-normal  `}>
                     <p className="font-medium text-base mb-1">Description</p>
                       <div onClick={() => setdescriptionInput(true)}>
                         <p className="text-gray-600">{user.description}</p>

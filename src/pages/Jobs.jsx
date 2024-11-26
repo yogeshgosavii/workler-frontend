@@ -168,7 +168,9 @@ function Jobs() {
           </div>
 
         
-            <JobList filter={filters} joblistSkeleton={joblistSkeleton} query={searchText} className={"pt-24"} />
+            <JobList filter={filters} joblistSkeleton={joblistSkeleton} query={searchText} className={`pt-24 ${
+        isAuthenticated ? "sm:ml-[330px]" : "sm:ml-[300px]"
+      } `} />
         </div>
 
         {/* Right News Section */}

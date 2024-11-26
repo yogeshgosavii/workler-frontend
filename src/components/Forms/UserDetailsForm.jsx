@@ -19,16 +19,15 @@ function UserDetailsForm({ onClose, setData, data }) {
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState(null);
   const userData = useSelector((state) => state.auth.user);
-  const dispatch  = useDispatch()
+  const dispatch = useDispatch();
   console.log(data);
-  
 
   useEffect(() => {
     setFormData({
       username: data.username || "",
       email: data.email || "",
       about: data.about || "",
-      description:data.description || "",
+      description: data.description || "",
       account_type: data.account_type,
       tags: data.tags || [],
       githubLink: data.githubLink || "",
@@ -122,8 +121,8 @@ function UserDetailsForm({ onClose, setData, data }) {
       const updatedData = await authService.updateUserDetails(newFormData);
       setData(formData);
       console.log(formData);
-      
-      dispatch(updateUserDetails(updatedData))
+
+      dispatch(updateUserDetails(updatedData));
       onClose();
     } catch (error) {
       setError("Failed to update user details");
@@ -155,11 +154,28 @@ function UserDetailsForm({ onClose, setData, data }) {
 
   return (
     <div className="h-full flex sm:max-h-[450px] flex-col gap-6 pt-2 pb-6 px-4 sm:px-8 overflow-auto bg-white">
-      <div className="sticky z-20 -top-2.5 py-4 bg-white">
-        <h2 className="text-xl font-medium">User details</h2>
-        <p className="text-sm text-gray-400">
-          Update the user details or add new to them
-        </p>
+      <div className="flex gap-3 sticky z-20 -top-2.5 py-3 bg-white ">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="size-8"
+          onClick={() => {
+            window.history.back();
+          }}
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <div className=" bg-white">
+          <h2 className="text-xl font-medium">User details</h2>
+          <p className="text-sm text-gray-400">
+            Update the user details or add new to them
+          </p>
+        </div>
       </div>
       <div className="flex-1 flex flex-col gap-5">
         <UserImageInput

@@ -143,7 +143,7 @@ function EducationForm({ onClose, setData, data }) {
         return; // Do not update state if the value has more than 2 decimal places
       }
 
-      value = Number(value);
+      // value = Number(value);
     }
 
     if (
@@ -517,12 +517,29 @@ function EducationForm({ onClose, setData, data }) {
         onSubmit={onSave}
         className="flex flex-col  gap-4 flex-grow  w-full"
       >
-        <div className="py-4 sticky z-40 -top-2.5 bg-white">
+        <div className="flex gap-3 py-4 sticky z-40 -top-2.5 bg-white">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="size-8"
+          onClick={() => {
+            window.history.back();
+          }}
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        <div className="">
           <h2 className="text-xl font-medium">Education</h2>
           <p className="text-sm text-gray-400">
             Adding the education or course type helps recruiters know your
             educational background
           </p>
+        </div>
         </div>
         <div className="sm:max-h-60 h-full "> {pages[currentPage].content}</div>
       </form>

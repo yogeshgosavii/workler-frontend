@@ -107,7 +107,23 @@ function PersonalDetailsForm({ onClose, data, setData }) {
   return (
     <div className="h-full flex  sm:max-h-[450px] flex-col gap-6 pt-2 pb-6 overflow-auto bg-white">
       <div className="">
-      <div className={`sticky z-20 -top-2.5 py-4 px-4 sm:px-8  ${window.scroll >0?"shadow-lg":""} bg-white`}>
+      <div className="flex   pl-2 sticky z-20 -top-2.5 py-4 bg-white">
+      <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="size-8"
+          onClick={() => {
+            window.history.back();
+          }}
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      <div className={` px-4 sm:px-8  ${window.scroll >0?"shadow-lg":""} bg-white`}>
         <h2 className="text-xl font-medium">
         {user.account_type == "Employeer" ? (
             <span>Company details</span>
@@ -118,6 +134,7 @@ function PersonalDetailsForm({ onClose, data, setData }) {
         <p className="text-sm text-gray-400">
           Update the details or add new to them
         </p>
+      </div>
       </div>
         <div className="flex flex-col w-full px-4 sm:px-8  gap-6 mt-5">
           <TextAreaInput

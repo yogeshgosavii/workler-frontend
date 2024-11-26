@@ -8,14 +8,17 @@ function NumberInput({
   onChange,
   isRequired = false,
   className,
-  max,
+  max =10000000,
   min,
   promtMessage,
 }) {
   const [message, setMessage] = useState(promtMessage);
+  console.log(value);
+  
 
   const handleChange = (e) => {
     if(e.target.value.length <= max){
+      e.target.value
       onChange(e);
     }
     if (isRequired && !e.target.value) {

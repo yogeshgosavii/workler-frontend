@@ -99,7 +99,7 @@ function Posts({
     <div className={`w-full  h-full ${className}`}>
       {postData && postData?.length === 0 ? (
         isEditable ? (
-          <p className=" pt-12 text-center w-full  sm:h-full h-fit px-6 md:px-6">
+          <p className=" pt-12 text-center w-full  h-full  px-6 md:px-6">
             <p className="text-2xl font-bold text-gray-500">No Posts Yet</p>
             <p className="mt-1 text-gray-400">
               Your posts will appear here once you've posted them.
@@ -470,7 +470,7 @@ function Posts({
                                   minWidth: "100%", // Ensure items take full width
                                 }}
                                 onClick={(e)=>{
-                                  navigate("/job/"+job._id)
+                                  window.open("/job/"+job._id,"_blank")
                                   e.stopPropagation()
 
                                 }}

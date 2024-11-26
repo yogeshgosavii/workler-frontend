@@ -309,6 +309,8 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
 
   useEffect(() => {
     const handleScroll = () => {
+      console.log(atTop);
+      
       if (profileRef.current) {
         const currentScrollY = profileRef.current.scrollTop;
 
@@ -799,10 +801,10 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
           ></div>
         )}
         <div className="flex relative  flex-wrap">
-          <div className="bg-gray-100 border-x absolute top-0 w-full h-32 sm:h-40"></div>
+          <div className="bg-blue-50 border-x absolute top-0 w-full h-32 sm:h-40"></div>
           <div
             className={` w-full border-t rounded-t-3xl  fixed sm:sticky  ${
-              atTop > 100 ? "bg-white" : "bg-gray-100"
+              atTop > 100 ? "bg-white" : "bg-blue-50"
             }  sm:border-x  z-20 top-0   px-4 py-4  flex `}
           >
             <div className="flex w-full items-center gap-4">

@@ -373,7 +373,7 @@ const App = () => {
           <UserImageInput
             isEditable={false}
             imageHeight={30}
-            image={userDetails?.profileImage?.compressedImage}
+            image={user?.profileImage?.compressedImage}
           />
         </p>
       </div>

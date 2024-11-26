@@ -426,7 +426,7 @@ const UserProfile = () => {
   const renderTabContent = () => {
     if (loading.userDetails || loading.posts) {
       return (
-        <div class="grid min-h-[140px] bg-white w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+        <div class="grid min-h-[140px]  w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
           <svg
             class="text-transparent animate-spin"
             viewBox="0 0 64 64"
@@ -544,7 +544,7 @@ const UserProfile = () => {
         location.pathname === "/profile/settings/saveds" ||
         location.pathname === "/profile/post"
       }
-      className={`  flex bg-gray-50 justify-center gap-5`}
+      className={`  flex bg-gray-50 min-h-screen border justify-center gap-5`}
     >
       {pageLoading ? (
         <div>Loading...</div>

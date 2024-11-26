@@ -153,6 +153,8 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log("asdfghj",value,name);
+    
     // Utility function to determine and convert value type
     const convertValue = (value) => {
       if (!isNaN(value) && value !== "") {
@@ -161,7 +163,7 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
       return value;
     };
   
-    setFormData((prev) => ({ ...prev, [name]: convertValue(value) }));
+    setFormData((prev) => ({ ...prev, [name]: (convertValue(value)) }));
   };
   
   const handleDateChange = (e) => {
@@ -523,13 +525,30 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
 
   return (
     <form className="bg-white pt-2 pb-6 px-4 sm:px-8 rounded-sm flex flex-col w-full h-full md:max-h-[80vh] max-h-[100vh] overflow-y-auto">
-      <div className=" sticky -top-2.5 py-4 z-20 bg-white">
+       <div className="flex gap-3 flex-nowrap  sticky -top-2.5 py-4 z-20 bg-white">
+       <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="size-8"
+          onClick={() => {
+            window.history.back();
+          }}
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      <div className=" ">
         <h2 className="text-xl font-medium">Work experience</h2>
         <p className="text-sm text-gray-400  mt-1">
           Details like job title, company name, etc help employers understand
           your work
         </p>
       </div>
+       </div>
       <div className=" mt-2 h-full">{pages[currentPage].content}</div>
     </form>
   );

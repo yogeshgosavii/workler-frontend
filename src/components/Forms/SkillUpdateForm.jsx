@@ -52,12 +52,30 @@ function SkillUpdateForm({ data, onClose, setData }) {
       onSubmit={handleUpdateSkill}
     >
       <div className="flex-1">
+      <div className="flex gap-3">
+      <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="size-8"
+          onClick={() => {
+            window.history.back();
+          }}
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
+            clip-rule="evenodd"
+          />
+        </svg>
         <div className="mb-10">
+          
           <h2 className="text-xl font-medium">Skills</h2>
           <p className="text-sm text-gray-400">
             Update your skill to what you originally wanted it to be{" "}
           </p>
         </div>
+      </div>
         <div className="flex flex-col gap-6">
           <TextInput
             name={"skill"}

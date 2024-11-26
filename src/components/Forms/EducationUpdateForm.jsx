@@ -425,12 +425,29 @@ function EducationUpdateForm({
       className=" z-20 flex flex-col w-full   sm:max-h-96 overflow-auto h-full  bg-white pt-2 pb-6 px-4 sm:px-8 rounded-sm"
       onClick={(e) => e.stopPropagation()}
     >
-      <div className=" sticky z-20 -top-2.5 py-4  border border-white bg-white">
+       <div className="sticky z-20 -top-2.5 py-4  border border-white bg-white">
+         <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="size-8"
+          onClick={() => {
+            window.history.back();
+          }}
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      <div className=" ">
         <h1 className="text-xl font-medium">Education</h1>
         <p className="text-sm text-gray-400 ">
           Update the education details to what you originally wanted it to be
         </p>
       </div>
+       </div>
 
       <div className="flex-1 pt-1.5">{renderEducationUpdateForm()}</div>
       <div className="flex justify-between items-center mt-12 w-full">

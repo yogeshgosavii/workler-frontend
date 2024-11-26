@@ -441,12 +441,29 @@ function WorkExperienceUpdateForm({ onClose, data, setData }) {
   return (
     <form onSubmit={handleUpdate} className=" bg-white pt-2 pb-6 px-4 sm:px-8 sm:max-h-96 flex flex-col justify-between rounded-sm w-full h-full sm:h-full overflow-y-auto">
     <div className="flex flex-col flex-1  w-full justify-between  bg-white pb-5 pt-2 z-20">
-    <div className=" sticky z-20 -top-2.5 py-4   bg-white">
+   <div className="flex gap-1 sticky z-20 -top-2.5 py-4   bg-white">
+   <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="size-8"
+          onClick={() => {
+            window.history.back();
+          }}
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+    <div className=" ">
       <h2 className="text-xl font-medium">Work experience</h2>
        <p className="text-sm text-gray-400  mt-1">
         Update the details to what you wanted before
       </p>
     </div>
+   </div>
     <div className=" flex-1">{renderWorkForm()}</div>
     </div>
     <div className=" static flex items-center justify-between  bg-white ">

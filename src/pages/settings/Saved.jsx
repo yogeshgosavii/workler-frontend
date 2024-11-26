@@ -121,7 +121,7 @@ function Saved() {
           onClick={() => {
             navigate("/post/" + post.saved_content._id);
           }}
-          className={`col-span-1 flex flex-col border-y sm:border py-3 h-full  sm:rounded-xl ${
+          className={`col-span-1 flex flex-col border-y sm:border  h-full  sm:rounded-xl ${
             unsavedItems.includes(post._id) ? "animate-unsave" : ""
           }`} // Add animation class
         >
@@ -166,13 +166,13 @@ function Saved() {
             </div>
           </div>
           {post.saved_content?.post_type === "job" ? (
-            <div className="border  h-full relative ">
-              <div className="flex items-center gap-2 m-3">
-                <div className="w-12 h-12 rounded-full bg-pink-950 text-white flex justify-center items-center">
+            <div className="border mx-4 rounded-xl  h-full relative ">
+              <div className="flex  gap-2 m-3">
+                <div className="min-w-12 h-12 rounded-full bg-pink-950 text-white flex justify-center items-center">
                   {post.saved_content.job?.company_name[0].toUpperCase()}
                 </div>
                 <div>
-                  <p className="font-semibold">
+                  <p className="font-semibold text-lg">
                     {post.saved_content.job?.job_role}
                   </p>
                   <p className="text-sm text-gray-400">
@@ -231,7 +231,7 @@ function Saved() {
             //   {post?.saved_content.content}
             // </p>
           )}
-          <div className="flex justify-between h-full w-full gap-4 px-4 items-center  pt-3 pb-1">
+          <div className="flex justify-between h-full w-full gap-4 px-4 items-center  py-3">
             <div className="flex gap-4 justify-center  z-10 text-gray-400 font-normal items-center ">
               <LikeButton
                 postData={post.saved_content}

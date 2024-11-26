@@ -171,9 +171,7 @@ function JobList({
     <div
       ref={containerRef}
       style={{ scrollbarWidth: "none" }}
-      className={`flex flex-1 bg-gray-50 sm:px-5   sm:pt-5 border-blue-500 overflow-y-auto ${
-        isAuthenticated ? "sm:ml-[330px]" : "sm:ml-[300px]"
-      } ${className} flex-col gap-8  w-full mt-0 sm:mt-0`}
+      className={`flex flex-1 bg-gray-50 sm:px-5   sm:pt-5 border-blue-500 overflow-y-auto overflow-x-hidden ${className} flex-col gap-8  w-full mt-0 sm:mt-0`}
     >
       {loading && jobs.length === 0 ? (
         <div>
