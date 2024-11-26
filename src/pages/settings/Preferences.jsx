@@ -107,7 +107,7 @@ const Preferences = () => {
           placeholder={"Experience level"}
         />
 
-        {preferences.location && (
+        {preferences && (
           <LocationInput
             name="location"
             placeholder="Location"

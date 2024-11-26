@@ -16,6 +16,8 @@ function useDebounce(value, delay) {
   return debouncedValue;
 }
 
+
+
 // Spinner Component
 const Spinner = () => (
   <div className="w-full text-center">
@@ -57,7 +59,7 @@ const LocationInput = ({
   const [visited, setVisited] = useState(false);
   const [inputFocus, setInputFocus] = useState(false);
 
-  const debouncedInputLocation = useDebounce(inputLocation, 500);
+  const debouncedInputLocation = useDebounce(inputLocation, 0);
 
   // Fetch locations
   useEffect(() => {
@@ -81,6 +83,7 @@ const LocationInput = ({
 
     fetchLocations();
   }, [debouncedInputLocation]);
+
 
   // Validate input
   const validateInput = useMemo(() => {
@@ -112,7 +115,7 @@ const LocationInput = ({
     setMessage(null);
     onChange?.({ target: { name, value: location } });
   };
-
+  
   return (
     <div className={`relative ${className}`}>
       <div className="relative flex items-center">
@@ -121,7 +124,7 @@ const LocationInput = ({
           name={name}
           id={name}
           placeholder={""}
-          value={inputLocation}
+          value={inputLocation || value?.address}
           onChange={handleInputChange}
           onFocus={() => {
             setInputFocus(true);
