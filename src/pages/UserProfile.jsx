@@ -110,8 +110,10 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading((prev) => ({ ...prev, userDetails: true }));
+      
       try {
         const data = await authService.fetchUserDetails();
+        console.log(data)
         setuserDetails(data);
         setdescriptionInputText(data.description);
       } catch (error) {
@@ -554,11 +556,11 @@ const UserProfile = () => {
         >
           {formType && (
             <div
-              className="fixed inset-0 z-50 flex justify-center items-center h-screen  w-full top-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60    "
+              className="fixed inset-0 z-50 flex justify-center items-center  w-full top-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60    "
               onClick={handleClose}
             >
               <div
-                className="fixed z-20 w-full border h-full shadow-2xl sm:h-fit sm:max-w-md mx-auto"
+                className="fixed z-20 w-full border  shadow-2xl sm:h-fit sm:max-w-md mx-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 {React.createElement(FormComponents[formType], {
@@ -602,7 +604,7 @@ const UserProfile = () => {
 
           {updateFormType ? (
             <div
-              className="fixed inset-0 z-50 flex justify-center items-center h-screen  w-full top-0 bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60   "
+              className="fixed inset-0 z-50 flex justify-center items-center   w-full top-0 bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60   "
               onClick={handleClose}
             >
               <div
@@ -893,7 +895,7 @@ const UserProfile = () => {
                         </div>
                       )}
 
-                      {userDetails.tags.length > 0 && (
+                      {userDetails.tags?.length > 0 && (
                         <div className=" mt-4 order-last ">
                           <div className="flex gap-1 max-w-full flex-wrap ">
                             {userDetails.tags?.map((tag) => (

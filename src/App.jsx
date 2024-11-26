@@ -79,7 +79,7 @@ const App = () => {
     }
   }, [location.pathname]);
   return (
-    <div className="relative flex flex-col sm:flex-row h-screen w-full bg-gray-50 text-gray-800">
+    <div className="relative  flex flex-col sm:flex-row h-screen w-full bg-gray-50 text-gray-800">
       <div className=" w-full h-full overflow-y-auto">
         <Header />
         <div

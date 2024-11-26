@@ -35,6 +35,8 @@ function PostForm({ userDetails, setData, onClose }) {
   const [tagsText, settagsText] = useState([]);
   const user = useSelector((state) => state.auth.user);
   const textareaRef = useRef(null);
+  console.log(user);
+  
 
   const resizeTextarea = () => {
     if (textareaRef.current) {
@@ -265,7 +267,7 @@ function PostForm({ userDetails, setData, onClose }) {
                   imageHeight={35}
                   imageBorder={1}
                   image={
-                    user.profileImage?.compressedImage || profileImageDefault
+                   userDetails?.profileImage?.compressedImage || user.profileImage?.compressedImage || profileImageDefault
                   }
                   alt={`${user.username}'s avatar`}
                   isEditable={false}

@@ -10,6 +10,8 @@ import LocationInput from "../Input/LocationInput";
 import DateInput from "../Input/DateInput";
 import profileImageDefault from "../../assets/user_male_icon.png";
 import authService from "../../services/authService";
+import { useDispatch } from "react-redux";
+import { updateUserDetails } from "../../features/auth/authSlice";
 
 function UserDetailsForm({ onClose, setData, data }) {
   const [loading, setLoading] = useState(false);
@@ -17,6 +19,7 @@ function UserDetailsForm({ onClose, setData, data }) {
   const [inputValue, setInputValue] = useState("");
   const [error, setError] = useState(null);
   const userData = useSelector((state) => state.auth.user);
+  const dispatch  = useDispatch()
   console.log(data);
   
 
@@ -116,8 +119,11 @@ function UserDetailsForm({ onClose, setData, data }) {
 
     setLoading(true);
     try {
-      await authService.updateUserDetails(newFormData);
+      const updatedData = await authService.updateUserDetails(newFormData);
       setData(formData);
+      console.log(formData);
+      
+      dispatch(updateUserDetails(updatedData))
       onClose();
     } catch (error) {
       setError("Failed to update user details");
