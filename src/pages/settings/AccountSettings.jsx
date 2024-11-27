@@ -27,10 +27,9 @@ function AccountSettings() {
   const userData = useSelector((state) => state.auth.user);
   const usernameTimeout = useRef(null);
 
-
   useEffect(() => {
-    document.title = "Account settings"  
- }, []);
+    document.title = "Account settings";
+  }, []);
   // Set the username when the component mounts or userData changes
   useEffect(() => {
     if (userData) {
@@ -94,7 +93,6 @@ function AccountSettings() {
     const passwordCheck = verifyPassword(newPassword, currentPassword);
 
     if (passwordCheck.valid) {
-
       try {
         const passwordResponse = await authService.updatePassword({
           currentPassword,
@@ -103,7 +101,6 @@ function AccountSettings() {
 
         setCurrentPassword("");
         setNewPassword("");
-
       } catch (error) {
         // Show specific error message from the response
         setPasswordError(
@@ -175,7 +172,26 @@ function AccountSettings() {
 
       {/* Modal for Account Settings */}
       <div className="fixed w-full sm:max-w-lg right-0 text-gray-800   h-full  px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-10 ">Account Settings</h2>
+        <div className="flex gap-5 items-center  mb-10">
+          <svg
+            onClick={() => {
+              window.history.back();
+            }}
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+            />
+          </svg>
+          <h2 className="text-2xl font-bold  ">Account Settings</h2>
+        </div>
 
         <div className="space-y-4 mb-3">
           <button

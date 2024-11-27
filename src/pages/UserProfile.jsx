@@ -544,7 +544,7 @@ const UserProfile = () => {
         location.pathname === "/profile/settings/saveds" ||
         location.pathname === "/profile/post"
       }
-      className={`  flex bg-gray-50 min-h-screen border justify-center gap-5`}
+      className={`  flex bg-gray-50 text-gray-800 min-h-screen border justify-center gap-5`}
     >
       {pageLoading ? (
         <div>Loading...</div>
@@ -677,8 +677,8 @@ const UserProfile = () => {
                     />
                   )}
                   <div className="flex flex-col justify-center">
-                    <p className="text-xl font-semibold">
-                      {atTop >= 100 ? userDetails.username : "Profile"}
+                    <p className="text-xl font-semibold -mt-0.5">
+                      {atTop >= 100 ? userDetails.username : <p className="text-2xl">Profile</p>}
                     </p>
                     {/* <div className="flex gap-1 mt-0.5 items-center">
                       <span className="h-2 w-2 rounded-full shadow-lg bg-green-500"></span>

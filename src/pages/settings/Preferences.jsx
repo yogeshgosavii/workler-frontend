@@ -86,7 +86,26 @@ const Preferences = () => {
         className="fixed w-full h-full bg-black opacity-30 z-20 top-0 left-0"
       ></div>
       <div className="fixed w-full sm:max-w-lg right-0 flex flex-col gap-6 border h-full px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30 overflow-y-auto">
-        <h2 className="text-2xl font-bold mb-10">Preference</h2>
+        <div className="flex gap-5  mb-10 items-center">
+          <svg
+            onClick={() => {
+              window.history.back();
+            }}
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+            />
+          </svg>
+          <h2 className="text-2xl font-bold ">Preference</h2>
+        </div>
 
         <OptionInput
           value={preferences.jobType}

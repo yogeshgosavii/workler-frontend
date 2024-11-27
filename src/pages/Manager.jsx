@@ -467,9 +467,11 @@ function Manager() {
         <div className=" mt-5 w-full sm:w-fit ">
           <Employment
             job={selectedJob}
+            setApproaches={setApproaches}
             applications={applications.filter(
               (application) => application.job._id == selectedJob?._id
             )}
+            setApplications={setApplications}
             approaches={approaches?.filter(
               (application) => application.job._id == selectedJob?._id
             )}

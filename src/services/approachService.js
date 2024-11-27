@@ -98,6 +98,23 @@ const approachService = {
       throw error; // Throw the error to handle it in the component
     }
   },
+
+  deleteApproach: async (approachId) => {
+    try {
+      const response = await fetch(`${API_URL}/${approachId}`, {
+        method: "DELETE",
+        headers: setAuthHeaders(getToken()),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete approach");
+      }
+      const data = await response.json();
+      return data; // Return the confirmation or additional data from the API response
+    } catch (error) {
+      console.error("Error in deleting approach:", error);
+      throw error; // Throw the error to handle it in the component
+    }
+  },
  
 };
 

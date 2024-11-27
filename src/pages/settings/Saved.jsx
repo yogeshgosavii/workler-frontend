@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 function Saved() {
   const [selectedTab, setSelectedTab] = useState("Posts");
   const jobService = useJobApi();
-  const currentUser = useSelector(state => state.auth.user)
+  const currentUser = useSelector((state) => state.auth.user);
   const [savedItems, setSavedItems] = useState({
     posts: [],
     profiles: [],
@@ -24,8 +24,8 @@ function Saved() {
   const [loading, setLoading] = useState(true);
   const [unsavedItems, setUnsavedItems] = useState([]); // Track unsaved items
   useEffect(() => {
-    document.title = "User saveds "  
- }, []);
+    document.title = "User saveds ";
+  }, []);
   // Fetch saved data based on the selected tab
   useEffect(() => {
     setLoading(true);
@@ -104,17 +104,14 @@ function Saved() {
 
   const renderPosts = () => (
     <div className="flex flex-col gap-4">
-      {
-          savedItems.posts.length <=0 && <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
-          <p className="text-2xl font-bold text-gray-500">
-            No Saved Posts 
-          </p>
+      {savedItems.posts.length <= 0 && (
+        <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+          <p className="text-2xl font-bold text-gray-500">No Saved Posts</p>
           <p className="mt-1 text-gray-400">
-            Your saved posts will appear here once you've save
-            them.
+            Your saved posts will appear here once you've save them.
           </p>
         </p>
-        }
+      )}
       {savedItems.posts.map((post) => (
         <div
           key={post._id}
@@ -205,23 +202,20 @@ function Saved() {
             </div>
           ) : post.saved_content?.images ? (
             post?.saved_content?.images?.compressedImage[0] && (
-   
-                <div
-                  style={{ overflowX: "auto", scrollbarWidth: "none" }}
-                  className="mt-2 flex mb-4 flex-col relative w-full  transition-all  duration-300 overflow-x-auto flex-1"
-                >
-                  {post?.saved_content.images?.compressedImage[0] && (
-                    <ImageCarousel
-                      dots={false}
-                      edges=""
-                      className="h-full  flex-grow w-full px-5"
-                      gap={2}
-                      images={post.saved_content.images?.originalImage}
-                      />
-                  )}
-                 
-                </div>
-            
+              <div
+                style={{ overflowX: "auto", scrollbarWidth: "none" }}
+                className="mt-2 flex mb-4 flex-col relative w-full  transition-all  duration-300 overflow-x-auto flex-1"
+              >
+                {post?.saved_content.images?.compressedImage[0] && (
+                  <ImageCarousel
+                    dots={false}
+                    edges=""
+                    className="h-full  flex-grow w-full px-5"
+                    gap={2}
+                    images={post.saved_content.images?.originalImage}
+                  />
+                )}
+              </div>
             )
           ) : (
             <p
@@ -251,10 +245,10 @@ function Saved() {
             </div>
             {true ? (
               <svg
-              onClick={(e) => {
-                e.stopPropagation();
-                handleUnsave(post, "posts");
-              }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleUnsave(post, "posts");
+                }}
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 fill="currentColor"
@@ -296,99 +290,93 @@ function Saved() {
 
   const renderProfiles = () => (
     <div className=" sm:px-0 grid grid-cols-1 w-full gap-4">
-        {
-          savedItems.profiles.length <=0 && <p className="max-w-xl w-full pt-20 text-center sm:h-full h-fit px-6 md:px-6">
-          <p className="text-2xl font-bold text-gray-500">
-            No Saved Profiles 
-          </p>
+      {savedItems.profiles.length <= 0 && (
+        <p className="max-w-xl w-full pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+          <p className="text-2xl font-bold text-gray-500">No Saved Profiles</p>
           <p className="mt-1 text-gray-400">
-            Your saved profiles will appear here once you've save
-            them.
+            Your saved profiles will appear here once you've save them.
           </p>
         </p>
-        }
-    <div className="px-4 sm:px-0 grid grid-cols-2 w-full gap-4">
-    {savedItems.profiles.map((profile) => (
-        <div
-          key={profile._id}
-          onClick={() => {
-            navigate("/user/" + profile.saved_content?._id);
-          }}
-          className={`border relative flex flex-col justify-between  p-3 w-full  rounded-xl ${
-            unsavedItems.includes(profile._id) ? "animate-unsave" : ""
-          }`}
-        >
-          <div className=" gap-2 flex flex-col  w-full items-center">
-            <UserImageInput
-              imageHeight={90}
-              image={profile.saved_content.profileImage?.compressedImage[0]}
-              isEditable={false}
-            />
-            <div>
-              {profile.saved_content.company_details && (
-                <p className="font-semibold text-center">
-                  {profile.saved_content.company_details?.company_name}
-                </p>
-              )}
-              {profile.saved_content.personal_details &&
-                profile.saved_content.personal_details && (
+      )}
+      <div className="px-4 sm:px-0 grid grid-cols-2 w-full gap-4">
+        {savedItems.profiles.map((profile) => (
+          <div
+            key={profile._id}
+            onClick={() => {
+              navigate("/user/" + profile.saved_content?._id);
+            }}
+            className={`border relative flex flex-col justify-between  p-3 w-full  rounded-xl ${
+              unsavedItems.includes(profile._id) ? "animate-unsave" : ""
+            }`}
+          >
+            <div className=" gap-2 flex flex-col  w-full items-center">
+              <UserImageInput
+                imageHeight={90}
+                image={profile.saved_content.profileImage?.compressedImage[0]}
+                isEditable={false}
+              />
+              <div>
+                {profile.saved_content.company_details && (
                   <p className="font-semibold text-center">
-                    {`${profile.saved_content.personal_details?.firstname} ${profile.saved_content.personal_details?.lastname}`}
+                    {profile.saved_content.company_details?.company_name}
                   </p>
                 )}
-              <p className="text-gray-400 text-center">
-                {profile.saved_content?.username}
-              </p>
+                {profile.saved_content.personal_details &&
+                  profile.saved_content.personal_details && (
+                    <p className="font-semibold text-center">
+                      {`${profile.saved_content.personal_details?.firstname} ${profile.saved_content.personal_details?.lastname}`}
+                    </p>
+                  )}
+                <p className="text-gray-400 text-center">
+                  {profile.saved_content?.username}
+                </p>
+              </div>
             </div>
-          </div>
-          {/* <Button
+            {/* <Button
           className="border w-full mt-3 bg-gray-100 text-gray-500"
           onClick={() => handleUnsave(profile, "profiles")}
         >
           Unsave
         </Button> */}
-          {true && (
-            <div
-              // onClick={() => handleRemoveImage(image)}
-              className="absolute top-4 right-4  cursor-pointer"
-            >
-              <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
-              <svg
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleUnsave(profile, "profiles");
-                }}
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                fill="currentColor"
-                className="h-4 w-4 text-gray-100  absolute top-[9px] right-2 z-10"
-                viewBox="0 0 16 16"
+            {true && (
+              <div
+                // onClick={() => handleRemoveImage(image)}
+                className="absolute top-4 right-4  cursor-pointer"
               >
-                <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
-              </svg>
-            </div>
-          )}
-        </div>
-      ))}
-     </div>
+                <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
+                <svg
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUnsave(profile, "profiles");
+                  }}
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  className="h-4 w-4 text-gray-100  absolute top-[9px] right-2 z-10"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M2 2v13.5a.5.5 0 0 0 .74.439L8 13.069l5.26 2.87A.5.5 0 0 0 14 15.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2" />
+                </svg>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 
   const renderJobs = () => {
     return (
       <div className="flex flex-col gap-4">
-        {
-          savedItems.jobs.length <=0 && <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
-          <p className="text-2xl font-bold text-gray-500">
-            No Saved Job 
+        {savedItems.jobs.length <= 0 && (
+          <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+            <p className="text-2xl font-bold text-gray-500">No Saved Job</p>
+            <p className="mt-1 text-gray-400">
+              Your saved jobs will appear here once you've save them.
+            </p>
           </p>
-          <p className="mt-1 text-gray-400">
-            Your saved jobs will appear here once you've save
-            them.
-          </p>
-        </p>
-        }
+        )}
         {savedItems.jobs.map((job) => (
           <JobListItem
             job={job.saved_content}
@@ -649,27 +637,51 @@ function Saved() {
       ></div>
 
       {/* Main Content */}
-      <div className="fixed w-full sm:max-w-lg right-0 flex flex-col gap-5    h-full    py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
+      <div className="fixed w-full sm:max-w-lg right-0 flex flex-col gap-5 h-full py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
         <div className=" ">
-          <h2 className="text-2xl font-bold mb-5 -mt-px px-4 sm:px-6">
-            Bookmarks
-          </h2>
-
+          <div className="flex gap-5 mb-6 items-center -mt-px px-4 sm:px-6">
+            <svg
+              onClick={() => {
+                window.history.back();
+              }}
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+              />
+            </svg>
+            <h2 className="text-2xl font-bold" >
+              Bookmarks
+            </h2>
+          </div>
           {/* Tab Navigation */}
           <div className="flex w-full gap-3 px-4 sm:px-6">
-            {["Posts", "Profiles", currentUser.account_type == "Candidate"?"Jobs":null].filter(Boolean).map((tab) => (
-              <p
-                key={tab}
-                onClick={() => setSelectedTab(tab)}
-                className={`w-1/3 border cursor-pointer px-2 py-1 rounded-lg font-medium text-center ${
-                  selectedTab === tab
-                    ? "border-gray-800 bg-gray-800 text-white"
-                    : ""
-                }`}
-              >
-                {tab}
-              </p>
-            ))}
+            {[
+              "Posts",
+              "Profiles",
+              currentUser.account_type == "Candidate" ? "Jobs" : null,
+            ]
+              .filter(Boolean)
+              .map((tab) => (
+                <p
+                  key={tab}
+                  onClick={() => setSelectedTab(tab)}
+                  className={`w-1/3 border cursor-pointer px-2 py-1 rounded-lg font-medium text-center ${
+                    selectedTab === tab
+                      ? "border-gray-800 bg-gray-800 text-white"
+                      : ""
+                  }`}
+                >
+                  {tab}
+                </p>
+              ))}
           </div>
         </div>
 

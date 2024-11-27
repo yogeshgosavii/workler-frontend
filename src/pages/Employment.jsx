@@ -15,8 +15,9 @@ import interviewService from "../services/interviewService";
 import applicationService from "../services/applicationService";
 import { formatDistanceToNow } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import ApplicationApproachSettings from "../components/ApplicationApproachSettings";
 
-function Employment({ job, applications, approaches }) {
+function Employment({ job, applications,setApplications, approaches ,setApproaches}) {
   const currentUser = useSelector((state) => state.auth.user);
   const [innerTab, setInnerTab] = useState("approach");
   const [loading, setLoading] = useState({
@@ -31,6 +32,9 @@ function Employment({ job, applications, approaches }) {
   const [interviewList, setInterviewList] = useState();
   const [interviewCreateLoading, setInterviewCreateLoading] = useState(false);
   const [autoGenerateMeetLink, setautoGenerateMeetLink] = useState(false);
+  const [applicationSetting, setApplicationSetting] = useState(null);
+  const [approachSetting, setApproachSetting] = useState(null);
+
   const navigate = useNavigate();
 
   const profileService = useProfileApi();
@@ -224,6 +228,7 @@ function Employment({ job, applications, approaches }) {
                   onClick={() => handleProfileSelect(approach.user._id)}
                   className="border-b sm:border p-3 py-5 "
                 >
+                  <div className="flex justify-between gap-4">
                   <div className="flex gap-4 mb-3">
                     <UserImageInput
                       isEditable={false}
@@ -248,6 +253,26 @@ function Employment({ job, applications, approaches }) {
                       </p> */}
                     </div>
                   </div>
+                  <svg
+                      onClick={() => {
+                        setApplicationSetting(application);
+                      }}
+                      className="h-6 w-6 mt-px  text-gray-500"
+                      width="26"
+                      height="26"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      stroke="currentColor"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" />
+                      <circle cx="12" cy="12" r="1" />
+                      <circle cx="12" cy="19" r="1" />
+                      <circle cx="12" cy="5" r="1" />
+                    </svg>
+                    </div>
                   {/* <p className="mt-3 mb-2 text-purple-500 w-fit text-sm rounded-md">
                     Approached for{" "}
                     <span className="font-medium">{approach.job.job_role}</span>
@@ -386,8 +411,8 @@ function Employment({ job, applications, approaches }) {
                   onClick={() => handleProfileSelect(application.user)}
                   className="border-b  p-3 flex flex-col gap-2 "
                 >
-                  <div>
-                    <div className="flex gap-4 mb-2">
+                  <div className="flex justify-between w-full  gap-4 ">
+                    <div className="flex gap-4 mb-2 w-full ">
                       <UserImageInput
                         isEditable={false}
                         image={application.user.profileImage.compressedImage}
@@ -413,7 +438,25 @@ function Employment({ job, applications, approaches }) {
                         </p>
                       </div>
                     </div>
-                    <p>{}</p>
+                    <svg
+                      onClick={() => {
+                        setApplicationSetting(application);
+                      }}
+                      className="h-6 w-6 mt-px  text-gray-500"
+                      width="26"
+                      height="26"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      stroke="currentColor"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" />
+                      <circle cx="12" cy="12" r="1" />
+                      <circle cx="12" cy="19" r="1" />
+                      <circle cx="12" cy="5" r="1" />
+                    </svg>
                   </div>
                   <div
                     onClick={() => {
@@ -625,7 +668,22 @@ function Employment({ job, applications, approaches }) {
   return (
     <div className="w-full flex gap-4  sm:max-w-lg">
       {/* {showInterviewForm && ( */}
+     
       <div className=" fixed h-fit sm:left-[69px] left-0   z-50 -mt-5">
+      <ApplicationApproachSettings
+          settings={applicationSetting}
+          setSetting={setApplicationSetting}
+          applicationData={applications}
+          setApplicationData={setApplications}
+          type="application"
+        />
+         <ApplicationApproachSettings
+          settings={approachSetting}
+          setSetting={setApproachSetting}
+          applicationData={approaches}
+          setApplicationData={setApproaches}
+          type="approaches"
+        />
         {showInterviewForm && (
           <div
             onClick={() => setShowInterviewForm(null)}

@@ -174,9 +174,10 @@ function UserProfileView({ userId = useParams().userId }) {
 
         setFollowers(followerResponse);
         setFollowings(followingResponse.length);
+
         setIsFollowing(
           followerResponse.some(
-            (follow) => follow.user._id === currentUserDetails._id
+            (follow) => follow.following._id === userId
           )
         );
         setFollowLoading(false);
