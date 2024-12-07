@@ -429,8 +429,10 @@ function JobApplication() {
                     <p className="text-red-500 text-sm">Approach declined</p>
                   )}
                    <svg
-                      onClick={() => {
-                        setApplicationSetting(application);
+                      onClick={(e) => {
+                        e.stopPropagation()
+
+                        setApproachSetting(approach);
                       }}
                       className="h-6 w-6 text-gray-500"
                       width="26"
@@ -591,7 +593,8 @@ function JobApplication() {
                       </div>
                     </div>
                     <svg
-                      onClick={() => {
+                      onClick={(e) => {
+                      e.stopPropagation()
                         setApplicationSetting(application);
                       }}
                       className="h-6 w-6 mt-px text-gray-500"

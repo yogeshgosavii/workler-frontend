@@ -128,21 +128,21 @@ function Manager() {
   switch (innerTab) {
     case "jobs":
       content = (
-        <div className="flex flex-col ">
+        <div className="flex flex-col bfw">
           {jobs.map((job) => (
             <div
               key={job._id}
               onClick={() => {
                 setSelectedJob(job);
               }}
-              className="text-sm bg-gray-50 border p-3 px-4 rounded-lg"
+              className="text-sm bg-white border p-3 px-4 rounded-xl"
             >
               <p className="font-medium text-lg">{job.job_role}</p>
               <p className="text-gray-500">{job.location?.address}</p>
               {applications.filter(
                 (application) => application.job._id == job._id
               ).length > 0 && (
-                <div className="bg-white mt-2 flex justify-between p-2 rounded-md border">
+                <div className="bg-purple-50 border-purple-500 mt-2 flex justify-between p-2 rounded-md border">
                   <div>
                     <p>Applications</p>
                     <p className="text-sm text-gray-400">
@@ -177,7 +177,7 @@ function Manager() {
               )}
               {approaches.filter((approach) => approach.job._id == job._id)
                 .length > 0 && (
-                <div className="bg-white mt-2 flex justify-between p-2 px-3 rounded-lg border">
+                <div className="bg-amber-50 border-amber-500 mt-2 flex justify-between p-2 px-3 rounded-lg border">
                   <div>
                     <p className="font-medium">Approaches</p>
                     <p className="text-sm text-gray-400">
@@ -402,9 +402,9 @@ function Manager() {
   // }
 
   return (
-    <div className="flex gap-6 bg-white h-full w-full justify-center">
+    <div className="flex gap-6  h-full w-full justify-center">
       <div
-        className={`flex px-4 md:px-6 mt-3 max-w-lg flex-col w-full ${
+        className={`flex px-4 md:px-6 mt-3 max-w-lg  flex-col w-full ${
           selectedJob && "hidden lg:block"
         }`}
       >
@@ -464,7 +464,7 @@ function Manager() {
         </div>
       </div>
       {selectedJob && (
-        <div className=" mt-5 w-full sm:w-fit ">
+        <div className=" mt-3 w-full  ">
           <Employment
             job={selectedJob}
             setApproaches={setApproaches}

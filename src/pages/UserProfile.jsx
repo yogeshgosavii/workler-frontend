@@ -672,13 +672,13 @@ const UserProfile = () => {
                   {atTop >= 100 && (
                     <UserImageInput
                       isEditable={false}
-                      image={userDetails.profileImage?.compressedImage}
+                      image={userDetails.profileImage?.compressedImage || userDetails?.profileImage || profileImageDefault}
                       imageHeight="40"
                     />
                   )}
                   <div className="flex flex-col justify-center">
                     <p className="text-xl font-semibold -mt-0.5">
-                      {atTop >= 100 ? userDetails.username : <p className="text-2xl">Profile</p>}
+                      {atTop >= 100 ? userDetails.username : <p className="text-2xl py-[5px]">Profile</p>}
                     </p>
                     {/* <div className="flex gap-1 mt-0.5 items-center">
                       <span className="h-2 w-2 rounded-full shadow-lg bg-green-500"></span>
@@ -802,7 +802,7 @@ const UserProfile = () => {
                   </div>
                 ) : (
                   <div className="mt-2 flex relative  flex-col ">
-                    <div className="flex mb-4 mt-1  w-full gap-4  items-center">
+                    <div className="flex mb-4 mt-3  w-full gap-4  items-center">
                       <UserImageInput
                         onClick={() => {
                           if (userDetails?.profileImage) {
@@ -870,7 +870,7 @@ const UserProfile = () => {
                       ) : (
                         <div
                           onClick={() => setFormType("userDetails")}
-                          className=" text-sm font-normal text-gray-300 px-2 py-1 rounded-lg border w-fit  border-dashed"
+                          className=" text-sm font-normal text-gray-300 px-2 py-1 mt-3 rounded-lg border w-fit  border-dashed"
                         >
                           Add a bio +
                         </div>

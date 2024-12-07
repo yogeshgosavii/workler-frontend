@@ -12,6 +12,8 @@ import profileImageDefault from "../../assets/user_male_icon.png";
 import authService from "../../services/authService";
 import { useDispatch } from "react-redux";
 import { updateUserDetails } from "../../features/auth/authSlice";
+import imageCompression from 'browser-image-compression';
+
 
 function UserDetailsForm({ onClose, setData, data }) {
   const [loading, setLoading] = useState(false);
@@ -103,33 +105,55 @@ function UserDetailsForm({ onClose, setData, data }) {
     return flattened;
   }
 
-  const handleUpdateUserDetails = async () => {
-    let newFormData = new FormData();
-    const flattenedData = flattenObject(formData);
 
-    Object.keys(flattenedData).forEach((key) => {
-      if (key === "profileImage") {
-        // Wrap the image in an array for consistency with multiple image uploads
-        newFormData.append("files", formData.profileImage);
-      } else {
-        newFormData.append(key, flattenedData[key]);
-      }
-    });
+const handleUpdateUserDetails = async () => {
+  let newFormData = new FormData();
+  const flattenedData = flattenObject(formData);
 
-    setLoading(true);
+  // Check if there is a profile image and compress it
+  if (formData.profileImage) {
+    const file = formData.profileImage;
+
+    // Compression options: set max size to 150KB
+    const options = {
+      maxSizeMB: 0.05, // Max size in MB (150KB = 0.15MB)
+      maxWidthOrHeight: 1024, // Max width or height
+      useWebWorker: true, // Use web worker for faster compression
+    };
+
     try {
-      const updatedData = await authService.updateUserDetails(newFormData);
-      setData(formData);
-      console.log(formData);
+      // Compress the image
+      const compressedImage = await imageCompression(file, options);
 
-      dispatch(updateUserDetails(updatedData));
-      onClose();
+      // Append the compressed image to the form data
+      newFormData.append('files', compressedImage);
     } catch (error) {
-      setError("Failed to update user details");
-    } finally {
-      setLoading(false);
+      console.error('Error during image compression:', error);
     }
-  };
+  }
+
+  // Add other form data
+  Object.keys(flattenedData).forEach((key) => {
+    if (key !== 'profileImage') {  // Skip the profile image since it's already handled
+      newFormData.append(key, flattenedData[key]);
+    }
+  });
+
+  setLoading(true);
+  try {
+    const updatedData = await authService.updateUserDetails(newFormData);
+    setData(formData);
+    console.log(formData);
+
+    dispatch(updateUserDetails(updatedData));
+    onClose();
+  } catch (error) {
+    setError('Failed to update user details');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleAddTags = () => {
     if (

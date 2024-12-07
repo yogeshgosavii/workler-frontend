@@ -110,7 +110,7 @@ function UserProfileView({ userId = useParams().userId }) {
     const fetchJobData = async () => {
       setLoading((prev) => ({ ...prev, jobData: true }));
       try {
-        const response = await jobService.job.getByUserIds(userId);
+        const response = await jobService.job.getByUserIds(currentUserDetails._id);
         setcurrentUserJobData(response);
       } catch (error) {
         console.error("Failed to fetch job details", error);
@@ -177,7 +177,7 @@ function UserProfileView({ userId = useParams().userId }) {
 
         setIsFollowing(
           followerResponse.some(
-            (follow) => follow.following._id === userId
+            (follow) => follow.user._id === currentUserDetails._id
           )
         );
         setFollowLoading(false);
@@ -544,41 +544,31 @@ function UserProfileView({ userId = useParams().userId }) {
   };
   return (
     <div className=" flex gap-8 sm:p-10 sm:py-6 bg-gray-50 h-full  w-full justify-center">
-      {showProfileImage && (
+      {(showProfileImage ||approaching ) && (
         <div
           onClick={() => {
             setShowProfileImage(false);
+            setApproaching(false)
           }}
           className={`h-screen  w-full top-0 absolute inset-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60      z-50  `}
         ></div>
       )}
-      <div
-        ref={profileRef}
-        style={{
-          scrollbarWidth: "none",
-        }}
-        className={`${
-          !userId && "hidden"
-        } max-w-xl w-full flex-1 transition-all  ${
-          approaching ? "overflow-y-hidden" : "overflow-y-auto"
-        }  flex-grow sm:rounded-3xl ${showProfileImage && "pointer-events"}`}
-      >
-        {approaching && currentUserJobData && (
+      {approaching && currentUserJobData && (
           <div
-            className={`absolute sm:w-[50%] flex flex-col gap-4 px-4 md:px-6 py-4 w-full md:w-[53%] transition-all ${
-              !approaching ? "translate-y-full" : "translate-y-0"
-            } h-full z-30   border  bg-white`}
+            className={`absolute  shadow-xl flex flex-col  gap-4 px-4 md:px-6 py-4 w-full transition-all ${
+              !approaching ? "" : "translate-y-0"
+            } z-50 sm:top-1/4 md:left-auto left-0 md:max-w-2xl sm:h-fit sm:max-h-82 overflow-y-auto h-full   sm:border  bg-white`}
           >
             <div className="flex justify-between gap-4">
               <p className="mb-5 text-lg font-medium">
                 {" "}
-                Approch the user for one the following job
+                Jobs listed
               </p>
               <svg
                 onClick={() => {
                   setApproaching(false);
                 }}
-                className="h-8 w-8 text-gray-800 pointer-events-auto transition-all duration-500 ease-in-out transform"
+                className="h-6 w-6 text-gray-800 pointer-events-auto transition-all duration-500 ease-in-out transform"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -629,6 +619,18 @@ function UserProfileView({ userId = useParams().userId }) {
             ))}
           </div>
         )}
+      <div
+        ref={profileRef}
+        style={{
+          scrollbarWidth: "none",
+        }}
+        className={`${
+          !userId && "hidden"
+        } max-w-xl w-full flex-1 transition-all  ${
+          approaching ? "overflow-y-hidden" : "overflow-y-auto"
+        }  flex-grow sm:rounded-3xl ${showProfileImage && "pointer-events"}`}
+      >
+        
 
         <div className="flex relative  flex-wrap">
           <div
@@ -795,10 +797,11 @@ function UserProfileView({ userId = useParams().userId }) {
                 } px-2 py-1`}
               >
                 Approached {approached?.status == "declined" && "declined"} for{" "}
-                <span className="font-medium ml-1">
+                <span className=" mx-1">
                   {" "}
-                  {approached?.job?.job_role}
+                  {approached?.job?.job_role} 
                 </span>
+                {"   "} role
                 {/* <p className="text-sm text-gray-400 truncate line-clamp-2 text-wrap">{approached?.job?.description}</p> */}
               </p>
             )}

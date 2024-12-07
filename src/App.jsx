@@ -19,6 +19,7 @@ const App = () => {
   const navigate = useNavigate(); // Create a navigate function
 
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+  console.log(location.pathname.split("/"))
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -100,12 +101,12 @@ const App = () => {
             navigate("home");
           }}
           className={`w-1/5 h-full sm:w-fit    px-5 py-3 sm:py-5 text-center flex justify-center items-center ${
-            activeTab === "home"
+              location.pathname.split("/")[1] == "home"
               ? "text-gray-800  bg-blue-50"
               : "text-gray-400 sm:hover:bg-gray-100"
           }`}
         >
-          {activeTab === "home" ? (
+          {location.pathname.split("/")[1] == "home" ? (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"

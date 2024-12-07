@@ -221,12 +221,12 @@ function Employment({ job, applications,setApplications, approaches ,setApproach
           {loading.approachList ? (
             renderSkeleton()
           ) : approaches.length > 0 ? (
-            <div className="flex flex-col  gap-4">
+            <div className="grid w-full -mt-5 sm:-mt-0 md:grid-cols-2 gap-4">
               {approaches.map((approach) => (
                 <div
                   key={approach._id}
                   onClick={() => handleProfileSelect(approach.user._id)}
-                  className="border-b sm:border p-3 py-5 "
+                  className="border-b bg-white sm:border sm:rounded-xl   p-5 "
                 >
                   <div className="flex justify-between gap-4">
                   <div className="flex gap-4 mb-3">
@@ -255,7 +255,7 @@ function Employment({ job, applications,setApplications, approaches ,setApproach
                   </div>
                   <svg
                       onClick={() => {
-                        setApplicationSetting(application);
+                        setApproachSetting(approach);
                       }}
                       className="h-6 w-6 mt-px  text-gray-500"
                       width="26"
@@ -278,9 +278,12 @@ function Employment({ job, applications,setApplications, approaches ,setApproach
                     <span className="font-medium">{approach.job.job_role}</span>
                   </p> */}
                   {approach.status === "approached" ? (
-                    <p className="text-yellow-600 text-sm">
-                      Haven't replied yet
+                   <div>
+                     <p className="text-blue-600 bg-blue-50 px-4 rounded-lg w-fit py-1">
+                     Approach sent
                     </p>
+                    {/* <p className="text-sm text-gray-400">Update from the candidate will be shown here</p> */}
+                    </div>
                   ) : approach.status === "accepted" ? (
                     <div className="bg-gray-50 border gap-2 flex  justify-between items-center text-sm  rounded-lg text-gray-500">
                       <p className=" px-4 font-medium truncate">
@@ -386,7 +389,7 @@ function Employment({ job, applications,setApplications, approaches ,setApproach
               ))}
             </div>
           ) : (
-            <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+            <p className=" pt-20 text-center sm:h-full h-fit px-6 md:px-6">
               <p className="text-2xl font-bold text-gray-500">
                 No approcahes yet
               </p>
@@ -647,7 +650,7 @@ function Employment({ job, applications,setApplications, approaches ,setApproach
               ))}
             </div>
           ) : (
-            <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+            <p className=" pt-20 text-center sm:h-full h-fit px-6 md:px-6">
               <p className="text-2xl font-bold text-gray-500">
                 No Job Applications Yet
               </p>
@@ -666,7 +669,7 @@ function Employment({ job, applications,setApplications, approaches ,setApproach
   }
 
   return (
-    <div className="w-full flex gap-4  sm:max-w-lg">
+    <div className="w-full flex gap-4 ">
       {/* {showInterviewForm && ( */}
      
       <div className=" fixed h-fit sm:left-[69px] left-0   z-50 -mt-5">
@@ -838,8 +841,8 @@ function Employment({ job, applications,setApplications, approaches ,setApproach
         </div>
       </div>
       {/* )} */}
-      <div className=" w-full sm:pr-5">
-        <div className="flex flex-col mb-5 fixed left-0 z-40  md:-mt-0  -mt-6 w-full sm:static p-4 border sm:rounded-xl bg-gray-50">
+      <div className=" w-full sm:pr-5 sm:ml-5 ">
+        <div className="flex flex-col mb-5 bg-amber-50 border-amber-500  left-0 z-40  md:-mt-0  -mt-6  sm:static p-4 border-b sm:border sm:rounded-xl ">
           <p className="font-medium text-xl">{job?.job_role}</p>
           <p className="text-sm text-gray-500 truncate text-wrap max-w-full">
             {job?.location.address}
@@ -848,20 +851,20 @@ function Employment({ job, applications,setApplications, approaches ,setApproach
             <div className="flex gap-4 ">
               <p
                 onClick={() => setInnerTab("approach")}
-                className={`px-3 cursor-pointer py-1.5 rounded-lg border bg-gray-50   ${
+                className={`px-3 cursor-pointer py-1.5 rounded-lg     ${
                   innerTab === "approach"
-                    ? " bg-white font-medium  border-gray-200 "
-                    : "border-gray-50"
+                    ? " bg-gray-800 text-white font-medium   "
+                    : ""
                 }`}
               >
                 Approaches
               </p>
               <p
                 onClick={() => setInnerTab("applications")}
-                className={`px-3 cursor-pointer py-1.5 rounded-lg border  ${
+                className={`px-3 cursor-pointer py-1.5 rounded-lg   ${
                   innerTab === "applications"
-                    ? " font-medium bg-white   border-gray-200 "
-                    : "border-gray-50"
+                    ? " font-medium bg-gray-800 text-white "
+                    : ""
                 }`}
               >
                 Applications
@@ -870,7 +873,7 @@ function Employment({ job, applications,setApplications, approaches ,setApproach
           </div>
         </div>
 
-        <div className="mt-28  w-full sm:mt-0">{content}</div>
+        <div className="  w-full sm:mt-0">{content}</div>
       </div>
     </div>
   );

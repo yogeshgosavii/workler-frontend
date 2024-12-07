@@ -125,7 +125,9 @@ function PostForm({ userDetails, setData, onClose }) {
         // const user = await authservice.updateUserDetails({...});
       }
   
-      navigate("/profile", { replace: true }); // Navigate after successful submission
+      navigate("/profile", { replace: true });
+      navigate(0)
+      // Navigate after successful submission
       setFormData({ content: "", images: [] });
       setImages([]);
     } catch (error) {
