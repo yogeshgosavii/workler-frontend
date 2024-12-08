@@ -425,14 +425,14 @@ function EducationUpdateForm({
       className=" z-20 flex flex-col w-full   sm:max-h-96 overflow-auto h-full  bg-white pt-2 pb-6 px-4 sm:px-8 rounded-sm"
       onClick={(e) => e.stopPropagation()}
     >
-       <div className="sticky z-20 -top-2.5 py-4  border border-white bg-white">
+       <div className="sticky z-20 border-b  -top-2.5 -mt-[5px] py-4 flex gap-2   bg-white">
          <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="currentColor"
-          class="size-8"
+          class="size-8 shrink-0 -ml-2.5"
           onClick={() => {
-            window.history.back();
+            onClose()
           }}
         >
           <path
@@ -449,7 +449,7 @@ function EducationUpdateForm({
       </div>
        </div>
 
-      <div className="flex-1 pt-1.5">{renderEducationUpdateForm()}</div>
+      <div className="flex-1 pt-5">{renderEducationUpdateForm()}</div>
       <div className="flex justify-between items-center mt-12 w-full">
         <svg
           onClick={onDelete}

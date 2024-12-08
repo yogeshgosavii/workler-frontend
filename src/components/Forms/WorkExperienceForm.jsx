@@ -525,14 +525,14 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
 
   return (
     <form className="bg-white pt-2 pb-6 px-4 sm:px-8 rounded-sm flex flex-col w-full h-full md:max-h-[80vh] max-h-[100vh] overflow-y-auto">
-       <div className="flex gap-3 flex-nowrap  sticky -top-2.5 py-4 z-20 bg-white">
+       <div className="flex gap-3 flex-nowrap  sticky -top-2.5 -mt-[5px] py-4 z-20 bg-white">
        <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="currentColor"
-          class="size-8"
+          class="size-8 shrink-0 -ml-2.5"
           onClick={() => {
-            window.history.back();
+            onClose()
           }}
         >
           <path

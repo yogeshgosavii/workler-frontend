@@ -86,30 +86,25 @@ function UserPostedJobs({
             />
             <div className="-mt-1">
               <p className="text-lg font-semibold">{job.job_role}</p>
-              <p className="text-xs text-gray-800 text-wrap">
+              <p className="text-sm text-gray-600 text-wrap">
                 {job.location?.address}
               </p>
-              {job.updatedAt ? (
-                <p className="text-xs mt-0.5 text-gray-400">
-                  Updated{" "}
-                  {formatDistanceToNow(
-                    new Date(job.updatedAt || job.job_post_date),
-                    {
-                      addSuffix: true,
-                    }
-                  )}
-                </p>
-              ) : (
-                <p className="text-xs mt-0.5 text-gray-400">
-                  {/* Posted{" "}
-                  {formatDistanceToNow(
-                    new Date(job.createdAt || job.job_post_date),
-                    {
-                      addSuffix: true,
-                    }
-                  )} */}
-                </p>
-              )}
+              <p className="text-xs text-gray-400">
+              {/* Posted on{" "} */}
+              {new Date(job.createdAt).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })}{" "}
+              {/* at{" "}
+              <span>
+                {new Date(job.createdAt).toLocaleTimeString("en-GB", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })}
+              </span> */}
+            </p>
             </div>
           </div>
           {isEditable && (

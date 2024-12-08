@@ -41,7 +41,7 @@ function CommentButton({ onClick, comments = [],commentId, postData, className, 
       setTimeout(() => setClicked(false), 400);  // Reset clicked state after animation
     }, 300);
 
-    onClick();  // Call the passed onClick function for the parent component
+    // onClick();  // Call the passed onClick function for the parent component
   };
 
   return (

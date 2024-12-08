@@ -41,7 +41,6 @@ function Posts({
   const [postSettings, setPostSettings] = useState(null);
   const [postMentions, setPostMentions] = useState(null);
 
-
   const handleCommentButtonClick = (index) => {
     setCommentButtonClicked(commentButtonClicked === index ? null : index);
   };
@@ -405,7 +404,7 @@ function Posts({
                       }}
                       className="relative w-full flex flex-col"
                     >
-                      {post.mentions.length > 0 &&
+                      {/* {post.mentions.length > 0 &&
                         !post.images &&
                         post.post_type === "job" && (
                           // <svg
@@ -443,7 +442,7 @@ function Posts({
                               <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                             </svg>
                           </div>
-                        )}
+                        )} */}
                       <div
                         style={{
                           display: "flex",
@@ -469,10 +468,9 @@ function Posts({
                                   scrollSnapAlign: "start", // Snap to the start of each item
                                   minWidth: "100%", // Ensure items take full width
                                 }}
-                                onClick={(e)=>{
-                                  window.open("/job/"+job._id,"_blank")
-                                  e.stopPropagation()
-
+                                onClick={(e) => {
+                                  window.open("/job/" + job._id, "_blank");
+                                  e.stopPropagation();
                                 }}
                                 className="mt-2 border p-5 w-full rounded-2xl flex flex-col justify-between flex-shrink-0"
                               >
@@ -530,6 +528,22 @@ function Posts({
                         // setPostData={setPostData}
                       />
                     </div>
+                     
+                        {/* <div className="absolute w-5 h-5 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div> */}
+                        <svg
+                         onClick={(e) => {
+                          e.stopPropagation();
+                          setPostMentions(post.mentions);
+                        }}
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          fill="currentColor"
+                          className="h-6 w-6 text-gray-800 border p-1 rounded-full border-gray-800    right-2 z-10"
+                          viewBox="0 0 16 16"
+                        >
+                          <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                        </svg>
                   </div>
                   {post.comments_count > 0 && (
                     <div className=" text-sm z-10">

@@ -517,14 +517,14 @@ function EducationForm({ onClose, setData, data }) {
         onSubmit={onSave}
         className="flex flex-col  gap-4 flex-grow  w-full"
       >
-        <div className="flex gap-3 py-4 sticky z-40 -top-2.5 bg-white">
+        <div className="flex gap-3 py-4 sticky z-40  -top-2.5 -mt-[5px]  bg-white">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="currentColor"
-          class="size-8"
+          class="size-8 shrink-0 -ml-2.5"
           onClick={() => {
-            window.history.back();
+            onClose()
           }}
         >
           <path

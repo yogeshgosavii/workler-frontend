@@ -107,14 +107,14 @@ function PersonalDetailsForm({ onClose, data, setData }) {
   return (
     <div className="h-full flex  sm:max-h-[450px] flex-col gap-6 pt-2 pb-6 overflow-auto bg-white">
       <div className="">
-      <div className="flex   pl-2 sticky z-20 -top-2.5 py-4 bg-white">
+      <div className="flex   pl-2 sticky z-20 -top-2.5 -mt-[5px] py-4 bg-white">
       <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="currentColor"
-          class="size-8"
+          class="size-8 shrink-0 -ml-2.5"
           onClick={() => {
-            window.history.back();
+            onClose()
           }}
         >
           <path

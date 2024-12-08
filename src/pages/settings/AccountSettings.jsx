@@ -171,7 +171,7 @@ function AccountSettings() {
       ></div>
 
       {/* Modal for Account Settings */}
-      <div className="fixed w-full sm:max-w-lg right-0 text-gray-800   h-full  px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
+      <div className="fixed w-full sm:max-w-lg pb-14 right-0 text-gray-800   h-full  px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
         <div className="flex gap-5 items-center  mb-10">
           <svg
             onClick={() => {

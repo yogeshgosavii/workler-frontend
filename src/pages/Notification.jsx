@@ -41,7 +41,7 @@ function Notification({ userId }) {
       setError(null); // Reset error state before fetching
       try {
         const userNotifications = await getUserNotifications(currentUser._id);
-
+        console.log("list", userNotifications);
         setNotifications(userNotifications);
       } catch (error) {
         console.error("Failed to fetch notifications:", error);
@@ -189,8 +189,7 @@ function Notification({ userId }) {
                   navigate("/post/" + notification.populatedContent[0].post);
                 } else if (notification.notificationType == "approach") {
                   navigate("/job/" + notification.populatedContent[0]._id);
-                }
-                else if (notification.notificationType == "mention") {
+                } else if (notification.notificationType == "mention") {
                   navigate("/post/" + notification.actionId);
                 }
               }}
@@ -204,13 +203,13 @@ function Notification({ userId }) {
                 notification.read
                   ? "bg-white"
                   : notification.notificationType == "like"
-                  ? "bg-red-50 "
+                  ? " border-l-4 border-l-red-400 "
                   : notification.notificationType == "comment" ||
                     notification.notificationType == "reply"
-                  ? "bg-indigo-50 "
+                  ? "border-l-4 border-l-indigo-500"
                   : notification.notificationType == "approach"
-                  ? "bg-blue-50 "
-                  : "bg-gray-50"
+                  ? "border-l-4 border-l-blue-500 "
+                  : "border-l border-l-4-gray-50"
               }`}
             >
               <div className="flex gap-4  h-full  ">
@@ -231,7 +230,8 @@ function Notification({ userId }) {
                         "reply",
                         "approach",
                         "mention",
-                      ].includes(notification.notificationType ) && "bg-white border"
+                      ].includes(notification.notificationType) &&
+                      "bg-white border"
                     } rounded-full  p-1 -right-2`}
                   >
                     {notification.notificationType == "like" ? (
@@ -311,23 +311,13 @@ function Notification({ userId }) {
                   <div className="w-full ">
                     <p
                       className={` ${
-                        notification.read
-                          ? "text-gray-400"
-                          : notification.notificationType == "like"
-                          ? "text-red-400"
-                          : notification.notificationType == "comment"
-                          ? "text-indigo-500"
-                          : notification.notificationType == "reply"
-                          ? "text-indigo-800"
-                          : notification.notificationType == "approach"
-                          ? "text-blue-500"
-                          : "text-gray-400 "
+                        notification.read ? "text-gray-400" : "text-gray-700 "
                       } h-full text-sm`}
                     >
                       {notification.message}{" "}
                     </p>
                     {notification.notificationType == "approach" ? (
-                      <div className="border p-4 bg-white rounded-lg mt-3">
+                      <div className="border-l-4 p-4 bg-gray-50  mt-3">
                         {/* <p className="font-medium">
                           {notification.populatedContent[0].job_role}
                         </p> */}
@@ -338,7 +328,7 @@ function Notification({ userId }) {
                           className={` cursor-pointer hover:bg-gray-50 `}
                         >
                           <div className="flex gap-3">
-                            <UserImageInput
+                            {/* <UserImageInput
                               isEditable={false}
                               imageHeight={40}
                               className="mt-1"
@@ -346,7 +336,7 @@ function Notification({ userId }) {
                                 notification.relatedUser?.profileImage
                                   ?.compressedImage[0]
                               }
-                            />
+                            /> */}
                             <div className="w-full">
                               <div className="flex items-center gap-4">
                                 <h2 className="text-xl font-bold text-black max-w-[700px] ">
@@ -354,22 +344,22 @@ function Notification({ userId }) {
                                 </h2>
                                 {/* Add other job details */}
                               </div>
-                              <div className="flex items-center justify-between gap-2 ">
+                              {/* <div className="flex items-center justify-between gap-2 ">
                                 <p className="text-gray-500 ">
                                   {
                                     notification.populatedContent[0]
                                       .company_name
                                   }
                                 </p>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
 
                           {notification.populatedContent[0].description &&
                             notification.populatedContent[0].description !=
                               "" && (
-                              <div className="flex gap-2 mt-4">
-                                <svg
+                              <div className="flex gap-2">
+                                {/* <svg
                                   className="h-6 w-6 mt-0.5 shrink-0 text-gray-400"
                                   viewBox="0 0 24 24"
                                   strokeWidth="2"
@@ -389,8 +379,8 @@ function Notification({ userId }) {
                                   <line x1="9" y1="7" x2="15" y2="7" />
                                   <line x1="9" y1="11" x2="15" y2="11" />
                                   <line x1="9" y1="15" x2="13" y2="15" />
-                                </svg>
-                                <p className="text-base truncate text-wrap line-clamp-2">
+                                </svg> */}
+                                <p className="text-sm truncate text-wrap text-gray-400 line-clamp-2">
                                   {notification.populatedContent[0].description}
                                 </p>
                               </div>
@@ -399,20 +389,33 @@ function Notification({ userId }) {
                       </div>
                     ) : notification.notificationType == "reply" ||
                       notification.notificationType == "comment" ? (
-                      <div className="p-4 bg-white rounded-lg border mt-4">
-                        <div className="flex gap-3 items-center">
-                          <UserImageInput
+                      <div className="p-4 bg-gray-50 flex gap-4 border-l-4 mt-4">
+                        {/* <UserImageInput
                             isEditable={false}
                             imageHeight={30}
                             image={currentUser.profileImage.compressedImage}
-                          />
-                          <p className="font-medium -mt-2">
+                          /> */}
+                        {/* <p className="font-medium">
                             {currentUser.username}
+                          </p> */}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                          class="size-5 mt-1 text-indigo-500"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M4.848 2.771A49.144 49.144 0 0 1 12 2.25c2.43 0 4.817.178 7.152.52 1.978.292 3.348 2.024 3.348 3.97v6.02c0 1.946-1.37 3.678-3.348 3.97-1.94.284-3.916.455-5.922.505a.39.39 0 0 0-.266.112L8.78 21.53A.75.75 0 0 1 7.5 21v-3.955a48.842 48.842 0 0 1-2.652-.316c-1.978-.29-3.348-2.024-3.348-3.97V6.741c0-1.946 1.37-3.68 3.348-3.97Z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                        <div className="">
+                          <p className=" text-gray-800 font-medium">
+                            {notification.populatedContent[0].content}
                           </p>
+                          <p className="text-gray-400 text-sm">View reply</p>
                         </div>
-                        <p className=" ml-11 -mt-1 text-sm text-gray-400">
-                          {notification.populatedContent[0].content}
-                        </p>
                       </div>
                     ) : null}
                   </div>
@@ -430,7 +433,7 @@ function Notification({ userId }) {
                   e.stopPropagation();
                   setNotificationSettings(notification);
                 }}
-                class="h-6 w-6 text-gray-800 self-start mt-2"
+                class="h-6 w-6 shrink-0 text-gray-800 self-start mt-2"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"

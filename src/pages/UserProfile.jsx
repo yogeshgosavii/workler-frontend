@@ -367,18 +367,45 @@ const UserProfile = () => {
     };
   }, []);
 
-  const handleClose = () => {
-    setFormType(null);
-    window.history.back();
+  const handleBackNavigation = () => {
+    if (formType || updateFormType) {
+      // Clear the selected job and prevent the back navigation
+      setFormType(null);
+      setupdateFormType(null)
+      window.history.pushState(null, null, window.location.pathname);
+    } else {
+      // If no job is selected, allow the default behavior
+      window.history.back();
+    }
   };
 
-  useEffect(() => {
-    if (formType) {
-      window.history.pushState({ formType }, "", `profile/${formType}`);
-    } else {
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, [formType]);
+  // useEffect(() => {
+  //   const handlePopState = (event) => {
+  //     handleBackNavigation();
+  //   };
+
+  //   // Add event listener for popstate
+  //   window.addEventListener("popstate", handlePopState);
+  //   console.log("Hello");
+    
+
+  //   return () => {
+  //     window.removeEventListener("popstate", handlePopState);
+  //   };
+  // }, [formType,updateFormType]);
+
+  const handleClose = () => {
+    setFormType(null);
+    setupdateFormType(null)
+  };
+
+  // useEffect(() => {
+  //   if (formType) {
+  //     window.history.pushState({ formType }, "", `profile/${formType}`);
+  //   } else {
+  //     window.history.replaceState({}, document.title, window.location.pathname);
+  //   }
+  // }, [formType]);
 
   useEffect(() => {
     // Function to handle popstate event
@@ -409,19 +436,19 @@ const UserProfile = () => {
     window.history.replaceState({}, document.title, window.location.pathname);
   };
 
-  useEffect(() => {
-    if (updateFormType) {
-      // Push new state into history with formType
-      window.history.pushState(
-        { updateFormType },
-        "",
-        `profile/${updateFormType}`
-      );
-    } else {
-      // Replace state if no formType is present
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
-  }, [updateFormType]);
+  // useEffect(() => {
+  //   if (updateFormType) {
+  //     // Push new state into history with formType
+  //     window.history.pushState(
+  //       { updateFormType },
+  //       "",
+  //       `profile/${updateFormType}`
+  //     );
+  //   } else {
+  //     // Replace state if no formType is present
+  //     window.history.replaceState({}, document.title, window.location.pathname);
+  //   }
+  // }, [updateFormType]);
 
   const renderTabContent = () => {
     if (loading.userDetails || loading.posts) {
@@ -658,7 +685,7 @@ const UserProfile = () => {
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    class="size-8"
+                    class="size-8 -ml-2.5"
                     onClick={() => {
                       window.history.back();
                     }}
@@ -678,7 +705,7 @@ const UserProfile = () => {
                   )}
                   <div className="flex flex-col justify-center">
                     <p className="text-xl font-semibold -mt-0.5">
-                      {atTop >= 100 ? userDetails.username : <p className="text-2xl py-[5px]">Profile</p>}
+                      {atTop >= 100 ? userDetails.username : <p className="text-2xl -mt-px py-[5px]">Profile</p>}
                     </p>
                     {/* <div className="flex gap-1 mt-0.5 items-center">
                       <span className="h-2 w-2 rounded-full shadow-lg bg-green-500"></span>
@@ -728,7 +755,7 @@ const UserProfile = () => {
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
                       fill="currentColor"
-                      class="size-8"
+                      class="size-8 -ml-2.5"
                       onClick={() => {
                         window.history.back();
                       }}

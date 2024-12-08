@@ -52,14 +52,14 @@ function SkillUpdateForm({ data, onClose, setData }) {
       onSubmit={handleUpdateSkill}
     >
       <div className="flex-1">
-      <div className="flex gap-3">
+      <div className="flex gap-3 -top-2.5 -mt-[5px]">
       <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="currentColor"
-          class="size-8"
+          class="size-8 shrink-0 -ml-2.5"
           onClick={() => {
-            window.history.back();
+            onClose()
           }}
         >
           <path

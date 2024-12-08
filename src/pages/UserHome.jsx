@@ -36,11 +36,8 @@ function UserHome() {
 
       try {
         if (selectedType === "posts") {
-          setContent(posts.filter((post) => post.post_type !== "job"));
-        } else if (selectedType === "job_posts") {
-          // const jobPosts = await jobService.job.getAll();
-          setContent(posts.filter((post) => post.post_type === "job"));
-        } else if (selectedType === "prefered_jobs") {
+          setContent(posts);
+        }  else if (selectedType === "prefered_jobs") {
             try {
               if (currentUser.account_type == "Candidate") {
                 const userPreferences = await getPreference(currentUser._id);
@@ -163,7 +160,7 @@ function UserHome() {
           >
             Posts
           </p>
-          <p
+          {/* <p
             onClick={() => {navigate("job_posts")
               setSelectedType("job_posts")
 
@@ -174,7 +171,7 @@ function UserHome() {
             }`}
           >
             Job posts
-          </p>
+          </p> */}
          {currentUser.account_type == "Candidate" && <p
             onClick={() => {navigate("prefered_jobs")
               setSelectedType("prefered_jobs")

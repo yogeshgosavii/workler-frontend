@@ -440,7 +440,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                       setPostMentions(post.mentions);
                     }}
                   >
-                    <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
+                    {/* <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -450,7 +450,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                       viewBox="0 0 16 16"
                     >
                       <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                    </svg>
+                    </svg> */}
                   </div>
                 )}
               <div
@@ -473,8 +473,8 @@ function PostView({ postId = useParams().postId, index, className }) {
                     return (
                       <div
                         key={job._id}
-                        onClick={()=>{
-                          navigate("/job/"+job._id)
+                        onClick={() => {
+                          navigate("/job/" + job._id);
                         }}
                         style={{
                           flex: "0 0 auto", // Ensure items do not shrink
@@ -550,8 +550,9 @@ function PostView({ postId = useParams().postId, index, className }) {
               </span>
             </p>
           </div>
-          <div className="flex gap-4 mt-2  px-4 sm:px-4 py-1">
-            <p
+          <div className="flex gap-4 justify-between mt-2   px-4 sm:px-4 py-1">
+           <div className="flex gap-4">
+           <p
               onClick={() => setTab("likes")}
               className={`px-3 py-1 cursor-pointer bg rounded-lg font-medium border ${
                 tab === "likes"
@@ -571,50 +572,76 @@ function PostView({ postId = useParams().postId, index, className }) {
             >
               Comments
             </p>
-          </div>
-          {tab == "likes" &&  <div>
-          {likes.length > 0 ? (
-            <div className="flex flex-col gap-1 px-4 pt-5">
-              {likes.map((user) => (
-                <div
-                  onClick={() => {
-                    navigate("/user/" + user.user._id);
-                  }}
-                  className="flex gap-4 items-center cursor-pointer"
-                >
-                  <UserImageInput
-                  imageHeight={45}
-                    image={user.user.profileImage?.compressedImage[0]}
-                    isEditable={false}
-                  />
-                  <div className="-mt-1">
-                    <p className="font-medium text-lg">{user.user.username}</p>
-                    {user.user.personal_details ? (
-                      <p className="text-gray-400 -mt-1">
-                        {user.user.personal_details?.firstname}{" "}
-                        {user.user.personal_details?.lastname}
-                      </p>
-                    ) : (
-                      <p className="text-gray-400 -mt-1">
-                        {user.user.company_details?.company_name}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              ))}
             </div>
-          ) : (
-            <p className="max-w-xl pt-20 pb-20 text-center sm:h-full h-fit px-6 md:px-6">
-              <p className="text-2xl font-bold text-gray-500">
-                No likes Yet
-              </p>
-              <p className="mt-1 text-gray-400">
-                The likes one this post will be shown here 
-              </p>
-            </p>
+            <div className="relative">
+              <div
+                // onClick={() => handleRemoveImage(image)}
+                className="absolute     cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setPostMentions(post.mentions);
+                }}
+              >
+                <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  fill="currentColor"
+                  className="h-5 w-5 text-gray-100  absolute top-[7px] right-[6px] z-10"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          {tab == "likes" && (
+            <div>
+              {likes.length > 0 ? (
+                <div className="flex flex-col gap-2 px-4 pt-5">
+                  {likes.map((user) => (
+                    <div
+                      onClick={() => {
+                        navigate("/user/" + user.user._id);
+                      }}
+                      className="flex gap-4 items-center cursor-pointer"
+                    >
+                      <UserImageInput
+                        imageHeight={40}
+                        image={user.user.profileImage?.compressedImage[0]}
+                        isEditable={false}
+                      />
+                      <div className="-mt-1">
+                        <p className="font-medium">
+                          {user.user.username}
+                        </p>
+                        {user.user.personal_details ? (
+                          <p className="text-gray-400 text-sm -mt-1">
+                            {user.user.personal_details?.firstname}{" "}
+                            {user.user.personal_details?.lastname}
+                          </p>
+                        ) : (
+                          <p className="text-gray-400 text-sm -mt-1">
+                            {user.user.company_details?.company_name}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="max-w-xl pt-20 pb-20 text-center sm:h-full h-fit px-6 md:px-6">
+                  <p className="text-2xl font-bold text-gray-500">
+                    No likes Yet
+                  </p>
+                  <p className="mt-1 text-gray-400">
+                    The likes one this post will be shown here
+                  </p>
+                </p>
+              )}
+            </div>
           )}
-        </div>
-          }
           {tab == "comments" && (
             <div>
               <div

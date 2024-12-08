@@ -138,19 +138,7 @@ const router = createBrowserRouter([
         ),
         children: [],
       },
-      // {
-      //   path: "/post",
-      //   element: (
-      //     <LoginVerification>
-      //       <PageTransition>
-      //         <PostForm />
-      //       </PageTransition>
-      //     </LoginVerification>
-      //   ),
-      // },
-    ],
-  },
-   {
+      {
         path: "/profile",
         element: (
           <LoginVerification>
@@ -201,6 +189,19 @@ const router = createBrowserRouter([
           },
         ],
       },
+      // {
+      //   path: "/post",
+      //   element: (
+      //     <LoginVerification>
+      //       <PageTransition>
+      //         <PostForm />
+      //       </PageTransition>
+      //     </LoginVerification>
+      //   ),
+      // },
+    ],
+  },
+   
   { path: "/forgot-password", element: <ForgotPassword /> },
 
   { path: "/password-reset/:token", element: <ResetPassword /> },

@@ -441,14 +441,14 @@ function WorkExperienceUpdateForm({ onClose, data, setData }) {
   return (
     <form onSubmit={handleUpdate} className=" bg-white pt-2 pb-6 px-4 sm:px-8 sm:max-h-96 flex flex-col justify-between rounded-sm w-full h-full sm:h-full overflow-y-auto">
     <div className="flex flex-col flex-1  w-full justify-between  bg-white pb-5 pt-2 z-20">
-   <div className="flex gap-1 sticky z-20 -top-2.5 py-4   bg-white">
+   <div className="flex gap-1 sticky z-20 -top-2.5 -mt-[5px] py-4   bg-white">
    <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="currentColor"
-          class="size-8"
+          class="size-8 shrink-0 -ml-2.5"
           onClick={() => {
-            window.history.back();
+            onClose()
           }}
         >
           <path

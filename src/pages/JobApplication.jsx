@@ -218,12 +218,12 @@ function JobApplication() {
                   onClick={() => {
                     navigate("/job/" + approach.job._id);
                   }}
-                  className="border-y sm:border   p-4 sm:p-6  cursor-pointer flex flex-col gap-4"
+                  className="border-y sm:border  bg-white   cursor-pointer flex flex-col "
                 >
                   <JobListItem
                     job={approach.job}
                     companyDefaultImage={companyDefaultImage}
-                    className="rounded-2xl  border"
+                    className="rounded-2xl  "
                   />
                   {/* <div className="flex gap-4">
                     <UserImageInput
@@ -305,11 +305,11 @@ function JobApplication() {
                     Approached for{" "}
                     <span className="font-medium">{approach.job.job_role}</span>
                   </p> */}
-                 <div className="flex gap-4 justify-between">
+                 <div className="flex gap-4 justify-between -mt-5 mb-1 px-2">
                  
                   {approach.status === "approached" ? (
-                    <div className="bg-blue-50 text-blue-500 shadow-md font-medium text-sm flex gap-2 flex-wrap justify-between items-center p-4 rounded-lg">
-                      <p className="">Select response </p>
+                    <div className=" font-medium text-sm flex gap-2 flex-wrap justify-between items-center p-4 rounded-lg">
+                      {/* <p className="">Select response </p> */}
                       <div className="flex gap-2">
                         <button
                           onClick={() => {
@@ -318,7 +318,7 @@ function JobApplication() {
                               status: "accepted",
                             });
                           }}
-                          className="bg-blue-500 hover:bg-blue-600 transition-colors text-white px-4 py-2 rounded-full "
+                          className="bg-blue-500 hover:bg-blue-600 transition-colors text-white px-4 py-1.5 rounded-lg"
                         >
                           Accept
                         </button>
@@ -329,14 +329,14 @@ function JobApplication() {
                               status: "declined",
                             });
                           }}
-                          className="bg-red-500 hover:bg-red-600 transition-colors text-white px-4 py-2 rounded-full "
+                          className=" transition-colors  border border-red-500 text-red-500 px-4 py-1.5 rounded-lg"
                         >
                           Decline
                         </button>
                       </div>
                     </div>
                   ) : approach.status === "accepted" ? (
-                    <div className="  bg-yellow-50 text-yellow-600  text-sm gap-2 mt-2 flex flex-wrap justify-between items-center p-3 px-4 w-full rounded-lg ">
+                    <div className="gap-2 mt-2 flex flex-wrap justify-between items-center p-3 px-4 w-full rounded-lg ">
                       <p>
                         <span className="font-medium">Approach accepted</span>{" "}
                         ,you will be notified about the next step
@@ -428,13 +428,14 @@ function JobApplication() {
                   ) : (
                     <p className="text-red-500 text-sm">Approach declined</p>
                   )}
-                   <svg
+                 <div className="mt-4">
+                 <svg
                       onClick={(e) => {
                         e.stopPropagation()
 
                         setApproachSetting(approach);
                       }}
-                      className="h-6 w-6 text-gray-500"
+                      className="h-6 w-6 text-gray-500 shrink-0"
                       width="26"
                       height="26"
                       viewBox="0 0 24 24"
@@ -448,7 +449,10 @@ function JobApplication() {
                       <circle cx="12" cy="12" r="1" />
                       <circle cx="12" cy="19" r="1" />
                       <circle cx="12" cy="5" r="1" />
-                    </svg></div>
+                    </svg>
+                  </div>
+                    
+                    </div>
                 </div>
               ))}
             </div>

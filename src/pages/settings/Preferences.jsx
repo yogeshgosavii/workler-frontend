@@ -85,7 +85,7 @@ const Preferences = () => {
         }}
         className="fixed w-full h-full bg-black opacity-30 z-20 top-0 left-0"
       ></div>
-      <div className="fixed w-full sm:max-w-lg right-0 flex flex-col gap-6 border h-full px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30 overflow-y-auto">
+      <div className="fixed w-full sm:max-w-lg pb-14 right-0 flex flex-col gap-6 border h-full px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30 overflow-y-auto">
         <div className="flex gap-5  mb-10 items-center">
           <svg
             onClick={() => {

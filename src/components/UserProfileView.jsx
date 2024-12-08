@@ -110,7 +110,9 @@ function UserProfileView({ userId = useParams().userId }) {
     const fetchJobData = async () => {
       setLoading((prev) => ({ ...prev, jobData: true }));
       try {
-        const response = await jobService.job.getByUserIds(currentUserDetails._id);
+        const response = await jobService.job.getByUserIds(userId);
+        console.log("job",response);
+        
         setcurrentUserJobData(response);
       } catch (error) {
         console.error("Failed to fetch job details", error);
@@ -138,9 +140,9 @@ function UserProfileView({ userId = useParams().userId }) {
 
     //   }
     // };
+    fetchJobData()
 
     if (userId) {
-      fetchJobData();
       fetchData();
       fetchPostData();
       // fetchFollowers();
@@ -149,17 +151,31 @@ function UserProfileView({ userId = useParams().userId }) {
         currentUserDetails?.accountType == "Candidate" &&
         userDetails?.accountType == "Employeer"
       ) {
+        fetchJobData();
+
       }
     } else {
       // if (!loading.userDetails) {
       //   navigate("/not-found", { replace: true });
       // }
+
     }
+
   }, [userId]);
 
   useEffect(() => {
     if (userDetails) {
       document.title = userDetails?.username;
+      const favicon = document.querySelector("link[rel='icon']");
+      if (favicon) {
+        favicon.href = userDetails.profileImage.originalImage || "/default-icon.png"; // Replace with a default icon URL or user-provided image
+      } else {
+        // If no favicon tag exists, create one
+        const newFavicon = document.createElement("link");
+        newFavicon.rel = "icon";
+        newFavicon.href = userDetails.profileImage.originalImage || "/default-icon.png";
+        document.head.appendChild(newFavicon);
+      }
     }
 
     const fetchConnections = async () => {
@@ -436,22 +452,22 @@ function UserProfileView({ userId = useParams().userId }) {
       case "About":
         return <About isEditable={false} userDetails={userDetails} />;
       case "Jobs":
-        return currentUserJobData.length > 0 ? (
-          <div className="px-4  py-4">
+        return currentUserJobData?.length > 0 ? (
+          <div className="px-4  py-4 bg-white sm:border sm:rounded-b-3xl">
             <p className="font-medium text-sm mb-2">Recently posted jobs</p>
             {currentUserJobData?.map((job, index) => (
               <div
                 onClick={() => {
                   navigate(`/job/${job._id}`);
                 }}
-                className={`flex py-2 items-start  justify-between ${
+                className={`flex py-2 items-start   justify-between ${
                   index < currentUserJobData.length - 1
                     ? "border-b cursor-pointer"
                     : ""
                 } `}
                 key={job.id}
               >
-                <div className="flex gap-2 ">
+                <div className="flex gap-3 ">
                   <UserImageInput
                     image={
                       userDetails.profileImage.compressedImage ||
@@ -462,12 +478,11 @@ function UserProfileView({ userId = useParams().userId }) {
                   />
                   <div className="-mt-1">
                     <p className="text-lg font-semibold">{job.job_role}</p>
-                    <p className="text-xs text-gray-800 text-wrap">
+                    <p className="text-sm text-gray-600 text-wrap -mt-px">
                       {job?.location?.address}
                     </p>
-                    {job.updatedAt ? (
-                      <p className="text-xs mt-0.5 text-gray-400">
-                        Updated{" "}
+                    {/* {job.updatedAt ? (
+                      <p className="text-sm -mt-0.5 text-gray-400">
                         {formatDistanceToNow(
                           new Date(job.updatedAt || job.job_post_date),
                           {
@@ -485,7 +500,23 @@ function UserProfileView({ userId = useParams().userId }) {
                           }
                         )}
                       </p>
-                    )}
+                    )} */}
+                     <p className="text-xs text-gray-400">
+              {/* Posted on{" "} */}
+              {new Date(job.createdAt).toLocaleDateString("en-GB", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+              })}{" "}
+              {/* at{" "}
+              <span>
+                {new Date(job.createdAt).toLocaleTimeString("en-GB", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })}
+              </span> */}
+            </p>
                   </div>
                 </div>
               </div>
@@ -634,8 +665,23 @@ function UserProfileView({ userId = useParams().userId }) {
 
         <div className="flex relative  flex-wrap">
           <div
-            className={` w-full border-t sm:rounded-t-3xl  fixed sm:sticky  sm:border-x  z-20 top-0   px-4 sm:px-6 py-4 sm:py-6 bg-white flex `}
+            className={` w-full border-t sm:rounded-t-3xl  fixed sm:sticky  sm:border-x  z-20 top-0   px-4 sm:px-6 py-4 sm:py-6 gap-2 bg-white flex `}
           >
+            <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-8 shrink-0 -ml-2.5"
+                    onClick={() => {
+                      window.history.back();
+                    }}
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
             <div className="flex w-full items-center gap-4">
               {atTop >= 100 && (
                 <UserImageInput
@@ -649,7 +695,7 @@ function UserProfileView({ userId = useParams().userId }) {
               )}
               <div className="flex flex-col -mt-1 justify-center">
                 <p className="text-xl  font-semibold">
-                  {atTop > 100 ? userDetails?.username : "Profile"}
+                  {atTop > 100 ? userDetails?.username : <p className="text-2xl py-[5px]">Profile</p>}
                 </p>
                 {/* <div className="flex gap-1 mt-0.5 items-center">
                   <span className="h-2 w-2 rounded-full shadow-lg bg-green-500"></span>
@@ -981,7 +1027,7 @@ function UserProfileView({ userId = useParams().userId }) {
           </div>
         </div>
         <div
-          className={` sticky md:-top-px top-16 -mt-px  bg-white md:mb-4 z-20 transition-all ease-in-out `}
+          className={` sticky md:top-0 top-16   bg-white md:mb-4 z-20 transition-all ease-in-out `}
         >
           <div
             style={{

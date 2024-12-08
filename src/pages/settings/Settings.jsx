@@ -19,10 +19,10 @@ function Settings() {
         }}
         className="fixed w-full h-full bg-black opacity-30 z-20 top-0 left-0"
       ></div>
-      <div className="fixed w-full text-gray-800 sm:max-w-lg right-0   h-full  px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
+      <div className="fixed w-full text-gray-800 pb-20 sm:max-w-lg right-0   h-full  px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
         <div className=" flex sm:pb-0  h-full justify-between flex-col">
           <div>
-            <h2 className="text-2xl font-bold mb-10 flex justify-between ">
+            <h2 className="text-2xl  items-center font-bold mb-10 flex justify-between ">
               <div className="flex gap-5 items-center">
                 <svg
                 onClick={()=>{
@@ -43,7 +43,7 @@ function Settings() {
                 </svg>
                 <p> Settings </p>
               </div>
-              {/* <a
+              <a
                 onClick={() => {
                   console.log("logout");
                   dispatch(logout());
@@ -68,7 +68,7 @@ function Settings() {
                 <p className=" text-red-500 font-medium text-lg hidden sm:block ">
                   Sign out
                 </p>
-              </a> */}
+              </a>
             </h2>
             <div className="flex-1  flex flex-col text-lg gap-5">
               {/* <div
@@ -257,7 +257,7 @@ function Settings() {
             </div>
           </div>
 
-          <a
+          {/* <a
             onClick={() => {
               console.log("logout");
               dispatch(logout());
@@ -280,7 +280,7 @@ function Settings() {
               <line x1="15" y1="12" x2="3" y2="12" />
             </svg>
             <p className="-mt-0.5 text-red-500 font-medium text-lg">Sign out</p>
-          </a>
+          </a> */}
         </div>
       </div>
 

@@ -222,11 +222,11 @@ function Employment({ job, applications,setApplications, approaches ,setApproach
             renderSkeleton()
           ) : approaches.length > 0 ? (
             <div className="grid w-full -mt-5 sm:-mt-0 md:grid-cols-2 gap-4">
-              {approaches.map((approach) => (
+              {approaches.map((approach,index,arr) => (
                 <div
                   key={approach._id}
                   onClick={() => handleProfileSelect(approach.user._id)}
-                  className="border-b bg-white sm:border sm:rounded-xl   p-5 "
+                  className={` ${index == 0 ?"border-b":"border-y"} bg-white sm:border sm:rounded-xl   p-5 `}
                 >
                   <div className="flex justify-between gap-4">
                   <div className="flex gap-4 mb-3">
@@ -285,16 +285,16 @@ function Employment({ job, applications,setApplications, approaches ,setApproach
                     {/* <p className="text-sm text-gray-400">Update from the candidate will be shown here</p> */}
                     </div>
                   ) : approach.status === "accepted" ? (
-                    <div className="bg-gray-50 border gap-2 flex  justify-between items-center text-sm  rounded-lg text-gray-500">
-                      <p className=" px-4 font-medium truncate">
-                        Approach accepted
+                    <div className=" gap-2   justify-between items-center  rounded-lg text-gray-500">
+                      <p className=" mb-2  truncate">
+                        Candidate accepted the job approach
                       </p>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           setShowInterviewForm(approach);
                         }}
-                        className="bg-gray-500 border border-gray-500 h-full font-medium  truncate text-white px-3 py-2.5  rounded-e-lg"
+                        className="bg-gray-700 border w-full border-gray-700 h-full font-medium  truncate text-white px-3 py-2.5  rounded-lg"
                       >
                         Set up interview
                       </button>

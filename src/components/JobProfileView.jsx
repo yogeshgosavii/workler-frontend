@@ -18,6 +18,7 @@ import JobListItem from "./jobComponent/JobListItem";
 import companyDefaultImage from "../assets/companyDefaultImage.png";
 import savedService from "../services/savedService";
 import "../css/button.css";
+import { useMediaQuery } from '@mui/material';
 import JobList from "./jobComponent/JobList";
 
 function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
@@ -62,6 +63,8 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
   const [copiedAnimation, setCopiedAnimation] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const toggleDescription = () => setIsExpanded(!isExpanded);
+  const isLgScreen = useMediaQuery('(min-width:1024px)'); // Tailwind CSS lg breakpoint
+
 
   useEffect(() => {
     if (!loading.jobDetails && !jobDetails) {
@@ -1509,7 +1512,8 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                       ? "About user"
                       : "About company"
                     : null,
-                  "Related jobs",
+                    !isLgScreen ? "Related jobs" : null,
+
                 ]
                   .filter(Boolean)
                   .map((tab, index, arr) => (
@@ -1533,11 +1537,11 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
             </div>
             <div
               style={{
-                left: `${(100 / (userDetails ? 3 : 2)) * tabIndex}%`,
+                left: `${(100 / (userDetails ?isLgScreen?2:3 : 2)) * tabIndex}%`,
                 transition: "left 0.2s ease-in-out",
               }}
               className={`${
-                userDetails ? "w-1/3" : "w-1/2"
+                userDetails ? isLgScreen?"w-1/2": "w-1/3" : "w-1/2"
               } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-gray-800 absolute`}
             ></div>
             {/* <div className="fixed   w-full sm:max-w-xl self-center flex gap-3 bottom-[56px] sm:bottom-0 z-30 bg-white border px-4 py-5 items-center">
