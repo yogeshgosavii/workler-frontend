@@ -49,6 +49,8 @@
     "redux-thunk": "^3.1.0",
     "sort-by": "^1.2.0",
     "styled-components": "^6.1.11",
+    "textarea-caret": "^3.1.0",
+    "use-detect-keyboard-open": "^0.4.0",
     "workler": "file:"
   },
   "devDependencies": {

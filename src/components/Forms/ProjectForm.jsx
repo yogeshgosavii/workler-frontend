@@ -75,7 +75,7 @@ function ProjectForm({ onClose,setData }) {
 
 
   return (
-    <form className="bg-white pt-2 pb-6 px-4 sm:px-8 rounded-sm sm:max-h-96 overflow-y-auto w-full flex flex-col gap-5 h-full">
+    <form className="bg-white pt-2 pb-6 px-4 sm:px-8 rounded-sm  overflow-y-auto w-full flex flex-col gap-5 h-full">
       <div className="flex gap-3 sticky -top-2.5 -mt-[5px] py-4 z-20 bg-white">
      <svg
           xmlns="http://www.w3.org/2000/svg"

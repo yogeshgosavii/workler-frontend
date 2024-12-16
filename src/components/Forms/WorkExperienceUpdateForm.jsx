@@ -439,7 +439,7 @@ function WorkExperienceUpdateForm({ onClose, data, setData }) {
   };
 
   return (
-    <form onSubmit={handleUpdate} className=" bg-white pt-2 pb-6 px-4 sm:px-8 sm:max-h-96 flex flex-col justify-between rounded-sm w-full h-full sm:h-full overflow-y-auto">
+    <form onSubmit={handleUpdate} className=" bg-white pt-2 pb-6 px-4 sm:px-8  flex flex-col justify-between rounded-sm w-full h-full sm:h-full overflow-y-auto">
     <div className="flex flex-col flex-1  w-full justify-between  bg-white pb-5 pt-2 z-20">
    <div className="flex gap-1 sticky z-20 -top-2.5 -mt-[5px] py-4   bg-white">
    <svg

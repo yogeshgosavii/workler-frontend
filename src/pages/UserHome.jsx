@@ -279,7 +279,7 @@ function UserHome() {
               postData={content}
               className={"sm:max-w-lg w-full "}
               postPaddingbottom={"pb-10"}
-              postClassName={"sm:shadow-lg   border-y sm:rounded-xl"}
+              postClassName={"   border-y sm:rounded-2xl"}
               no_post_error={
                 selectedType == "job_posts" ? (
                   <p className="max-w-xl pt-20 bg-gray-50 h-full text-center px-6 md:px-6">

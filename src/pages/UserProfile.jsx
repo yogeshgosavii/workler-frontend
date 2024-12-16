@@ -110,10 +110,10 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading((prev) => ({ ...prev, userDetails: true }));
-      
+
       try {
         const data = await authService.fetchUserDetails();
-        console.log(data)
+        console.log(data);
         setuserDetails(data);
         setdescriptionInputText(data.description);
       } catch (error) {
@@ -371,7 +371,7 @@ const UserProfile = () => {
     if (formType || updateFormType) {
       // Clear the selected job and prevent the back navigation
       setFormType(null);
-      setupdateFormType(null)
+      setupdateFormType(null);
       window.history.pushState(null, null, window.location.pathname);
     } else {
       // If no job is selected, allow the default behavior
@@ -387,7 +387,6 @@ const UserProfile = () => {
   //   // Add event listener for popstate
   //   window.addEventListener("popstate", handlePopState);
   //   console.log("Hello");
-    
 
   //   return () => {
   //     window.removeEventListener("popstate", handlePopState);
@@ -396,7 +395,7 @@ const UserProfile = () => {
 
   const handleClose = () => {
     setFormType(null);
-    setupdateFormType(null)
+    setupdateFormType(null);
   };
 
   // useEffect(() => {
@@ -582,12 +581,13 @@ const UserProfile = () => {
           }`}
         >
           {formType && (
-            <div
-              className="fixed inset-0 z-50 flex justify-center items-center  w-full top-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60    "
-              onClick={handleClose}
-            >
+            <div className="relative ">
               <div
-                className="fixed z-20 w-full border  h-full shadow-2xl sm:h-fit sm:max-w-md mx-auto"
+                onClick={handleClose}
+                className="fixed inset-0 z-40  flex justify-center items-center  w-full top-0  bg-background/95 left-10  backdrop-blur supports-[backdrop-filter]:bg-background/60    "
+              ></div>
+              <div
+                className="fixed z-50 w-full border  h-full shadow-2xl top-0 right-0  sm:max-w-lg mx-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 {React.createElement(FormComponents[formType], {
@@ -630,12 +630,14 @@ const UserProfile = () => {
           )}
 
           {updateFormType ? (
-            <div
-              className="fixed inset-0 z-50 flex justify-center items-center   w-full top-0 bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60   "
-              onClick={handleClose}
-            >
+            <div className="relative ">
               <div
-                className="fixed z-20 w-full border h-full shadow-2xl sm:h-fit sm:max-w-md mx-auto"
+                onClick={handleClose}
+                className="fixed inset-0 z-40  flex justify-center items-center  w-full top-0  bg-background/95 left-10  backdrop-blur supports-[backdrop-filter]:bg-background/60    "
+              ></div>
+
+              <div
+                className="fixed z-50 w-full border h-full shadow-2xl top-0 right-0  sm:max-w-lg mx-auto"
                 onClick={(e) => e.stopPropagation()}
               >
                 {React.createElement(UpdateFormComponents[updateFormType], {
@@ -699,13 +701,21 @@ const UserProfile = () => {
                   {atTop >= 100 && (
                     <UserImageInput
                       isEditable={false}
-                      image={userDetails.profileImage?.compressedImage || userDetails?.profileImage || profileImageDefault}
+                      image={
+                        userDetails.profileImage?.compressedImage ||
+                        userDetails?.profileImage ||
+                        profileImageDefault
+                      }
                       imageHeight="40"
                     />
                   )}
                   <div className="flex flex-col justify-center">
                     <p className="text-xl font-semibold -mt-0.5">
-                      {atTop >= 100 ? userDetails.username : <p className="text-2xl -mt-px py-[5px]">Profile</p>}
+                      {atTop >= 100 ? (
+                        userDetails.username
+                      ) : (
+                        <p className="text-2xl -mt-px py-[5px]">Profile</p>
+                      )}
                     </p>
                     {/* <div className="flex gap-1 mt-0.5 items-center">
                       <span className="h-2 w-2 rounded-full shadow-lg bg-green-500"></span>

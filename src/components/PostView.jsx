@@ -153,7 +153,7 @@ function PostView({ postId = useParams().postId, index, className }) {
       {post && (
         <div
           key={index}
-          className="w-full sm:max-w-lg relative sm:border-x h-fit border-gray-300 "
+          className="w-full sm:max-w-lg relative sm:border-x h-screen "
         >
           <UserPostUpdateSettings
             setPostSetting={setPostSettings}
@@ -286,15 +286,70 @@ function PostView({ postId = useParams().postId, index, className }) {
             </div>
           </div>
           <div className="relative mx-4">
-            <p
-              className={`mt-4 flex-1 ${
-                !post.images &&
-                post.post_type != "job" &&
-                " border p-4 rounded-xl"
-              }`}
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
-            {post.mentions.length > 0 &&
+          <p
+                      className={`mt-4 ${
+                        !post.images &&
+                        post.post_type !== "job" &&
+                        "flex-1 rounded-xl"
+                      }`}
+                    >
+                      {post.content.split(/(@\w+)/).map((segment, index) => {
+                        if (segment.startsWith("@")) {
+                          const mention = segment.slice(1); // Remove "@" from the mention
+
+                          // Find the corresponding user in the mentions list
+                          const mentionedUser = post.mentions.find(
+                            (user) => user.username === mention
+                          );
+
+                          if (mentionedUser) {
+                            const profileImage =
+                              mentionedUser.profileImage?.originalImage?.[0] ||
+                              "";
+
+                            return (
+                              <span
+                                key={index}
+                                className="text-blue-500 relative cursor-pointer group"
+                                role="button"
+                                tabIndex="0"
+                                aria-label={`View profile of ${mentionedUser.username}`}
+                              >
+                                {segment}
+                                <div
+                                  className="absolute top-7 z-20 hidden items-start group-hover:flex  border bg-white shadow-lg px-8 pr-9  justify-center py-2 left-0 rounded-md"
+                                  role="tooltip"
+                                >
+                                  <img
+                                    src={profileImage}
+                                    alt={`${mentionedUser.username}'s profile`}
+                                    className="w-8 h-8 mt-1 rounded-full"
+                                  />
+                                  <p className="ml-3 text-gray-800">
+                                    <p className="font-medium text-nowrap">
+                                      {mentionedUser.personal_details
+                                        ? mentionedUser.personal_details
+                                            .firstname +
+                                          " " +
+                                          mentionedUser.personal_details
+                                            .lastname
+                                        : mentionedUser.company_details
+                                            .company_name}
+                                    </p>
+                                    <p className="text-sm text-gray-400 -mt-0.5">{mentionedUser.username}</p>
+                                  </p>
+                                </div>
+                              </span>
+                            );
+                          }
+                        }
+
+                        // Render regular text segments
+                        return <span key={index}>{segment}</span>;
+                      })}
+                    </p>
+
+            {/* {post.mentions.length > 0 &&
               !post.images &&
               post.post_type !== "job" && (
                 // <svg
@@ -332,7 +387,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                     <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                   </svg>
                 </div>
-              )}
+              )} */}
           </div>
           {post.post_type !== "job" && (
             <div
@@ -573,7 +628,7 @@ function PostView({ postId = useParams().postId, index, className }) {
               Comments
             </p>
             </div>
-            <div className="relative">
+           {post.mentions.length>0 && <div className="relative">
               <div
                 // onClick={() => handleRemoveImage(image)}
                 className="absolute     cursor-pointer"
@@ -594,7 +649,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                   <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                 </svg>
               </div>
-            </div>
+            </div>}
           </div>
           {tab == "likes" && (
             <div>

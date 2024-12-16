@@ -177,7 +177,7 @@ const handleUpdateUserDetails = async () => {
   };
 
   return (
-    <div className="h-full flex sm:max-h-[450px] flex-col gap-6 pt-2 pb-6 px-4 sm:px-8 overflow-auto bg-white">
+    <div className="h-full flex  flex-col gap-6 pt-2 pb-6 px-4 sm:px-8 overflow-auto bg-white">
       <div className="flex gap-3 sticky z-20 -top-2.5  py-3 bg-white ">
         <svg
           xmlns="http://www.w3.org/2000/svg"

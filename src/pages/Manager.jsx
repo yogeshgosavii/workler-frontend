@@ -13,7 +13,7 @@ function Manager() {
   const [approaches, setApproaches] = useState([]);
   const [applications, setApplications] = useState([]);
   const [interviewList, setInterviewList] = useState([]);
-  const [selectedJob, setSelectedJob] = useState(null);
+  const [selectedJob, setSelectedJob] = useState(jobs[0]);
   const [innerTab, setInnerTab] = useState("jobs");
   const navigate = useNavigate();
 
@@ -47,7 +47,6 @@ function Manager() {
       );
     }
 
-
     return () => {
       window.removeEventListener("popstate", handlePopState);
     };
@@ -68,6 +67,10 @@ function Manager() {
       try {
         const jobs = await jobService.job.getByUserIds(currentUser._id);
         setJobs(jobs);
+        const isLargeScreen = window.matchMedia("(min-width: 1024px)").matches; // Adjust 1024px to match your 'lg' breakpoint
+        if (isLargeScreen) {
+          setSelectedJob(jobs[0]);
+        }
       } catch (error) {
         console.error("Failed to fetch jobs:", error);
       }
@@ -93,8 +96,8 @@ function Manager() {
         const applications = await applicationService.getEmployeerApplications(
           currentUser._id
         );
-        console.log("applications",applications);
-        
+        console.log("applications", applications);
+
         setApplications(applications);
       } catch (error) {
         console.error("Failed to fetch applications:", error);
@@ -135,81 +138,61 @@ function Manager() {
               onClick={() => {
                 setSelectedJob(job);
               }}
-              className="text-sm bg-white border p-3 px-4 rounded-xl"
+              className={`text-sm  ${
+                selectedJob == job ? "bg-gray-50 border-l-4 ":"border-b"
+              } py-2 pb-3 pl-3`}
             >
               <p className="font-medium text-lg">{job.job_role}</p>
               <p className="text-gray-500">{job.location?.address}</p>
-              {applications.filter(
-                (application) => application.job._id == job._id
-              ).length > 0 && (
-                <div className="bg-purple-50 border-purple-500 mt-2 flex justify-between p-2 rounded-md border">
-                  <div>
-                    <p>Applications</p>
-                    <p className="text-sm text-gray-400">
-                      List of candidates applied
-                    </p>
-                  </div>
-                  <div className="flex -space-x-4 rtl:space-x-reverse">
-                    {applications
-                      .filter((application) => application.job._id == job._id)
-                      .slice(0, 3)
-                      .map((application, index) => (
-                        <img
-                          key={index}
-                          className="w-10 h-10 border  rounded-full "
-                          src={application.user.profileImage?.compressedImage}
-                          alt=""
-                        />
-                      ))}
+              <div className=" mt-2">
+                {applications.filter(
+                  (application) => application.job._id == job._id
+                ).length > 0 && (
+                  <div className="mt-2 flex justify-between p-2 rounded-md border">
+                    <div>
+                      <p>Applications</p>
+                      <p className="text-sm text-gray-400">
+                        List of candidates applied
+                      </p>
+                    </div>
+                    <div className="flex -space-x-4 rtl:space-x-reverse">
+                      {applications
+                        .filter((application) => application.job._id == job._id)
+                        .slice(0, 3)
+                        .map((application, index) => (
+                          <img
+                            key={index}
+                            className="w-10 h-10 border  rounded-full "
+                            src={application.user.profileImage?.compressedImage}
+                            alt=""
+                          />
+                        ))}
 
-                    {applications.filter(
-                      (application) => application.job._id == job._id
-                    ) > 3 && (
-                      <a
-                        className="flex items-center justify-center w-10 h-10 text-xs font-medium border  text-gray-500 bg-gray-100   rounded-full "
-                        href="#"
-                      >
-                        +{applications - 3}
-                      </a>
-                    )}
+                      {applications.filter(
+                        (application) => application.job._id == job._id
+                      ) > 3 && (
+                        <a
+                          className="flex items-center justify-center w-10 h-10 text-xs font-medium border  text-gray-500 bg-gray-100   rounded-full "
+                          href="#"
+                        >
+                          +{applications - 3}
+                        </a>
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
-              {approaches.filter((approach) => approach.job._id == job._id)
-                .length > 0 && (
-                <div className="bg-amber-50 border-amber-500 mt-2 flex justify-between p-2 px-3 rounded-lg border">
-                  <div>
-                    <p className="font-medium">Approaches</p>
-                    <p className="text-sm text-gray-400">
-                      List of candidates applied
-                    </p>
+                )}
+                {approaches.filter((approach) => approach.job._id == job._id)
+                  .length > 0 && (
+                  <div className="w-fit bg-white px-3 py-1.5 border font-medium rounded-md text-gray-400">
+                    Approached {"  "}{" "}
+                    {
+                      approaches.filter(
+                        (approach) => approach.job._id == job._id
+                      ).length
+                    }
                   </div>
-                  <div className="flex -space-x-4 rtl:space-x-reverse">
-                    {approaches
-                      .filter((approach) => approach.job._id == job._id)
-                      .slice(0, 3)
-                      .map((approach, index) => (
-                        <img
-                          key={index}
-                          className="w-10 h-10 border  rounded-full "
-                          src={approach.user.profileImage?.compressedImage}
-                          alt=""
-                        />
-                      ))}
-
-                    {approaches.filter(
-                      (approach) => approach.job._id == job._id
-                    ) > 3 && (
-                      <a
-                        className="flex items-center justify-center w-10 h-10 text-xs font-medium border  text-gray-500 bg-gray-100   rounded-full "
-                        href="#"
-                      >
-                        +{approaches - 3}
-                      </a>
-                    )}
-                  </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -402,18 +385,18 @@ function Manager() {
   // }
 
   return (
-    <div className="flex gap-6  h-full w-full justify-center">
+    <div className="flex bg-white  h-full w-full justify-center">
       <div
-        className={`flex px-4 md:px-6 mt-3 max-w-lg  flex-col w-full ${
+        className={`flex ${selectedJob && "lg:pl-1.5"} pt-3 max-w-lg ${(loading || !selectedJob )?"border-x":"border-r"} flex-col w-full ${
           selectedJob && "hidden lg:block"
         }`}
       >
-        <div className="mb-5">
+        <div className=" border-b px-4">
           <p
             className={`${
               innerTab == "jobs" &&
-              "bg-gray-800  border-gray-800 w-fit rounded-lg text-white"
-            } px-3 border font-medium py-1`}
+              "text-gray-800"
+            } text-2xl pb-3 font-bold py-1`}
           >
             Jobs
           </p>
@@ -421,7 +404,8 @@ function Manager() {
         {applications <= 0 &&
           approaches <= 0 &&
           jobs.length <= 0 &&
-          !loading.applicationList && !loading.approachList && (
+          !loading.applicationList &&
+          !loading.approachList && (
             <p className="max-w-xl pt-20 sm:h-full text-center h-fit px-6 md:px-6">
               <p className="text-3xl font-bold text-gray-500">No jobs yet</p>
               <p className="mt-2 text-gray-400 ">

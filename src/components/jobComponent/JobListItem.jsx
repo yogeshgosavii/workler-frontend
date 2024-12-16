@@ -208,12 +208,12 @@ const JobListItem = React.memo(
           onClick={(e) => {
             e.stopPropagation();
           }}
-          className="flex  px-6 justify-between gap-4 mt-5  items-center"
+          className="flex  px-6  justify-between gap-4 mt-5  items-center"
         >
-          <div className="flex gap-2   font-medium text-lg rounded-lg items-center">
+          <div className="flex gap-2    text-2xl font-bold rounded-lg items-center">
             {job.currency_type == "$" || job.currency_type == "USD" ? (
               <svg
-                class="h-6 w-6  text-blue-500"
+                class="h-8 w-8 mt-1  text-blue-500"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -227,7 +227,7 @@ const JobListItem = React.memo(
               </svg>
             ) : job.currency_type == "₹" ? (
               <svg
-                className="h-7 w-7 text-blue-500 "
+                className="h-9 w-9 text-blue-500 "
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -239,10 +239,12 @@ const JobListItem = React.memo(
                   d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-            ) : (
+            ):(job.min_salary || job.max_salary) && job.currency_type == "GBP" ?(
+              "£"
+            ) : (job.min_salary || job.max_salary)? (
               job.currency_type
-            )}
-            <p className="text-nowrap  sm:text-base  ">
+            ):null}
+            <p className={`text-nowrap   ${!job.min_salary && !job.max_salary && "text-gray-400"} `}>
               {job.min_salary || job.max_salary
                 ? ` ${
                     job.min_salary > 1000
@@ -255,8 +257,8 @@ const JobListItem = React.memo(
                   }`
                 : "Not disclosed"}
               {(job.min_salary || job.max_salary) && job.salary_type && (
-                <span className="text-gray-400 truncate   text-wrap  font-normal ml-2">
-                  {!job.salary_type.includes("per") && "per "} {job.salary_type}
+                <span className="text-gray-400 truncate text-base   text-wrap  font-normal ml-2">
+                  {!job.salary_type.includes("per") && "per "} {job.salary_type.replace("per","/")}
                 </span>
               )}
             </p>

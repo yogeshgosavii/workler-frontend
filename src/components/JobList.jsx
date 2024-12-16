@@ -13,6 +13,8 @@ const JobList = ({ jobs, setJobs, settagsText, tagsText }) => {
     if (containerRef.current) {
       containerRef.current.scrollLeft = containerRef.current.scrollWidth;
     }
+    console.log(jobs,jobs==0);
+    
   }, [jobs]);
   const [companyName, setCompanyName] = useState("");
 
@@ -36,6 +38,10 @@ const JobList = ({ jobs, setJobs, settagsText, tagsText }) => {
       job.jobId === jobId ? { ...job, isRemoving: true } : job
     );
     setJobs(updatedJobs);
+    if(jobs.length == 0){
+
+      setJobs([])
+    }
 
     // Wait for the animation to complete before actually removing the job
     setTimeout(() => {
@@ -114,6 +120,7 @@ const JobList = ({ jobs, setJobs, settagsText, tagsText }) => {
               );
               setJobs(updatedJobs);
             }}
+            isRequired={true}
             value={job.jobRole}
             placeholder={"Job role"}
           />
@@ -226,12 +233,14 @@ const JobList = ({ jobs, setJobs, settagsText, tagsText }) => {
           setJobs(updatedJobs);
         }}
         value={job.company_name}
+        isRequired={true}
         placeholder={"Enter company name"}
           />}
           <TextAreaInput
             key={job.jobId + "_description"}
             name={"description"}
             value={job.job_description}
+            isRequired={true}
             onChange={(e) => {
               const updatedJobs = jobs.map((j) =>
                 j.jobId === job.jobId ? { ...j, description: e.target.value } : j
@@ -290,6 +299,7 @@ const JobList = ({ jobs, setJobs, settagsText, tagsText }) => {
           <UrlInput
             key={job.jobId+"job_url"}
             name={job.jobId +"job_url"}
+            isRequired={true}
             onChange={(e) => {
               const updatedJobs = jobs.map((j) =>
                 j.jobId === job.jobId ? { ...j, job_url: e.target.value } : j

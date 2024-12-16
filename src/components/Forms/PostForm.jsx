@@ -16,6 +16,7 @@ import JobList from "../JobList.jsx";
 import DOMPurify from "dompurify";
 import searchService from "../../services/searchService.js";
 import { useNavigate } from "react-router-dom";
+import PostTextArea from "../Input/PostTextArea.jsx";
 
 function PostForm({ userDetails, setData, onClose }) {
   const [images, setImages] = useState([]);
@@ -29,6 +30,7 @@ function PostForm({ userDetails, setData, onClose }) {
   const [mentionSecrchText, setMentionSecrchText] = useState("");
   const [mentionList, setmentionList] = useState([]);
   const [mentionSearchList, setMentionSearchList] = useState([]);
+  const [textIsEmpty, settextIsEmpty] = useState(true);
   const navigate = useNavigate();
 
   const jobService = useJobApi();
@@ -36,7 +38,6 @@ function PostForm({ userDetails, setData, onClose }) {
   const user = useSelector((state) => state.auth.user);
   const textareaRef = useRef(null);
   console.log(user);
-  
 
   const resizeTextarea = () => {
     if (textareaRef.current) {
@@ -62,6 +63,7 @@ function PostForm({ userDetails, setData, onClose }) {
     if (jobs.length == 0) {
       setPostType("content");
     }
+    console.log(jobs);
   }, [jobs]);
 
   const handleInputChange = (e) => {
@@ -77,10 +79,10 @@ function PostForm({ userDetails, setData, onClose }) {
       alert("You can only upload up to 10 images.");
       return;
     }
-  
+
     // Slice the selected files to fit within the limit
     // const files = selectedFiles.slice(0, remainingSlots);
-    const files = Array.from(e.target.files).slice(0,remainingSlots);
+    const files = Array.from(e.target.files).slice(0, remainingSlots);
 
     setImages((prevImages) => [...prevImages, ...files]);
     setFormData((prevState) => ({ ...prevState, images: files }));
@@ -90,7 +92,16 @@ function PostForm({ userDetails, setData, onClose }) {
     e.preventDefault();
     setLoading(true);
     setError(null);
-  
+
+
+    for (const mention of mentionList) {
+      if (!formData.content.includes(mention)) {
+        setmentionList((prevList) => prevList.filter(m => m !== mention));
+      }
+    }
+    console.log(mentionList)
+    
+
     const formDataToSend = new FormData();
     formDataToSend.append(
       "content",
@@ -98,15 +109,20 @@ function PostForm({ userDetails, setData, onClose }) {
         .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Convert **bold text** to <strong>
         .replace(/(?:\r\n|\r|\n)/g, "<br />")
     );
-  
+
     if (mentionList.length > 0) {
-      formDataToSend.append("mentions", JSON.stringify(mentionList.map((user) => user._id)));
+      // Ensure you are mapping the mentions to their correct ObjectId format, not as a single string
+      formDataToSend.append(
+        "mentions",
+        mentionList.map(user => user._id.toString()) // assuming user._id or user is a valid ObjectId
+      );
     }
-  
+    
+    
     images.forEach((image) => {
       formDataToSend.append("files", image);
     });
-  
+
     try {
       if (postType === "content") {
         const data = await createPost(formDataToSend);
@@ -115,7 +131,7 @@ function PostForm({ userDetails, setData, onClose }) {
       } else {
         const response = await jobService.job.addMultiple(jobs);
         const jobIds = response.map((job) => job._id);
-  
+
         const data = await createJobPost({
           content: formData.content,
           post_type: postType,
@@ -124,9 +140,9 @@ function PostForm({ userDetails, setData, onClose }) {
         // Example: update user details or handle response
         // const user = await authservice.updateUserDetails({...});
       }
-  
+
       navigate("/profile", { replace: true });
-      navigate(0)
+      navigate(0);
       // Navigate after successful submission
       setFormData({ content: "", images: [] });
       setImages([]);
@@ -137,7 +153,6 @@ function PostForm({ userDetails, setData, onClose }) {
       setLoading(false);
     }
   };
-  
 
   return (
     <div>
@@ -145,7 +160,7 @@ function PostForm({ userDetails, setData, onClose }) {
         onClick={() => window.history.back()}
         className="fixed w-full h-full transition-all   top-0  inset-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60     z-30  left-0"
       ></div>
-      <div className="fixed w-full border  shadow-2xl sm:max-w-lg right-0 h-full z-40      bg-white top-0   overflow-y-auto">
+      <div className="fixed w-full border  shadow-2xl sm:max-w-lg right-0 h-full z-50      bg-white top-0   overflow-y-auto">
         <form
           onSubmit={handleSubmit}
           className="flex flex-col justify-between h-full  min-w-full  gap-4 "
@@ -179,18 +194,23 @@ function PostForm({ userDetails, setData, onClose }) {
                       class={`h-5 w-5 z-10 ${
                         postType == "content" ? "text-white" : "text-gray-400"
                       }`}
-                      xmlns="http://www.w3.org/2000/svg"
                       width="16"
                       height="16"
-                      fill="currentColor"
                       onClick={() => {
                         setFormData((prev) => ({ ...prev, content: "" }));
                         setPostType("content");
                       }}
-                      viewBox="0 0 16 16"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
                     >
-                      <path d="M10.5 8.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0" />
-                      <path d="M2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4zm.5 2a.5.5 0 1 1 0-1 .5.5 0 0 1 0 1m9 2.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0" />
+                      {" "}
+                      <path d="M12 20h9" />{" "}
+                      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                     </svg>
                   </div>
                   <div className="w-full flex  justify-center">
@@ -235,10 +255,21 @@ function PostForm({ userDetails, setData, onClose }) {
                 </div>
                 <button
                   type="submit"
-                  // disabled={loading}
-                  className={` text-white w-fit  font-semibold px-4 flex items-center rounded-full ${
-                    loading ? "" : "bg-gray-800 hover:bg-blue-600 "
-                  } focus:outline-none `}
+                  disabled={
+                    loading ||
+                    (textIsEmpty && postType === "content") ||
+                    (
+                      !jobs.every(
+                        (job) =>
+                          job.job_role &&
+                          job.description &&
+                          job.job_url &&
+                          job.company_name
+                      ))
+                  }
+                  className={`text-white w-fit disabled:bg-gray-600 font-semibold px-4 flex items-center rounded-full ${
+                    loading ? "" : "bg-gray-800 hover:sm:bg-blue-600"
+                  } focus:outline-none`}
                 >
                   {loading ? (
                     <svg
@@ -269,12 +300,14 @@ function PostForm({ userDetails, setData, onClose }) {
                   imageHeight={35}
                   imageBorder={1}
                   image={
-                   userDetails?.profileImage?.compressedImage || user.profileImage?.compressedImage || profileImageDefault
+                    userDetails?.profileImage?.compressedImage ||
+                    user.profileImage?.compressedImage ||
+                    profileImageDefault
                   }
                   alt={`${user.username}'s avatar`}
                   isEditable={false}
                 />
-                <textarea
+                {/* <textarea
                   name="content"
                   autoFocus
                   value={formData.content}
@@ -289,9 +322,18 @@ function PostForm({ userDetails, setData, onClose }) {
                   }
                   ref={textareaRef}
                   className="w-full h-max caret-gray-800 mt-1 focus:outline-none resize-none overflow-hidden"
+                /> */}
+                <PostTextArea
+                  mentionList={mentionList}
+                  content = {formData.content}
+                  setContent = {setFormData
+                }
+                  setMentionList={setmentionList}
+                  textIsEmpty={textIsEmpty}
+                  settextIsEmpty={settextIsEmpty}
                 />
               </div>
-              {mentionList.length > 0 && (
+              {/* {mentionList.length > 0 && (
                 <div className="px-4 sm:px-6 my-3 flex gap-2 -mb-2 text-sm flex-wrap">
                   {mentionList.map((user) => (
                     <div className=" bg-gray-50 border gap-2 flex items-center border-blue-500 px-2 py-1.5 rounded-md text-blue-500">
@@ -319,25 +361,29 @@ function PostForm({ userDetails, setData, onClose }) {
                     </div>
                   ))}
                 </div>
-              )}
+              )} */}
               {postType == "content" ? (
                 <div className="w-full">
                   <div className="flex w-full mt-4  overflow-auto px-4">
-                  <ImageCarousel
-                    // className={"ml-10"}
-                    showCount={false}
-                    dots={false}
-                    isEditable={true}
-                    edges={"rounded-2xl"}
-                    gap={2}
-                    setImages={setImages}
-                    images={images}
-                  />
-                </div>
-               {images.length>0 && <div className="w-full flex px-4 justify-end">
-                <p className=" px-4 py-1 bg-gray-100  border rounded-full text-gray-800 mt-3 text-lg">10/{images.length}</p>
-                  </div>}
+                    <ImageCarousel
+                      // className={"ml-10"}
+                      showCount={false}
+                      dots={false}
+                      isEditable={true}
+                      edges={"rounded-2xl"}
+                      gap={2}
+                      setImages={setImages}
+                      images={images}
+                    />
                   </div>
+                  {images.length > 0 && (
+                    <div className="w-full flex px-4 justify-end">
+                      <p className=" px-4 py-1 bg-gray-100  border rounded-full text-gray-800 mt-3 text-lg">
+                        10/{images.length}
+                      </p>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <div className="mt-5 w-full">
                   <JobList
@@ -420,7 +466,7 @@ function PostForm({ userDetails, setData, onClose }) {
             )}
           </div>
           <div className="flex sticky bg-white bottom-0 gap-4 text-gray-800  py-4 px-4 md:px-6 items-center">
-            <div className={`${(postType == "job" ||images.length>=10) && "text-gray-600"}`}>
+            {/* <div className={`${(postType == "job" ||images.length>=10) && "text-gray-600"}`}>
               <svg
                 className="h-8 w-8 z-20  cursor-pointer"
                 viewBox="0 0 24 24"
@@ -446,9 +492,9 @@ function PostForm({ userDetails, setData, onClose }) {
                 accept=".jpg,.jpeg,.png"
                 className="hidden"
               />
-            </div>
+            </div> */}
 
-            <svg
+            {/* <svg
               onClick={() => {
                 setSelectMentions(true);
                 setShowSelectMention(true);
@@ -464,7 +510,7 @@ function PostForm({ userDetails, setData, onClose }) {
               {" "}
               <circle cx="12" cy="12" r="4" />{" "}
               <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94" />
-            </svg>
+            </svg> */}
           </div>
 
           {error && <p className="text-red-500 text-sm">{error}</p>}

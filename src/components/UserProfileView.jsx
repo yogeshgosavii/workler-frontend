@@ -168,7 +168,7 @@ function UserProfileView({ userId = useParams().userId }) {
       document.title = userDetails?.username;
       const favicon = document.querySelector("link[rel='icon']");
       if (favicon) {
-        favicon.href = userDetails.profileImage.originalImage || "/default-icon.png"; // Replace with a default icon URL or user-provided image
+        favicon.href = userDetails.profileImage?.originalImage || "/default-icon.png"; // Replace with a default icon URL or user-provided image
       } else {
         // If no favicon tag exists, create one
         const newFavicon = document.createElement("link");

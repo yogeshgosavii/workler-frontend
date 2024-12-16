@@ -215,10 +215,10 @@ function JobApplication() {
               {approaches.map((approach) => (
                 <div
                   key={approach._id}
-                  onClick={() => {
-                    navigate("/job/" + approach.job._id);
-                  }}
-                  className="border-y sm:border  bg-white   cursor-pointer flex flex-col "
+                  // onClick={() => {
+                  //   navigate("/job/" + approach.job._id);
+                  // }}
+                  className="border-y sm:border sm:rounded-xl bg-white   cursor-pointer flex flex-col "
                 >
                   <JobListItem
                     job={approach.job}
@@ -305,7 +305,7 @@ function JobApplication() {
                     Approached for{" "}
                     <span className="font-medium">{approach.job.job_role}</span>
                   </p> */}
-                 <div className="flex gap-4 justify-between -mt-5 mb-1 px-2">
+                 <div className="flex gap-4 justify-between pr-4 -mt-5 mb-1 px-2">
                  
                   {approach.status === "approached" ? (
                     <div className=" font-medium text-sm flex gap-2 flex-wrap justify-between items-center p-4 rounded-lg">
@@ -336,10 +336,10 @@ function JobApplication() {
                       </div>
                     </div>
                   ) : approach.status === "accepted" ? (
-                    <div className="gap-2 mt-2 flex flex-wrap justify-between items-center p-3 px-4 w-full rounded-lg ">
+                    <div className="gap-2 mt-2 flex flex-wrap  justify-between items-center p-3 px-4 w-full rounded-lg ">
                       <p>
                         <span className="font-medium">Approach accepted</span>{" "}
-                        ,you will be notified about the next step
+                        you will be notified about the next step
                       </p>
                     </div>
                   ) : approach.status === "interview_setup" ? (
@@ -347,12 +347,12 @@ function JobApplication() {
                       {interviewList?.map((interview) => {
                         if (interview.job._id == approach.job._id) {
                           return (
-                            <div className="text-sm border justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
+                            <div className="text-sm border border-blue-500 justify-between mb-4 ml-4 mt-2 flex gap-2 bg-blue-50 p-2 px-4 rounded-md">
                               <div>
                                 <p>
                                   {" "}
                                   Interview scheduled on{" "}
-                                  <span className="font-medium">
+                                  <span className="font-medium text-blue-500">
                                     {new Date(
                                       interview.interview_date
                                     ).toLocaleDateString("en-GB", {
@@ -364,7 +364,7 @@ function JobApplication() {
                                 </p>
                                 <p>
                                   Mode of interview{" "}
-                                  <span className="font-medium">
+                                  <span className="font-medium text-blue-500">
                                     {interview.interview_mode}
                                   </span>
                                 </p>
@@ -403,14 +403,14 @@ function JobApplication() {
                                     width="16"
                                     height="16"
                                     fill="currentColor"
-                                    class="bi bi-link-45deg h-full p-1 bg-white rounded-md  w-full"
+                                    class="bi bi-link-45deg  h-12 p-1 bg-white rounded-md  w-12"
                                     viewBox="0 0 16 16"
                                   >
                                     <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z" />
                                     <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z" />
                                   </svg>
                                   <a
-                                    className="border absolute h-full w-full top-0 rounded-md "
+                                    className="border absolute h-12 w-12 top-0 rounded-md "
                                     href={interview.interview_meet_link}
                                   ></a>
                                 </div>
@@ -501,12 +501,12 @@ function JobApplication() {
                             {interviewList?.map((interview) => {
                               if (interview.job._id == application.job._id) {
                                 return (
-                                  <div className="text-sm justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
+                                  <div className="text-sm justify-between items-center border border-blue-500 flex gap-2 bg-blue-50 p-2 mb-4 px-4 rounded-md">
                                     <div>
                                       <p>
                                         {" "}
                                         Interview scheduled on{" "}
-                                        <span className="font-medium">
+                                        <span className="font-medium text-blue-500">
                                           {new Date(
                                             interview.interview_date
                                           ).toLocaleDateString("en-GB", {
@@ -519,7 +519,7 @@ function JobApplication() {
                                       </p>
                                       <p>
                                         Mode of interview{" "}
-                                        <span className="font-medium">
+                                        <span className="font-medium text-blue-500">
                                           {interview.interview_mode}
                                         </span>
                                       </p>
@@ -551,7 +551,7 @@ function JobApplication() {
                                     )}
                                     {interview.interview_mode == "Online" && (
                                       <div
-                                        className="relative"
+                                        className="relative bg-white"
                                         onClick={(e) => {
                                           e.stopPropagation();
                                         }}

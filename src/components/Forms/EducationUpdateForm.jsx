@@ -422,10 +422,10 @@ function EducationUpdateForm({
 
   return (
     <form
-      className=" z-20 flex flex-col w-full   sm:max-h-96 overflow-auto h-full  bg-white pt-2 pb-6 px-4 sm:px-8 rounded-sm"
+      className=" z-20 flex flex-col w-full    overflow-auto h-full  bg-white pt-2 pb-6 px-4 sm:px-8 rounded-sm"
       onClick={(e) => e.stopPropagation()}
     >
-       <div className="sticky z-20 border-b  -top-2.5 -mt-[5px] py-4 flex gap-2   bg-white">
+       <div className="sticky z-20  -top-2.5 -mt-[5px] py-4 flex gap-2   bg-white">
          <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"

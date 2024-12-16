@@ -541,7 +541,7 @@ function EducationForm({ onClose, setData, data }) {
           </p>
         </div>
         </div>
-        <div className="sm:max-h-60 h-full "> {pages[currentPage].content}</div>
+        <div className=" h-full "> {pages[currentPage].content}</div>
       </form>
     </div>
   );

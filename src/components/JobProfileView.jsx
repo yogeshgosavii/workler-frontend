@@ -863,7 +863,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
               </div>
             </div>
           </div>
-          <div className="flex border-t sm:border-t-0 pt-8 pb-6 mt-10 sm:mt-0 flex-grow sm:border-x px-4 md:px-6 gap-3 bg-white justify-center flex-col">
+          <div className="flex border-t sm:border-t-0 pt-8 pb-6 mt-10 sm:mt-0 flex-grow sm:border-x px-4 md:px-6 gap-3 bg-white justify-start flex-col">
             {loading.jobDetails ? (
               <div className="animate-pulse ">
                 <div className="flex justify-between">
@@ -877,7 +877,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-3 justify-center mt-2">
+                <div className="flex gap-3  mt-2">
                   <div className="h-4 bg-gray-200 w-1/4 rounded-full"></div>
                   <div className="h-4 bg-gray-200 w-1/4 rounded-full"></div>
                   <div className="h-4 bg-gray-200 w-1/4 rounded-full"></div>
@@ -935,7 +935,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                     </div>
                   </div>
                   {jobDetails.job_source != "job_post" ? (
-                    <div className="flex flex-wrap sm:text-xl text-lg self-center  text-gray-700 font-medium  gap-3 flex-row text-nowrap mt-5">
+                    <div className="flex flex-wrap sm:text-xl text-lg   text-gray-700 font-medium  gap-3 flex-row text-nowrap mt-5">
                       {/* <div className="flex gap-2 border px-3 py-1.5 bg-gray-50 rounded-lg items-center">
                     <svg
                       className="h-6 w-6 "
@@ -957,26 +957,32 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                     </p>
                   </div> */}
                       {/* <div className="min-h-full border-l mx-1 w-px"></div> */}
-                      <div className="flex gap-3 font-medium  items-center">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          fill="currentColor"
-                          class="bi bi-briefcase-fill text-gray-400"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v1.384l7.614 2.03a1.5 1.5 0 0 0 .772 0L16 5.884V4.5A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5" />
-                          <path d="M0 12.5A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5V6.85L8.129 8.947a.5.5 0 0 1-.258 0L0 6.85z" />
-                        </svg>
-                        <p className="text-nowrap">
-                          {jobDetails.min_experience ||
-                          jobDetails.max_experience
-                            ? `${jobDetails.min_experience} - ${jobDetails.max_experience}`
-                            : "Experience not specified"}
-                        </p>
-                      </div>
-                      <div className="mx-3 border-l"></div>
+                     {(jobDetails.min_experience ||
+                           jobDetails.max_experience) &&
+                       <div>
+                       <div className="flex gap-3 font-medium  items-center">
+                         <svg
+                           xmlns="http://www.w3.org/2000/svg"
+                           width="20"
+                           height="20"
+                           fill="currentColor"
+                           class="bi bi-briefcase-fill text-gray-400"
+                           viewBox="0 0 16 16"
+                         >
+                           <path d="M6.5 1A1.5 1.5 0 0 0 5 2.5V3H1.5A1.5 1.5 0 0 0 0 4.5v1.384l7.614 2.03a1.5 1.5 0 0 0 .772 0L16 5.884V4.5A1.5 1.5 0 0 0 14.5 3H11v-.5A1.5 1.5 0 0 0 9.5 1zm0 1h3a.5.5 0 0 1 .5.5V3H6v-.5a.5.5 0 0 1 .5-.5" />
+                           <path d="M0 12.5A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5V6.85L8.129 8.947a.5.5 0 0 1-.258 0L0 6.85z" />
+                         </svg>
+                         <p className="text-nowrap">
+                           {jobDetails.min_experience ||
+                           jobDetails.max_experience
+                             ? `${jobDetails.min_experience} - ${jobDetails.max_experience}`
+                             : "Experience not specified"}
+                         </p>
+                       </div>
+                       <div className="mx-3 border-l"></div>
+                       </div>
+                     }
+                     
 
                       {jobDetails.location && (
                         <div className="flex gap-2 items-center ">
@@ -998,7 +1004,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                           </p>
                         </div>
                       )}
-                      <div className="mx-3 border-l"></div>
+                      <div className="mx-1 border-l"></div>
 
                       <div className="flex gap-2 items-center">
                         {jobDetails.currency_type == "$" ||
@@ -1030,9 +1036,11 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                               d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z"
                             />
                           </svg>
-                        ) : (
+                        ) :(jobDetails.min_salary || jobDetails.max_salary) && jobDetails.currency_type == "GBP" ?(
+                          "£"
+                        ) : (jobDetails.min_salary || jobDetails.max_salary)? (
                           jobDetails.currency_type
-                        )}
+                        ):null}
                         <p className="text-nowrap    ">
                           {jobDetails.min_salary || jobDetails.max_salary
                             ? ` ${
@@ -1048,8 +1056,8 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                           {jobDetails.salary_type && (
                             <span className="text-gray-400 truncate   text-wrap  font-normal ml-2">
                               {!jobDetails.salary_type.includes("per") &&
-                                "per "}{" "}
-                              {jobDetails.salary_type}
+                                "/ "}{" "}
+                              {jobDetails.salary_type.replace("per","/")}
                             </span>
                           )}
                         </p>
@@ -1284,9 +1292,9 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
             ) : approaches[0]?.status === "interview_setup" ? (
               <p>
                 {interviews?.map((interview) => {
-                  if (interview.job._id == approaches.job._id) {
+                  if (interview.job._id == approaches.job?._id) {
                     return (
-                      <div className="text-sm justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
+                      <div className="text-sm justify-between items-center border flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
                         <div>
                           <p>
                             {" "}
@@ -1368,7 +1376,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
               <p className="text-red-500 text-sm">Approach declined</p>
             ) : null}
             {jobInterview && (
-              <div className="text-sm justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
+              <div className="text-sm justify-between items-center max-w-md border flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
                 <div>
                   <p>
                     {" "}
@@ -1402,7 +1410,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="currentColor"
-                      className="h-14 bg-white p-2 rounded-md border"
+                      className="h-10 bg-white p-1 rounded-md border"
                       viewBox="0 0 16 16"
                     >
                       <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6" />
@@ -1425,7 +1433,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                       width="16"
                       height="16"
                       fill="currentColor"
-                      class="bi bi-link-45deg"
+                      class="bi bi-link-45deg h-10 w-10 bg-white shrink-0 p-1"
                       viewBox="0 0 16 16"
                     >
                       <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z" />

@@ -167,19 +167,19 @@ function Posts({
             setShowMentions={setPostMentions}
           />
 
-          <div className={`grid ${columns} ${postPaddingbottom}  gap-4 `}>
+          <div className={`grid ${columns} ${postPaddingbottom}  gap-6 `}>
             {postData?.map((post, index) => {
               return (
                 <div
                   key={index}
-                  onClick={() => navigate("/post/" + post._id)}
-                  className={`sm:border w-full  bg-white cursor-pointer  ${postClassName} flex flex-col  transition-all  h-full   p-4 sm:p-7`}
+                  onClick={() => window.open("/post/" + post._id, "_blank")}
+                  className={`sm:border w-full  bg-white   ${postClassName} flex flex-col  transition-all  h-full   p-4 sm:p-7`}
                 >
                   <div className="flex items-center   justify-between">
                     <div
                       onClick={(e) => {
                         e.stopPropagation();
-                        navigate("/user/" + post.user._id);
+                        window.open("/user/" + post.user._id, "_blank");
                       }}
                       className="flex gap-4  items-center"
                     >
@@ -296,11 +296,66 @@ function Posts({
                       className={`mt-4 ${
                         !post.images &&
                         post.post_type !== "job" &&
-                        " flex-1  border p-4 rounded-xl"
+                        "flex-1 rounded-xl"
                       }`}
-                      dangerouslySetInnerHTML={{ __html: post.content }}
-                    />
-                    {post.mentions.length > 0 &&
+                    >
+                      {post.content.split(/(@\w+)/).map((segment, index) => {
+                        if (segment.startsWith("@")) {
+                          const mention = segment.slice(1); // Remove "@" from the mention
+
+                          // Find the corresponding user in the mentions list
+                          const mentionedUser = post.mentions.find(
+                            (user) => user.username === mention
+                          );
+
+                          if (mentionedUser) {
+                            const profileImage =
+                              mentionedUser.profileImage?.originalImage?.[0] ||
+                              "";
+
+                            return (
+                              <span
+                                key={index}
+                                className="text-blue-500 relative cursor-pointer group"
+                                role="button"
+                                tabIndex="0"
+                                aria-label={`View profile of ${mentionedUser.username}`}
+                              >
+                                {segment}
+                                <div
+                                  className="absolute top-7 z-20 hidden items-start group-hover:flex  border bg-white shadow-lg px-8 pr-9  justify-center py-2 left-0 rounded-md"
+                                  role="tooltip"
+                                >
+                                  <img
+                                    src={profileImage}
+                                    alt={`${mentionedUser.username}'s profile`}
+                                    className="w-8 h-8 mt-1 rounded-full"
+                                  />
+                                  <p className="ml-3 text-gray-800">
+                                    <p className="font-medium text-nowrap">
+                                      {mentionedUser.personal_details
+                                        ? mentionedUser.personal_details
+                                            .firstname +
+                                          " " +
+                                          mentionedUser.personal_details
+                                            .lastname
+                                        : mentionedUser.company_details
+                                            .company_name}
+                                    </p>
+                                    <p className="text-sm text-gray-400 -mt-0.5">{mentionedUser.username}</p>
+                                  </p>
+                                </div>
+                              </span>
+                            );
+                          }
+                        }
+
+                        // Render regular text segments
+                        return <span key={index}>{segment}</span>;
+                      })}
+                    </p>
+
+                    {/* {post.mentions.length > 0 &&
                       !post.images &&
                       post.post_type !== "job" && (
                         // <svg
@@ -338,7 +393,7 @@ function Posts({
                             <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
                           </svg>
                         </div>
-                      )}
+                      )} */}
                   </div>
                   {post.images && (
                     <div
@@ -510,7 +565,7 @@ function Posts({
                   </div> */}
                     </div>
                   )}
-                  <div className="flex gap-4 z-10  justify-between text-gray-400 font-normal items-center  mt-2">
+                  <div className="flex gap-4 z-10   justify-between text-gray-400 font-normal items-center  mt-4">
                     <div className="flex gap-4">
                       <LikeButton
                         postData={post}
@@ -528,22 +583,24 @@ function Posts({
                         // setPostData={setPostData}
                       />
                     </div>
-                     
-                        {/* <div className="absolute w-5 h-5 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div> */}
-                        <svg
-                         onClick={(e) => {
+
+                    {/* <div className="absolute w-5 h-5 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div> */}
+                    {post.mentions.length > 0 && (
+                      <svg
+                        onClick={(e) => {
                           e.stopPropagation();
                           setPostMentions(post.mentions);
                         }}
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="20"
-                          height="20"
-                          fill="currentColor"
-                          className="h-6 w-6 text-gray-800 border p-1 rounded-full border-gray-800    right-2 z-10"
-                          viewBox="0 0 16 16"
-                        >
-                          <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                        </svg>
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        fill="currentColor"
+                        className="h-6 w-6 text-gray-800 border p-1 rounded-full border-gray-800    right-2 z-10"
+                        viewBox="0 0 16 16"
+                      >
+                        <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                      </svg>
+                    )}
                   </div>
                   {post.comments_count > 0 && (
                     <div className=" text-sm z-10">

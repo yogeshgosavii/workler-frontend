@@ -221,12 +221,12 @@ function Employment({ job, applications,setApplications, approaches ,setApproach
           {loading.approachList ? (
             renderSkeleton()
           ) : approaches.length > 0 ? (
-            <div className="grid w-full -mt-5 sm:-mt-0 md:grid-cols-2 gap-4">
+            <div className="grid w-full -mt-5 sm:-mt-0 md:grid-cols-2 md:gap-4">
               {approaches.map((approach,index,arr) => (
                 <div
                   key={approach._id}
                   onClick={() => handleProfileSelect(approach.user._id)}
-                  className={` ${index == 0 ?"border-b":"border-y"} bg-white sm:border sm:rounded-xl   p-5 `}
+                  className={` border-b md:border-y bg-white sm:border sm:rounded-xl   p-5 `}
                 >
                   <div className="flex justify-between gap-4">
                   <div className="flex gap-4 mb-3">
@@ -304,7 +304,7 @@ function Employment({ job, applications,setApplications, approaches ,setApproach
                       {interviewList?.map((interview) => {
                         if (interview.job._id == approach.job._id) {
                           return (
-                            <div className="text-sm justify-between items-center shadow-md flex gap-2 bg-gray-50 p-2 px-4 rounded-md">
+                            <div className="text-sm justify-between items-center flex gap-2 border bg-gray-50 p-2 px-4 rounded-md">
                               <div>
                                 <p>
                                   {" "}
@@ -412,7 +412,7 @@ function Employment({ job, applications,setApplications, approaches ,setApproach
                 <div
                   key={applications._id}
                   onClick={() => handleProfileSelect(application.user)}
-                  className="border-b  p-3 flex flex-col gap-2 "
+                  className="border-y  p-3 flex flex-col gap-2 "
                 >
                   <div className="flex justify-between w-full  gap-4 ">
                     <div className="flex gap-4 mb-2 w-full ">
@@ -690,7 +690,7 @@ function Employment({ job, applications,setApplications, approaches ,setApproach
         {showInterviewForm && (
           <div
             onClick={() => setShowInterviewForm(null)}
-            className=" w-screen h-screen bg-black opacity-50"
+            className=" w-screen mt-2 h-screen bg-black opacity-50"
           ></div>
         )}
         <div
@@ -842,8 +842,8 @@ function Employment({ job, applications,setApplications, approaches ,setApproach
       </div>
       {/* )} */}
       <div className=" w-full sm:pr-5 sm:ml-5 ">
-        <div className="flex flex-col mb-5 bg-amber-50 border-amber-500  left-0 z-40  md:-mt-0  -mt-6  sm:static p-4 border-b sm:border sm:rounded-xl ">
-          <p className="font-medium text-xl">{job?.job_role}</p>
+        <div className="flex flex-col mb-5 border-b  left-0 z-40  md:-mt-0 -mt-3 px-4 py-3 border-l-4 lg:border-l-0 lg:px-0 border-gray-300 bg-gray-50 lg:bg-white  sm:static  ">
+          <p className="font-medium text-2xl">{job?.job_role}</p>
           <p className="text-sm text-gray-500 truncate text-wrap max-w-full">
             {job?.location.address}
           </p>
