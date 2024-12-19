@@ -193,7 +193,7 @@ function Notification({ userId }) {
                   navigate("/post/" + notification.actionId);
                 }
               }}
-              className={`p-3 px-4 flex items-center justify-between md:px-6 ${
+              className={`p-4 px-4  flex items-center justify-between md:px-6 ${
                 index <= 0
                   ? index == arr.length - 1
                     ? ""

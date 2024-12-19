@@ -119,7 +119,7 @@ function Search() {
           location.pathname.split("/").length > 2 && " hidden sm:block"
         } sm:px-0 w-full sm:max-w-lg `}
       >
-        <div className=" sticky top-0 z-30 bg-white px-4 pt-5">
+        <div className=" sticky top-0 z-30 bg-white py-2 sm:pt-4">
           <form
             onSubmit={(e) => {
               if (searchType != "user") {
@@ -128,7 +128,7 @@ function Search() {
                 e.preventDefault();
               }
             }}
-            className="flex sticky top-0  shadow-md sm:shadow-lg w-full border rounded-xl gap-2 h-fit px-4 bg-white py-2.5"
+            className="flex sticky top-0   w-full border-b sm:border sm:rounded-xl shadow-md sm:shadow-none gap-2 h-fit px-4 bg-white py-2.5"
           >
             <input
               autoFocus
@@ -166,7 +166,7 @@ function Search() {
         {/* Display search results */}
         {query.length > 0 && (
           <div className="w-full  flex flex-col gap-4">
-            <div className="flex gap-4 sticky top-[74px] pt-4 pb-2  z-20 bg-white  px-4  py-1">
+            <div className="flex gap-4 sticky top-0 pt-2 pb-2  z-20 bg-white  px-4 sm:px-0  py-1">
               <p
                 onClick={() => {
                   {
@@ -195,7 +195,7 @@ function Search() {
               </p>}
             </div>
             {isLoading ? (
-              <div className="animate-pulse px-4 flex flex-col overflow-y-hidden gap-2 mt-2">
+              <div className="animate-pulse px-4 sm:px-0 flex flex-col overflow-y-hidden gap-2 mt-2">
                 {[...Array(3)].map((_, index) => (
                   <div key={index} className="flex items-center">
                     <div className="h-[40px] bg-gray-200 w-[40px] rounded-full mb-2"></div>
@@ -208,7 +208,7 @@ function Search() {
               </div>
             ) : (
               hasSearched && (
-                <div className=" flex flex-col px-4 gap-6">
+                <div className=" flex flex-col px-4 sm:px-0 gap-6">
                   {selectedType == "Accounts" && (
                     <div className="">
                       {searchedUsers.length > 0 ? (
@@ -297,7 +297,7 @@ function Search() {
                               onClick={() => {
                                 window.open(`/jobs/${query}?`, "_blank");
                               }}
-                              className="w-full text-center mt-2 font-medium bg-blue-50 rounded-full text-blue-500 py-2.5 text-lg"
+                              className="w-full text-center mt-2 font-medium bg-blue-50 border border-blue-500 rounded-md text-blue-500 py-2.5 text-lg"
                             >
                               See all
                             </p>

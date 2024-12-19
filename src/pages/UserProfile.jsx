@@ -498,7 +498,7 @@ const UserProfile = () => {
       case "Qualification":
         return (
           <Qualification
-            className={""}
+            className={" pb-4"}
             setSkillData={setSkillData}
             skillData={skillData}
             educationData={educationData}
@@ -570,7 +570,7 @@ const UserProfile = () => {
         location.pathname === "/profile/settings/saveds" ||
         location.pathname === "/profile/post"
       }
-      className={`  flex bg-gray-50 text-gray-800 min-h-screen border justify-center gap-5`}
+      className={`  flex bg-gray-50 text-gray-800 min-h-screen  justify-center gap-5`}
     >
       {pageLoading ? (
         <div>Loading...</div>
@@ -683,21 +683,23 @@ const UserProfile = () => {
                 } fixed  z-20 md:min-w-[57.6%]  md:border-x md:mt-5 top-0 mb-4 px-4 py-4 bg-white flex justify-between`}
               >
                 <div className="flex items-center gap-4">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    class="size-8 -ml-2.5"
-                    onClick={() => {
-                      window.history.back();
-                    }}
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
+                <svg
+                onClick={()=>{
+                  window.history.back()
+                }}
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-6 -mt-1"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+                  />
+                </svg>
                   {atTop >= 100 && (
                     <UserImageInput
                       isEditable={false}
@@ -977,7 +979,7 @@ const UserProfile = () => {
                   <div className="flex w-screen md:w-full pt-1">
                     {[
                       ...(userDetails.account_type === "Employeer"
-                        ? ["About", "Posts", "Jobs"]
+                        ? ["About", "Posts"]
                         : ["Home", "Posts", "Qualification"]),
                     ].map((tab, index, arr) => (
                       <p
@@ -992,7 +994,7 @@ const UserProfile = () => {
                         style={{
                           width: `${
                             100 /
-                            (userDetails.account_type === "Employeer" ? 3 : 3)
+                            (userDetails.account_type === "Employeer" ? 2 : 3)
                           }%`,
                         }}
                       >
@@ -1005,13 +1007,13 @@ const UserProfile = () => {
                   style={{
                     left: `${
                       (100 /
-                        (userDetails.account_type === "Employeer" ? 3 : 3)) *
+                        (userDetails.account_type === "Employeer" ? 2 : 3)) *
                       tabIndex
                     }%`,
                     transition: "left 0.2s ease-in-out",
                   }}
                   className={`w-1/${
-                    userDetails.account_type === "Employeer" ? "3" : "3"
+                    userDetails.account_type === "Employeer" ? "2" : "3"
                   } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-gray-800 absolute`}
                 ></div>
               </div>

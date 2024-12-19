@@ -644,7 +644,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
         style={{ scrollbarWidth: "none" }}
         className={`${
           !jobId && "hidden"
-        } overflow-y-auto w-full rounded-3xl flex-1 relative   flex-grow ${
+        } overflow-y-auto w-full rounded-lg flex-1 relative   flex-grow ${
           showProfileImage && "pointer-events"
         }`}
       >
@@ -806,7 +806,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
         <div className="flex relative  flex-wrap">
           <div className="bg-blue-50 border-x absolute top-0 w-full h-32 sm:h-40"></div>
           <div
-            className={` w-full border-t rounded-t-3xl  fixed sm:sticky  ${
+            className={` w-full border-t rounded-t-lg  fixed sm:sticky  ${
               atTop > 100 ? "bg-white" : "bg-blue-50"
             }  sm:border-x  z-20 top-0   px-4 py-4  flex `}
           >
@@ -1064,7 +1064,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-gray-50 rounded-lg border mt-5 p-2  px-4">
+                    <div className="bg-gray-50 rounded-lg w-fit border mt-5 p-2  px-4">
                       <p className=" inline-flex flex-wrap">
                         <span className="mr-1">
                           This job is fetched from a job post.{" "}
@@ -1678,7 +1678,7 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
         <div
           className={`fixed ${
             userDetails && "mb-[55px] sm:mb-0"
-          } sm:sticky sm:rounded-b-3xl  w-full self-center flex gap-3  bottom-0 z-30 bg-white sm:border border-t px-4 py-5 items-center`}
+          } sm:sticky sm:rounded-b-lg w-full self-center flex gap-3  bottom-0 z-30 bg-white sm:border border-t px-4 py-5 items-center`}
         >
           {copied && (
             <p

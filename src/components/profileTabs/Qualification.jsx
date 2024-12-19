@@ -42,7 +42,7 @@ function Qualification({
 
   const Section = ({ id, title, content, loading, onAdd }) =>
     (isEditable || (!isEditable && content != "")) && (
-      <div className={`flex    flex-col mt-3 `}>
+      <div className={`flex  border-b sm:border-b-0  flex-col mt-3 `}>
         <div className="flex justify-between items-center px-4 py-3 bg-white  border sm:border-b-0  w-full">
           <p className="text-xl font-medium   ">{title}</p>
           {onAdd && isEditable && (
@@ -416,7 +416,7 @@ function Qualification({
           onChange={handleFileChange} // Handle file selection
         />
       </div> */}
-      {isEditable && (
+      {/* {isEditable && (
         <div className="bg-white sm:border border-b  px-4 py-4 mb-5 md:px-6">
           <p className="font-medium text-lg mb-2">Resumes</p>
           <div className="mb-5 flex flex-col gap-2">
@@ -490,11 +490,7 @@ function Qualification({
                   <p className="flex-1 text-gray-700 truncate">
                     {selectedResume.name}
                   </p>
-                  {/* <button
-                className="ml-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 focus:outline-none"
-              >
-                Remove
-              </button> */}
+                 
                   <svg
                     className="h-5 w-5 text-gray-500 pointer-events-auto transition-all duration-500 ease-in-out transform"
                     fill="none"
@@ -571,9 +567,8 @@ function Qualification({
           </div>
                         {resumeUploadError && <p className="text-red-500 mt-1">{resumeUploadError}</p>}
 
-          {/* <button className="bg-blue-500 text-white w-full text-center text-lg font-medium rounded-lg px-4 py-3 mt-3">Upload</button> */}
         </div>
-      )}
+      )} */}
       {!isEditable && skillData.length == 0 &&
         educationData.length == 0 &&
         workExperienceData.length == 0 &&

@@ -20,6 +20,7 @@ import UserPostUpdateSettings from "./UserPostUpdateSettings";
 import PostMentionList from "./PostMentionList";
 import CommentSettings from "./CommentSettings";
 import ReplySetting from "./ReplySetting";
+import PostTextArea from "./Input/PostTextArea";
 
 function PostView({ postId = useParams().postId, index, className }) {
   const [commentButtonClicked, setCommentButtonClicked] = useState(null);
@@ -28,7 +29,11 @@ function PostView({ postId = useParams().postId, index, className }) {
   const [replies, setReplies] = useState([]);
   const [sendClicked, setSendClicked] = useState(null);
   const [commentText, setcommentText] = useState("");
-  const [replyText, setReplyText] = useState({ index: null, text: "" });
+  const [replyText, setReplyText] = useState({
+    index: null,
+    text: "",
+    mentions: [],
+  });
   const [comments, setcomments] = useState([]);
   const [likes, setLikes] = useState([]);
   const [savedList, setSavedList] = useState([]);
@@ -39,6 +44,8 @@ function PostView({ postId = useParams().postId, index, className }) {
   const [commentSetting, setCommentSetting] = useState(null);
   const [replySetting, setReplySetting] = useState(null);
   const [tab, setTab] = useState("comments");
+  const [mentionList, setMentionList] = useState([]);
+  const [isTextEmpty, setIsTextEmpty] = useState([]);
 
   const sendBtnRef = useRef(null);
   const currentUser = useSelector((state) => state.auth.user);
@@ -93,6 +100,7 @@ function PostView({ postId = useParams().postId, index, className }) {
       post: postId,
       user: currentUser._id,
       content: commentText,
+      mentions: mentionList,
     });
     setPost((prev) => ({
       ...prev,
@@ -148,12 +156,12 @@ function PostView({ postId = useParams().postId, index, className }) {
   };
   return (
     <div
-      className={`${className}  flex justify-center  bg-white   h-full min-h-screen    gap-8 `}
+      className={`${className}  flex justify-center  min-h-screen    gap-8 `}
     >
       {post && (
         <div
           key={index}
-          className="w-full sm:max-w-lg relative sm:border-x h-screen "
+          className="w-full sm:max-w-lg relative bg-white h-full border-b sm:border-x "
         >
           <UserPostUpdateSettings
             setPostSetting={setPostSettings}
@@ -286,68 +294,64 @@ function PostView({ postId = useParams().postId, index, className }) {
             </div>
           </div>
           <div className="relative mx-4">
-          <p
-                      className={`mt-4 ${
-                        !post.images &&
-                        post.post_type !== "job" &&
-                        "flex-1 rounded-xl"
-                      }`}
-                    >
-                      {post.content.split(/(@\w+)/).map((segment, index) => {
-                        if (segment.startsWith("@")) {
-                          const mention = segment.slice(1); // Remove "@" from the mention
+            <p
+              className={`mt-4 ${
+                !post.images && post.post_type !== "job" && "flex-1 rounded-xl"
+              }`}
+            >
+              {post.content.split(/(@\w+)/).map((segment, index) => {
+                if (segment.startsWith("@")) {
+                  const mention = segment.slice(1); // Remove "@" from the mention
 
-                          // Find the corresponding user in the mentions list
-                          const mentionedUser = post.mentions.find(
-                            (user) => user.username === mention
-                          );
+                  // Find the corresponding user in the mentions list
+                  const mentionedUser = post.mentions.find(
+                    (user) => user.username === mention
+                  );
 
-                          if (mentionedUser) {
-                            const profileImage =
-                              mentionedUser.profileImage?.originalImage?.[0] ||
-                              "";
+                  if (mentionedUser) {
+                    const profileImage =
+                      mentionedUser.profileImage?.originalImage?.[0] || "";
 
-                            return (
-                              <span
-                                key={index}
-                                className="text-blue-500 relative cursor-pointer group"
-                                role="button"
-                                tabIndex="0"
-                                aria-label={`View profile of ${mentionedUser.username}`}
-                              >
-                                {segment}
-                                <div
-                                  className="absolute top-7 z-20 hidden items-start group-hover:flex  border bg-white shadow-lg px-8 pr-9  justify-center py-2 left-0 rounded-md"
-                                  role="tooltip"
-                                >
-                                  <img
-                                    src={profileImage}
-                                    alt={`${mentionedUser.username}'s profile`}
-                                    className="w-8 h-8 mt-1 rounded-full"
-                                  />
-                                  <p className="ml-3 text-gray-800">
-                                    <p className="font-medium text-nowrap">
-                                      {mentionedUser.personal_details
-                                        ? mentionedUser.personal_details
-                                            .firstname +
-                                          " " +
-                                          mentionedUser.personal_details
-                                            .lastname
-                                        : mentionedUser.company_details
-                                            .company_name}
-                                    </p>
-                                    <p className="text-sm text-gray-400 -mt-0.5">{mentionedUser.username}</p>
-                                  </p>
-                                </div>
-                              </span>
-                            );
-                          }
-                        }
+                    return (
+                      <span
+                        key={index}
+                        className="text-blue-500 relative cursor-pointer group"
+                        role="button"
+                        tabIndex="0"
+                        aria-label={`View profile of ${mentionedUser.username}`}
+                      >
+                        {segment}
+                        <div
+                          className="absolute top-7 z-20 hidden items-start group-hover:flex  border bg-white shadow-lg px-8 pr-9  justify-center py-2 left-0 rounded-md"
+                          role="tooltip"
+                        >
+                          <img
+                            src={profileImage}
+                            alt={`${mentionedUser.username}'s profile`}
+                            className="w-8 h-8 mt-1 rounded-full"
+                          />
+                          <p className="ml-3 text-gray-800">
+                            <p className="font-medium text-nowrap">
+                              {mentionedUser.personal_details
+                                ? mentionedUser.personal_details.firstname +
+                                  " " +
+                                  mentionedUser.personal_details.lastname
+                                : mentionedUser.company_details.company_name}
+                            </p>
+                            <p className="text-sm text-gray-400 -mt-0.5">
+                              {mentionedUser.username}
+                            </p>
+                          </p>
+                        </div>
+                      </span>
+                    );
+                  }
+                }
 
-                        // Render regular text segments
-                        return <span key={index}>{segment}</span>;
-                      })}
-                    </p>
+                // Render regular text segments
+                return <span key={index}>{segment}</span>;
+              })}
+            </p>
 
             {/* {post.mentions.length > 0 &&
               !post.images &&
@@ -606,55 +610,57 @@ function PostView({ postId = useParams().postId, index, className }) {
             </p>
           </div>
           <div className="flex gap-4 justify-between mt-2   px-4 sm:px-4 py-1">
-           <div className="flex gap-4">
-           <p
-              onClick={() => setTab("likes")}
-              className={`px-3 py-1 cursor-pointer bg rounded-lg font-medium border ${
-                tab === "likes"
-                  ? "bg-gray-800 border-gray-800 text-white"
-                  : "bg-white"
-              }`}
-            >
-              Likes
-            </p>
-            <p
-              onClick={() => setTab("comments")}
-              className={`px-3 py-1 cursor-pointer rounded-lg font-medium border ${
-                tab === "comments"
-                  ? "bg-gray-800 border-gray-800 text-white"
-                  : "bg-white"
-              }`}
-            >
-              Comments
-            </p>
-            </div>
-           {post.mentions.length>0 && <div className="relative">
-              <div
-                // onClick={() => handleRemoveImage(image)}
-                className="absolute     cursor-pointer"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setPostMentions(post.mentions);
-                }}
+            <div className="flex gap-4">
+              <p
+                onClick={() => setTab("likes")}
+                className={`px-3 py-1 cursor-pointer bg rounded-lg font-medium border ${
+                  tab === "likes"
+                    ? "bg-gray-800 border-gray-800 text-white"
+                    : "bg-white"
+                }`}
               >
-                <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="currentColor"
-                  className="h-5 w-5 text-gray-100  absolute top-[7px] right-[6px] z-10"
-                  viewBox="0 0 16 16"
+                Likes
+              </p>
+              <p
+                onClick={() => setTab("comments")}
+                className={`px-3 py-1 cursor-pointer rounded-lg font-medium border ${
+                  tab === "comments"
+                    ? "bg-gray-800 border-gray-800 text-white"
+                    : "bg-white"
+                }`}
+              >
+                Comments
+              </p>
+            </div>
+            {post.mentions.length > 0 && (
+              <div className="relative">
+                <div
+                  // onClick={() => handleRemoveImage(image)}
+                  className="absolute     cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPostMentions(post.mentions);
+                  }}
                 >
-                  <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
-                </svg>
+                  <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="currentColor"
+                    className="h-5 w-5 text-gray-100  absolute top-[7px] right-[6px] z-10"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
+                  </svg>
+                </div>
               </div>
-            </div>}
+            )}
           </div>
           {tab == "likes" && (
             <div>
               {likes.length > 0 ? (
-                <div className="flex flex-col gap-2 px-4 pt-5">
+                <div className="flex flex-col gap-2 px-4 pb-5 pt-5">
                   {likes.map((user) => (
                     <div
                       onClick={() => {
@@ -668,9 +674,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                         isEditable={false}
                       />
                       <div className="-mt-1">
-                        <p className="font-medium">
-                          {user.user.username}
-                        </p>
+                        <p className="font-medium">{user.user.username}</p>
                         {user.user.personal_details ? (
                           <p className="text-gray-400 text-sm -mt-1">
                             {user.user.personal_details?.firstname}{" "}
@@ -701,10 +705,10 @@ function PostView({ postId = useParams().postId, index, className }) {
             <div>
               <div
                 id="commentInput"
-                className={` bg-white z-40 px-4  py-2 sticky top-[42px] border-b flex gap-2 transition-all items-center overflow-hidden ${" opacity-100"} `}
+                className={` bg-white  z-40 px-4  py-2 sticky top-[42px] border-b flex gap-2 transition-all  ${" opacity-100"} `}
               >
                 <UserImageInput
-                  className=" rounded-full"
+                  className=" rounded-full mt-0.5"
                   imageHeight={30}
                   imageBorder={0}
                   image={
@@ -714,8 +718,8 @@ function PostView({ postId = useParams().postId, index, className }) {
                   alt={`${post.username}'s avatar`}
                   isEditable={false}
                 />
-                <div className="flex w-full">
-                  <input
+                <div className="flex w-full ">
+                  {/* <input
                     id={post._id + "commentText"}
                     key={post._id + "commentText"}
                     autoFocus={commentButtonClicked === index}
@@ -731,6 +735,17 @@ function PostView({ postId = useParams().postId, index, className }) {
                     // onBlur={() => setCommentButtonClicked(null)}
                     className={`rounded-xl text-sm bg-white  outline-none py-2 flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
                     placeholder={`Comment on @${post.user.username}`}
+                  /> */}
+                  <PostTextArea
+                    className=""
+                    placeholder={`Comment on @${post.user.username}`}
+                    showRemainingLetters={false}
+                    content={commentText}
+                    setContent={setcommentText}
+                    mentionList={mentionList}
+                    setMentionList={setMentionList}
+                    textIsEmpty={isTextEmpty}
+                    settextIsEmpty={setIsTextEmpty}
                   />
                   <svg
                     id="sendBtn"
@@ -739,7 +754,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                     height="18"
                     fill="currentColor"
                     ref={sendBtnRef}
-                    className={`bi bi-send-fill  text-blue-500 absolute top-1/4 rotate-45 right-5 ${
+                    className={`bi bi-send-fill  text-blue-500 absolute top-3.5 rotate-45 right-5 ${
                       sendClicked === index ? "send-animation" : ""
                     }`}
                     viewBox="0 0 16 16"
@@ -791,7 +806,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                   </svg>
                 </div>
               </div>
-              <div className="pb-14 sm:pb-0 h-full">
+              <div className="pb-14 sm:pb-0 h-full relative">
                 {comments.length <= 0 && (
                   <p className="max-w-xl pt-14 pb-14  text-center sm:h-full  px-6 md:px-6">
                     <p className="text-2xl font-bold text-gray-500">
@@ -818,7 +833,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                   )} */}
                         <div className="flex justify-between w-full">
                           <div
-                            className={`relative  gap-2  transition-all items-center rounded-xl  overflow-hidden mt-2 `}
+                            className={`relative  gap-2  transition-all items-center  overflow-hidden mt-2 `}
                           >
                             <div className="flex items-center gap-3">
                               <UserImageInput
@@ -836,12 +851,86 @@ function PostView({ postId = useParams().postId, index, className }) {
                                 {comment.user.username}
                               </p>
                             </div>
-                            <p
+                            {/* <p
                               value={comment.content}
                               // onBlur={() => setCommentButtonClicked(null)}
                               className={`rounded-xl  mt-2  outline-none  flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
                             >
                               {comment.content}
+                            </p> */}
+                            <p
+                              className={`mt-flex-1  relative 
+              `}
+                            >
+                              {comment.content
+                                .split(/(@\w+)/)
+                                .map((segment, index) => {
+                                  if (segment.startsWith("@")) {
+                                    const mention = segment.slice(1); // Remove "@" from the mention
+                                    console.log(
+                                      "men",
+                                      mention,
+                                      comment.mentions
+                                    );
+                                    // Find the corresponding user in the mentions list
+                                    const mentionedUser = comment.mentions.find(
+                                      (user) => user.username === mention
+                                    );
+
+                                    if (mentionedUser) {
+                                      const profileImage =
+                                        mentionedUser.profileImage
+                                          ?.originalImage?.[0] || "";
+
+                                      return (
+                                        <span
+                                          key={index}
+                                          className="text-blue-500 relative cursor-pointer group"
+                                          role="button"
+                                          onClick={() => {
+                                            window.open(
+                                              `/user/${mentionedUser._id}`
+                                            );
+                                          }}
+                                          tabIndex="0"
+                                          aria-label={`View profile of ${mentionedUser.username}`}
+                                        >
+                                          {segment}
+                                          <div
+                                            className="absolute top-7 z-20  items-start group-hover:flex  border bg-white shadow-lg px-8 pr-9  justify-center py-2 left-0"
+                                            role="tooltip"
+                                          >
+                                            <img
+                                              src={profileImage}
+                                              alt={`${mentionedUser.username}'s profile`}
+                                              className="w-8 h-8 mt-1 rounded-full"
+                                            />
+                                            <p className="ml-3 text-gray-800">
+                                              <p className="font-medium text-nowrap">
+                                                {mentionedUser.personal_details
+                                                  ? mentionedUser
+                                                      .personal_details
+                                                      .firstname +
+                                                    " " +
+                                                    mentionedUser
+                                                      .personal_details.lastname
+                                                  : mentionedUser
+                                                      .company_details
+                                                      .company_name}
+                                              </p>
+                                              <p className="text-sm text-gray-400 -mt-0.5">
+                                                {mentionedUser.username}
+                                              </p>
+                                            </p>
+                                          </div>
+                                        </span>
+                                      );
+                                    }
+                                  }
+
+                                  // Render regular text segments
+                                  return <span key={index}>{segment}</span>;
+                                })}
                             </p>
                           </div>
                           <svg
@@ -872,6 +961,8 @@ function PostView({ postId = useParams().postId, index, className }) {
                           />
                           <CommentButton
                             onClick={() => {
+                              console.log("click");
+
                               setCommentButtonClicked((prev) =>
                                 prev == index ? null : index
                               );
@@ -885,14 +976,14 @@ function PostView({ postId = useParams().postId, index, className }) {
                         </div>
                         <div
                           id="commentInput"
-                          className={`relative  w-full flex gap-2 transition-all items-center overflow-hidden ${
+                          className={`relative  w-full flex gap-2 transition-all  ${
                             commentButtonClicked === index
                               ? " opacity-100"
-                              : "-mt-8 opacity-0 pointer-events-none "
+                              : "-mt-8 opacity-0 pointer-events-none n "
                           } `}
                         >
                           <UserImageInput
-                            className=" rounded-full"
+                            className=" rounded-full mt-1"
                             imageHeight={20}
                             imageBorder={0}
                             image={
@@ -903,7 +994,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                             isEditable={false}
                           />
                           <div className="flex w-full">
-                            <input
+                            {/* <input
                               id={comment._id + "replyText"}
                               key={comment._id + "replyText"}
                               autoFocus={commentButtonClicked === index}
@@ -923,8 +1014,42 @@ function PostView({ postId = useParams().postId, index, className }) {
                                 WebkitBoxShadow: "0 0 0px 1000px white inset",
                               }}
                               disabled={sendClicked}
-                              className="rounded-xl text-sm bg-white placeholder:text-sm outline-none py-2 flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300"
+                              className=" text-sm  bg-white placeholder:text-sm outline-none py-2 flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300"
                               placeholder={`Reply on @${comment.user.username}`}
+                            /> */}
+                            <PostTextArea
+                              showRemainingLetters={false}
+                              className=" "
+                              placeholder={`Reply on @${comment.user.username}`}
+                              content={
+                                replyText?.index === index
+                                  ? replyText?.text
+                                  : ""
+                              }
+                              setContent={(text) => {
+                                console.log("replytex", replyText);
+
+                                setReplyText((prev) => ({
+                                  ...prev,
+                                  index: index,
+                                  text: text,
+                                }));
+                              }}
+                              mentionList={replyText.mentions}
+                              setMentionList={(mentionList) => {
+                                console.log(
+                                  "men2",
+                                  mentionList,
+                                  replyText.mentions
+                                );
+
+                                setReplyText((prev) => ({
+                                  ...prev,
+                                  mentions: mentionList,
+                                }));
+                              }}
+                              textIsEmpty={isTextEmpty}
+                              settextIsEmpty={setIsTextEmpty}
                             />
 
                             <svg
@@ -934,7 +1059,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                               height="18"
                               fill="currentColor"
                               ref={sendBtnRef}
-                              className={`bi bi-send-fill  text-blue-500 absolute top-1/4 rotate-45 right-1 ${
+                              className={`bi bi-send-fill  text-blue-500 absolute top-1 rotate-45 right-1 ${
                                 sendClicked === index ? "send-animation" : ""
                               }`}
                               viewBox="0 0 16 16"
@@ -977,6 +1102,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                                       user: currentUser._id,
                                       parentComment: comment._id,
                                       content: replyText.text,
+                                      mentions: replyText.mentions,
                                     });
 
                                     // Create the new comment object, including user and parentComment details
@@ -1073,7 +1199,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                             <div>
                               <div className="flex justify-between w-full">
                                 <div
-                                  className={`relative  gap-2  transition-all items-center rounded-xl  overflow-hidden mt-2 `}
+                                  className={`relative  gap-2  transition-all items-center    mt-2 `}
                                 >
                                   <div className="flex items-center gap-3">
                                     <UserImageInput
@@ -1092,12 +1218,88 @@ function PostView({ postId = useParams().postId, index, className }) {
                                       {reply.user.username}
                                     </p>
                                   </div>
-                                  <p
+                                  {/* <p
                                     value={reply.content}
                                     // onBlur={() => setCommentButtonClicked(null)}
                                     className={`rounded-xl  mt-2  outline-none  flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
                                   >
                                     {reply.content}
+                                  </p> */}
+                                  <p className={`mt-flex-1  relative `}>
+                                    {reply.content
+                                      .split(/(@\w+)/)
+                                      .map((segment, index) => {
+                                        if (segment.startsWith("@")) {
+                                          const mention = segment.slice(1); // Remove "@" from the mention
+                                          console.log(
+                                            "replymen",
+                                            mention,
+                                            reply.mentions
+                                          );
+                                          // Find the corresponding user in the mentions list
+                                          const mentionedUser =
+                                            reply.mentions.find(
+                                              (user) =>
+                                                user.username === mention
+                                            );
+
+                                          if (mentionedUser) {
+                                            const profileImage =
+                                              mentionedUser.profileImage
+                                                ?.originalImage?.[0] || "";
+
+                                            return (
+                                              <span
+                                                key={index}
+                                                className="text-blue-500 relative cursor-pointer group"
+                                                role="button"
+                                                onClick={() => {
+                                                  window.open(
+                                                    `/user/${mentionedUser._id}`
+                                                  );
+                                                }}
+                                                tabIndex="0"
+                                                aria-label={`View profile of ${mentionedUser.username}`}
+                                              >
+                                                {segment}
+                                                {/* <div
+                                                  className="absolute top-7 z-20 hidden items-start group-hover:flex  border bg-white shadow-lg px-8 pr-9  justify-center py-2 left-0"
+                                                  role="tooltip"
+                                                >
+                                                  <img
+                                                    src={profileImage}
+                                                    alt={`${mentionedUser.username}'s profile`}
+                                                    className="w-8 h-8 mt-1 rounded-full"
+                                                  />
+                                                  <p className="ml-3 text-gray-800">
+                                                    <p className="font-medium text-nowrap">
+                                                      {mentionedUser.personal_details
+                                                        ? mentionedUser
+                                                            .personal_details
+                                                            .firstname +
+                                                          " " +
+                                                          mentionedUser
+                                                            .personal_details
+                                                            .lastname
+                                                        : mentionedUser
+                                                            .company_details
+                                                            .company_name}
+                                                    </p>
+                                                    <p className="text-sm text-gray-400 -mt-0.5">
+                                                      {mentionedUser.username}
+                                                    </p>
+                                                  </p>
+                                                </div> */}
+                                              </span>
+                                            );
+                                          }
+                                        }
+
+                                        // Render regular text segments
+                                        return (
+                                          <span key={index}>{segment}</span>
+                                        );
+                                      })}
                                   </p>
                                 </div>
                                 <svg
@@ -1142,14 +1344,14 @@ function PostView({ postId = useParams().postId, index, className }) {
                               </div>
                               <div
                                 id="replyInput"
-                                className={`relative  w-full flex gap-2 transition-all items-center overflow-hidden ${
+                                className={`relative  w-full flex gap-2 transition-all  ${
                                   commentButtonClicked === reply._id
                                     ? " opacity-100"
                                     : "-mt-8 opacity-0 pointer-events-none "
                                 } `}
                               >
                                 <UserImageInput
-                                  className=" rounded-full"
+                                  className=" rounded-full mt-1"
                                   imageHeight={20}
                                   imageBorder={0}
                                   image={
@@ -1160,7 +1362,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                                   isEditable={false}
                                 />
                                 <div className="flex w-full">
-                                  <input
+                                  {/* <input
                                     id={reply._id + "replyText"}
                                     key={reply._id + "replyText"}
                                     autoFocus={commentButtonClicked === index}
@@ -1184,7 +1386,42 @@ function PostView({ postId = useParams().postId, index, className }) {
                                     // onBlur={() => setCommentButtonClicked(null)}
                                     className={`rounded-xl text-sm bg-white placeholder:text-sm outline-none py-2 flex-grow pr-10 caret-blue-500 px-1 transition-all duration-300`}
                                     placeholder={`Reply on @${reply.user.username}`}
+                                  /> */}
+                                  <PostTextArea
+                                    placeholder={`Reply on @${reply.user.username}`}
+                                    className=""
+                                    showRemainingLetters={false}
+                                    content={
+                                      replyText?.index === index
+                                        ? replyText?.text
+                                        : ""
+                                    }
+                                    setContent={(text) => {
+                                      console.log("replytex", replyText);
+
+                                      setReplyText((prev) => ({
+                                        ...prev,
+                                        index: index,
+                                        text: text,
+                                      }));
+                                    }}
+                                    mentionList={replyText.mentions}
+                                    setMentionList={(mentionList) => {
+                                      console.log(
+                                        "men2",
+                                        mentionList,
+                                        replyText.mentions
+                                      );
+
+                                      setReplyText((prev) => ({
+                                        ...prev,
+                                        mentions: mentionList,
+                                      }));
+                                    }}
+                                    textIsEmpty={isTextEmpty}
+                                    settextIsEmpty={setIsTextEmpty}
                                   />
+
                                   <svg
                                     id="sendBtn"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -1192,7 +1429,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                                     height="18"
                                     fill="currentColor"
                                     ref={sendBtnRef}
-                                    className={`bi bi-send-fill  text-blue-500 absolute top-1/4 rotate-45 right-1 ${
+                                    className={`bi bi-send-fill  text-blue-500 absolute top-1 rotate-45 right-1 ${
                                       sendClicked === index
                                         ? "send-animation"
                                         : ""

@@ -24,9 +24,12 @@ const useDebounce = (func, delay) => {
 function PostTextArea({
   mentionList,
   content,
+  className,
   setContent,
   setMentionList,
   textIsEmpty,
+  placeholder = "What's on your mind?",
+  showRemainingLetters = true,
   settextIsEmpty,
 }) {
   const [showUserList, setShowUserList] = useState(false);
@@ -42,6 +45,8 @@ function PostTextArea({
   const textareaRef = useRef(null);
   const userListRef = useRef(null); // Reference for user list
 
+  console.log(mentionList);
+  
   const fetchUsers = useDebounce(async (userName) => {
     setLoading(true);
     try {
@@ -113,9 +118,9 @@ function PostTextArea({
   };
 
   const checkIfMentionExist =  (text) =>{
-    console.log(text);
+    console.log(text,mentionList);
     
-    setMentionList(mentionList.filter(mention => content.includes("@"+mention.username+" ")))
+    setMentionList(mentionList?.filter(mention => content.includes("@"+mention.username+" ")))
   }
   
   // const handleInputChange = (event) => {
@@ -242,8 +247,9 @@ function PostTextArea({
       setShowUserList(false);
     }
 
-    setMentionStart(foundMentionStart);
-    setContent((prev) => ({ ...prev, content: newContent }));
+    setMentionStart(foundMentionStart);    
+    setContent(newContent);
+
   };
 
   const handleUserClick = (user) => {
@@ -253,11 +259,11 @@ function PostTextArea({
       user.username +
       " " +
       content.slice(textareaRef.current.selectionStart);
-    setContent((prev) => ({ ...prev, content: updatedContent }));
+    setContent(updatedContent);
     console.log(!mentionList.includes(user))
 
     if (!mentionList.some((mention) => mention.username === user.username)) {
-      setMentionList((prev) => [...prev, user]);
+      setMentionList([...mentionList,user]);
     }
     setShowUserList(false);
     console.log("men",mentionList);
@@ -305,7 +311,7 @@ function PostTextArea({
   }, [showUserList]);
 
   return (
-    <div className="w-full max-w-md mx-auto relative">
+    <div className={`w-full max-w-md mx-auto overflow-visible relative ${className} `}>
       <div className="relative w-full mt-1 bg-transparent whitespace-pre-wrap break-words mb-2">
         <textarea
           ref={textareaRef}
@@ -313,7 +319,7 @@ function PostTextArea({
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           className="w-full outline-none resize-none  bg-transparent  relative"
-          placeholder="What's on your mind?"
+          placeholder={placeholder}
           rows={1}
           style={{
             height: "auto",
@@ -330,7 +336,7 @@ function PostTextArea({
             wordWrap: "break-word",
           }}
         >
-          {content.split(/(@\w+)/).map((part, index) => {
+          {content?.split(/(@\w+)/).map((part, index) => {
             if (part.startsWith("@")) {
               return (
                 <span key={index} className="text-blue-500">
@@ -346,8 +352,10 @@ function PostTextArea({
       {showUserList && mentionStart !== null && (
        <ul
        ref={userListRef}
-       className="absolute bg-white z-10 border right-0 overflow-y-auto max-h-48 w-fit shadow-md"
+       className="absolute bg-white z-40 border right-0 overflow-y-auto max-h-48 w-fit shadow-md"
        style={{
+    
+          zIndex: 1000,
          top: mentionPosition.top + 35, // Position dropdown below the mention
          left: Math.min(
            mentionPosition.left-6,
@@ -362,7 +370,7 @@ function PostTextArea({
             <li
               key={user.username}
               onClick={() => handleUserClick(user)}
-              className={`cursor-pointer p-2 px-3 flex gap-2 max-w-56  items-center ${
+              className={`cursor-pointer p-2 px-3 flex gap-2 max-w-56 w-44  items-center ${
                 selectedIndex === index ? "bg-gray-200" : ""
               }`}
             >
@@ -379,9 +387,9 @@ function PostTextArea({
       
       )}
 
-      <div className="text-right text-gray-400 text-sm mt-2">
-        {maxLength - content.length} characters remaining
-      </div>
+    { showRemainingLetters && <div className="text-right text-gray-400 text-sm mt-2">
+        {maxLength - content?.length} characters remaining
+      </div>}
     </div>
   );
 }

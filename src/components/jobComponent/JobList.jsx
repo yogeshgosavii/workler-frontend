@@ -173,26 +173,26 @@ function JobList({
       style={{ scrollbarWidth: "none" }}
       className={`flex flex-1 bg-gray-50 sm:px-5   sm:pt-5 border-blue-500 overflow-y-auto overflow-x-hidden ${className} flex-col gap-8  w-full mt-0 sm:mt-0`}
     >
-      {loading && jobs.length === 0 ? (
+      {true && jobs.length === 0 ? (
         <div>
-          <div className=" flex flex-col gap-6 w-full mb-10 animate-pulse">
+          <div className=" flex flex-col gap-6 w-full  mb-10 animate-pulse">
             {[1, 2, 3].map((job) => (
-              <div className="py-6 border-y sm:border sm:rounded-xl">
+              <div className="py-6 border-y sm:border bg-white sm:rounded-xl">
                 <div className="px-6 flex gap-2">
-                  <div className="h-14 w-16 rounded-md bg-gray-100"></div>
+                  <div className="h-14 w-16 rounded-md bg-gray-200"></div>
                   <div className=" w-full justify-center flex flex-col gap-2">
-                    <div className="h-5 w-1/2 bg-gray-100 rounded-full"></div>
-                    <div className="h-4 w-1/3 bg-gray-100 rounded-full"></div>
+                    <div className="h-5 w-1/2 bg-gray-200 rounded-full"></div>
+                    <div className="h-4 w-1/3 bg-gray-200 rounded-full"></div>
                   </div>
                 </div>
                 <div className="flex w-full gap-3 mt-5 px-6">
-                  <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
-                  <div className="h-6 w-1/4 bg-gray-100 rounded-md "></div>
+                  <div className="h-6 w-1/4 bg-gray-200 rounded-md "></div>
+                  <div className="h-6 w-1/4 bg-gray-200 rounded-md "></div>
                 </div>
                 <div className=" w-full border-t mt-5"></div>
                 <div className="mt-6 flex px-6 justify-between">
-                  <div className="h-7 w-1/3 bg-gray-100 rounded-full"></div>
-                  <div className="h-8 w-8 rounded-full bg-gray-100"></div>
+                  <div className="h-7 w-1/3 bg-gray-200 rounded-full"></div>
+                  <div className="h-8 w-8 rounded-full bg-gray-200"></div>
                 </div>
               </div>
             ))}

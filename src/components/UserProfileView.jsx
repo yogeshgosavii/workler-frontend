@@ -166,16 +166,16 @@ function UserProfileView({ userId = useParams().userId }) {
   useEffect(() => {
     if (userDetails) {
       document.title = userDetails?.username;
-      const favicon = document.querySelector("link[rel='icon']");
-      if (favicon) {
-        favicon.href = userDetails.profileImage?.originalImage || "/default-icon.png"; // Replace with a default icon URL or user-provided image
-      } else {
-        // If no favicon tag exists, create one
-        const newFavicon = document.createElement("link");
-        newFavicon.rel = "icon";
-        newFavicon.href = userDetails.profileImage.originalImage || "/default-icon.png";
-        document.head.appendChild(newFavicon);
-      }
+      // const favicon = document.querySelector("link[rel='icon']");
+      // if (favicon) {
+      //   favicon.href = userDetails.profileImage?.originalImage || "/default-icon.png"; // Replace with a default icon URL or user-provided image
+      // } else {
+      //   // If no favicon tag exists, create one
+      //   const newFavicon = document.createElement("link");
+      //   newFavicon.rel = "icon";
+      //   newFavicon.href = userDetails.profileImage.originalImage || "/default-icon.png";
+      //   document.head.appendChild(newFavicon);
+      // }
     }
 
     const fetchConnections = async () => {
@@ -623,7 +623,7 @@ function UserProfileView({ userId = useParams().userId }) {
                 </p>
               </p>
             )}
-            {currentUserJobData.map((job) => (
+            {/* {currentUserJobData.map((job) => (
               <div className="border bg-gray-50 flex flex-col gap-2 p-3 rounded-lg">
                 <p className="font-medium text-lg">{job.job_role}</p>
                 <p className="truncate line-clamp-3 text-wrap">
@@ -647,7 +647,7 @@ function UserProfileView({ userId = useParams().userId }) {
                   Approach
                 </button>
               </div>
-            ))}
+            ))} */}
           </div>
         )}
       <div
@@ -659,13 +659,13 @@ function UserProfileView({ userId = useParams().userId }) {
           !userId && "hidden"
         } max-w-xl w-full flex-1 transition-all  ${
           approaching ? "overflow-y-hidden" : "overflow-y-auto"
-        }  flex-grow sm:rounded-3xl ${showProfileImage && "pointer-events"}`}
+        }  flex-grow  ${showProfileImage && "pointer-events"}`}
       >
         
 
         <div className="flex relative  flex-wrap">
           <div
-            className={` w-full border-t sm:rounded-t-3xl  fixed sm:sticky  sm:border-x  z-20 top-0   px-4 sm:px-6 py-4 sm:py-6 gap-2 bg-white flex `}
+            className={` w-full border-t  fixed sm:sticky  sm:border-x  z-20 top-0   px-4 sm:px-6 py-4 sm:py-6 gap-2 bg-white flex `}
           >
             <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -1035,7 +1035,7 @@ function UserProfileView({ userId = useParams().userId }) {
               scrollbarWidth: "none",
             }}
             className={`flex-grow z-20 absolute max-w-full overflow-x-auto border-b sm:border-x ${
-              atTop > 340 ? "sm:border-t sm:rounded-t-3xl" : ""
+              atTop > 340 ? "sm:border-t" : ""
             } w-full  sticky top-16 sm:top-0 gap-3 bg-white text-gray-800 font-medium flex`}
           >
             <div className="flex w-full pt-1">

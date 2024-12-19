@@ -60,12 +60,15 @@ function UserPostUpdateSettings({
             postSettings ? "translate-y-0" : "translate-y-full"
           } bottom-0 md:top-1/2 sm:left-[52%] h-fit md:-translate-x-1/2 md:-translate-y-1/2 ${
             !postSettings && "md:hidden"
-          } bg-white border pt-5 shadow-xl`}
+          } bg-white border pt-3 shadow-xl`}
         >
+          {/* <div className="flex items-center justify-center w-full gap-3  mb-10">
+            <p className="w-1/5 bg-gray-800 h-1 rounded-full"></p>
+          </div> */}
           <p className="text-xl font-semibold mb-5">Post options</p>
 
           {currentUser._id == postSettings?.user._id && (
-            <div>
+            <div className="border-b border-gray-200 ">
               <div
                 onClick={() => setSelectMentions(true)}
                 className="flex gap-5 cursor-pointer py-3 text-lg font-medium items-center"
@@ -89,7 +92,7 @@ function UserPostUpdateSettings({
                   {mentionList?.map((user) => (
                     <div
                       key={user._id}
-                      className="bg-blue-50 border gap-2 flex items-center border-blue-500 px-2 py-1.5 rounded-md text-blue-500"
+                      className="bg-blue-50 border gap-2 flex items-center border-blue-500 px-2 py-1.5 rounded-full text-blue-500"
                     >
                       <p className="rounded-md font-medium">@{user.username}</p>
                       <svg
@@ -117,13 +120,13 @@ function UserPostUpdateSettings({
               <div
                 className={`${
                   selectMentions ? "animate-popup" : "opacity-0 hidden"
-                } transition-all border mt-1 mb-4 border-gray-200 z-20 rounded-xl shadow-md`}
+                } transition-all border mt-1 mb-4 border-gray-200 z-20 rounded-xl`}
               >
-                <div className="flex items-center px-2 rounded-lg">
+                <div className="flex items-center  rounded-lg">
                   <input
                     value={mentionSearchText}
                     onChange={(e) => setMentionSearchText(e.target.value)}
-                    className="w-full py-2.5 outline-none px-3 caret-blue-500 rounded-lg"
+                    className="w-full py-2.5 outline-none px-3  caret-blue-500 rounded-xl"
                     placeholder="Search for user to mention"
                   />
                   <svg

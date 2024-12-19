@@ -101,7 +101,7 @@ export const addReply = async (replyData) => {
     headers: setAuthHeaders(getToken()),
     body: JSON.stringify(replyData)
   });
-  return response;
+  return response;  
 };
 
 export const getReplies = async (commentId) => {

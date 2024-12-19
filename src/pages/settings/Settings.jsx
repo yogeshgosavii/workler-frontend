@@ -19,11 +19,11 @@ function Settings() {
         }}
         className="fixed w-full h-full bg-black opacity-30 z-20 top-0 left-0"
       ></div>
-      <div className="fixed w-full text-gray-800 pb-20 sm:max-w-lg right-0   h-full  px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
+      <div className="fixed w-full text-gray-800 pb-20 sm:max-w-lg right-0   h-full  px-4 sm:px-6 py-3.5 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
         <div className=" flex sm:pb-0  h-full justify-between flex-col">
           <div>
             <h2 className="text-2xl  items-center font-bold mb-10 flex justify-between ">
-              <div className="flex gap-5 items-center">
+              <div className="flex gap-4 items-center">
                 <svg
                 onClick={()=>{
                   window.history.back()
@@ -49,7 +49,7 @@ function Settings() {
                   dispatch(logout());
                   navigate("/", { replace: true });
                 }}
-                className="flex cursor-pointer sm:bg-red-50  px-2 sm:px-5 sm:pl-4 rounded-full py-1.5 gap-4 items-center"
+                className="flex cursor-pointer   px-2 sm:px-5 sm:pl-4 rounded-full py-1.5 gap-4 items-center"
               >
                 <svg
                   class="size-7 text-red-500"
@@ -65,9 +65,9 @@ function Settings() {
                   <polyline points="10 17 15 12 10 7" />{" "}
                   <line x1="15" y1="12" x2="3" y2="12" />
                 </svg>
-                <p className=" text-red-500 font-medium text-lg hidden sm:block ">
+                {/* <p className=" text-red-500 font-medium text-lg hidden sm:block ">
                   Sign out
-                </p>
+                </p> */}
               </a>
             </h2>
             <div className="flex-1  flex flex-col text-lg gap-5">

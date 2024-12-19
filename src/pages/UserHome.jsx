@@ -43,7 +43,7 @@ function UserHome() {
                 const userPreferences = await getPreference(currentUser._id);
                 console.log(userPreferences);
                 const response = userPreferences && await searchService.secrchJobByKeyword(
-                  `${userPreferences.experienceLevel} ${userPreferences.jobType} ${userPreferences.location?.address} ${userPreferences.location?.state} ${userPreferences.location?.country}`
+                  `${userPreferences.roles} ${userPreferences.experienceLevel} ${userPreferences.jobType} ${userPreferences.location?.address} ${userPreferences.location?.state} ${userPreferences.location?.country} `
                 );
                 // if (existingPreferences) {
                   setPreferences(preferences);

@@ -102,14 +102,14 @@ const router = createBrowserRouter([
           </LoginVerification>
         ),
       },
-      {
-        path: "/manager",
-        element: (
-          <LoginVerification>
-            <Manager />
-          </LoginVerification>
-        ),
-      },
+      // {
+      //   path: "/manager",
+      //   element: (
+      //     <LoginVerification>
+      //       <Manager />
+      //     </LoginVerification>
+      //   ),
+      // },
       {
         path: "/post/:postId",
         element: (
@@ -121,14 +121,14 @@ const router = createBrowserRouter([
         ),
       },
      
-      {
-        path: "/job-applications",
-        element: (
-          <LoginVerification>
-            <JobApplication />
-          </LoginVerification>
-        ),
-      },
+      // {
+      //   path: "/job-applications",
+      //   element: (
+      //     <LoginVerification>
+      //       <JobApplication />
+      //     </LoginVerification>
+      //   ),
+      // },
       {
         path: "/search",
         element: (

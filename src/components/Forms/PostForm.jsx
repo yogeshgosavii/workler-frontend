@@ -17,6 +17,7 @@ import DOMPurify from "dompurify";
 import searchService from "../../services/searchService.js";
 import { useNavigate } from "react-router-dom";
 import PostTextArea from "../Input/PostTextArea.jsx";
+import JobLinkDetails from "../Input/JobLinkDetails.jsx";
 
 function PostForm({ userDetails, setData, onClose }) {
   const [images, setImages] = useState([]);
@@ -325,8 +326,9 @@ function PostForm({ userDetails, setData, onClose }) {
                 /> */}
                 <PostTextArea
                   mentionList={mentionList}
-                  content = {formData.content}
-                  setContent = {setFormData
+                  content = {formData.content.toString()}
+                  setContent = {(text)=>{    setFormData((prev) => ({ ...prev, content: text }));
+                }
                 }
                   setMentionList={setmentionList}
                   textIsEmpty={textIsEmpty}
@@ -392,6 +394,7 @@ function PostForm({ userDetails, setData, onClose }) {
                     tagsText={tagsText}
                     settagsText={settagsText}
                   />
+                  {/* <JobLinkDetails/> */}
                 </div>
               )}
             </div>

@@ -84,7 +84,7 @@ const App = () => {
       <div className=" w-full h-full overflow-y-auto">
         <Header />
         <div
-          className={` h-dvh w-full  overflow-auto  ${
+          className={` h-dvh w-full  overflow-auto border-gray-800  ${
             isAuthenticated && "pb-14 sm:pb-0 sm:pl-[63px]"
           } `}
         >
@@ -171,7 +171,7 @@ const App = () => {
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
           </svg>
         </p>
-        {user?.account_type == "Employeer" && (
+        {/* {user?.account_type == "Employeer" && (
           <p
             onClick={() => {
               navigate("manager");
@@ -217,9 +217,9 @@ const App = () => {
               </svg>
             )}
           </p>
-        )}
+        )} */}
 
-        {user?.account_type == "Candidate" && (
+        {/* {user?.account_type == "Candidate" && (
           <p
             onClick={() => {
               navigate("job-applications");
@@ -265,7 +265,7 @@ const App = () => {
               </svg>
             )}
           </p>
-        )}
+        )} */}
 
         {/* <p
           onClick={() => {

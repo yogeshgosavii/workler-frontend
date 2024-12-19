@@ -9,6 +9,7 @@ import NumberInput from "../../components/Input/NumberInput";
 import OptionInput from "../../components/Input/OptionInput";
 import { useSelector } from "react-redux";
 import Toast from "../../components/toast/Toast";
+import AddInput from  "../../components/Input/AddInput"
 
 const Preferences = () => {
   const currentUser = useSelector((state) => state.auth.user);
@@ -20,6 +21,7 @@ const Preferences = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMassage, setToastMassage] = useState("");
+  const [inputValue, setInputValue] = useState("");
 
   const [preferences, setPreferences] = useState({
     location: "",
@@ -31,6 +33,7 @@ const Preferences = () => {
     industries: "",
     companySize: "",
     preferredCompanies: "",
+    roles : []
   });
 
   useEffect(() => {
@@ -70,6 +73,35 @@ const Preferences = () => {
     }
   };
 
+  const handleAddTags = () => {
+    console.log( preferences.roles?.length  ,
+      inputValue.trim() ,
+      !preferences.roles?.includes(inputValue.trim()));
+    
+    if (
+      (preferences.roles?.length == undefined || preferences.roles?.length<10) &&
+      inputValue.trim() &&
+      !preferences.roles?.includes(inputValue.trim())
+    ) {
+      
+      
+      setPreferences({...preferences, roles: [...(preferences.roles || []), inputValue.trim()]});
+      setInputValue("");
+    }
+    console.log("inputValue", inputValue);
+
+    console.log(preferences);
+    
+  };
+
+  const handleDeleteTags = (role) => {
+    setPreferences((prev) => ({
+      ...prev,
+      roles: prev.roles.filter((r) => r !== role),
+    }));
+  };
+
+
   const setLocation = (value) =>
     setPreferences({ ...preferences, location: value });
   const setJobType = (value) =>
@@ -78,15 +110,15 @@ const Preferences = () => {
     setPreferences({ ...preferences, experienceLevel: value });
 
   return (
-    <div className="max-h-screen h-full -top-10 overflow-y-auto border border-red-500">
+    <div className="max-h-screen h-full -top-10 overflow-y-auto relative border border-red-500">
       <div
         onClick={() => {
           window.history.back();
         }}
         className="fixed w-full h-full bg-black opacity-30 z-20 top-0 left-0"
       ></div>
-      <div className="fixed w-full sm:max-w-lg pb-14 right-0 flex flex-col gap-6 border h-full px-4 sm:px-6 py-6 sm:py-8 bg-white top-0 z-30 overflow-y-auto">
-        <div className="flex gap-5  mb-10 items-center">
+      <div className="fixed w-full sm:max-w-lg pb-14 right-0 flex flex-col gap-6 border h-full px-4 sm:px-6 py-4 sm:py-8 bg-white top-0 z-30 overflow-y-auto">
+        <div className="flex gap-4 -ml-px mt-px mb-10 items-center">
           <svg
             onClick={() => {
               window.history.back();
@@ -136,6 +168,16 @@ const Preferences = () => {
             }
           />
         )}
+
+        <AddInput
+          name="tags"
+          data={preferences.roles}
+          handleAdd={handleAddTags}
+          onChange={(e) => setInputValue(e.target.value)}
+          placeholder="Job roles"
+          value={inputValue}
+          handleDelete={handleDeleteTags}
+        />
         <button
           disabled={isLoading}
           onClick={handleSavePreferences}

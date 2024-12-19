@@ -637,9 +637,9 @@ function Saved() {
       ></div>
 
       {/* Main Content */}
-      <div className="fixed w-full pb-14 sm:max-w-lg right-0 flex flex-col gap-5 h-full py-6 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
+      <div className="fixed w-full pb-14 sm:max-w-lg right-0 flex flex-col gap-5 h-full py-5 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
         <div className=" ">
-          <div className="flex gap-5 mb-6 items-center -mt-px px-4 sm:px-6">
+          <div className="flex gap-4 mb-6 items-center -mt-0.5 px-4 sm:px-6">
             <svg
               onClick={() => {
                 window.history.back();
