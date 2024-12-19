@@ -1,5 +1,5 @@
-// const API_URL = 'https://workler-backend.vercel.app/api/preference';
-const API_URL = "http://localhost:5002/api/preference";
+const API_URL = 'https://workler-backend.vercel.app/api/preference';
+// const API_URL = "http://localhost:5002/api/preference";
 const getToken = () => localStorage.getItem("token");
 
 
