@@ -570,13 +570,13 @@ const UserProfile = () => {
         location.pathname === "/profile/settings/saveds" ||
         location.pathname === "/profile/post"
       }
-      className={`  flex bg-gray-50 text-gray-800 min-h-screen  justify-center gap-5`}
+      className={`  flex bg-gray-50 text-gray-800 min-h-screen  justify-center  gap-5`}
     >
       {pageLoading ? (
         <div>Loading...</div>
       ) : (
         <div
-          className={`w-screen flex-1 flex justify-center flex-grow ${
+          className={`w-screen flex-1 flex gap-10 justify-center  ${
             settings ? "pointer-events-none " : "pointer-events-auto"
           }`}
         >
@@ -662,123 +662,71 @@ const UserProfile = () => {
             </div>
           ) : null}
           {/* Profile page */}
-          <div
-            className={` w-full  lg:max-w-xl   ${
-              (formType || settings || showProfileImage || updateFormType) &&
-              "fixed"
-            }   md:flex-row transition-all sm:p-6 duration-300 relative  flex-1 h-full `}
-          >
-            {showProfileImage && (
-              <div
-                onClick={() => {
-                  setshowProfileImage(false);
-                }}
-                className={`h-screen  w-full top-0 absolute inset-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60    max-w-3xl  z-50  `}
-              ></div>
-            )}
-            <div className="flex gap-4  max-h-min flex-wrap ">
-              <div
-                className={`w-full md:hidden ${
-                  formType || updateFormType ? "hidden" : ""
-                } fixed  z-20 md:min-w-[57.6%]  md:border-x md:mt-5 top-0 mb-4 px-4 py-4 bg-white flex justify-between`}
-              >
-                <div className="flex items-center gap-4">
-                <svg
-                onClick={()=>{
-                  window.history.back()
-                }}
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="size-6 -mt-1"
+          <div className="flex max-h-screen gap-5 sm:px-6 overflow-y-scroll justify-self-center w-full justify-center  ">
+            <div
+              className={` w-full  sm:max-w-2xl   ${
+                (formType || settings || showProfileImage || updateFormType) &&
+                "fixed"
+              }   md:flex-row transition-all sm:p-6 duration-300 relative  flex-1 h-full `}
+            >
+              {showProfileImage && (
+                <div
+                  onClick={() => {
+                    setshowProfileImage(false);
+                  }}
+                  className={`h-screen  w-full top-0 absolute inset-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60    max-w-3xl  z-50  `}
+                ></div>
+              )}
+              <div className="flex gap-4  max-h-min flex-wrap ">
+                <div
+                  className={`w-full sm:hidden ${
+                    formType || updateFormType ? "hidden" : ""
+                  } fixed  z-20 md:min-w-[57.6%]  md:border-x md:mt-5 top-0 mb-4 px-4 py-4 bg-white flex justify-between`}
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
-                  />
-                </svg>
-                  {atTop >= 100 && (
-                    <UserImageInput
-                      isEditable={false}
-                      image={
-                        userDetails.profileImage?.compressedImage ||
-                        userDetails?.profileImage ||
-                        profileImageDefault
-                      }
-                      imageHeight="40"
-                    />
-                  )}
-                  <div className="flex flex-col justify-center">
-                    <p className="text-xl font-semibold -mt-0.5">
-                      {atTop >= 100 ? (
-                        userDetails.username
-                      ) : (
-                        <p className="text-2xl -mt-px py-[5px]">Profile</p>
-                      )}
-                    </p>
-                    {/* <div className="flex gap-1 mt-0.5 items-center">
+                  <div className="flex items-center gap-4">
+                    <svg
+                      onClick={() => {
+                        window.history.back();
+                      }}
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="size-6 -mt-1"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+                      />
+                    </svg>
+                    {atTop >= 100 && (
+                      <UserImageInput
+                        isEditable={false}
+                        image={
+                          userDetails.profileImage?.compressedImage ||
+                          userDetails?.profileImage ||
+                          profileImageDefault
+                        }
+                        imageHeight="40"
+                      />
+                    )}
+                    <div className="flex flex-col justify-center">
+                      <p className="text-xl font-semibold -mt-0.5">
+                        {atTop >= 100 ? (
+                          userDetails.username
+                        ) : (
+                          <p className="text-2xl -mt-px py-[5px]">Profile</p>
+                        )}
+                      </p>
+                      {/* <div className="flex gap-1 mt-0.5 items-center">
                       <span className="h-2 w-2 rounded-full shadow-lg bg-green-500"></span>
                       <p className="text-xs text-gray-400 -mt-px">
                         Currently active
                       </p>
                     </div> */}
-                  </div>
-                </div>
-                <svg
-                  className="h-8 w-8 text-gray-800 pointer-events-auto transition-all duration-500 ease-in-out transform"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  onClick={() => {
-                    setsettings(!settings);
-                    if (!settings) {
-                      navigate("settings");
-                    } else {
-                      navigate("/profile");
-                    }
-                  }}
-                >
-                  {location.pathname === "/profile/settings" ? (
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M6 18L18 6M6 6l12 12"
-                      className="transition-all duration-500 ease-in-out"
-                    />
-                  ) : (
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M4 6h16M4 12h16m-7 6h7"
-                      className="transition-all duration-500 ease-in-out"
-                    />
-                  )}
-                </svg>
-              </div>
-              <div className="flex border-t pt-8 pb-6 mt-10 md:mt-0   flex-grow  sm:border-x  px-4 md:px-6 gap-3 bg-white justify-center flex-col">
-                <div className="w-full hidden md:flex mb-4 bg-white justify-between ">
-                  <div className="flex gap-4">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      class="size-8 -ml-2.5"
-                      onClick={() => {
-                        window.history.back();
-                      }}
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                    <p className="text-2xl font-semibold">Profile</p>
+                    </div>
                   </div>
                   <svg
                     className="h-8 w-8 text-gray-800 pointer-events-auto transition-all duration-500 ease-in-out transform"
@@ -813,19 +761,72 @@ const UserProfile = () => {
                     )}
                   </svg>
                 </div>
-                {loading.userDetails ? (
-                  <div className="animate-pulse mt-2">
-                    <div className="flex  items-center">
-                      <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
-                      <div className=" w-32 ml-2">
-                        <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
-                        <div className="h-4 bg-gray-200 rounded-md mb-2 w-1/2"></div>
-                      </div>
+                <div className="flex border-t pt-8 pb-6 mt-10 sm:mt-0   flex-grow  sm:border-x  px-4 md:px-6 gap-3 bg-white justify-center flex-col">
+                  <div className="w-full hidden sm:flex mb-4 bg-white justify-between ">
+                    <div className="flex gap-4">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        class="size-8 -ml-2.5"
+                        onClick={() => {
+                          window.history.back();
+                        }}
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      <p className="text-2xl font-semibold">Profile</p>
                     </div>
-                    <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
-                    <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
-                    <div className="h-3 bg-gray-200 rounded-md mt-2 w-1/2"></div>
-                    {/* <div className="flex  items-center mt-4">
+                    <svg
+                      className="h-8 w-8 text-gray-800 pointer-events-auto transition-all duration-500 ease-in-out transform"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      onClick={() => {
+                        setsettings(!settings);
+                        if (!settings) {
+                          navigate("settings");
+                        } else {
+                          navigate("/profile");
+                        }
+                      }}
+                    >
+                      {location.pathname === "/profile/settings" ? (
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M6 18L18 6M6 6l12 12"
+                          className="transition-all duration-500 ease-in-out"
+                        />
+                      ) : (
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4 6h16M4 12h16m-7 6h7"
+                          className="transition-all duration-500 ease-in-out"
+                        />
+                      )}
+                    </svg>
+                  </div>
+                  {loading.userDetails ? (
+                    <div className="animate-pulse mt-2">
+                      <div className="flex  items-center">
+                        <div className="h-[70px] bg-gray-200 w-[70px] rounded-full mb-2"></div>
+                        <div className=" w-32 ml-2">
+                          <div className="h-4 bg-gray-200 rounded-md mb-2"></div>
+                          <div className="h-4 bg-gray-200 rounded-md mb-2 w-1/2"></div>
+                        </div>
+                      </div>
+                      <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
+                      <div className="h-3 bg-gray-200 rounded-md mt-2"></div>
+                      <div className="h-3 bg-gray-200 rounded-md mt-2 w-1/2"></div>
+                      {/* <div className="flex  items-center mt-4">
                       <div className="h-5 bg-gray-200 w-5 rounded-full"></div>
                       <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
                     </div>
@@ -834,192 +835,196 @@ const UserProfile = () => {
                       <div className="h-3 w-32 bg-gray-200 rounded-md ml-2"></div>
                     </div> */}
 
-                    <div className="flex mt-5">
-                      <div className="h-3 w-20 bg-gray-200 rounded-md "></div>
-                      <div className="h-3 w-20 bg-gray-200 rounded-md ml-2"></div>
+                      <div className="flex mt-5">
+                        <div className="h-3 w-20 bg-gray-200 rounded-md "></div>
+                        <div className="h-3 w-20 bg-gray-200 rounded-md ml-2"></div>
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="mt-2 flex relative  flex-col ">
-                    <div className="flex mb-4 mt-3  w-full gap-4  items-center">
-                      <UserImageInput
-                        onClick={() => {
-                          if (userDetails?.profileImage) {
-                            setshowProfileImage(true);
+                  ) : (
+                    <div className="mt-2 flex relative  flex-col ">
+                      <div className="flex mb-4 mt-3  w-full gap-4  items-center">
+                        <UserImageInput
+                          onClick={() => {
+                            if (userDetails?.profileImage) {
+                              setshowProfileImage(true);
+                            }
+                          }}
+                          imageBorder={showProfileImage ? "none" : "2"}
+                          className={`transition-all ease-in-out absolute  blur-none  duration-300 ${
+                            showProfileImage
+                              ? " ml-[40%] md:ml-[45%]  z-50 translate-y-[200%] scale-[3.5] "
+                              : ""
+                          }`}
+                          imageClassName={showProfileImage ? "shadow-3xl" : ""}
+                          isEditable={false}
+                          image={
+                            userDetails?.profileImage?.originalImage ||
+                            userDetails?.profileImage ||
+                            profileImageDefault
                           }
-                        }}
-                        imageBorder={showProfileImage ? "none" : "2"}
-                        className={`transition-all ease-in-out absolute  blur-none  duration-300 ${
-                          showProfileImage
-                            ? " ml-[40%] md:ml-[45%]  z-50 translate-y-[200%] scale-[3.5] "
-                            : ""
-                        }`}
-                        imageClassName={showProfileImage ? "shadow-3xl" : ""}
-                        isEditable={false}
-                        image={
-                          userDetails?.profileImage?.originalImage ||
-                          userDetails?.profileImage ||
-                          profileImageDefault
-                        }
-                        imageHeight="70"
-                      />
-                      <div className="flex w-full ml-20  justify-between items-center">
-                        <div>
-                          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
-                            {userDetails.account_type === "Employeer"
-                              ? userDetails.company_details?.company_name
-                              : `${
-                                  userDetails.personal_details?.firstname || ""
-                                } ${
-                                  userDetails.personal_details?.lastname || ""
-                                }`.trim()}
-                          </h1>
-                          <div className="flex  gap-2">
-                            <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
-                              {userDetails?.username || "Username"}
-                            </p>
+                          imageHeight="70"
+                        />
+                        <div className="flex w-full ml-20  justify-between items-center">
+                          <div>
+                            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900">
+                              {userDetails.account_type === "Employeer"
+                                ? userDetails.company_details?.company_name
+                                : `${
+                                    userDetails.personal_details?.firstname ||
+                                    ""
+                                  } ${
+                                    userDetails.personal_details?.lastname || ""
+                                  }`.trim()}
+                            </h1>
+                            <div className="flex  gap-2">
+                              <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
+                                {userDetails?.username || "Username"}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="order-3 flex flex-col gap-2">
-                      <div
-                        onClick={() => {
-                          navigate("/connections/" + userDetails._id);
-                        }}
-                        className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm "
-                      >
-                        <p>
-                          {/* <span>{userDetails.location?.address} · </span> */}
-                          {followers || 0}
-                          <span className="  font-normal"> followers</span>{" "}
-                          {userDetails.account_type == "Candidate" && (
-                            <span>
-                              · {followings || 0}{" "}
-                              <span className="  font-normal">following</span>
-                            </span>
-                          )}
-                        </p>
-                      </div>
-                      {userDetails.bio ? (
-                        <div onClick={() => setFormType("userDetails")}>
-                          {userDetails.bio}
-                        </div>
-                      ) : (
+                      <div className="order-3 flex flex-col gap-2">
                         <div
-                          onClick={() => setFormType("userDetails")}
-                          className=" text-sm font-normal text-gray-300 px-2 py-1 mt-3 rounded-lg border w-fit  border-dashed"
+                          onClick={() => {
+                            navigate("/connections/" + userDetails._id);
+                          }}
+                          className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm "
                         >
-                          Add a bio +
-                        </div>
-                      )}
-                      {userDetails.account_type == "Candidate" && (
-                        <div className="order-2 text-sm -mt-1">
-                          <p className=" text-wrap truncate">
-                            {worksAt && (
+                          <p>
+                            {/* <span>{userDetails.location?.address} · </span> */}
+                            {followers || 0}
+                            <span className="  font-normal">
+                              {" "}
+                              followers
+                            </span>{" "}
+                            {userDetails.account_type == "Candidate" && (
                               <span>
-                                Works at {worksAt.companyName}{" "}
-                                <span className="font-extrabold ">{"·"}</span>
-                              </span>
-                            )}{" "}
-                            {latestEducation && (
-                              <span>
-                                {" "}
-                                Completed {latestEducation.course} from{" "}
-                                {latestEducation.university}
+                                · {followings || 0}{" "}
+                                <span className="  font-normal">following</span>
                               </span>
                             )}
                           </p>
                         </div>
-                      )}
-
-                      {userDetails.tags?.length > 0 && (
-                        <div className=" mt-4 order-last ">
-                          <div className="flex gap-1 max-w-full flex-wrap ">
-                            {userDetails.tags?.map((tag) => (
-                              <p className="flex rounded-md w-fit px-2 py-0.5 border bg-amber-50 border-amber-600 text-sm text-amber-600 text-nowrap">
-                                {tag}
-                              </p>
-                            ))}
+                        {userDetails.bio ? (
+                          <div onClick={() => setFormType("userDetails")}>
+                            {userDetails.bio}
                           </div>
-                          <p className="text-sm mt-1 text-gray-400">
-                            These tags will help get you discovered more by
-                            relevent people
-                          </p>
-                        </div>
-                      )}
+                        ) : (
+                          <div
+                            onClick={() => setFormType("userDetails")}
+                            className=" text-sm font-normal text-gray-300 px-2 py-1 mt-3 rounded-lg border w-fit  border-dashed"
+                          >
+                            Add a bio +
+                          </div>
+                        )}
+                        {userDetails.account_type == "Candidate" && (
+                          <div className="order-2 text-sm -mt-1">
+                            <p className=" text-wrap truncate">
+                              {worksAt && (
+                                <span>
+                                  Works at {worksAt.companyName}{" "}
+                                  <span className="font-extrabold ">{"·"}</span>
+                                </span>
+                              )}{" "}
+                              {latestEducation && (
+                                <span>
+                                  {" "}
+                                  Completed {latestEducation.course} from{" "}
+                                  {latestEducation.university}
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                        )}
+
+                        {userDetails.tags?.length > 0 && (
+                          <div className=" mt-4 order-last ">
+                            <div className="flex gap-1 max-w-full flex-wrap ">
+                              {userDetails.tags?.map((tag) => (
+                                <p className="flex rounded-md w-fit px-2 py-0.5 border bg-amber-50 border-amber-600 text-sm text-amber-600 text-nowrap">
+                                  {tag}
+                                </p>
+                              ))}
+                            </div>
+                            <p className="text-sm mt-1 text-gray-400">
+                              These tags will help get you discovered more by
+                              relevent people
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={() => setFormType("userDetails")}
+                    className="w-full flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5 border justify-center text-gray-600 bg-gray-100 sm:hover:bg-gray-200 py-1.5 rounded-md border-gray-400"
+                  >
+                    Edit details
+                  </button>
+                </div>
+              </div>
+              <div
+                className={`sticky w-full top-16 md:top-0 md:mb-4 z-20 transition-all ease-in-out bg-gray-50 ${
+                  atTop < 340 ? "pt-0" : "md:pt-[25px]"
+                }`}
+              >
+                <div className=" transition-all ease-in-out">
+                  <div
+                    style={{
+                      overflowX: "auto",
+                      scrollbarWidth: "none",
+                    }}
+                    className={`flex-grow z-20 absolute max-w-full overflow-x-auto border-b sm:border-x ${
+                      atTop > 340 ? "md:border-t" : ""
+                    } w-full -mt-px sticky top-16 sm:top-0 gap-3 text-gray-800 bg-white font-medium flex`}
+                  >
+                    <div className="flex w-screen md:w-full pt-1">
+                      {[
+                        ...(userDetails.account_type === "Employeer"
+                          ? ["About", "Posts"]
+                          : ["Home", "Posts", "Qualification"]),
+                      ].map((tab, index, arr) => (
+                        <p
+                          key={tab}
+                          onClick={() => {
+                            setCurrentTab(tab);
+                            settabIndex(index);
+                          }}
+                          className={` text-base  md:text-lg mb-1 truncate font-medium md:font-semibold cursor-pointer ${
+                            tab === currentTab ? "z-20 text-gray-800" : ""
+                          } text-center py-2`}
+                          style={{
+                            width: `${
+                              100 /
+                              (userDetails.account_type === "Employeer" ? 2 : 3)
+                            }%`,
+                          }}
+                        >
+                          {tab}
+                        </p>
+                      ))}
                     </div>
                   </div>
-                )}
-
-                <button
-                  onClick={() => setFormType("userDetails")}
-                  className="w-full flex cursor-pointer md:order-2 text-center order-last gap-2 font-medium mt-3.5 border justify-center text-gray-600 bg-gray-100 sm:hover:bg-gray-200 py-1.5 rounded-md border-gray-400"
-                >
-                  Edit details
-                </button>
-              </div>
-            </div>
-            <div
-              className={`sticky w-full top-16 md:top-0 md:mb-4 z-20 transition-all ease-in-out bg-gray-50 ${
-                atTop < 340 ? "pt-0" : "md:pt-[25px]"
-              }`}
-            >
-              <div className=" transition-all ease-in-out">
-                <div
-                  style={{
-                    overflowX: "auto",
-                    scrollbarWidth: "none",
-                  }}
-                  className={`flex-grow z-20 absolute max-w-full overflow-x-auto border-b sm:border-x ${
-                    atTop > 340 ? "md:border-t" : ""
-                  } w-full -mt-px sticky top-16 sm:top-0 gap-3 text-gray-800 bg-white font-medium flex`}
-                >
-                  <div className="flex w-screen md:w-full pt-1">
-                    {[
-                      ...(userDetails.account_type === "Employeer"
-                        ? ["About", "Posts"]
-                        : ["Home", "Posts", "Qualification"]),
-                    ].map((tab, index, arr) => (
-                      <p
-                        key={tab}
-                        onClick={() => {
-                          setCurrentTab(tab);
-                          settabIndex(index);
-                        }}
-                        className={` text-base  md:text-lg mb-1 truncate font-medium md:font-semibold cursor-pointer ${
-                          tab === currentTab ? "z-20 text-gray-800" : ""
-                        } text-center py-2`}
-                        style={{
-                          width: `${
-                            100 /
-                            (userDetails.account_type === "Employeer" ? 2 : 3)
-                          }%`,
-                        }}
-                      >
-                        {tab}
-                      </p>
-                    ))}
-                  </div>
+                  <div
+                    style={{
+                      left: `${
+                        (100 /
+                          (userDetails.account_type === "Employeer" ? 2 : 3)) *
+                        tabIndex
+                      }%`,
+                      transition: "left 0.2s ease-in-out",
+                    }}
+                    className={`w-1/${
+                      userDetails.account_type === "Employeer" ? "2" : "3"
+                    } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-gray-800 absolute`}
+                  ></div>
                 </div>
-                <div
-                  style={{
-                    left: `${
-                      (100 /
-                        (userDetails.account_type === "Employeer" ? 2 : 3)) *
-                      tabIndex
-                    }%`,
-                    transition: "left 0.2s ease-in-out",
-                  }}
-                  className={`w-1/${
-                    userDetails.account_type === "Employeer" ? "2" : "3"
-                  } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-gray-800 absolute`}
-                ></div>
               </div>
-            </div>
 
-            {/* <div className=" w-full">
+              {/* <div className=" w-full">
               {currentTab == "Home" && (
                 <Home
                   userDetails={userDetails}
@@ -1081,24 +1086,25 @@ const UserProfile = () => {
                 />
               )}
             </div> */}
-            <div>{renderTabContent()}</div>
+              <div>{renderTabContent()}</div>
+            </div>
+            {/* <PostForm className={`shadow-none h-fit top-auto right-auto relative mt-6  z-0`} /> */}
+            <div className="w-[500px] hidden lg:block  mt-6 sticky top-6 z-0">
+              <PostForm
+                className={
+                  "relative shadow-none h-[400px]  max-h-[500px] z-0  mb-0"
+                }
+                isCloseable={false}
+                showBackground={false}
+              />
+            </div>
           </div>
         </div>
       )}
 
-      {/* <div className=" min-w-[35%] hidden lg:flex fixed top-6 right-10 flex-col gap-4">
-        <div
-          className={`border  h-fit px-6   bg-white sm:px-8 py-5 flex w-full transition-transform duration-300  `}
-        >
-          <p className="text-xl font-medium">People you may know</p>
-        </div>
-        <div
-          className={`border transition-all  ease-in-out h-fit px-6  top-4 
-           bg-white sm:px-8 py-5  flex w-full `}
-        >
-          <p className="text-xl font-medium">Jobs based on preferences</p>
-        </div>
-      </div> */}
+      {/* <div className=" min-w-[35%] hidden lg:flex flex-col"> */}
+
+      {/* </div> */}
       {/* <div className=" z-40"> */}
       <Outlet />
       {/* </div> */}

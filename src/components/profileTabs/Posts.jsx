@@ -107,7 +107,7 @@ function Posts({
               onClick={() => {
                 navigate("post");
               }}
-              className="text-blue-500 font-medium cursor-pointer"
+              className="text-blue-500 lg:hidden font-medium cursor-pointer"
             >
               Create Post
             </p>
@@ -115,7 +115,7 @@ function Posts({
         ) : no_post_error ? (
           no_post_error
         ) : (
-          <p className=" pt-14 bg-gray-50 h-full text-center  px-6 md:px-6">
+          <p className=" pt-14 h-full text-cente  px-6 md:px-6">
             <p className="text-2xl font-bold text-gray-500">
               No Posts Available
             </p>
@@ -133,7 +133,7 @@ function Posts({
                 onClick={() => {
                   navigate("post");
                 }}
-                className=" text-sm text-blue-500 px-4 py-1 bg-blue-50  rounded-full font-medium border-blue-500"
+                className=" text-sm text-blue-500 lg:hidden px-4 py-1 bg-blue-50  rounded-full font-medium border-blue-500"
               >
                 Add post
               </button>
@@ -167,13 +167,15 @@ function Posts({
             setShowMentions={setPostMentions}
           />
 
-          <div className={`grid ${columns} ${postPaddingbottom}  gap-6 `}>
+          <div
+            className={`grid ${columns} ${postPaddingbottom} h-full gap-6 bg-white pb-6 border-b sm:border-b-0 sm:pb-0`}
+          >
             {postData?.map((post, index) => {
               return (
                 <div
                   key={index}
                   onClick={() => window.open("/post/" + post._id, "_blank")}
-                  className={`sm:border w-full  bg-white   ${postClassName} flex flex-col  transition-all  h-full   p-4 sm:p-7`}
+                  className={`sm:border w-full     ${postClassName} flex flex-col  transition-all  h-full   p-4 sm:p-7`}
                 >
                   <div className="flex items-center   justify-between">
                     <div
@@ -194,37 +196,41 @@ function Posts({
                         alt={`${post?.user.username}'s avatar`}
                         isEditable={false}
                       />
-                      <div className="flex gap-2 items-center ">
-                        <div>
+                      <div className="flex flex-col">
+                        <div className="flex items-center ">
                           <p className="font-medium">
                             {post?.user.company_details
                               ? post?.user.company_details?.company_name
                               : `${post?.user.personal_details?.firstname} ${post?.user.personal_details?.lastname}`}
                           </p>
-                          <p className=" text-gray-400 -mt-1  text-sm">
-                            {post?.user.username}
+                          <span className="font-bold text-gray-500 mx-2">
+                            ·
+                          </span>{" "}
+                          <p className=" text-gray-400 font-normal">
+                            @{post?.user.username}
                           </p>
                         </div>
-                        <span className="font-bold text-gray-500">·</span>{" "}
                         <p className="text-sm text-gray-400">
-                          {formatDistanceToNow(
+                          {/* {formatDistanceToNow(
                             new Date(post.createdAt),
                             {}
                           ).split(" ")[0] != "about" &&
                             formatDistanceToNow(
                               new Date(post.createdAt),
                               {}
-                            ).split(" ")[0]}
-                          {formatDistanceToNow(new Date(post.createdAt), {})
-                            .split(" ")[1]
-                            .slice(0, 1)}
-                          {formatDistanceToNow(new Date(post.createdAt), {})
-                            ?.split(" ")[2]
-                            ?.slice(0, 1)}
+                            ).split(" ")[0]} */}
+                          {new Date(post.createdAt).toLocaleDateString(
+                            "en-GB",
+                            {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                            }
+                          )}{" "}
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-2 items-center">
+                    <div className="flex gap-2 -mt-4 items-center">
                       {currentUser._id != post.user._id &&
                         (savedList.some(
                           (item) => item.saved_content?._id == post._id
@@ -323,15 +329,16 @@ function Posts({
                               >
                                 {segment}
                                 <div
-                                  className="absolute top-7 z-20 hidden items-start group-hover:flex  border bg-white shadow-lg px-8 pr-9  justify-center py-2 left-0 rounded-md"
+                                  className="absolute top-7 gap-3 z-20 hidden w-fit items-start group-hover:flex  border bg-white shadow-xl flex-col px-5 pr-9  justify-center py-2 left-0 pb-5 pt-4 rounded-lg"
                                   role="tooltip"
                                 >
+                                  <div className="flex gap-3">
                                   <img
                                     src={profileImage}
                                     alt={`${mentionedUser.username}'s profile`}
                                     className="w-8 h-8 mt-1 rounded-full"
                                   />
-                                  <p className="ml-3 text-gray-800">
+                                  {/* <p className="ml-3 text-gray-800">
                                     <p className="font-medium text-nowrap">
                                       {mentionedUser.personal_details
                                         ? mentionedUser.personal_details
@@ -342,9 +349,72 @@ function Posts({
                                         : mentionedUser.company_details
                                             .company_name}
                                     </p>
-                                    <p className="text-sm text-gray-400 -mt-0.5">{mentionedUser.username}</p>
+                                    <p className="text-sm text-gray-400 -mt-0.5">
+                                      {mentionedUser.username}
+                                    </p>
+                                  </p> */}
+                                   <div className="flex gap-1 text-wrap text-gray-400 pr-5  items-center">
+                                        <p className=" text-gray-800  font-medium   text-nowrap">
+                                          {mentionedUser.personal_details
+                                            ? `${mentionedUser.personal_details.firstname} ${mentionedUser.personal_details.lastname}`
+                                            : mentionedUser.company_details
+                                                ?.company_name}
+                                        </p>
+
+                                        {"  "}
+                                        <span className="font-bold px-0.5">
+                                          ·
+                                        </span>
+                                        {"  "}
+                                        <p className="text-gray-500 ">
+                                          @{mentionedUser.username}
+                                        </p>
+                                      </div>
+                                  </div>
+                                      <p className="text-gray-400 text-sm">{mentionedUser.bio || mentionedUser.about}</p>
+                                      <p className=" text-nowrap w-fit h-fit cursor-pointer  rounded-full border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white text-center font-medium px-3 py-1">
+                                    View profile
                                   </p>
                                 </div>
+                                {/* <div
+                                  key={mentionedUser._id}
+                                  className="flex  gap-5  w-full  rounded-xl transition-all bg-white justify-between"
+                                >
+                                  <div className="flex  justify-center   gap-3 w-fit">
+                                    <UserImageInput
+                                      imageHeight={45}
+                                      image={
+                                        mentionedUser.profileImage.originalImage[0]
+                                      }
+                                      isEditable={false}
+                                    />
+                                    <div className="">
+                                      <div className="flex gap-1 text-wrap truncate max-w-full line-clamp-1 items-center">
+                                        <p className=" text-gray-800  font-medium truncate line-clamp-1 max-w-full text-wrap">
+                                          {mentionedUser.personal_details
+                                            ? `${mentionedUser.personal_details.firstname} ${mentionedUser.personal_details.lastname}`
+                                            : mentionedUser.company_details
+                                                ?.company_name}
+                                        </p>
+
+                                        {"  "}
+                                        <span className="font-bold px-0.5">
+                                          ·
+                                        </span>
+                                        {"  "}
+                                        <p className="text-gray-500 ">
+                                          @{mentionedUser.username}
+                                        </p>
+                                      </div>
+                                      <p className="truncate text-sm text-gray-400 line-clamp-2 text-wrap">
+                                        {mentionedUser.about || mentionedUser.bio}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <p className=" text-nowrap w-fit h-fit cursor-pointer  rounded-full border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white text-center font-medium px-3 py-1">
+                                    View profile
+                                  </p>
+                                </div> */}
                               </span>
                             );
                           }

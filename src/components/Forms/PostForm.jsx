@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import PostTextArea from "../Input/PostTextArea.jsx";
 import JobLinkDetails from "../Input/JobLinkDetails.jsx";
 
-function PostForm({ userDetails, setData, onClose }) {
+function PostForm({ userDetails,isCloseable = true ,showBackground = true, className , setData, onClose }) {
   const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -157,19 +157,19 @@ function PostForm({ userDetails, setData, onClose }) {
 
   return (
     <div>
-      <div
+      {showBackground && <div
         onClick={() => window.history.back()}
         className="fixed w-full h-full transition-all   top-0  inset-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60     z-30  left-0"
-      ></div>
-      <div className="fixed w-full border  shadow-2xl sm:max-w-lg right-0 h-full z-50      bg-white top-0   overflow-y-auto">
+      ></div>}
+      <div className={`fixed w-full border  shadow-2xl sm:max-w-lg right-0 h-full z-50      bg-white top-0   overflow-y-auto ${className}`}>
         <form
           onSubmit={handleSubmit}
           className="flex flex-col justify-between h-full  min-w-full  gap-4 "
           encType="multipart/form-data"
         >
           <div className=" flex-1 -mt-4">
-            <div className="flex px-4 sm:px-6   sticky top-0 py-3 items-center bg-white   border-b  z-20  justify-between">
-              <svg
+            <div className={`flex px-4 sm:px-6   sticky top-0 py-3 items-center bg-white   border-b  z-20 ${isCloseable ? "justify-between" : "justify-end"}`}> 
+            { isCloseable && <svg
                 class="h-8 w-8 text-gray-700 -ml-[1px]"
                 onClick={() => {
                   window.history.back();
@@ -187,8 +187,8 @@ function PostForm({ userDetails, setData, onClose }) {
                 <path stroke="none" d="M0 0h24v24H0z" />{" "}
                 <line x1="18" y1="6" x2="6" y2="18" />{" "}
                 <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
-              <div className="flex gap-4">
+              </svg>}
+              <div className="flex justify-self-end gap-4">
                 <div className="relative rounded-full bg-gray-50 px-2 gap-4 flex min-w-[80px] w-16 justify-between py-1  items-center ">
                   <div className="w-full flex justify-center ">
                     <svg

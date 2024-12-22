@@ -46,6 +46,7 @@ function PostView({ postId = useParams().postId, index, className }) {
   const [tab, setTab] = useState("comments");
   const [mentionList, setMentionList] = useState([]);
   const [isTextEmpty, setIsTextEmpty] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const sendBtnRef = useRef(null);
   const currentUser = useSelector((state) => state.auth.user);
@@ -54,7 +55,6 @@ function PostView({ postId = useParams().postId, index, className }) {
   useEffect(() => {
     const fetchPostData = async () => {
       const updatedPosts = await getPostById(postId);
-      document.title = updatedPosts?.content;
 
       setPost(updatedPosts);
     };
@@ -73,6 +73,7 @@ function PostView({ postId = useParams().postId, index, className }) {
     fetchPostData();
     fetchComments();
     fetchLikes();
+    setLoading(false);
   }, [postId]); // Empty dependency array means this effect runs only once when the component mounts
 
   useEffect(() => {
@@ -154,14 +155,47 @@ function PostView({ postId = useParams().postId, index, className }) {
   const handleAnimationEnd = () => {
     document.getElementById("sendBtn").classList.add("hidden");
   };
+  if (loading || !post) {
+    return (
+      <div className=" pb-14 pt-10">
+        <div class="grid min-h-[140px] w-full  h-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+          <svg
+            class="text-transparent animate-spin"
+            viewBox="0 0 64 64"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            width="50"
+            height="50"
+          >
+            <path
+              d="M32 3C35.8083 3 39.5794 3.75011 43.0978 5.20749C46.6163 6.66488 49.8132 8.80101 52.5061 11.4939C55.199 14.1868 57.3351 17.3837 58.7925 20.9022C60.2499 24.4206 61 28.1917 61 32C61 35.8083 60.2499 39.5794 58.7925 43.0978C57.3351 46.6163 55.199 49.8132 52.5061 52.5061C49.8132 55.199 46.6163 57.3351 43.0978 58.7925C39.5794 60.2499 35.8083 61 32 61C28.1917 61 24.4206 60.2499 20.9022 58.7925C17.3837 57.3351 14.1868 55.199 11.4939 52.5061C8.801 49.8132 6.66487 46.6163 5.20749 43.0978C3.7501 39.5794 3 35.8083 3 32C3 28.1917 3.75011 24.4206 5.2075 20.9022C6.66489 17.3837 8.80101 14.1868 11.4939 11.4939C14.1868 8.80099 17.3838 6.66487 20.9022 5.20749C24.4206 3.7501 28.1917 3 32 3L32 3Z"
+              stroke="currentColor"
+              stroke-width="5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ></path>
+            <path
+              d="M32 3C36.5778 3 41.0906 4.08374 45.1692 6.16256C49.2477 8.24138 52.7762 11.2562 55.466 14.9605C58.1558 18.6647 59.9304 22.9531 60.6448 27.4748C61.3591 31.9965 60.9928 36.6232 59.5759 40.9762"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-gray-400"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
-      className={`${className}  flex justify-center  min-h-screen    gap-8 `}
+      className={`${className} w-full  flex justify-center  min-h-screen    gap-14 `}
     >
       {post && (
         <div
           key={index}
-          className="w-full sm:max-w-lg relative bg-white h-full border-b sm:border-x "
+          className="w-full sm:max-w-xl relative bg-white min:h-screen border-b sm:border-x "
         >
           <UserPostUpdateSettings
             setPostSetting={setPostSettings}
@@ -187,10 +221,10 @@ function PostView({ postId = useParams().postId, index, className }) {
             setPost={setPost}
             setcommentData={setReplies}
           />
-          <p className="py-3 px-4 sticky top-0 mb-5 left-0 right-0 bg-white z-40 font-bold text-2xl  border-gray-300">
+          <p className="py-3 px-4 sm:px-6 sticky top-0 mb-5 left-0 right-0 bg-white z-40 font-bold text-2xl  border-gray-300">
             Post
           </p>{" "}
-          <div className="flex items-center px-4 justify-between">
+          <div className="flex items-center px-4 sm:px-6 justify-between">
             <div
               onClick={() => {
                 navigate("/user/" + post?.user._id);
@@ -209,12 +243,23 @@ function PostView({ postId = useParams().postId, index, className }) {
                 isEditable={false}
               />
               <div className="flex flex-col  ">
-                <p className="font-medium">
+                {/* <p className="font-medium">
                   {post?.user.company_details
                     ? post?.user.company_details?.company_name
                     : `${post?.user.personal_details?.firstname} ${post?.user.personal_details?.lastname}`}
                 </p>
-                <p className="text-gray-400 text-sm">{post?.user.username}</p>
+                <p className="text-gray-400 text-sm">{post?.user.username}</p> */}
+                <div className="flex flex-col  text-wrap truncate max-w-full line-clamp-1 items-center">
+                  {/* {"  "}
+                  <span className="font-bold px-0.5">·</span>
+                  {"  "} */}
+                  <p className=" text-gray-800 font-semibold text-lg truncate line-clamp-1 max-w-full text-wrap">
+                    {post.user.personal_details
+                      ? `${post.user.personal_details.firstname} ${post.user.personal_details.lastname}`
+                      : post.user.company_details?.company_name}
+                  </p>
+                  <p className=" text-gray-400 -mt-1">@{post.user.username}</p>
+                </div>
                 {/* <p className="text-sm text-gray-400">
                   {formatDistanceToNow(new Date(post.createdAt), {}).split(
                     " "
@@ -293,7 +338,7 @@ function PostView({ postId = useParams().postId, index, className }) {
               </svg>
             </div>
           </div>
-          <div className="relative mx-4">
+          <div className="relative mx-4 sm:mx-6">
             <p
               className={`mt-4 ${
                 !post.images && post.post_type !== "job" && "flex-1 rounded-xl"
@@ -321,7 +366,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                         aria-label={`View profile of ${mentionedUser.username}`}
                       >
                         {segment}
-                        <div
+                        {/* <div
                           className="absolute top-7 z-20 hidden items-start group-hover:flex  border bg-white shadow-lg px-8 pr-9  justify-center py-2 left-0 rounded-md"
                           role="tooltip"
                         >
@@ -342,7 +387,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                               {mentionedUser.username}
                             </p>
                           </p>
-                        </div>
+                        </div> */}
                       </span>
                     );
                   }
@@ -396,7 +441,7 @@ function PostView({ postId = useParams().postId, index, className }) {
           {post.post_type !== "job" && (
             <div
               style={{ overflowX: "auto", scrollbarWidth: "none" }}
-              className="mt-2 px-4 flex flex-col  transition-all duration-300 overflow-x-auto flex-1"
+              className="mt-2 px-4 sm:px-6 flex flex-col  transition-all duration-300 overflow-x-auto flex-1"
             >
               {/* {post.images && (
                 <ImageCarousel
@@ -471,7 +516,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                 scrollBehavior: "smooth",
                 display: "flex",
               }}
-              className="relative px-4 mb-5 flex flex-col"
+              className="relative px-4 sm:px-6 mb-5 flex flex-col"
             >
               {post.mentions.length > 0 &&
                 !post.images &&
@@ -538,9 +583,8 @@ function PostView({ postId = useParams().postId, index, className }) {
                         style={{
                           flex: "0 0 auto", // Ensure items do not shrink
                           scrollSnapAlign: "start", // Snap to the start of each item
-                          minWidth: "100%", // Ensure items take full width
                         }}
-                        className="mt-2 border p-5 w-full flex flex-col justify-between rounded-2xl flex-shrink-0"
+                        className="mt-2 border p-5 w-full flex flex-col max-w-80 justify-between rounded-2xl flex-shrink-0"
                       >
                         <div className="flex gap-4">
                           <p className="bg-pink-950 text-white font-bold text-3xl -ml-px rounded-full flex items-center justify-center min-w-14 w-14 h-14">
@@ -574,7 +618,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                   </div> */}
             </div>
           )}
-          <div className="flex justify-between z-10 px-4 text-gray-400 font-normal items-center  mt-2">
+          <div className="flex justify-between z-10 px-4 sm:px-6 text-gray-400 font-normal items-center  mt-2">
             <div className="flex gap-4">
               <LikeButton
                 postData={post}
@@ -598,14 +642,15 @@ function PostView({ postId = useParams().postId, index, className }) {
                 day: "2-digit",
                 month: "short",
                 year: "numeric",
-              })}{" "}
-              at{" "}
+              })}   {"  "}
+              <span className="font-bold px-0.5">·</span>
+              {"  "}
               <span>
                 {new Date(post.createdAt).toLocaleTimeString("en-GB", {
                   hour: "2-digit",
                   minute: "2-digit",
                   hour12: true,
-                })}
+                }).toUpperCase()}
               </span>
             </p>
           </div>
@@ -636,19 +681,19 @@ function PostView({ postId = useParams().postId, index, className }) {
               <div className="relative">
                 <div
                   // onClick={() => handleRemoveImage(image)}
-                  className="absolute     cursor-pointer"
+                  className="     cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     setPostMentions(post.mentions);
                   }}
                 >
-                  <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div>
+                  {/* <div className="absolute w-10 h-10 -top-[3px] -right-[4px] bg-black opacity-45 rounded-full"></div> */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
                     height="20"
                     fill="currentColor"
-                    className="h-5 w-5 text-gray-100  absolute top-[7px] right-[6px] z-10"
+                    className="h-8 w-8 border p-1.5 border-gray-800 rounded-full text-gray-800    z-10"
                     viewBox="0 0 16 16"
                   >
                     <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6" />
@@ -660,31 +705,35 @@ function PostView({ postId = useParams().postId, index, className }) {
           {tab == "likes" && (
             <div>
               {likes.length > 0 ? (
-                <div className="flex flex-col gap-2 px-4 pb-5 pt-5">
+                <div className="flex flex-col gap-3 px-4 pb-5 pt-5">
                   {likes.map((user) => (
                     <div
                       onClick={() => {
                         navigate("/user/" + user.user._id);
                       }}
-                      className="flex gap-4 items-center cursor-pointer"
+                      className="flex gap-4   cursor-pointer"
                     >
                       <UserImageInput
-                        imageHeight={40}
+                        imageHeight={35}
+                        className={"border-none"}
+                        imageBorder={0}
                         image={user.user.profileImage?.compressedImage[0]}
                         isEditable={false}
                       />
                       <div className="-mt-1">
-                        <p className="font-medium">{user.user.username}</p>
                         {user.user.personal_details ? (
-                          <p className="text-gray-400 text-sm -mt-1">
+                          <p className=" font-medium ">
                             {user.user.personal_details?.firstname}{" "}
                             {user.user.personal_details?.lastname}
                           </p>
                         ) : (
-                          <p className="text-gray-400 text-sm -mt-1">
+                          <p className="font-medium">
                             {user.user.company_details?.company_name}
                           </p>
                         )}
+                        <p className="text-sm text-gray-400 -mt-0.5">
+                          @{user.user.username}
+                        </p>
                       </div>
                     </div>
                   ))}
@@ -737,7 +786,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                     placeholder={`Comment on @${post.user.username}`}
                   /> */}
                   <PostTextArea
-                    className=""
+                    className=" ml-0"
                     placeholder={`Comment on @${post.user.username}`}
                     showRemainingLetters={false}
                     content={commentText}
@@ -848,7 +897,19 @@ function PostView({ postId = useParams().postId, index, className }) {
                                 isEditable={false}
                               />
                               <p className="font-medium text-[15px] -mt-1">
-                                {comment.user.username}
+                                {comment.user.username}{" "}
+                                <span className="font-normal text-gray-500 text-sm">
+                                  {" "}
+                                  {"  "}
+                                  <span className="font-bold px-0.5">·</span>
+                                  {"  "}
+                                  {new Date(
+                                    comment.createdAt
+                                  ).toLocaleDateString("en-GB", {
+                                    day: "2-digit",
+                                    month: "short",
+                                  })}{" "}
+                                </span>
                               </p>
                             </div>
                             {/* <p
@@ -1019,7 +1080,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                             /> */}
                             <PostTextArea
                               showRemainingLetters={false}
-                              className=" "
+                              className="ml-0 "
                               placeholder={`Reply on @${comment.user.username}`}
                               content={
                                 replyText?.index === index
@@ -1215,7 +1276,21 @@ function PostView({ postId = useParams().postId, index, className }) {
                                       isEditable={false}
                                     />
                                     <p className="font-medium text-[15px] -mt-1">
-                                      {reply.user.username}
+                                      {reply.user.username}{" "}
+                                      <span className="font-normal text-gray-500 text-sm">
+                                        {" "}
+                                        {"  "}
+                                        <span className="font-bold px-0.5">
+                                          ·
+                                        </span>
+                                        {"  "}
+                                        {new Date(
+                                          reply.createdAt
+                                        ).toLocaleDateString("en-GB", {
+                                          day: "2-digit",
+                                          month: "short",
+                                        })}{" "}
+                                      </span>
                                     </p>
                                   </div>
                                   {/* <p
@@ -1389,7 +1464,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                                   /> */}
                                   <PostTextArea
                                     placeholder={`Reply on @${reply.user.username}`}
-                                    className=""
+                                    className="ml-0"
                                     showRemainingLetters={false}
                                     content={
                                       replyText?.index === index
@@ -1539,26 +1614,176 @@ function PostView({ postId = useParams().postId, index, className }) {
           )}
         </div>
       )}
-      {/* <div className="hidden sticky top-20 w-full mt-5 max-w-sm flex-col gap-5 lg:flex">
-        <div className="border rounded-lg p-4">
-          <p className="text-xl font-semibold mb-5">Releated Accounts</p>
-          <div className="flex gap-5 justify-between items-center">
-            <div className="flex gap-2">
-              <UserImageInput isEditable={false} />
-              <div className="">
-                <p className="text-lg font-medium">Yogesh Gosavi</p>
-                <p className="text-gray-400">yogesh_gosavii</p>
+      {!loading && comments && post && (
+        <div>
+          <div className=" sticky top-5  mt-5  flex-col gap-5 hidden lg:flex">
+            <div className=" bg-white py-4 pt-0 max-h-96 overflow-y-auto px-2 border max-w-2xl w-[500px]">
+              <p className="text-lg font-semibold z-20 mb-2 py-3 pt-5 sticky top-0 bg-white px-4">
+                Releated Accounts
+              </p>
+              <div
+                className="flex flex-col gap-6 max-w-full overflow-x-auto py-2 px-4"
+                style={{ scrollbarWidth: "none" }}
+              >
+                {comments.length > 0 &&
+                  comments
+                    .filter(
+                      (comment, index, self) =>
+                        comment.user._id !== currentUser._id &&
+                        self.findIndex(
+                          (c) => c.user._id === comment.user._id
+                        ) === index
+                    )
+                    .map((comment) => (
+                      <div
+                        key={comment.user._id}
+                        className="flex  gap-5  w-full rounded-xl transition-all bg-white justify-between"
+                      >
+                        <div className="flex  justify-center   gap-3 w-fit">
+                          <UserImageInput
+                            imageHeight={45}
+                            image={comment.user.profileImage.originalImage[0]}
+                            isEditable={false}
+                          />
+                          <div className="">
+                            <div className="flex gap-1 text-wrap truncate max-w-full line-clamp-1 items-center">
+                              <p className=" text-gray-800  font-medium truncate line-clamp-1 max-w-full text-wrap">
+                                {comment.user.personal_details
+                                  ? `${comment.user.personal_details.firstname} ${comment.user.personal_details.lastname}`
+                                  : comment.user.company_details?.company_name}
+                              </p>
+
+                              {"  "}
+                              <span className="font-bold px-0.5">·</span>
+                              {"  "}
+                              <p className="text-gray-500 ">
+                                @{comment.user.username}
+                              </p>
+                            </div>
+                            <p className="truncate text-sm text-gray-400 line-clamp-2 text-wrap">
+                              {comment.user.about || comment.user.bio}
+                            </p>
+                          </div>
+                        </div>
+                        <p className=" text-nowrap w-fit h-fit cursor-pointer  rounded-full border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white text-center font-medium px-3 py-1">
+                          View profile
+                        </p>
+                      </div>
+                    ))}
+                {post.mentions?.length > 0 &&
+                  post.mentions
+                    .filter(
+                      (mention, index, self) =>
+                        mention?._id !== currentUser._id &&
+                        !comments.some(comment => comment._id != mention._id) &&
+                        self.findIndex((c) => c._id === mention._id) === index
+                    )
+                    .map((mention) => (
+                      <div
+                        key={mention._id}
+                        className="flex  gap-5  w-full rounded-xl transition-all bg-white justify-between"
+                      >
+                        <div className="flex  justify-center   gap-3 w-fit">
+                          <UserImageInput
+                            imageHeight={45}
+                            image={mention.profileImage.originalImage[0]}
+                            isEditable={false}
+                          />
+                          <div className="">
+                            <div className="flex gap-1 text-wrap truncate max-w-full line-clamp-1 items-center">
+                              <p className=" text-gray-800  font-medium truncate line-clamp-1 max-w-full text-wrap">
+                                {mention.personal_details
+                                  ? `${mention.personal_details.firstname} ${mention.personal_details.lastname}`
+                                  : mention.company_details?.company_name}
+                              </p>
+
+                              {"  "}
+                              <span className="font-bold px-0.5">·</span>
+                              {"  "}
+                              <p className="text-gray-500 ">
+                                @{mention.username}
+                              </p>
+                            </div>
+                            <p className="truncate text-sm text-gray-400 line-clamp-2 text-wrap">
+                              {mention.about || mention.bio}
+                            </p>
+                          </div>
+                        </div>
+                        <p className=" text-nowrap w-fit h-fit cursor-pointer  rounded-full border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white text-center font-medium px-3 py-1">
+                          View profile
+                        </p>
+                      </div>
+                    ))}
+                {comments.filter(
+                  (comment, index, self) =>
+                    comment.user._id !== currentUser._id &&
+                    self.findIndex((c) => c.user._id === comment.user._id) ===
+                      index
+                ).length <= 0 &&
+                  post.mentions.filter(
+                    (mention, index, self) =>
+                      mention?._id !== currentUser._id &&
+                      !comments.includes(mention) &&
+                      self.findIndex((c) => c._id === mention._id) === index
+                  ).length <= 0 &&
+                  <div className="text-gray-400">
+                      <p className="font-medium text-xl text-gray-400">No related accounts</p>
+                      <p className="leading-tight mt-1 text-sm">The account that are related to the post like comments and mentions are shown here </p>
+                  </div>
+                }
               </div>
+              {/* <div
+              className="flex flex-col gap-6 max-w-full overflow-x-auto py-2 px-4"
+              style={{ scrollbarWidth: "none" }}
+            >
+              {likes.length > 0 &&
+                likes
+                  .filter(
+                    (like, index, self) =>
+                      like.user._id !== currentUser._id &&
+                    comments.includes(like.user) &&
+                      self.findIndex((c) => c.user._id === like.user._id) ===
+                        index
+                  )
+                  .map((like) => (
+                    <div
+                      key={like.user._id}
+                      className="flex  gap-5  w-full rounded-xl transition-all bg-white justify-between"
+                    >
+                      <div className="flex  justify-center   gap-3 w-fit">
+                        <UserImageInput
+                          imageHeight={45}
+                          image={like.user.profileImage.originalImage[0]}
+                          isEditable={false}
+                        />
+                        <div className="">
+                          <div className="flex gap-1 text-wrap truncate max-w-full line-clamp-1 items-center">
+                            <p className="text-gray-800 text-lg font-medium ">
+                              @{like.user.username}
+                            </p>
+                            {"  "}
+                            <span className="font-bold px-0.5">·</span>{"  "}
+                            <p className=" text-gray-500 truncate line-clamp-1 max-w-full text-wrap">
+                              {like.user.personal_details
+                                ? `${like.user.personal_details.firstname} ${like.user.personal_details.lastname}`
+                                : like.user.company_details?.company_name}
+                            </p>
+                          </div>
+                          <p className="truncate text-sm text-gray-400 line-clamp-2 text-wrap">
+                            {like.user.about || like.user.bio}
+                          </p>
+                        </div>
+                      </div>
+                      <p className=" text-nowrap w-fit h-fit cursor-pointer  rounded-full border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white text-center font-medium px-3 py-1">
+                        View profile
+                      </p>
+                    </div>
+                  ))}
+            </div> */}
             </div>
-            <p className="bg-blue-500 h-fit rounded-full text-white font-medium px-3 py-1">
-              Follow
-            </p>
           </div>
         </div>
-        <div className="border p-4 rounded-lg">
-          <p className="text-xl font-semibold">Similar Jobs</p>
-        </div>
-      </div> */}
+      )}
     </div>
   );
 }

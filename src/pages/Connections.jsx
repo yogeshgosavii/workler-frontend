@@ -49,6 +49,7 @@ function Connections({ userId = useParams().userId }) {
                   className="flex gap-4 cursor-pointer"
                 >
                   <UserImageInput
+                    imageHeight={45}
                     image={user.user.profileImage?.compressedImage[0]}
                     isEditable={false}
                   />

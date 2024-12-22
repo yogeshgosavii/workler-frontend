@@ -113,7 +113,7 @@ function Search() {
   }, [query, searchType]);
 
   return (
-    <div className="flex gap-4 bg-white h-dvh justify-center w-full ">
+    <div className="flex gap-4 bg-white min-h-dvh justify-center w-full ">
       <div
         className={`${
           location.pathname.split("/").length > 2 && " hidden sm:block"
@@ -128,7 +128,7 @@ function Search() {
                 e.preventDefault();
               }
             }}
-            className="flex sticky top-0   w-full border-b sm:border sm:rounded-xl shadow-md sm:shadow-none gap-2 h-fit px-4 bg-white py-2.5"
+            className="flex sticky top-0   w-full border-b sm:border sm:rounded-xl shadow-sm sm:shadow-none gap-2 h-fit px-4 bg-white py-2.5 pb-3 sm:pb-2.5"
           >
             <input
               autoFocus

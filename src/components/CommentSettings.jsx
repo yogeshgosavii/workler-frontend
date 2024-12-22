@@ -52,12 +52,12 @@ function CommentSettings({
               setSelectMentions(null);
             }}
             className={`w-screen h-screen bg-black transition-opacity ${
-              commentSettings ? "opacity-50" : "opacity-0"
+              commentSettings ? "opacity-75" : "opacity-0"
             }`}
           ></div>
         )}
         <div
-          className={`fixed w-full z-50 p-4 md:p-6 sm:max-w-sm transition-transform transform ${
+          className={`fixed sm:rounded-xl shadow-lg w-full z-50 p-4 md:p-6 sm:max-w-sm transition-transform transform ${
             commentSettings ? "translate-y-0" : "translate-y-full"
           } bottom-0 md:top-1/2 sm:left-[52%] h-fit md:-translate-x-1/2 md:-translate-y-1/2 ${
             !commentSettings && "md:hidden"
