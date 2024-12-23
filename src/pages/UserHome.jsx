@@ -146,7 +146,7 @@ function UserHome() {
     <div className="w-full flex sm:px-6    bg-gray-50 h-full gap-20 justify-center ">
       <div className="w-full flex flex-col max-w-lg   h-full">
         <div
-          className={`    flex gap-4 border-b overflow-x-auto border bg-white   w-full   py-4  bg-transparent z-30 top-0  ${
+          className={`    flex gap-4 border-b bg-white overflow-x-auto border    w-full   py-4  bg-transparent z-30 top-0  ${
             selectedPost && "hidden sm:block"
           }`}
           // style={{ scrollbarWidth: "none" }}
@@ -189,7 +189,7 @@ function UserHome() {
                 navigate("news");
                 setSelectedType("news");
               }}
-              className={`px-3 py-1 sm:hidden  cursor-pointer  rounded-lg font-medium border ${
+              className={`px-3 py-1 lg:hidden  cursor-pointer  rounded-lg font-medium border ${
                 selectedType == "news"
                   ? "bg-gray-800 border-gray-800 text-white"
                   : "bg-white"
@@ -285,7 +285,7 @@ function UserHome() {
             )
           ) : selectedType == "news" ? (
             <div
-              className="overflow-y-auto w-full sm:hidden"
+              className="overflow-y-auto w-full lg:hidden"
               style={{ scrollbarWidth: "none" }}
             >
               {news.length > 0 ? (
@@ -317,7 +317,7 @@ function UserHome() {
 
                         {/* Foreground Text */}
                         <div className="absolute bottom-0 left-0 right-0 p-4 z-20 translate-y-14 group-hover:translate-y-0 transition-all">
-                          <p className="font-bold leading-tight text-xl  line-clamp-2 text-white">
+                          <p className="font-bold leading-tight text-xl  line-clamp-2 group-hover:line-clamp-none text-white">
                             {item.title}
                           </p>
                           <p className="text-white leading-tight line-clamp-2 mt-0.5">
@@ -360,7 +360,7 @@ function UserHome() {
                     ))}
                 </div>
               ) : (
-                <div className="mt-4">
+                <div className="mt-4 px-4">
                   <p className="text-2xl text-gray-400 font-bold">
                     No news right now
                   </p>
@@ -465,6 +465,9 @@ function UserHome() {
       <div className="w-full border  hidden lg:block mr-10 p-6 pb-6 max-w-md h-fit bg-white mt-8 overflow-hidden relative">
         <div className="flex justify-between mb-6">
           <p className="text-2xl font-bold">Latest News</p>
+          {/* <p onCLick={()=>{
+            console.log("clicked");
+            newsService.updateNewsToDatabase()}} className="border border-blue-500 px-4 py-0.5 font-medium rounded-full flex item-center text-blue-500">Update</p> */}
         </div>
         {news.length <= 0 ? (
           <div className="mt-4">
@@ -505,7 +508,7 @@ function UserHome() {
 
                   {/* Foreground Text */}
                   <div className="absolute bottom-0 left-0 right-0 p-4 z-20 translate-y-14 group-hover:translate-y-0 transition-all">
-                    <p className="font-bold leading-tight text-xl  line-clamp-2 text-white">
+                    <p className="font-bold leading-tight text-xl  line-clamp-2 group-hover:line-clamp-none text-white">
                       {item.title}
                     </p>
                     <p className="text-white leading-tight line-clamp-2 mt-0.5">

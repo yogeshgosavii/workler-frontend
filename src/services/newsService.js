@@ -1,7 +1,7 @@
 import { setAuthHeaders } from "../../utility";
 
-// const API_URL = "https://workler-backend.vercel.app/api/news";
-const API_URL = "http://localhost:5002/api/news";
+const API_URL = "https://workler-backend.vercel.app/api/news";
+// const API_URL = "http://localhost:5002/api/news";
 
 const getToken = () => localStorage.getItem('token');
 
