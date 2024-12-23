@@ -642,15 +642,18 @@ function PostView({ postId = useParams().postId, index, className }) {
                 day: "2-digit",
                 month: "short",
                 year: "numeric",
-              })}   {"  "}
+              })}{" "}
+              {"  "}
               <span className="font-bold px-0.5">·</span>
               {"  "}
               <span>
-                {new Date(post.createdAt).toLocaleTimeString("en-GB", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                  hour12: true,
-                }).toUpperCase()}
+                {new Date(post.createdAt)
+                  .toLocaleTimeString("en-GB", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                  })
+                  .toUpperCase()}
               </span>
             </p>
           </div>
@@ -1549,6 +1552,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                                             user: currentUser._id,
                                             parentComment: comment._id,
                                             content: replyText.text,
+                                            mentions : replyText.mentions
                                           });
 
                                           // Create new comment structure with user details
@@ -1675,7 +1679,9 @@ function PostView({ postId = useParams().postId, index, className }) {
                     .filter(
                       (mention, index, self) =>
                         mention?._id !== currentUser._id &&
-                        !comments.some(comment => comment._id != mention._id) &&
+                        !comments.some(
+                          (comment) => comment._id != mention._id
+                        ) &&
                         self.findIndex((c) => c._id === mention._id) === index
                     )
                     .map((mention) => (
@@ -1725,12 +1731,17 @@ function PostView({ postId = useParams().postId, index, className }) {
                       mention?._id !== currentUser._id &&
                       !comments.includes(mention) &&
                       self.findIndex((c) => c._id === mention._id) === index
-                  ).length <= 0 &&
-                  <div className="text-gray-400">
-                      <p className="font-medium text-xl text-gray-400">No related accounts</p>
-                      <p className="leading-tight mt-1 text-sm">The account that are related to the post like comments and mentions are shown here </p>
-                  </div>
-                }
+                  ).length <= 0 && (
+                    <div className="text-gray-400">
+                      <p className="font-medium text-xl text-gray-400">
+                        No related accounts
+                      </p>
+                      <p className="leading-tight mt-1 text-sm">
+                        The account that are related to the post like comments
+                        and mentions are shown here{" "}
+                      </p>
+                    </div>
+                  )}
               </div>
               {/* <div
               className="flex flex-col gap-6 max-w-full overflow-x-auto py-2 px-4"

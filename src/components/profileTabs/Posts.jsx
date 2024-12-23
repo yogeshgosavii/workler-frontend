@@ -28,6 +28,8 @@ function Posts({
   userDetails,
   no_post_error,
   isEditable = true,
+  style,
+  ...props
 }) {
   const [commentButtonClicked, setCommentButtonClicked] = useState(null);
   const [sendClicked, setSendClicked] = useState(null);
@@ -168,25 +170,26 @@ function Posts({
           />
 
           <div
-            className={`grid ${columns} ${postPaddingbottom} h-full gap-6 bg-white pb-6 border-b sm:border-b-0 sm:pb-0`}
+            {...props}
+            className={`grid ${columns} ${postPaddingbottom} h-full  gap-6  pb-6  sm:border-b-0 sm:pb-0`}
           >
             {postData?.map((post, index) => {
               return (
                 <div
                   key={index}
                   onClick={() => window.open("/post/" + post._id, "_blank")}
-                  className={`sm:border w-full     ${postClassName} flex flex-col  transition-all  h-full   p-4 sm:p-7`}
+                  className={`sm:border w-full max-w-full  border-y  ${postClassName} flex flex-col bg-white  transition-all  h-full   p-4 sm:p-7`}
                 >
-                  <div className="flex items-center   justify-between">
+                  <div className="flex   gap-2  justify-between">
                     <div
                       onClick={(e) => {
                         e.stopPropagation();
                         window.open("/user/" + post.user._id, "_blank");
                       }}
-                      className="flex gap-4  items-center"
+                      className="flex gap-4 "
                     >
                       <UserImageInput
-                        className="w-[35px] h-[35px] -mt-1.5 rounded-full"
+                        className="w-[35px] h-[35px] rounded-full"
                         imageHeight={40}
                         imageBorder={1}
                         image={
@@ -197,19 +200,22 @@ function Posts({
                         isEditable={false}
                       />
                       <div className="flex flex-col">
-                        <div className="flex items-center ">
-                          <p className="font-medium">
+                        <div className="flex items-center flex-wrap max-w-full overflow-hidden">
+                          <p
+                            className="font-medium truncate line-clamp-1  whitespace-nowrap overflow-hidden text-ellipsis"
+                          >
                             {post?.user.company_details
                               ? post?.user.company_details?.company_name
                               : `${post?.user.personal_details?.firstname} ${post?.user.personal_details?.lastname}`}
                           </p>
                           <span className="font-bold text-gray-500 mx-2">
                             ·
-                          </span>{" "}
-                          <p className=" text-gray-400 font-normal">
+                          </span>
+                          <p className="text-gray-400 truncate whitespace-nowrap overflow-hidden text-ellipsis font-normal">
                             @{post?.user.username}
                           </p>
                         </div>
+
                         <p className="text-sm text-gray-400">
                           {/* {formatDistanceToNow(
                             new Date(post.createdAt),
@@ -230,7 +236,7 @@ function Posts({
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-2 -mt-4 items-center">
+                    <div className="flex gap-2 ">
                       {currentUser._id != post.user._id &&
                         (savedList.some(
                           (item) => item.saved_content?._id == post._id
@@ -329,16 +335,16 @@ function Posts({
                               >
                                 {segment}
                                 <div
-                                  className="absolute top-7 gap-3 z-20 hidden w-fit items-start group-hover:flex  border bg-white shadow-xl flex-col px-5 pr-9  justify-center py-2 left-0 pb-5 pt-4 rounded-lg"
+                                  className="absolute top-7 gap-3 z-20 hidden w-fit items-start group-hover:sm:flex  border bg-white shadow-xl flex-col px-5 pr-9  justify-center py-2 left-0 pb-5 pt-4 rounded-lg"
                                   role="tooltip"
                                 >
                                   <div className="flex gap-3">
-                                  <img
-                                    src={profileImage}
-                                    alt={`${mentionedUser.username}'s profile`}
-                                    className="w-8 h-8 mt-1 rounded-full"
-                                  />
-                                  {/* <p className="ml-3 text-gray-800">
+                                    <img
+                                      src={profileImage}
+                                      alt={`${mentionedUser.username}'s profile`}
+                                      className="w-8 h-8 mt-1 rounded-full"
+                                    />
+                                    {/* <p className="ml-3 text-gray-800">
                                     <p className="font-medium text-nowrap">
                                       {mentionedUser.personal_details
                                         ? mentionedUser.personal_details
@@ -353,26 +359,28 @@ function Posts({
                                       {mentionedUser.username}
                                     </p>
                                   </p> */}
-                                   <div className="flex gap-1 text-wrap text-gray-400 pr-5  items-center">
-                                        <p className=" text-gray-800  font-medium   text-nowrap">
-                                          {mentionedUser.personal_details
-                                            ? `${mentionedUser.personal_details.firstname} ${mentionedUser.personal_details.lastname}`
-                                            : mentionedUser.company_details
-                                                ?.company_name}
-                                        </p>
+                                    <div className="flex gap-1 text-wrap text-gray-400 pr-5  items-center">
+                                      <p className=" text-gray-800  font-medium   text-nowrap">
+                                        {mentionedUser.personal_details
+                                          ? `${mentionedUser.personal_details.firstname} ${mentionedUser.personal_details.lastname}`
+                                          : mentionedUser.company_details
+                                              ?.company_name}
+                                      </p>
 
-                                        {"  "}
-                                        <span className="font-bold px-0.5">
-                                          ·
-                                        </span>
-                                        {"  "}
-                                        <p className="text-gray-500 ">
-                                          @{mentionedUser.username}
-                                        </p>
-                                      </div>
+                                      {"  "}
+                                      <span className="font-bold px-0.5">
+                                        ·
+                                      </span>
+                                      {"  "}
+                                      <p className="text-gray-500 ">
+                                        @{mentionedUser.username}
+                                      </p>
+                                    </div>
                                   </div>
-                                      <p className="text-gray-400 text-sm">{mentionedUser.bio || mentionedUser.about}</p>
-                                      <p className=" text-nowrap w-fit h-fit cursor-pointer  rounded-full border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white text-center font-medium px-3 py-1">
+                                  <p className="text-gray-400 text-sm">
+                                    {mentionedUser.bio || mentionedUser.about}
+                                  </p>
+                                  <p className=" text-nowrap w-fit h-fit cursor-pointer  rounded-full border border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white text-center font-medium px-3 py-1">
                                     View profile
                                   </p>
                                 </div>

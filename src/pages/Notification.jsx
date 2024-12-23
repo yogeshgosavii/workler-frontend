@@ -203,13 +203,15 @@ function Notification({ userId }) {
                 notification.read
                   ? "bg-white"
                   : notification.notificationType == "like"
-                  ? " border-l-4 border-l-red-400 "
+                  ? " border-l-4 border-l-red-400 bg-red-50"
                   : notification.notificationType == "comment" ||
                     notification.notificationType == "reply"
-                  ? "border-l-4 border-l-indigo-500"
+                  ? "border-l-4 border-l-indigo-500 bg-indigo-50"
                   : notification.notificationType == "approach"
-                  ? "border-l-4 border-l-blue-500 "
-                  : "border-l border-l-4-gray-50"
+                  ? "border-l-4 border-l-blue-500 bg-blue-50"
+                  //  : notification.notificationType == "mention"
+                  // ? "border-l-4 border-l-blue-500 bg "
+                  : "border-l-4 border-l-gray-800 bg-gray-50"
               }`}
             >
               <div className="flex gap-4  h-full  ">

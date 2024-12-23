@@ -115,7 +115,7 @@ const Preferences = () => {
         onClick={() => {
           window.history.back();
         }}
-        className="fixed w-full h-full bg-black opacity-30 z-20 top-0 left-0"
+        className="fixed w-full h-full bg-black opacity-75 z-20 top-0 left-0"
       ></div>
       <div className="fixed w-full sm:max-w-lg pb-14 right-0 flex flex-col gap-6 border h-full px-4 sm:px-6 py-4 sm:py-8 bg-white top-0 z-30 overflow-y-auto">
         <div className="flex gap-4 -ml-px mt-px mb-10 items-center">

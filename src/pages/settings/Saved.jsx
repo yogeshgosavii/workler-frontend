@@ -633,7 +633,7 @@ function Saved() {
       {/* Background Overlay */}
       <div
         onClick={() => window.history.back()}
-        className="fixed w-full h-full bg-black opacity-30 z-20 top-0 left-0"
+        className="fixed w-full h-full bg-black opacity-75 z-20 top-0 left-0"
       ></div>
 
       {/* Main Content */}

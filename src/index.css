@@ -74,3 +74,19 @@
   animation: scatter 0.5s forwards;
 }
 
+@layer utilities {
+  @keyframes auto-scroll {
+    0% {
+      transform: translateX(0%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+  .animate-auto-scroll {
+    animation: auto-scroll 20s linear infinite;
+  }
+  .animate-paused {
+    animation-play-state: paused !important;
+  }
+}

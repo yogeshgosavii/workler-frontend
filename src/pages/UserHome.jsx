@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { getAllPosts, getUserFollowingPosts } from "../services/postService";
 import Posts from "../components/profileTabs/Posts";
 import useJobApi from "../services/jobService";
@@ -10,6 +10,7 @@ import companyDefaultImage from "./../assets/companyDefaultImage.png";
 import { useSelector } from "react-redux";
 import JobListItem from "../components/jobComponent/JobListItem";
 import { useNavigate } from "react-router-dom";
+import newsService from "../services/newsService";
 
 function UserHome() {
   const [content, setContent] = useState([]);
@@ -21,6 +22,37 @@ function UserHome() {
   const [selectedPost, setSelectedPost] = useState(null);
   const [preferedJobs, setPreferedJobs] = useState([]);
   const [preferences, setPreferences] = useState([]);
+  const [news, setNews] = useState([]);
+  const scrollContainerRef = useRef(null);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    let autoScroll;
+
+    if (!isPaused) {
+      autoScroll = setInterval(() => {
+        if (scrollContainerRef.current) {
+          const { scrollLeft, clientWidth, scrollWidth } =
+            scrollContainerRef.current;
+
+          const newScrollLeft =
+            scrollLeft + clientWidth >= scrollWidth
+              ? 0 // Loop back to start
+              : scrollLeft + clientWidth;
+
+          scrollContainerRef.current.scrollTo({
+            left: newScrollLeft,
+            behavior: "smooth",
+          });
+        }
+      }, 10000); // Adjust the interval as needed (e.g., every 3 seconds)
+    }
+
+    return () => clearInterval(autoScroll);
+  }, [isPaused]);
+
+  const handleMouseEnter = () => setIsPaused(true);
+  const handleMouseLeave = () => setIsPaused(false);
   const currentUser = useSelector((state) => state.auth.user);
   const navigate = useNavigate();
 
@@ -69,6 +101,18 @@ function UserHome() {
   }, [selectedType]);
 
   useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const news = await newsService.fetchLatestNews();
+        setNews(news);
+      } catch (error) {
+        console.error("Error fetching news:", error);
+      }
+    }; // Fetch news data from the API
+    fetchNews();
+  }, []);
+
+  useEffect(() => {
     if (window.location.pathname?.split("/").filter(Boolean).pop() == "home") {
       navigate("posts");
       setSelectedType("posts");
@@ -99,16 +143,16 @@ function UserHome() {
     );
 
   return (
-    <div className="w-full flex  border  bg-gray-50 h-full gap-12 ">
-      <div className="w-full flex flex-col  bg-white border-x h-full">
+    <div className="w-full flex sm:px-6    bg-gray-50 h-full gap-20 justify-center ">
+      <div className="w-full flex flex-col max-w-lg   h-full">
         <div
-          className={`    flex gap-4 border-b overflow-x-auto  px-5 w-full   py-4  bg-transparent z-30 top-0  ${
+          className={`    flex gap-4 border-b overflow-x-auto border bg-white   w-full   py-4  bg-transparent z-30 top-0  ${
             selectedPost && "hidden sm:block"
           }`}
           // style={{ scrollbarWidth: "none" }}
         >
           <div className={``} />
-          <div className="flex gap-4  px-4 sm:px-6 py-1">
+          <div className="flex gap-4   py-1">
             <p
               onClick={() => {
                 {
@@ -124,18 +168,7 @@ function UserHome() {
             >
               Posts
             </p>
-            {/* <p
-            onClick={() => {navigate("job_posts")
-              setSelectedType("job_posts")
 
-            }}
-            className={`px-3 py-1 cursor-pointer rounded-lg font-medium border ${
-              selectedType == "job_posts" ?
-              "bg-gray-800 border-gray-800 text-white":"bg-white"
-            }`}
-          >
-            Job posts
-          </p> */}
             {currentUser.account_type == "Candidate" && (
               <p
                 onClick={() => {
@@ -151,9 +184,22 @@ function UserHome() {
                 Prefered jobs
               </p>
             )}
+            <p
+              onClick={() => {
+                navigate("news");
+                setSelectedType("news");
+              }}
+              className={`px-3 py-1 sm:hidden  cursor-pointer  rounded-lg font-medium border ${
+                selectedType == "news"
+                  ? "bg-gray-800 border-gray-800 text-white"
+                  : "bg-white"
+              }`}
+            >
+              News
+            </p>
           </div>
         </div>
-        <div className="flex overflow-y-auto  h-full flex-1 justify-center  gap-4">
+        <div className="flex overflow-y-auto h-full flex-1 justify-center  gap-4">
           {loading ? (
             <div className=" pb-14">
               <div class="grid min-h-[140px] w-full  h-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
@@ -224,7 +270,7 @@ function UserHome() {
             ) : (
               <div
                 style={{ scrollbarWidth: "none" }}
-                className="w-full pt-10 sm:pt-14 sm:px-10 pb-10 overflow-x-hidden max-w-2xl flex flex-col gap-8"
+                className="w-full pt-10 sm:pt-14  pb-10 overflow-x-hidden max-w-2xl flex flex-col gap-8"
               >
                 {preferedJobs?.length > 0 &&
                   preferedJobs?.map((job, index) => (
@@ -232,24 +278,110 @@ function UserHome() {
                       key={index}
                       job={job}
                       companyDefaultImage={companyDefaultImage}
-                      className="border bg-white  sm:shadow-none hover:sm:shadow-xl  hover:scale-105"
+                      className="border bg-white   sm:shadow-none   "
                     />
                   ))}
               </div>
             )
+          ) : selectedType == "news" ? (
+            <div
+              className="overflow-y-auto w-full sm:hidden"
+              style={{ scrollbarWidth: "none" }}
+            >
+              {news.length > 0 ? (
+                <div
+                  className="flex flex-col  overflow-x-auto h-full snap-y snap-mandatory"
+                  // ref={scrollContainerRef}
+                  style={{ scrollbarWidth: "none" }}
+                  // onMouseEnter={handleMouseEnter}
+                  // onMouseLeave={handleMouseLeave}
+                >
+                  {news
+                    .filter(
+                      (newsItem) =>
+                        newsItem.source.name !== "[Removed]" ||
+                        newsItem.urlImage != null
+                    )
+                    .map((item, index) => (
+                      <div
+                        key={index}
+                        className="flex-shrink-0 flex items-end h-1/4  relative bg-gray-100 transition-all  min-h-full overflow-hidden snap-center group"
+                      >
+                        {/* Background Image */}
+                        <img
+                          className="object-cover group-hover:object-contain object-top bg-black absolute inset-0 w-full h-full z-10"
+                          src={item.urlToImage}
+                          alt={item.title}
+                        />
+                        <div className="absolute bottom-0 top-0 h-full z-20 w-full bg-gradient-to-t from-black to-transparent"></div>
+
+                        {/* Foreground Text */}
+                        <div className="absolute bottom-0 left-0 right-0 p-4 z-20 translate-y-14 group-hover:translate-y-0 transition-all">
+                          <p className="font-bold leading-tight text-xl  line-clamp-2 text-white">
+                            {item.title}
+                          </p>
+                          <p className="text-white leading-tight line-clamp-2 mt-0.5">
+                            <span>{item.source.name}</span> {"  "}
+                            <span className="font-bold px-0.5">·</span>
+                            {"  "} <span>{item.author}</span>
+                          </p>
+                          <p className="text-xs text-gray-200  mt-2 transition-all line-clamp-3">
+                            {item.content || item.description}
+                          </p>
+                          <p
+                            onClick={() => {
+                              window.open(item.url, "_blank");
+                            }}
+                            className="  justify-self-end items-center flex gap-5 text-white hover:text-black hover:bg-white px-4 py-2  opacity-0  group-hover:opacity-100 w-fit font-medium mt-4 cursor-pointer"
+                          >
+                            Visit page{" "}
+                            <svg
+                              onClick={() => {
+                                window.history.back();
+                              }}
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke-width="1.5"
+                              stroke="currentColor"
+                              class="size-5 rotate-180 mt-0.5"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18"
+                              />
+                            </svg>
+                          </p>
+                        </div>
+
+                        {/* Hover Overlay */}
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <div className="mt-4">
+                  <p className="text-2xl text-gray-400 font-bold">
+                    No news right now
+                  </p>
+                </div>
+              )}
+            </div>
           ) : (
-            <div>
+            <div className="overflow-y-auto" style={{ scrollbarWidth: "none" }}>
               <div
-                className={`  w-full pt-8 sm:pt-5 mb-10  justify-center flex ${
+                style={{ scrollbarWidth: "none" }}
+                className={`  w-full pt-8 sm:pt-5 mb-10  overflow-y-auto   justify-center flex ${
                   selectedPost && "hidden sm:block"
                 }`}
               >
                 <Posts
                   isEditable={false}
                   postData={content}
-                  className={"max-w-xl w-full "}
-                  postPaddingbottom={"pb-10"}
-                  postClassName={"   border-y sm:rounded-2xl bg-white"}
+                  // className={" w-full "}
+                  // postPaddingbottom={"pb-10"}
+                  // postClassName={"   border-y bg-white"}
+                  style={{ scrollbarWidth: "none" }}
                   no_post_error={
                     selectedType == "job_posts" ? (
                       <p className="max-w-xl pt-20 bg-gray-50 h-full text-center px-6 md:px-6">
@@ -330,15 +462,75 @@ function UserHome() {
         )} */}
         </div>
       </div>
-      <div className="w-full border hidden lg:block mr-10 p-6 pb-6 max-w-lg h-fit bg-white mt-8">
-        <p className="font-medium text-xl">News</p>
-        <div className="mt-4">
-          <p className="text-2xl text-gray-400 font-bold">No news right now</p>
-          <p className="leading-tight text-gray-400 text-sm mt-1">
-            The latest news of you intrest will be shown here as they are readly
-            available
-          </p>
+      <div className="w-full border  hidden lg:block mr-10 p-6 pb-6 max-w-md h-fit bg-white mt-8 overflow-hidden relative">
+        <div className="flex justify-between mb-6">
+          <p className="text-2xl font-bold">Latest News</p>
         </div>
+        {news.length <= 0 ? (
+          <div className="mt-4">
+            <p className="text-2xl text-gray-400 font-bold">
+              No news right now
+            </p>
+            <p className="leading-tight text-gray-400 text-sm mt-1">
+              The latest news of your interest will be shown here as they are
+              readily available.
+            </p>
+          </div>
+        ) : (
+          <div
+            className="flex gap-6 overflow-x-auto h-72 snap-x snap-mandatory"
+            ref={scrollContainerRef}
+            style={{ scrollbarWidth: "none" }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            {news
+              .filter(
+                (newsItem) =>
+                  newsItem.source.name !== "[Removed]" ||
+                  newsItem.urlImage != null
+              )
+              .map((item, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 flex items-end  relative bg-gray-100 transition-all w-4/5 min-h-full overflow-hidden snap-center group"
+                >
+                  {/* Background Image */}
+                  <img
+                    className="object-cover absolute inset-0 w-full h-full z-10"
+                    src={item.urlToImage}
+                    alt={item.title}
+                  />
+                  <div className="absolute bottom-0 top-0 h-full z-20 w-full bg-gradient-to-t from-black to-transparent"></div>
+
+                  {/* Foreground Text */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4 z-20 translate-y-14 group-hover:translate-y-0 transition-all">
+                    <p className="font-bold leading-tight text-xl  line-clamp-2 text-white">
+                      {item.title}
+                    </p>
+                    <p className="text-white leading-tight line-clamp-2 mt-0.5">
+                      <span>{item.source.name}</span> {"  "}
+                      <span className="font-bold px-0.5">·</span>
+                      {"  "} <span>{item.author}</span>
+                    </p>
+                    <p className="text-xs text-gray-200  mt-2 transition-all line-clamp-3 group-hover:line-clamp-4">
+                      {item.content || item.description}
+                    </p>
+                    <p
+                      onClick={() => {
+                        window.open(item.url, "_blank");
+                      }}
+                      className="border border-white justify-self-end text-white hover:text-black hover:bg-white px-4 py-2  opacity-0  group-hover:opacity-100 w-fit font-medium mt-4 cursor-pointer"
+                    >
+                      Visit page
+                    </p>
+                  </div>
+
+                  {/* Hover Overlay */}
+                </div>
+              ))}
+          </div>
+        )}
       </div>
     </div>
   );

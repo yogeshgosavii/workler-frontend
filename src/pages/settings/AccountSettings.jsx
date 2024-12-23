@@ -167,7 +167,7 @@ function AccountSettings() {
         onClick={() => {
           window.history.back();
         }}
-        className="fixed inset-0 bg-black opacity-30 z-20"
+        className="fixed inset-0 bg-black opacity-75 z-20"
       ></div>
 
       {/* Modal for Account Settings */}

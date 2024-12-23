@@ -570,13 +570,13 @@ const UserProfile = () => {
         location.pathname === "/profile/settings/saveds" ||
         location.pathname === "/profile/post"
       }
-      className={`  flex bg-gray-50 text-gray-800 min-h-screen  justify-center  gap-5`}
+      className={`  flex bg-gray-50 text-gray-800 min-h-screen  justify-center gap-5`}
     >
       {pageLoading ? (
         <div>Loading...</div>
       ) : (
         <div
-          className={`w-screen flex-1 flex gap-10 justify-center  ${
+          className={`w-screen flex-1 flex justify-center flex-grow ${
             settings ? "pointer-events-none " : "pointer-events-auto"
           }`}
         >
@@ -662,9 +662,9 @@ const UserProfile = () => {
             </div>
           ) : null}
           {/* Profile page */}
-          <div className="flex max-h-screen gap-5 sm:px-6 overflow-y-scroll justify-self-center w-full justify-center  ">
+          <div className="w-full  justify-center flex gap-8  ">
             <div
-              className={` w-full  sm:max-w-2xl   ${
+              className={` w-full  lg:max-w-xl   ${
                 (formType || settings || showProfileImage || updateFormType) &&
                 "fixed"
               }   md:flex-row transition-all sm:p-6 duration-300 relative  flex-1 h-full `}
@@ -674,12 +674,12 @@ const UserProfile = () => {
                   onClick={() => {
                     setshowProfileImage(false);
                   }}
-                  className={`h-screen  w-full top-0 absolute inset-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60    max-w-3xl  z-50  `}
+                  className={`h-screen  w-full top-0 absolute inset-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60     z-50  `}
                 ></div>
               )}
               <div className="flex gap-4  max-h-min flex-wrap ">
                 <div
-                  className={`w-full sm:hidden ${
+                  className={`w-full md:hidden ${
                     formType || updateFormType ? "hidden" : ""
                   } fixed  z-20 md:min-w-[57.6%]  md:border-x md:mt-5 top-0 mb-4 px-4 py-4 bg-white flex justify-between`}
                 >
@@ -761,8 +761,8 @@ const UserProfile = () => {
                     )}
                   </svg>
                 </div>
-                <div className="flex border-t pt-8 pb-6 mt-10 sm:mt-0   flex-grow  sm:border-x  px-4 md:px-6 gap-3 bg-white justify-center flex-col">
-                  <div className="w-full hidden sm:flex mb-4 bg-white justify-between ">
+                <div className="flex border-t pt-8 pb-6 mt-10 md:mt-0   flex-grow  sm:border-x  px-4 md:px-6 gap-3 bg-white justify-center flex-col">
+                  <div className="w-full hidden md:flex mb-4 bg-white justify-between ">
                     <div className="flex gap-4">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -1088,7 +1088,6 @@ const UserProfile = () => {
             </div> */}
               <div>{renderTabContent()}</div>
             </div>
-            {/* <PostForm className={`shadow-none h-fit top-auto right-auto relative mt-6  z-0`} /> */}
             <div className="w-[500px] hidden lg:block  mt-6 sticky top-6 z-0">
               <PostForm
                 className={
@@ -1102,9 +1101,6 @@ const UserProfile = () => {
         </div>
       )}
 
-      {/* <div className=" min-w-[35%] hidden lg:flex flex-col"> */}
-
-      {/* </div> */}
       {/* <div className=" z-40"> */}
       <Outlet />
       {/* </div> */}

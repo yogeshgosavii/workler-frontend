@@ -17,7 +17,7 @@ function Settings() {
         onClick={() => {
           window.history.back();
         }}
-        className="fixed w-full h-full bg-black opacity-30 z-20 top-0 left-0"
+        className="fixed w-full h-full bg-black opacity-75 z-20 top-0 left-0"
       ></div>
       <div className="fixed w-full text-gray-800 pb-20 sm:max-w-lg right-0   h-full  px-4 sm:px-6 py-3.5 sm:py-8 bg-white top-0 z-30  overflow-y-auto">
         <div className=" flex sm:pb-0  h-full justify-between flex-col">

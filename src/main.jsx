@@ -92,6 +92,14 @@ const router = createBrowserRouter([
               </LoginVerification>
             ),
           },
+          {
+            path: "news",
+            element: (
+              <LoginVerification>
+                <UserHome />
+              </LoginVerification>
+            ),
+          },
         ],
       },
       {
@@ -120,7 +128,7 @@ const router = createBrowserRouter([
           </LoginVerification>
         ),
       },
-     
+
       // {
       //   path: "/job-applications",
       //   element: (
@@ -178,7 +186,7 @@ const router = createBrowserRouter([
               </LoginVerification>
             ),
           },
-    
+
           {
             path: "settings/saveds",
             element: (
@@ -201,14 +209,12 @@ const router = createBrowserRouter([
       // },
     ],
   },
-   
+
   { path: "/forgot-password", element: <ForgotPassword /> },
 
   { path: "/password-reset/:token", element: <ResetPassword /> },
 
   { path: "/jobs/:jobId", element: <JobProfile /> },
-
-  
 
   {
     path: "/connections/:userId",
