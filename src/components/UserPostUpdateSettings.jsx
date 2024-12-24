@@ -65,7 +65,7 @@ function UserPostUpdateSettings({
           {/* <div className="flex items-center justify-center w-full gap-3  mb-10">
             <p className="w-1/5 bg-gray-800 h-1 rounded-full"></p>
           </div> */}
-          <p className="text-xl font-semibold mb-5">Post options</p>
+          <p className="text-xl font-semibold mt-2 mb-5">Post options</p>
 
           {currentUser._id == postSettings?.user._id && (
             <div className="border-b border-gray-200 ">

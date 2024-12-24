@@ -122,41 +122,25 @@
   }
 }
 
-
 @keyframes popup {
   0% {
-    transform: scale(0.5);
     opacity: 0;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 1;
+    transform: translateY(20px);
   }
   100% {
-    transform: scale(1);
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
 @keyframes popdown {
   0% {
-    transform: scale(1);
     opacity: 1;
+    transform: translateY(0) ;
   }
-  33% {
-    transform: scale(1.1);
-    opacity: 1;
-  }
-
-  66% {
-    transform: scale(1);
-    opacity: 0.5;
-  }
-
-
   100% {
-    transform: translateY(20px)  scale(0.5);
     opacity: 0;
+    transform: translateY(20px) ;
   }
 }
 
