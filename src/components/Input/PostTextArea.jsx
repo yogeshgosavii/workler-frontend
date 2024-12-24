@@ -26,6 +26,8 @@ function PostTextArea({
   content,
   className,
   setContent,
+  hashTags,
+  setHashTags,
   setMentionList,
   textIsEmpty,
   placeholder = "What's on your mind?",
@@ -122,6 +124,7 @@ function PostTextArea({
     
     setMentionList(mentionList?.filter(mention => content.includes("@"+mention.username+" ")))
   }
+
   
   // const handleInputChange = (event) => {
   //   const newContent = event.target.value;
@@ -176,6 +179,7 @@ function PostTextArea({
   //     return updatedMentionList;
   //   });
   // };
+
   
 
   const handleInputChange = (event) => {

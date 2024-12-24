@@ -171,7 +171,7 @@ function JobList({
     <div
       ref={containerRef}
       style={{ scrollbarWidth: "none" }}
-      className={`flex flex-1 bg-gray-50 sm:px-5   sm:pt-5 border-blue-500 overflow-y-auto overflow-x-hidden ${className} flex-col gap-8  w-full mt-0 sm:mt-0`}
+      className={`flex flex-1 bg-gray-50 sm:px-5  snap-y snap-mandatory  sm:pt-5 border-blue-500 overflow-y-auto overflow-x-hidden ${className} flex-col gap-8  w-full mt-0 sm:mt-0`}
     >
       {true && jobs.length === 0 ? (
         <div>
@@ -208,7 +208,7 @@ function JobList({
           <div
             key={index}
             // onClick={() => handleJobClick(job)}
-            className="cursor-pointer"
+            className="cursor-pointer snap-center"
           >
             <JobListItem
               job={job}

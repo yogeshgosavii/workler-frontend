@@ -10,6 +10,8 @@ import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { formatDate } from "date-fns";
 import { useSelector } from "react-redux";
 import useJobApi from "../services/jobService";
+import { getPostByKeyWord } from "../services/postService";
+import Posts from "../components/profileTabs/Posts";
 
 function Search() {
   const [searchInputFocus, setSearchInputFocus] = useState(false);
@@ -27,6 +29,7 @@ function Search() {
   const profileRef = useRef();
   const [searchedUsers, setSearchedUsers] = useState([]);
   const [searchedJobs, setSearchedJobs] = useState([]);
+  const [searchedPosts, setSearchedPosts] = useState([]);
   const user = useSelector((state) => state.auth.user);
   const jobService = useJobApi();
 
@@ -59,6 +62,7 @@ function Search() {
     try {
       let userSearchResponse = null;
       let jobSearchResponse = null;
+      let postSearchResponse = null;
 
       try {
         userSearchResponse = await searchService.searchUserByKeyword(
@@ -72,6 +76,17 @@ function Search() {
         }
       }
 
+      try {
+        postSearchResponse = await getPostByKeyWord(searchQuery);
+        console.log("posts", postSearchResponse);
+        setSearchedPosts(postSearchResponse || []);
+      } catch (error) {
+        if (error.response && error.response.status === 404) {
+          console.warn("User search not found.");
+        } else {
+          console.error("An error occurred during user search:", error);
+        }
+      }
       try {
         jobSearchResponse = await searchService.secrchJobByKeyword(
           searchQuery,
@@ -164,36 +179,52 @@ function Search() {
         </div>
 
         {/* Display search results */}
+        {query.length>0 && <div className="flex gap-4 border-b sticky top-[70px] pt-2 pb-4   z-20 bg-white  px-4 sm:px-0  py-1">
+          <p
+            onClick={() => {
+              {
+                setSelectedType("Accounts");
+              }
+            }}
+            className={`px-3 py-1 cursor-pointer rounded-lg font-medium border ${
+              selectedType == "Accounts"
+                ? "bg-gray-800 border-gray-800 text-white"
+                : "bg-white"
+            }`}
+          >
+            Accounts
+          </p>
+          <p
+            onClick={() => {
+              {
+                setSelectedType("Posts");
+              }
+            }}
+            className={`px-3 py-1 cursor-pointer rounded-lg font-medium border ${
+              selectedType == "Posts"
+                ? "bg-gray-800 border-gray-800 text-white"
+                : "bg-white"
+            }`}
+          >
+            Posts
+          </p>
+          {user.account_type == "Candidate" && (
+            <p
+              onClick={() => {
+                setSelectedType("Jobs");
+              }}
+              className={`px-3 py-1 cursor-pointer rounded-lg font-medium border ${
+                selectedType == "Jobs"
+                  ? "bg-gray-800 border-gray-800 text-white"
+                  : "bg-white"
+              }`}
+            >
+              Jobs
+            </p>
+          )}
+        </div>}
         {query.length > 0 && (
-          <div className="w-full  flex flex-col gap-4">
-            <div className="flex gap-4 sticky top-0 pt-2 pb-2  z-20 bg-white  px-4 sm:px-0  py-1">
-              <p
-                onClick={() => {
-                  {
-                    setSelectedType("Accounts");
-                  }
-                }}
-                className={`px-3 py-1 cursor-pointer rounded-lg font-medium border ${
-                  selectedType == "Accounts"
-                    ? "bg-gray-800 border-gray-800 text-white"
-                    : "bg-white"
-                }`}
-              >
-                Accounts
-              </p>
-             {user.account_type == "Candidate" && <p
-                onClick={() => {
-                  setSelectedType("Jobs");
-                }}
-                className={`px-3 py-1 cursor-pointer rounded-lg font-medium border ${
-                  selectedType == "Jobs"
-                    ? "bg-gray-800 border-gray-800 text-white"
-                    : "bg-white"
-                }`}
-              >
-                Jobs
-              </p>}
-            </div>
+          <div className="w-full mt-5  flex flex-col gap-4">
             {isLoading ? (
               <div className="animate-pulse px-4 sm:px-0 flex flex-col overflow-y-hidden gap-2 mt-2">
                 {[...Array(3)].map((_, index) => (
@@ -208,11 +239,11 @@ function Search() {
               </div>
             ) : (
               hasSearched && (
-                <div className=" flex flex-col px-4 sm:px-0 gap-6">
+                <div className="flex flex-col  sm:px-0 gap-6">
                   {selectedType == "Accounts" && (
                     <div className="">
                       {searchedUsers.length > 0 ? (
-                        <div className="flex flex-col gap-4">
+                        <div className="flex flex-col px-4 sm:px-0 gap-4">
                           {searchedUsers.map((user) => (
                             <div
                               onClick={() => {
@@ -249,7 +280,7 @@ function Search() {
                             {" "}
                             No results found
                           </p>
-                          <p className="text-gray-400 font-normal mt-1 leading-tight">
+                          <p className="text-gray-400 font-normal mt-1 leading-5">
                             No result found , Be more specfic or check for typos
                             and try again{" "}
                           </p>
@@ -257,17 +288,28 @@ function Search() {
                       )}
                     </div>
                   )}
+
+                  {selectedType == "Posts" && (
+                    <Posts
+                      isEditable={false}
+                      postData={searchedPosts}
+                      className={"gap-5"}
+                      postClassName={"border"}
+                    />
+                  )}
                   {user.account_type == "Candidate" &&
                     selectedType == "Jobs" && (
                       <div>
                         {searchedJobs.length > 0 ? (
-                          <div className="flex flex-col pb-20">
-                            {searchedJobs.slice(0, 5).map((job,index,arr) => (
+                          <div className="flex flex-col px-4 sm:px-0 pb-20">
+                            {searchedJobs.slice(0, 5).map((job, index, arr) => (
                               <div
                                 onClick={() => {
                                   navigate("/job/" + job._id);
                                 }}
-                                className={`flex gap-4 ${index!==arr.length-1 && "border-b" } py-4 cursor-pointer `}
+                                className={`flex gap-4 ${
+                                  index !== arr.length - 1 && "border-b"
+                                } py-4 cursor-pointer `}
                               >
                                 <UserImageInput
                                   isEditable={false}
@@ -303,14 +345,14 @@ function Search() {
                             </p>
                           </div>
                         ) : (
-                          <div>
-                            <p className="text-lg font-medium">
+                          <div className="px-4 sm:px-0">
+                            <p className="text-xl font-bold text-gray-500">
                               {" "}
                               No results found
                             </p>
-                            <p className="text-gray-400 -mt-2">
+                            <p className="text-gray-400 leading-5 mt-1 ">
                               No result found , Be more specfic or check for
-                              typos{" "}
+                              typos and try again{" "}
                             </p>
                           </div>
                         )}

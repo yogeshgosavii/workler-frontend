@@ -30,6 +30,7 @@ function PostForm({ userDetails,isCloseable = true ,showBackground = true, class
   const [showSelectMention, setShowSelectMention] = useState(false);
   const [mentionSecrchText, setMentionSecrchText] = useState("");
   const [mentionList, setmentionList] = useState([]);
+  const [hashTags, setHashTags] = useState([]);
   const [mentionSearchList, setMentionSearchList] = useState([]);
   const [textIsEmpty, settextIsEmpty] = useState(true);
   const navigate = useNavigate();
@@ -326,6 +327,7 @@ function PostForm({ userDetails,isCloseable = true ,showBackground = true, class
                 /> */}
                 <PostTextArea
                   mentionList={mentionList}
+                  hashTags={hashTags}
                   content = {formData.content.toString()}
                   setContent = {(text)=>{    setFormData((prev) => ({ ...prev, content: text }));
                 }

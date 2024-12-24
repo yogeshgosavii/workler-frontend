@@ -97,7 +97,7 @@ function Posts({
   };
 
   return (
-    <div className={`w-full  h-full ${className}`}>
+    <div className={`w-full   ${className}`}>
       {postData && postData?.length === 0 ? (
         isEditable ? (
           <p className=" pt-12 text-center w-full  h-full  px-6 md:px-6">
@@ -127,7 +127,9 @@ function Posts({
           </p>
         )
       ) : (
-        <div className="flex flex-col  sm:gap-2">
+        <div className="flex flex-col snap-y  h-full overflow-y-auto  sm:gap-2" 
+        style={{scrollbarWidth:"none"}}
+        >
           {isEditable && (
             <div className="flex px-4   bg-white justify-between py-4 sm:border items-center">
               <p className="font-medium">Recent posts</p>
@@ -169,16 +171,13 @@ function Posts({
             setShowMentions={setPostMentions}
           />
 
-          <div
-            {...props}
-            className={`grid ${columns} ${postPaddingbottom} h-full  gap-6  pb-6  sm:border-b-0 sm:pb-0`}
-          >
+        
             {postData?.map((post, index) => {
               return (
                 <div
                   key={index}
                   onClick={() => window.open("/post/" + post._id, "_blank")}
-                  className={`sm:border w-full max-w-full  border-y  ${postClassName} flex flex-col bg-white  transition-all  h-full   p-4 sm:p-7`}
+                  className={`sm:border w-full max-w-full snap-center mb-5  border-y  ${postClassName} flex flex-col bg-white  transition-all  h-full   p-4 sm:p-7`}
                 >
                   <div className="flex   gap-2  justify-between">
                     <div
@@ -820,7 +819,6 @@ function Posts({
               );
             })}
           </div>
-        </div>
       )}
     </div>
   );

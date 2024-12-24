@@ -270,7 +270,7 @@ function UserHome() {
             ) : (
               <div
                 style={{ scrollbarWidth: "none" }}
-                className="w-full pt-10 sm:pt-14  pb-10 overflow-x-hidden max-w-2xl flex flex-col gap-8"
+                className="w-full pt-10 sm:pt-14  pb-10 snap-y snap-mandatory overflow-x-hidden max-w-2xl flex flex-col gap-8"
               >
                 {preferedJobs?.length > 0 &&
                   preferedJobs?.map((job, index) => (
@@ -278,7 +278,7 @@ function UserHome() {
                       key={index}
                       job={job}
                       companyDefaultImage={companyDefaultImage}
-                      className="border bg-white   sm:shadow-none   "
+                      className="border bg-white snap-center  sm:shadow-none   "
                     />
                   ))}
               </div>
@@ -368,90 +368,56 @@ function UserHome() {
               )}
             </div>
           ) : (
-            <div className="overflow-y-auto" style={{ scrollbarWidth: "none" }}>
-              <div
-                style={{ scrollbarWidth: "none" }}
-                className={`  w-full pt-8 sm:pt-5 mb-10  overflow-y-auto   justify-center flex ${
-                  selectedPost && "hidden sm:block"
-                }`}
-              >
-                <Posts
-                  isEditable={false}
-                  postData={content}
-                  // className={" w-full "}
-                  // postPaddingbottom={"pb-10"}
-                  // postClassName={"   border-y bg-white"}
-                  style={{ scrollbarWidth: "none" }}
-                  no_post_error={
-                    selectedType == "job_posts" ? (
-                      <p className="max-w-xl pt-20 bg-gray-50 h-full text-center px-6 md:px-6">
-                        <p className="text-2xl font-bold text-gray-500">
-                          No Job Posts Available
-                        </p>
-                        <p className="mt-1 text-gray-400 ">
-                          The job posts posted by the people you follow will be
-                          shown here
-                        </p>
-                        <p
-                          onClick={() => {
-                            navigate("/jobs");
-                          }}
-                          className="text-blue-500 font-medium cursor-pointer"
-                        >
-                          Explore jobs
-                        </p>
-                      </p>
-                    ) : (
-                      <p className="sm:max-w-xl pt-20   h-full  text-center  px-6 md:px-6">
-                        <p className="text-2xl font-bold text-gray-500">
-                          No Posts To Show
-                        </p>
-                        <p className="mt-1 text-gray-400 ">
-                          Posts by the accounts you follow will be shown here ,
-                          explore more accounts to see more posts
-                        </p>
-                        <p
-                          onClick={() => {
-                            navigate("/search");
-                          }}
-                          className="text-blue-500 font-medium cursor-pointer"
-                        >
-                          Explore accounts
-                        </p>
-                      </p>
-                    )
-                  }
-                  columns={"grid-cols-1 "}
-                />
-
-                {/* <Posts
-             isEditable={false}
-            // setFormType={setFormType}
+            <Posts
+            isEditable={false}
             postData={content}
-            className={"pb-5 "}
-            columns={"grid-cols-1 md:grid-cols-2 2xl:grid-cols-3"}
-            postClassName={" h-full"}
-            // userDetails={userDetails}
-            // setPostData={setPostData}
-          /> */}
-              </div>
-              {content.length > 0 && (
-                <p className="sm:max-w-xl pb-10   text-center  px-6 md:px-6">
+            // className={" w-full "}
+            // postPaddingbottom={"pb-10"}
+            postClassName={"   border-y bg-white span-center"}
+            className={" "}
+            postPaddingbottom={"overflow-y-auto"}
+            style={{ scrollbarWidth: "none" }}
+            no_post_error={
+              selectedType == "job_posts" ? (
+                <p className="max-w-xl pt-20 bg-gray-50 h-full text-center px-6 md:px-6">
+                  <p className="text-2xl font-bold text-gray-500">
+                    No Job Posts Available
+                  </p>
                   <p className="mt-1 text-gray-400 ">
-                    To see more posts on your home page explore more accounts
-                    who are actively posting{" "}
-                    <span
-                      onClick={() => {
-                        navigate("/search");
-                      }}
-                      className="text-blue-500 font-medium cursor-pointer"
-                    >
-                      Explore accounts
-                    </span>
+                    The job posts posted by the people you follow will be
+                    shown here
+                  </p>
+                  <p
+                    onClick={() => {
+                      navigate("/jobs");
+                    }}
+                    className="text-blue-500 font-medium cursor-pointer"
+                  >
+                    Explore jobs
                   </p>
                 </p>
-              )}
-            </div>
+              ) : (
+                <p className="sm:max-w-xl pt-20   h-full  text-center  px-6 md:px-6">
+                  <p className="text-2xl font-bold text-gray-500">
+                    No Posts To Show
+                  </p>
+                  <p className="mt-1 text-gray-400 ">
+                    Posts by the accounts you follow will be shown here ,
+                    explore more accounts to see more posts
+                  </p>
+                  <p
+                    onClick={() => {
+                      navigate("/search");
+                    }}
+                    className="text-blue-500 font-medium cursor-pointer"
+                  >
+                    Explore accounts
+                  </p>
+                </p>
+              )
+            }
+            columns={"grid-cols-1 "}
+          />
           )}
           {/* {selectedPost && (
           <PostView

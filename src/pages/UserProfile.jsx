@@ -679,7 +679,7 @@ const UserProfile = () => {
               )}
               <div className="flex gap-4  max-h-min flex-wrap ">
                 <div
-                  className={`w-full md:hidden ${
+                  className={`w-full sm:hidden ${
                     formType || updateFormType ? "hidden" : ""
                   } fixed  z-20 md:min-w-[57.6%]  md:border-x md:mt-5 top-0 mb-4 px-4 py-4 bg-white flex justify-between`}
                 >
@@ -761,8 +761,8 @@ const UserProfile = () => {
                     )}
                   </svg>
                 </div>
-                <div className="flex border-t pt-8 pb-6 mt-10 md:mt-0   flex-grow  sm:border-x  px-4 md:px-6 gap-3 bg-white justify-center flex-col">
-                  <div className="w-full hidden md:flex mb-4 bg-white justify-between ">
+                <div className="flex border-t pt-8 pb-6 mt-10 sm:mt-0   flex-grow  sm:border-x  px-4 md:px-6 gap-3 bg-white justify-center flex-col">
+                  <div className="w-full hidden sm:flex mb-4 bg-white justify-between ">
                     <div className="flex gap-4">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -981,7 +981,7 @@ const UserProfile = () => {
                       atTop > 340 ? "md:border-t" : ""
                     } w-full -mt-px sticky top-16 sm:top-0 gap-3 text-gray-800 bg-white font-medium flex`}
                   >
-                    <div className="flex w-screen md:w-full pt-1">
+                    <div className="flex w-screen sm:w-full pt-1">
                       {[
                         ...(userDetails.account_type === "Employeer"
                           ? ["About", "Posts"]

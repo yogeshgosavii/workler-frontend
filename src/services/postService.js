@@ -42,6 +42,15 @@ export const getPostByUserId = async (userId) => {
   return response;
 };
 
+export const getPostByKeyWord = async (keyword) => {
+  const token = getToken();
+  const response = await handleRequest(API_URL + "/get-postby-keyword/" + keyword , {
+    method: 'GET',
+    headers: setAuthHeaders(getToken())
+  });
+  return response;
+};
+
 export const createJobPost = async (postData) => {
   const response = await handleRequest(API_URL + `/post/job-post`, {
     method: 'POST',

@@ -689,10 +689,12 @@ function Signup() {
                   className={"flex-grow"}
                   value={personal_details.firstname}
                   onChange={(e) => {
-                    setpersonal_details((prev) => ({
-                      ...prev,
-                      firstname: e.target.value,
-                    }));
+                    if(personal_details.firstname.length<30){
+                      setpersonal_details((prev) => ({
+                        ...prev,
+                        firstname: e.target.value,
+                      }));
+                    }
                   }}
                   placeholder={"First name"}
                 />
@@ -701,10 +703,13 @@ function Signup() {
                   value={personal_details.lastname}
                   className={"flex-grow"}
                   onChange={(e) => {
-                    setpersonal_details((prev) => ({
-                      ...prev,
-                      lastname: e.target.value,
-                    }));
+                    if(personal_details.lastname.length<30){
+                      setpersonal_details((prev) => ({
+                        ...prev,
+                        lastname: e.target.value,
+                      }));
+                    }
+                   
                   }}
                   placeholder={"Last Name"}
                 />
@@ -797,10 +802,12 @@ function Signup() {
                   className={"flex-grow"}
                   value={company_details.company_name}
                   onChange={(e) => {
+                   if(company_details.company_name.length<30){
                     setcompany_details((prev) => ({
                       ...prev,
                       company_name: e.target.value,
                     }));
+                   }
                   }}
                   placeholder={"Company name"}
                 />
