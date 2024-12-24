@@ -374,8 +374,8 @@ function UserHome() {
             // className={" w-full "}
             // postPaddingbottom={"pb-10"}
             postClassName={"   border-y bg-white span-center"}
-            className={" pt-5 "}
-            postPaddingbottom={"overflow-y-auto"}
+            className={""}
+            postPaddingbottom={"overflow-y-auto pt-5"}
             style={{ scrollbarWidth: "none" }}
             no_post_error={
               selectedType == "job_posts" ? (
