@@ -195,7 +195,7 @@ function PostView({ postId = useParams().postId, index, className }) {
       {post && (
         <div
           key={index}
-          className="w-full sm:max-w-xl relative bg-white min:h-screen border-b sm:border-x "
+          className="w-full sm:max-w-xl relative bg-white min:h-screen  sm:border-x "
         >
           <UserPostUpdateSettings
             setPostSetting={setPostSettings}
@@ -1271,7 +1271,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                                       imageHeight={25}
                                       imageBorder={0}
                                       image={
-                                        reply.user.profileImage
+                                        reply.user?.profileImage
                                           ?.compressedImage ||
                                         profileImageDefault
                                       }
@@ -1279,7 +1279,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                                       isEditable={false}
                                     />
                                     <p className="font-medium text-[15px] -mt-1">
-                                      {reply.user.username}{" "}
+                                      {reply.user?.username}{" "}
                                       <span className="font-normal text-gray-500 text-sm">
                                         {" "}
                                         {"  "}
@@ -1466,7 +1466,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                                     placeholder={`Reply on @${reply.user.username}`}
                                   /> */}
                                   <PostTextArea
-                                    placeholder={`Reply on @${reply.user.username}`}
+                                    placeholder={`Reply on @${reply.user?.username}`}
                                     className="ml-0"
                                     showRemainingLetters={false}
                                     content={
@@ -1619,9 +1619,9 @@ function PostView({ postId = useParams().postId, index, className }) {
         </div>
       )}
       {!loading && comments && post && (
-        <div>
-          <div className=" sticky top-5  mt-5  flex-col gap-5 hidden lg:flex">
-            <div className=" bg-white py-4 pt-0 max-h-96 overflow-y-auto px-2 border max-w-2xl w-[500px]">
+        <div className="hidden lg:block">
+          <div className=" sticky top-5  mt-5  flex-col gap-5 ">
+            <div className=" bg-white py-4 pt-0 max-h-96  overflow-y-auto px-2 border max-w-2xl w-[500px]">
               <p className="text-lg font-semibold z-20 mb-2 py-3 pt-5 sticky top-0 bg-white px-4">
                 Releated Accounts
               </p>
@@ -1633,39 +1633,39 @@ function PostView({ postId = useParams().postId, index, className }) {
                   comments
                     .filter(
                       (comment, index, self) =>
-                        comment.user._id !== currentUser._id &&
+                        comment.user?._id !== currentUser?._id &&
                         self.findIndex(
-                          (c) => c.user._id === comment.user._id
+                          (c) => c.user?._id === comment.user?._id
                         ) === index
                     )
                     .map((comment) => (
                       <div
-                        key={comment.user._id}
+                        key={comment.user?._id}
                         className="flex  gap-5  w-full rounded-xl transition-all bg-white justify-between"
                       >
                         <div className="flex  justify-center   gap-3 w-fit">
                           <UserImageInput
                             imageHeight={45}
-                            image={comment.user.profileImage.originalImage[0]}
+                            image={comment.user?.profileImage.originalImage[0]}
                             isEditable={false}
                           />
                           <div className="">
                             <div className="flex gap-1 text-wrap truncate max-w-full line-clamp-1 items-center">
                               <p className=" text-gray-800  font-medium truncate line-clamp-1 max-w-full text-wrap">
-                                {comment.user.personal_details
-                                  ? `${comment.user.personal_details.firstname} ${comment.user.personal_details.lastname}`
-                                  : comment.user.company_details?.company_name}
+                                {comment.user?.personal_details
+                                  ? `${comment?.user.personal_details.firstname} ${comment.user?.personal_details.lastname}`
+                                  : comment.user?.company_details?.company_name}
                               </p>
 
                               {"  "}
                               <span className="font-bold px-0.5">·</span>
                               {"  "}
                               <p className="text-gray-500 ">
-                                @{comment.user.username}
+                                @{comment.user?.username}
                               </p>
                             </div>
                             <p className="truncate text-sm text-gray-400 line-clamp-2 text-wrap">
-                              {comment.user.about || comment.user.bio}
+                              {comment.user?.about || comment.user?.bio}
                             </p>
                           </div>
                         </div>
@@ -1722,8 +1722,8 @@ function PostView({ postId = useParams().postId, index, className }) {
                     ))}
                 {comments.filter(
                   (comment, index, self) =>
-                    comment.user._id !== currentUser._id &&
-                    self.findIndex((c) => c.user._id === comment.user._id) ===
+                    comment.user?._id !== currentUser._id &&
+                    self.findIndex((c) => c.user?._id === comment.user?._id) ===
                       index
                 ).length <= 0 &&
                   post.mentions.filter(

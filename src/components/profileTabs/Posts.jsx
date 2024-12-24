@@ -177,7 +177,7 @@ function Posts({
                 <div
                   key={index}
                   onClick={() => window.open("/post/" + post._id, "_blank")}
-                  className={`sm:border w-full max-w-full snap-center mb-5  border-y  ${postClassName} flex flex-col bg-white  transition-all  h-full   p-4 sm:p-7`}
+                  className={`sm:border w-full max-w-full snap-center mb-5  border-y  ${postClassName} flex flex-col bg-white  transition-all     p-4 sm:p-7`}
                 >
                   <div className="flex   gap-2  justify-between">
                     <div

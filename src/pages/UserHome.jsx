@@ -374,7 +374,7 @@ function UserHome() {
             // className={" w-full "}
             // postPaddingbottom={"pb-10"}
             postClassName={"   border-y bg-white span-center"}
-            className={" "}
+            className={" pt-5 "}
             postPaddingbottom={"overflow-y-auto"}
             style={{ scrollbarWidth: "none" }}
             no_post_error={
