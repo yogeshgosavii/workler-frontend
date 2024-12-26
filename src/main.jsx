@@ -38,6 +38,7 @@ import Settings from "./pages/settings/Settings.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import Connections from "./pages/Connections.jsx";
+import Reposts from "./pages/settings/Reposts.jsx";
 
 const router = createBrowserRouter([
   {
@@ -192,6 +193,14 @@ const router = createBrowserRouter([
             element: (
               <LoginVerification>
                 <Saved />
+              </LoginVerification>
+            ),
+          },
+          {
+            path: "settings/reports",
+            element: (
+              <LoginVerification>
+                <Reposts />
               </LoginVerification>
             ),
           },

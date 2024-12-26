@@ -14,7 +14,7 @@ import {
   getPostById,
   getReplies,
 } from "../services/postService";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import savedService from "../services/savedService";
 import UserPostUpdateSettings from "./UserPostUpdateSettings";
 import PostMentionList from "./PostMentionList";
@@ -93,6 +93,54 @@ function PostView({ postId = useParams().postId, index, className }) {
 
     fetchReplies();
   }, [showReplies]);
+
+  const location = useLocation();
+  const [isCommentsLoaded, setIsCommentsLoaded] = useState(false);
+
+  useEffect(() => {
+    // Mark comments as loaded when the component renders
+    if (comments.length > 0) {
+      setIsCommentsLoaded(true);
+    }
+  }, [comments]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const commentId = params.get('commentId');
+    const targetComment = comments.find((comment) => comment._id === commentId);
+  
+    if (isCommentsLoaded && commentId) {
+      const scrollToAndHighlight = (id) => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Highlight the comment
+          element.classList.add('bg-gray-50');
+          setTimeout(() => {
+            element.classList.remove('bg-gray-50');
+          }, 3000);
+        }
+      };
+  
+      if (targetComment?.parentComment) {
+        // Expand parent comment replies
+        setShowReplies(targetComment.parentComment._id);
+  
+        // Use an interval to periodically check if the target comment is available in the DOM
+        const intervalId = setInterval(() => {
+          const commentElement = document.getElementById(targetComment._id);
+          if (commentElement) {
+            clearInterval(intervalId); // Stop checking once the element is found
+            scrollToAndHighlight(targetComment._id);
+          }
+        }, 100); // Check every 100ms
+      } else {
+        // Directly scroll to and highlight the comment
+        scrollToAndHighlight(commentId);
+      }
+    }
+  }, [isCommentsLoaded, location.search, comments]);
+  
 
   const handleSendClick = async (index) => {
     setSendClicked(index);
@@ -212,6 +260,7 @@ function PostView({ postId = useParams().postId, index, className }) {
             commentSettings={commentSetting}
             commentData={comments}
             setPost={setPost}
+            post = {post}
             setcommentData={setcomments}
           />
           <ReplySetting
@@ -873,17 +922,19 @@ function PostView({ postId = useParams().postId, index, className }) {
                   ?.filter((comment) => !comment.parentComment)
                   .map((comment, index, arr) => (
                     <div
+                    id={comment._id}
                       className={` text-sm px-4   ${
                         index > 0 && "border-t"
                       } py-5 z-10`}
                     >
                       <div>
+                     
                         {/* {comment.parentComment && (
                     <p className="text-gray-400">
                       Replied to {comment.parentComment.user.username}
                     </p>
                   )} */}
-                        <div className="flex justify-between w-full">
+                        <div className="flex justify-between z-10 w-full">
                           <div
                             className={`relative  gap-2  transition-all items-center  overflow-hidden mt-2 `}
                           >
@@ -1257,10 +1308,10 @@ function PostView({ postId = useParams().postId, index, className }) {
                         )}
                       </p>
 
-                      <div className="ml-8">
+                      <div className="">
                         {showReplies == comment._id &&
                           replies?.map((reply) => (
-                            <div>
+                            <div id={reply._id} className={"pl-8"}>
                               <div className="flex justify-between w-full">
                                 <div
                                   className={`relative  gap-2  transition-all items-center    mt-2 `}

@@ -181,12 +181,12 @@ function Notification({ userId }) {
                 if (notification.notificationType == "follow") {
                   navigate("/user/" + notification.relatedUser._id);
                 } else if (
-                  notification.notificationType == "comment" ||
                   notification.notificationType == "like"
                 ) {
-                  navigate("/post/" + notification?.populatedContent[0]._id);
-                } else if (notification.notificationType == "reply") {
-                  navigate("/post/" + notification.populatedContent[0].post);
+                  navigate("/post/" + notification?.populatedContent[0].post);
+                } else if (notification.notificationType == "reply" ||notification.notificationType == "comment" 
+                ) {
+                  navigate("/post/" + notification?.populatedContent[0].post+"?commentId="+notification.actionId);
                 } else if (notification.notificationType == "approach") {
                   navigate("/job/" + notification.populatedContent[0]._id);
                 } else if (notification.notificationType == "mention") {

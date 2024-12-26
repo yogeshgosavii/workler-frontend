@@ -254,6 +254,43 @@ function Settings() {
                   </svg>
                 </span>
               </button>
+              {currentUser._id == "66b11b0adac280e7e8f34138"&&<button
+                onClick={(e) => {
+                  navigate("reports");
+                }}
+                className={`w-full pb-4 flex justify-between items-center border-b`}
+              >
+                <div className="flex gap-4 items-center">
+                  <svg
+                    class="h-6 w-6 "
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    {" "}
+                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                  </svg>
+                  <p className="font-medium -mt-px">Reports</p>
+                </div>
+                <span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    className="bi bi-chevron-up rotate-90"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"
+                    />
+                  </svg>
+                </span>
+              </button>}
             </div>
           </div>
 

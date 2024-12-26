@@ -15,47 +15,36 @@ const authService = {
         body: JSON.stringify({ email }),
       });
       if (!response.ok) {
-        throw new Error("Email check failed");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Email check failed");
       }
-      const data = await response.json();
-      return data; // Return any additional data from the API response if needed
+      return await response.json();
     } catch (error) {
       console.error("Error in checkEmail:", error);
-      throw error; // Throw the error to handle it in the component
+      throw error;
     }
   },
 
   updatePassword: async (passwordDetails, userToken = getToken()) => {
     try {
-        const response = await fetch(`${API_URL}/update-password`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${userToken}`,
-            },
-            body: JSON.stringify(passwordDetails),
-        });
-
-        
-        if (!response.ok) {
-            // Try to extract the error message from the response body
-            const errorData = await response.json();
-            const errorMessage = errorData.error || "Password change failed"; // Check for custom error message
-            throw new Error(errorMessage); // Throw error to be handled later
-        }
-
-        // If successful, parse and return the response data
-        const data = await response.json();
-        return data;
-
+      const response = await fetch(`${API_URL}/update-password`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+        body: JSON.stringify(passwordDetails),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Password change failed");
+      }
+      return await response.json();
     } catch (error) {
-        throw error;
+      console.error("Error in updatePassword:", error);
+      throw error;
     }
-},
-
-
-  
-  
+  },
 
   checkUsername: async (username) => {
     try {
@@ -67,13 +56,13 @@ const authService = {
         body: JSON.stringify({ username }),
       });
       if (!response.ok) {
-        throw new Error("Username check failed");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Username check failed");
       }
-      const data = await response.json();
-      return data; // Return any additional data from the API response if needed
+      return await response.json();
     } catch (error) {
       console.error("Error in checkUsername:", error);
-      throw error; // Throw the error to handle it in the component
+      throw error;
     }
   },
 
@@ -87,12 +76,12 @@ const authService = {
         body: JSON.stringify({ email, password }),
       });
       if (!response.ok) {
-        throw new Error("Login failed");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Login failed");
       }
-      const data = await response.json();
-      const { token } = data;
+      const { token } = await response.json();
       localStorage.setItem("token", token);
-      return token; // Return the token
+      return token;
     } catch (error) {
       console.error("Error in login:", error);
       throw error;
@@ -105,10 +94,10 @@ const authService = {
         headers: { Authorization: `Bearer ${userToken}` },
       });
       if (!response.ok) {
-        throw new Error("Failed to fetch user details");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch user details");
       }
-      const userData = await response.json();
-      return userData; // Return the user details
+      return await response.json();
     } catch (error) {
       console.error("Error in fetchUserDetails:", error);
       throw error;
@@ -121,44 +110,34 @@ const authService = {
         headers: { Authorization: `Bearer ${userToken}` },
       });
       if (!response.ok) {
-        throw new Error("Failed to fetch user details");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to fetch user details");
       }
-      const userData = await response.json();
-      return userData; // Return the user details
+      return await response.json();
     } catch (error) {
-      console.error("Error in fetchUserDetails:", error);
+      console.error("Error in fetchUserDetailsById:", error);
       throw error;
     }
   },
 
   updateUserDetails: async (data) => {
-    let response;
-    console.log(data);
-    
     try {
-      if (!data.FormData) {
-        response = await fetch(`${API_URL}/update-user`, {
-          method: "PUT", // Ensure method is set correctly
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-          body: data, // Send the cleaned data
-        });
-      } else {
-        response = await fetch(`${API_URL}/update-user`, {
-          method: "PUT", // Ensure method is set correctly
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${getToken()}`,
-          },
-          body: JSON.stringify(data), // Send the cleaned data
-        });
-      }
+      const isFormData = data instanceof FormData;
+      const response = await fetch(`${API_URL}/update-user`, {
+        method: "PUT",
+        headers: isFormData
+          ? { Authorization: `Bearer ${getToken()}` }
+          : {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${getToken()}`,
+            },
+        body: isFormData ? data : JSON.stringify(data),
+      });
       if (!response.ok) {
-        throw new Error("Failed to update user details");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to update user details");
       }
-      const userData = await response.json();
-      return userData; // Return the updated user details
+      return await response.json();
     } catch (error) {
       console.error("Error in updateUserDetails:", error);
       throw error;

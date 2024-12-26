@@ -17,9 +17,18 @@ function ReplySetting({
   const [mentionSearchText, setMentionSearchText] = useState("");
   const [mentionList, setMentionList] = useState([]);
   const [mentionSearchList, setMentionSearchList] = useState([]);
-  const currentUser = useSelector((state) => state.auth.user);
+  const [selectReport, setSelectReport] = useState(false);
+
+  const [currentUser, setcurrentUser] = useState(useSelector((state) => state.auth.user));
 
   useEffect(() => {
+    const getUserDetails = async ()=>{
+      const userDetails = await authService.fetchUserDetailsById(currentUser._id);
+      setcurrentUser(userDetails)
+
+    }
+
+    getUserDetails()
     if (mentionSearchText) {
       const fetchSearchedUser = async () => {
         const response = await searchService.searchByUsername(
@@ -98,31 +107,90 @@ function ReplySetting({
               <p>Delete comment</p>
             </div>
           )}
-          {currentUser._id != commentSettings?.user._id && (
-            <div
-              onClick={() => {
-                // setcommentData(commentData.filter(post=> post.id == commentSettings._id))
-                // deletePost(commentSettings._id);
-                // unsavePost(commentSettings._id);
-                // setCommentSettings(null);
-              }}
-              className="flex gap-5 text-red-700 py-3 text-lg font-medium items-center cursor-pointer"
-            >
-              <svg
-                class="h-6 w-6 text-red-700"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+          {currentUser?._id != commentSettings?.user._id && (
+            <div>
+              <div
+                onClick={() => {
+                  // setcommentData(commentData.filter(post=> post.id == commentSettings._id))
+                  // deletePost(commentSettings._id);
+                  // unsavePost(commentSettings._id);
+                  // setCommentSettings(null);
+                  setSelectReport(!selectReport);
+                }}
+                className="flex gap-5 text-red-700 py-3 text-lg font-medium items-center cursor-pointer"
               >
-                {" "}
-                <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2" />{" "}
-                <line x1="12" y1="8" x2="12" y2="12" />{" "}
-                <line x1="12" y1="16" x2="12.01" y2="16" />
-              </svg>
-              <p>Report comment</p>
+                <svg
+                  class="h-6 w-6 text-red-700"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  {" "}
+                  <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2" />{" "}
+                  <line x1="12" y1="8" x2="12" y2="12" />{" "}
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <p>Report comment</p>
+              </div>
+              {selectReport && (
+                !currentUser.reports.includes(commentSettings?._id) ? (
+                <div className="mt-3">
+                  <OptionInput
+                    options={[
+                      "Spam or misleading",
+                      "Harassment or hate speech",
+                      "Violence or dangerous content",
+                      "False information",
+                      "Sexual content",
+                      "Promotes self-harm or suicide",
+                      "Impersonation or identity theft",
+                      "Infringes intellectual property rights",
+                      "Illegal activities",
+                      "Hate speech or discrimination",
+                    ]}
+                    placeholder="Reason"
+                    initialValue="Select a reason"
+                    value={reportReason}
+                    onChange={(e) => {
+                      setReportReason(e.target.value);
+                    }}
+                  />
+                  <button
+                  onClick={async()=>{
+                    console.log("reported")
+                    await reportService.createReport({
+                      reportType: "comment",
+                      reason: reportReason,
+                      reportedBy: currentUser._id,
+                      reportedUser : commentSettings.user._id,
+                      reportedContent : [post._id,commentSettings._id]
+                    });
+                    await authService.updateUserDetails({
+                      ...currentUser,
+                      reports: [
+                        ...(currentUser.reports || []), // Default to an empty array if it's null or undefined
+                        commentSettings._id
+                      ]
+                    });
+                    setcurrentUser({...currentUser,reports: [
+                      ...(currentUser.reports || []), // Default to an empty array if it's null or undefined
+                      commentSettings._id
+                    ]})
+                                      // deletePost(postSettings._id);
+                    setCommentSettings(null);
+                  }}
+                    disabled={!reportReason}
+                    className="w-full bg-red-600 disabled:bg-red-400 font-medium text-white mt-3 rounded-lg py-2"
+                  >
+                    Report
+                  </button>
+                </div>):(
+                  <p className = {"bg-gray-100 rounded-lg font-medium text-gray-800 w-full text-center py-2"}>We have recieved you report</p>
+                )
+              )}
             </div>
           )}
         </div>
