@@ -4,6 +4,7 @@ import savedService from "../services/savedService";
 import searchService from "../services/searchService";
 import UserImageInput from "./Input/UserImageInput";
 import { useSelector } from "react-redux";
+import authService from "../services/authService";
 
 function ReplySetting({
   setCommentSettings,
@@ -11,24 +12,28 @@ function ReplySetting({
   commentData,
   setcommentData,
   currentMentionList,
-  setPost
+  setPost,
 }) {
   const [selectMentions, setSelectMentions] = useState(false);
   const [mentionSearchText, setMentionSearchText] = useState("");
   const [mentionList, setMentionList] = useState([]);
   const [mentionSearchList, setMentionSearchList] = useState([]);
   const [selectReport, setSelectReport] = useState(false);
+  const [reportingLoading, setReportingLoading] = useState(false);
 
-  const [currentUser, setcurrentUser] = useState(useSelector((state) => state.auth.user));
+  const [currentUser, setcurrentUser] = useState(
+    useSelector((state) => state.auth.user)
+  );
 
   useEffect(() => {
-    const getUserDetails = async ()=>{
-      const userDetails = await authService.fetchUserDetailsById(currentUser._id);
-      setcurrentUser(userDetails)
+    const getUserDetails = async () => {
+      const userDetails = await authService.fetchUserDetailsById(
+        currentUser._id
+      );
+      setcurrentUser(userDetails);
+    };
 
-    }
-
-    getUserDetails()
+    getUserDetails();
     if (mentionSearchText) {
       const fetchSearchedUser = async () => {
         const response = await searchService.searchByUsername(
@@ -74,17 +79,18 @@ function ReplySetting({
         >
           <p className="text-xl font-semibold mb-5">Comment options</p>
 
-          
           {currentUser._id == commentSettings?.user._id && (
             <div
               onClick={() => {
                 setcommentData(
-                  commentData.filter((comment) => comment._id != commentSettings._id)
+                  commentData.filter(
+                    (comment) => comment._id != commentSettings._id
+                  )
                 );
-                setPost(prev => ({
+                setPost((prev) => ({
                   ...prev,
-                  comment_count : prev.comment_count -1
-                }))
+                  comment_count: prev.comment_count - 1,
+                }));
                 deleteComment(commentSettings._id);
                 setCommentSettings(null);
               }}
@@ -135,62 +141,76 @@ function ReplySetting({
                 </svg>
                 <p>Report comment</p>
               </div>
-              {selectReport && (
-                !currentUser.reports.includes(commentSettings?._id) ? (
-                <div className="mt-3">
-                  <OptionInput
-                    options={[
-                      "Spam or misleading",
-                      "Harassment or hate speech",
-                      "Violence or dangerous content",
-                      "False information",
-                      "Sexual content",
-                      "Promotes self-harm or suicide",
-                      "Impersonation or identity theft",
-                      "Infringes intellectual property rights",
-                      "Illegal activities",
-                      "Hate speech or discrimination",
-                    ]}
-                    placeholder="Reason"
-                    initialValue="Select a reason"
-                    value={reportReason}
-                    onChange={(e) => {
-                      setReportReason(e.target.value);
-                    }}
-                  />
-                  <button
-                  onClick={async()=>{
-                    console.log("reported")
-                    await reportService.createReport({
-                      reportType: "comment",
-                      reason: reportReason,
-                      reportedBy: currentUser._id,
-                      reportedUser : commentSettings.user._id,
-                      reportedContent : [post._id,commentSettings._id]
-                    });
-                    await authService.updateUserDetails({
-                      ...currentUser,
-                      reports: [
-                        ...(currentUser.reports || []), // Default to an empty array if it's null or undefined
-                        commentSettings._id
-                      ]
-                    });
-                    setcurrentUser({...currentUser,reports: [
-                      ...(currentUser.reports || []), // Default to an empty array if it's null or undefined
-                      commentSettings._id
-                    ]})
-                                      // deletePost(postSettings._id);
-                    setCommentSettings(null);
-                  }}
-                    disabled={!reportReason}
-                    className="w-full bg-red-600 disabled:bg-red-400 font-medium text-white mt-3 rounded-lg py-2"
+              {selectReport &&
+                (!currentUser.reports.includes(commentSettings?._id) ? (
+                  <div className="mt-3">
+                    <OptionInput
+                      options={[
+                        "Spam or misleading",
+                        "Harassment or hate speech",
+                        "Violence or dangerous content",
+                        "False information",
+                        "Sexual content",
+                        "Promotes self-harm or suicide",
+                        "Impersonation or identity theft",
+                        "Infringes intellectual property rights",
+                        "Illegal activities",
+                        "Hate speech or discrimination",
+                      ]}
+                      placeholder="Reason"
+                      initialValue="Select a reason"
+                      value={reportReason}
+                      onChange={(e) => {
+                        setReportReason(e.target.value);
+                      }}
+                    />
+                    <button
+                      onClick={async () => {
+                        console.log("reported");
+                        setReportingLoading(true);
+                        await reportService.createReport({
+                          reportType: "comment",
+                          reason: reportReason,
+                          reportedBy: currentUser._id,
+                          reportedUser: commentSettings.user._id,
+                          reportedContent: [post._id, commentSettings._id],
+                        });
+                        await authService.updateUserDetails({
+                          ...currentUser,
+                          reports: [
+                            ...(currentUser.reports || []), // Default to an empty array if it's null or undefined
+                            commentSettings._id,
+                          ],
+                        });
+                        setcurrentUser({
+                          ...currentUser,
+                          reports: [
+                            ...(currentUser.reports || []), // Default to an empty array if it's null or undefined
+                            commentSettings._id,
+                          ],
+                        });
+                        setReportingLoading(false)
+
+                        // deletePost(postSettings._id);
+                        setTimeout(() => {
+                          setCommentSettings(null);
+                        }, 2000);
+                      }}
+                      disabled={!reportReason || reportingLoading}
+                      className="w-full bg-red-600 disabled:bg-red-400 font-medium text-white mt-3 rounded-lg py-2"
+                    >
+                      (reportingLoading ? "Reporting..." : "Report")
+                    </button>
+                  </div>
+                ) : (
+                  <p
+                    className={
+                      "bg-gray-100 rounded-lg font-medium text-gray-800 w-full text-center py-2"
+                    }
                   >
-                    Report
-                  </button>
-                </div>):(
-                  <p className = {"bg-gray-100 rounded-lg font-medium text-gray-800 w-full text-center py-2"}>We have recieved you report</p>
-                )
-              )}
+                    Thanks for your feedback
+                  </p>
+                ))}
             </div>
           )}
         </div>

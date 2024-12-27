@@ -25,9 +25,9 @@ function Settings() {
             <h2 className="text-2xl  items-center font-bold mb-10 flex justify-between ">
               <div className="flex gap-4 items-center">
                 <svg
-                onClick={()=>{
-                  window.history.back()
-                }}
+                  onClick={() => {
+                    window.history.back();
+                  }}
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -254,43 +254,48 @@ function Settings() {
                   </svg>
                 </span>
               </button>
-              {currentUser._id == "66b11b0adac280e7e8f34138"&&<button
-                onClick={(e) => {
-                  navigate("reports");
-                }}
-                className={`w-full pb-4 flex justify-between items-center border-b`}
-              >
-                <div className="flex gap-4 items-center">
-                  <svg
-                    class="h-6 w-6 "
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    {" "}
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                  </svg>
-                  <p className="font-medium -mt-px">Reports</p>
-                </div>
-                <span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    className="bi bi-chevron-up rotate-90"
-                    viewBox="0 0 16 16"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"
-                    />
-                  </svg>
-                </span>
-              </button>}
+              {currentUser._id == "66b11b0adac280e7e8f34138" && (
+                <button
+                  onClick={(e) => {
+                    navigate("reports");
+                  }}
+                  className={`w-full pb-4 flex justify-between items-center border-b`}
+                >
+                  <div className="flex gap-4 items-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="size-6"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25M9 16.5v.75m3-3v3M15 12v5.25m-4.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+                      />
+                    </svg>
+
+                    <p className="font-medium -mt-px">Reports</p>
+                  </div>
+                  <span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      className="bi bi-chevron-up rotate-90"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              )}
             </div>
           </div>
 

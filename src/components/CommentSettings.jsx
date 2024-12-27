@@ -24,6 +24,7 @@ function CommentSettings({
   const [currentUser, setcurrentUser] = useState(useSelector((state) => state.auth.user));
   const [selectReport, setSelectReport] = useState(false);
   const [reportReason, setReportReason] = useState(null);
+  const [reportingLoading, setReportingLoading] = useState(false);
   
   useEffect(() => {
     const getUserDetails = async ()=>{
@@ -166,6 +167,7 @@ function CommentSettings({
                   <button
                   onClick={async()=>{
                     console.log("reported")
+                    setReportingLoading(true)
                     await reportService.createReport({
                       reportType: "comment",
                       reason: reportReason,
@@ -180,17 +182,23 @@ function CommentSettings({
                         commentSettings._id
                       ]
                     });
+                    
                     setcurrentUser({...currentUser,reports: [
                       ...(currentUser.reports || []), // Default to an empty array if it's null or undefined
                       commentSettings._id
                     ]})
+                    setReportingLoading(true)
+
+                    setTimeout(() => {
+                      setCommentSettings(null);
+
+                    }, 2000);
                                       // deletePost(postSettings._id);
-                    setCommentSettings(null);
                   }}
-                    disabled={!reportReason}
+                    disabled={!reportReason || reportingLoading}
                     className="w-full bg-red-600 disabled:bg-red-400 font-medium text-white mt-3 rounded-lg py-2"
                   >
-                    Report
+                    (reportingLoading ? "Reporting..." : "Report")
                   </button>
                 </div>):(
                   <p className = {"bg-gray-100 rounded-lg font-medium text-gray-800 w-full text-center py-2"}>We have recieved you report</p>

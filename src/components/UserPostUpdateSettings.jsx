@@ -21,16 +21,21 @@ function UserPostUpdateSettings({
   const [mentionList, setMentionList] = useState([]);
   const [mentionSearchList, setMentionSearchList] = useState([]);
   const [reportReason, setReportReason] = useState(null);
-  const [currentUser, setcurrentUser] = useState(useSelector((state) => state.auth.user));
+  const [currentUser, setcurrentUser] = useState(
+    useSelector((state) => state.auth.user)
+  );
+  const [reportingLoading, setReportingLoading] = useState(false);
 
-  useEffect(() => {4
-    const getUserDetails = async ()=>{
-      const userDetails = await authService.fetchUserDetailsById(currentUser._id);
-      setcurrentUser(userDetails)
+  useEffect(() => {
+    4;
+    const getUserDetails = async () => {
+      const userDetails = await authService.fetchUserDetailsById(
+        currentUser._id
+      );
+      setcurrentUser(userDetails);
+    };
 
-    }
-
-    getUserDetails()
+    getUserDetails();
     if (mentionSearchText) {
       const fetchSearchedUser = async () => {
         const response = await searchService.searchByUsername(
@@ -242,7 +247,7 @@ function UserPostUpdateSettings({
               <div
                 onClick={() => {
                   // setPostData(postData.filter(post=> post.id == postSettings._id))
-                 
+
                   setSelectReport(!selectReport);
                 }}
                 className="flex gap-5 text-red-700 py-3 text-lg font-medium items-center cursor-pointer"
@@ -263,62 +268,75 @@ function UserPostUpdateSettings({
                 </svg>
                 <p>Report post</p>
               </div>
-              {selectReport && (
-                !currentUser.reports.includes(commentSettings?._id) ? (
-                <div className="mt-3">
-                  <OptionInput
-                    options={[
-                      "Spam or misleading",
-                      "Harassment or hate speech",
-                      "Violence or dangerous content",
-                      "False information",
-                      "Sexual content",
-                      "Promotes self-harm or suicide",
-                      "Impersonation or identity theft",
-                      "Infringes intellectual property rights",
-                      "Illegal activities",
-                      "Hate speech or discrimination",
-                    ]}
-                    placeholder="Reason"
-                    initialValue="Select a reason"
-                    value={reportReason}
-                    onChange={(e) => {
-                      setReportReason(e.target.value);
-                    }}
-                  />
-                  <button
-                  onClick={async()=>{
-                    console.log("reported")
-                    await reportService.createReport({
-                      reportType: "comment",
-                      reason: reportReason,
-                      reportedBy: currentUser._id,
-                      reportedUser : commentSettings.user._id,
-                      reportedContent : [post._id,commentSettings._id]
-                    });
-                    await authService.updateUserDetails({
-                      ...currentUser,
-                      reports: [
-                        ...(currentUser.reports || []), // Default to an empty array if it's null or undefined
-                        commentSettings._id
-                      ]
-                    });
-                    setcurrentUser({...currentUser,reports: [
-                      ...(currentUser.reports || []), // Default to an empty array if it's null or undefined
-                      commentSettings._id
-                    ]})
-                                      // deletePost(postSettings._id);
-                    setCommentSettings(null);
-                  }}
-                    disabled={!reportReason}
-                    className="w-full bg-red-600 disabled:bg-red-400 font-medium text-white mt-3 rounded-lg py-2"
+              {selectReport &&
+                (!currentUser.reports.includes(commentSettings?._id) ? (
+                  <div className="mt-3">
+                    <OptionInput
+                      options={[
+                        "Spam or misleading",
+                        "Harassment or hate speech",
+                        "Violence or dangerous content",
+                        "False information",
+                        "Sexual content",
+                        "Promotes self-harm or suicide",
+                        "Impersonation or identity theft",
+                        "Infringes intellectual property rights",
+                        "Illegal activities",
+                        "Hate speech or discrimination",
+                      ]}
+                      placeholder="Reason"
+                      initialValue="Select a reason"
+                      value={reportReason}
+                      onChange={(e) => {
+                        setReportReason(e.target.value);
+                      }}
+                    />
+                    <button
+                      onClick={async () => {
+                        console.log("reported");
+                        setReportingLoading(true);
+                        await reportService.createReport({
+                          reportType: "comment",
+                          reason: reportReason,
+                          reportedBy: currentUser._id,
+                          reportedUser: commentSettings.user._id,
+                          reportedContent: [post._id, commentSettings._id],
+                        });
+                        await authService.updateUserDetails({
+                          ...currentUser,
+                          reports: [
+                            ...(currentUser.reports || []), // Default to an empty array if it's null or undefined
+                            commentSettings._id,
+                          ],
+                        });
+                        setcurrentUser({
+                          ...currentUser,
+                          reports: [
+                            ...(currentUser.reports || []), // Default to an empty array if it's null or undefined
+                            commentSettings._id,
+                          ],
+                        });
+                        setReportingLoading(false);
+                        // deletePost(postSettings._id);
+                        setTimeout(() => {
+                          setCommentSettings(null);
+                        }, 2000);
+                      }}
+                      disabled={!reportReason || reportingLoading}
+                      className="w-full bg-red-600 disabled:bg-red-400 font-medium text-white mt-3 rounded-lg py-2"
+                    >
+                      (reportingLoading ? "Reporting...":"Report") )
+                    </button>
+                  </div>
+                ) : (
+                  <p
+                    className={
+                      "bg-gray-100 rounded-lg font-medium text-gray-800 w-full text-center py-2"
+                    }
                   >
-                    Report
-                  </button>
-                </div>):(
-                  <p className = {"bg-gray-100 rounded-lg font-medium text-gray-800 w-full text-center py-2"}>We have recieved you report</p>
-                )
-              )}
+                    Thanks for the feedback
+                  </p>
+                ))}
             </div>
           )}
         </div>

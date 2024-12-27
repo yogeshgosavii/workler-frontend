@@ -564,10 +564,10 @@ function JobProfileView({ jobId = useParams().jobId, crossButton, onBack }) {
                   </svg>
                 </div>
               </div>
-              <div className="">
+              {/* <div className="">
                 <p className="font-medium">Email address</p>
                 <p className="text-sm text-gray-400">{jobDetails.user.email}</p>
-              </div>
+              </div> */}
 
               {/* <div className=" ">
             <p className="font-medium">

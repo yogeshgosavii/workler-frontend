@@ -183,10 +183,10 @@ function Notification({ userId }) {
                 } else if (
                   notification.notificationType == "like"
                 ) {
-                  navigate("/post/" + notification?.populatedContent[0].post);
+                  navigate("/post/" + notification?.populatedContent[0]._id);
                 } else if (notification.notificationType == "reply" ||notification.notificationType == "comment" 
                 ) {
-                  navigate("/post/" + notification?.populatedContent[0].post+"?commentId="+notification.actionId);
+                  navigate("/post/" + notification?.populatedContent[0]._id+"?commentId="+notification.actionId);
                 } else if (notification.notificationType == "approach") {
                   navigate("/job/" + notification.populatedContent[0]._id);
                 } else if (notification.notificationType == "mention") {

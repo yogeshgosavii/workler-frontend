@@ -803,7 +803,7 @@ function PostView({ postId = useParams().postId, index, className }) {
             </div>
           )}
           {tab == "comments" && (
-            <div>
+            <div className = "text-gray-800">
               <div
                 id="commentInput"
                 className={` bg-white  z-40 px-4  py-2 sticky top-[42px] border-b flex gap-2 transition-all  ${" opacity-100"} `}
@@ -934,7 +934,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                       Replied to {comment.parentComment.user.username}
                     </p>
                   )} */}
-                        <div className="flex justify-between z-10 w-full">
+                        <div className="flex justify-between z-10 w-full text-gray-800">
                           <div
                             className={`relative  gap-2  transition-all items-center  overflow-hidden mt-2 `}
                           >
@@ -974,7 +974,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                               {comment.content}
                             </p> */}
                             <p
-                              className={`mt-flex-1  relative 
+                              className={`mt-1 flex-1  relative 
               `}
                             >
                               {comment.content
@@ -1354,7 +1354,7 @@ function PostView({ postId = useParams().postId, index, className }) {
                                   >
                                     {reply.content}
                                   </p> */}
-                                  <p className={`mt-flex-1  relative `}>
+                                  <p className={`mt-1 flex-1  relative `}>
                                     {reply.content
                                       .split(/(@\w+)/)
                                       .map((segment, index) => {
