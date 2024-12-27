@@ -1,7 +1,7 @@
 import { method } from "lodash";
 
-// const API_URL = 'https://workler-backend.vercel.app/api/report';
-const API_URL = "http://localhost:5002/api/report";
+const API_URL = 'https://workler-backend.vercel.app/api/report';
+// const API_URL = "http://localhost:5002/api/report";
 
 const getToken = () => localStorage.getItem("token");
 
