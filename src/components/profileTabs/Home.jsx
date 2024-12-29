@@ -3,6 +3,7 @@ import UserImageInput from "../Input/UserImageInput";
 import profileImageDefault from "../../assets/user_male_icon.png";
 import { formatDistanceToNow } from "date-fns";
 import ImageCarousel from "../ImageCarousel";
+import { useSelector } from "react-redux";
 
 function Home({
   user,
@@ -13,6 +14,9 @@ function Home({
   postData,
   isEditable,
 }) {
+
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
   
   return (
     <div className="  flex flex-col gap-4 mb-4 border border-t-0 md:border-t  text-gray-800 bg-white h-full">
@@ -38,8 +42,8 @@ function Home({
                   </div>
                 ) : (
                   <div>
-                    <span> {user.description}</span>
-                    {!user.description && (
+                    <span> {user?.description}</span>
+                    {!user?.description && (
                       <div className="text-sm flex flex-col gap-2">
                         {user?.company_details?.website && (
                           <div>
@@ -70,7 +74,7 @@ function Home({
                             <p>Found in</p>
                             <p className="text-gray-400">
                               {new Date(
-                                user.company_details.found_in_date
+                                user?.company_details.found_in_date
                               ).getFullYear()}
                             </p>
                           </div>
@@ -80,19 +84,17 @@ function Home({
                   </div>
                 )}
               </p>
-              <a className="text-sm text-blue-500">
-                {user.company_details?.website}
-              </a>
+            
             </div>
           )}
-          <p
+        { isAuthenticated && <p
             onClick={() => {
               setcurrentTab("About");
             }}
             className="w-full text-center border-y font-medium py-2 text-gray-400"
           >
             Learn more
-          </p>
+          </p>}
         </div>
       ) : (
         <div className="relative   md:px-6 overflow-hidden h-full px-4 py-4 pb-6">
@@ -122,10 +124,10 @@ function Home({
               </svg>
             )}
           </div>
-          {isEditable && (!user.description ||
-            !user.linkedInLink ||
-            !user.location ||
-            !user.githubLink) && (
+          {isEditable && (!user?.description ||
+            !user?.linkedInLink ||
+            !user?.location ||
+            !user?.githubLink) && (
             <p className="text-gray-400 text-sm -mt-2">
               Add some more details to let people know more about you
             </p>
@@ -136,11 +138,11 @@ function Home({
               {isEditable ? (
                   <div className={`text-sm font-normal  `}>
                     <p className="font-medium text-base mb-1">Description</p>
-                    {user.description ? (
+                    {user?.description ? (
                       <div onClick={() => setdescriptionInput(true)}>
-                        <p className="text-gray-600">{user.description}</p>
+                        <p className="text-gray-600">{user?.description}</p>
                       </div>
-                    ) : user.account_type == "Employeer" ? (
+                    ) : user?.account_type == "Employeer" ? (
                       <div className="text-sm font-normal text-gray-300 w-full">
                         Add a description. For example: "We are a dynamic
                         company committed to excellence and innovation."
@@ -153,10 +155,10 @@ function Home({
                     )}
                   </div>
                 ):(
-                  user.description && <div className={`text-sm font-normal  `}>
+                  user?.description && <div className={`text-sm font-normal  `}>
                     <p className="font-medium text-base mb-1">Description</p>
                       <div onClick={() => setdescriptionInput(true)}>
-                        <p className="text-gray-600">{user.description}</p>
+                        <p className="text-gray-600">{user?.description}</p>
                       </div>
                   </div>
                 )}
@@ -174,7 +176,7 @@ function Home({
                 </div>
               )}
 
-              {user.personal_details.portfolio && (
+              {user?.personal_details.portfolio && (
                 <div className={`text-sm font-normal  `}>
                   <p className="font-medium">Portfolio</p>
                   {!loading.user && (
@@ -188,7 +190,7 @@ function Home({
                 </div>
               )}
 
-              {user.githubLink && (
+              {user?.githubLink && (
                 <div className={`text-sm font-normal  `}>
                   <p className="font-medium">Github</p>
                   {!loading.user && (

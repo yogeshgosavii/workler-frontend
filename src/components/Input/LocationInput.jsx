@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import PropTypes from "prop-types";
 import locationService from "../../services/locationService";
 
 // Debounce custom hook
-function useDebounce(value, delay) {
+function useDebounce(value, delay = 300) {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
@@ -15,8 +16,6 @@ function useDebounce(value, delay) {
 
   return debouncedValue;
 }
-
-
 
 // Spinner Component
 const Spinner = () => (
@@ -50,16 +49,14 @@ const LocationInput = ({
   onFocus,
   onBlur,
 }) => {
-  console.log(value);
-  
   const [locations, setLocations] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [inputLocation, setInputLocation] = useState( value?.address ||"");
+  const [inputLocation, setInputLocation] = useState(value?.address || "");
   const [message, setMessage] = useState(promptMessage);
   const [visited, setVisited] = useState(false);
   const [inputFocus, setInputFocus] = useState(false);
 
-  const debouncedInputLocation = useDebounce(inputLocation, 0);
+  const debouncedInputLocation = useDebounce(inputLocation, 300);
 
   // Fetch locations
   useEffect(() => {
@@ -84,19 +81,18 @@ const LocationInput = ({
     fetchLocations();
   }, [debouncedInputLocation]);
 
-
   // Validate input
   const validateInput = useMemo(() => {
     if (!visited) return null;
     if (isRequired && !inputLocation) {
       return { type: "error", text: "This is a required field" };
     }
-    if (
-      isRequired &&
-      !locations.some((loc) => loc.address === inputLocation)
-    ) {
-      return { type: "error", text: "Select a location from the list" };
-    }
+    // if (
+    //   isRequired &&
+    //   !locations.some((loc) => loc.address === inputLocation)
+    // ) {
+    //   return { type: "error", text: "Select a location from the list" };
+    // }
     return null;
   }, [inputLocation, visited, isRequired, locations]);
 
@@ -104,18 +100,18 @@ const LocationInput = ({
     setMessage(validateInput);
   }, [validateInput]);
 
-  const handleInputChange = (e) => {
+  const handleInputChange = useCallback((e) => {
     setVisited(true);
     setInputLocation(e.target.value);
-  };
+  }, []);
 
-  const handleLocationSelect = (location) => {
+  const handleLocationSelect = useCallback((location) => {
     setInputLocation(location.address);
     setInputFocus(false);
     setMessage(null);
     onChange?.({ target: { name, value: location } });
-  };
-  
+  }, [onChange, name]);
+
   return (
     <div className={`relative ${className}`}>
       <div className="relative flex items-center">
@@ -123,8 +119,8 @@ const LocationInput = ({
           type="text"
           name={name}
           id={name}
-          placeholder={""}
-          value={inputLocation || value?.address}
+          placeholder={placeholder}
+          value={inputLocation}
           onChange={handleInputChange}
           onFocus={() => {
             setInputFocus(true);
@@ -139,7 +135,7 @@ const LocationInput = ({
         <label
           htmlFor={name}
           className="absolute duration-200 cursor-text px-2 text-gray-400 bg-white font-normal transform -translate-y-5 scale-90 top-2 z-10 peer-focus:px-2 peer-focus:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-90 peer-focus:-translate-y-5 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-          >
+        >
           {placeholder} {isRequired && <span className="text-red-500">*</span>}
         </label>
       </div>
@@ -152,12 +148,12 @@ const LocationInput = ({
           {message.text}
         </p>
       )}
-      {inputFocus && inputLocation.length>0 && (
+      {inputFocus && inputLocation.length > 0 && (
         <ul className="absolute z-50 mt-2 w-full bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto">
           {loading ? (
             <Spinner />
-          ) : (
-           locations.length>0 ? locations.map((loc) => (
+          ) : locations.length > 0 ? (
+            locations.map((loc) => (
               <li
                 key={loc.id}
                 onMouseDown={() => handleLocationSelect(loc)}
@@ -165,13 +161,26 @@ const LocationInput = ({
               >
                 {loc.address}
               </li>
-            )):
+            ))
+          ) : (
             <p className="p-3 text-gray-400">No result found, add more detailed location</p>
           )}
         </ul>
       )}
     </div>
   );
+};
+
+LocationInput.propTypes = {
+  name: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
+  value: PropTypes.object,
+  onChange: PropTypes.func,
+  isRequired: PropTypes.bool,
+  className: PropTypes.string,
+  promptMessage: PropTypes.string,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
 };
 
 export default LocationInput;

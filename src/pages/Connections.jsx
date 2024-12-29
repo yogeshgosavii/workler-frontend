@@ -18,11 +18,13 @@ function Connections({ userId = useParams().userId }) {
       try {
         const followingResponse = await followService.getFollowing(userId);
 
-        setFollowings(followingResponse);
+        setFollowings(followingResponse.map((f) => f.following));
 
         const followerResponse = await followService.getFollowers(userId);
 
-        setFollowers(followerResponse);
+        setFollowers(followerResponse.map((f) => f.user));
+        console.log(followingResponse, followerResponse);
+        
       } catch (error) {
         console.error("Error fetching connections:", error);
       } finally {
@@ -44,25 +46,25 @@ function Connections({ userId = useParams().userId }) {
               {followers.map((user) => (
                 <div
                   onClick={() => {
-                    navigate("/user/" + user.user._id);
+                    navigate("/user/" + user?._id);
                   }}
                   className="flex gap-4 cursor-pointer"
                 >
                   <UserImageInput
                     imageHeight={45}
-                    image={user.user.profileImage?.compressedImage[0]}
+                    image={user?.profileImage?.compressedImage[0]}
                     isEditable={false}
                   />
                   <div className="-mt-1">
-                    <p className="font-medium text-lg">{user.user.username}</p>
-                    {user.user.personal_details ? (
+                    <p className="font-medium text-lg">{user?.username}</p>
+                    {user?.personal_details ? (
                       <p className="text-gray-400">
-                        {user.user.personal_details?.firstname}{" "}
-                        {user.user.personal_details?.lastname}
+                        {user?.personal_details?.firstname}{" "}
+                        {user?.personal_details?.lastname}
                       </p>
                     ) : (
                       <p className="text-gray-400">
-                        {user.user.company_details.company_name}
+                        {user?.company_details?.company_name}
                       </p>
                     )}
                   </div>
@@ -116,29 +118,29 @@ function Connections({ userId = useParams().userId }) {
             <div className="flex flex-col gap-4">
               {followings.map((user) => (
                 <div
-                  key={user._id}
+                  key={user?._id}
                   onClick={() => {
-                    navigate("/user/" + user.following._id);
+                    navigate("/user/" + user?._id);
                   }}
                   className="flex items-center gap-4 cursor-pointer"
                 >
                   <UserImageInput
                     imageHeight={45}
-                    image={user.following.profileImage?.compressedImage[0]}
+                    image={user?.profileImage?.compressedImage[0]}
                     isEditable={false}
                   />
                   <div className="-mt-1">
                     <p className="font-medium text-lg">
-                      {user.following.username}
+                      {user?.username}
                     </p>
-                    {user.following.personal_details ? (
+                    {user?.personal_details ? (
                       <p className="text-gray-400">
-                        {user.following.personal_details?.firstname}{" "}
-                        {user.following.personal_details?.lastname}
+                        {user?.personal_details?.firstname}{" "}
+                        {user?.personal_details?.lastname}
                       </p>
                     ) : (
                       <p className="text-gray-400 text-sm">
-                        {user.following.company_details?.company_name}
+                        {user?.company_details?.company_name}
                       </p>
                     )}
                   </div>

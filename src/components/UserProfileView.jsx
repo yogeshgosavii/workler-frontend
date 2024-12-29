@@ -30,8 +30,6 @@ function UserProfileView({ userId = useParams().userId }) {
   const [settings, setSettings] = useState(false);
   const [postData, setpostData] = useState();
   const [approaching, setApproaching] = useState(false);
-  const [currentTab, setCurrentTab] = useState("Posts");
-  const [tabIndex, setTabIndex] = useState(1);
   const [jobData, setJobData] = useState(null);
   const [loading, setLoading] = useState({ userDetails: false, posts: true });
   const [selectedJob, setSelectedJob] = useState("");
@@ -51,6 +49,10 @@ function UserProfileView({ userId = useParams().userId }) {
   const [worksAt, setWorksAt] = useState("");
   const [latestEducation, setLatestEducation] = useState("");
   const [savedCheckLoading, setSavedCheckLoading] = useState(true);
+  const [currentTab, setCurrentTab] = useState(
+    currentUserDetails ? "Posts" : "Home"
+  );
+  const [tabIndex, setTabIndex] = useState(currentUserDetails ? 1 : 0);
 
   // const handleBackButton = () => {
   //   console.log("Hello");
@@ -111,8 +113,8 @@ function UserProfileView({ userId = useParams().userId }) {
       setLoading((prev) => ({ ...prev, jobData: true }));
       try {
         const response = await jobService.job.getByUserIds(userId);
-        console.log("job",response);
-        
+        console.log("job", response);
+
         setcurrentUserJobData(response);
       } catch (error) {
         console.error("Failed to fetch job details", error);
@@ -140,7 +142,7 @@ function UserProfileView({ userId = useParams().userId }) {
 
     //   }
     // };
-    fetchJobData()
+    fetchJobData();
 
     if (userId) {
       fetchData();
@@ -152,15 +154,12 @@ function UserProfileView({ userId = useParams().userId }) {
         userDetails?.accountType == "Employeer"
       ) {
         fetchJobData();
-
       }
     } else {
       // if (!loading.userDetails) {
       //   navigate("/not-found", { replace: true });
       // }
-
     }
-
   }, [userId]);
 
   useEffect(() => {
@@ -193,7 +192,7 @@ function UserProfileView({ userId = useParams().userId }) {
 
         setIsFollowing(
           followerResponse.some(
-            (follow) => follow.user._id === currentUserDetails._id
+            (follow) => follow.user?._id === currentUserDetails._id
           )
         );
         setFollowLoading(false);
@@ -501,14 +500,14 @@ function UserProfileView({ userId = useParams().userId }) {
                         )}
                       </p>
                     )} */}
-                     <p className="text-xs text-gray-400">
-              {/* Posted on{" "} */}
-              {new Date(job.createdAt).toLocaleDateString("en-GB", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-              })}{" "}
-              {/* at{" "}
+                    <p className="text-xs text-gray-400">
+                      {/* Posted on{" "} */}
+                      {new Date(job.createdAt).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}{" "}
+                      {/* at{" "}
               <span>
                 {new Date(job.createdAt).toLocaleTimeString("en-GB", {
                   hour: "2-digit",
@@ -516,7 +515,7 @@ function UserProfileView({ userId = useParams().userId }) {
                   hour12: true,
                 })}
               </span> */}
-            </p>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -575,55 +574,52 @@ function UserProfileView({ userId = useParams().userId }) {
   };
   return (
     <div className=" flex gap-8 sm:p-10 sm:py-6 bg-gray-50 h-full  w-full justify-center">
-      {(showProfileImage ||approaching ) && (
+      {(showProfileImage || approaching) && (
         <div
           onClick={() => {
             setShowProfileImage(false);
-            setApproaching(false)
+            setApproaching(false);
           }}
           className={`h-screen  w-full top-0 absolute inset-0  bg-background/95  backdrop-blur supports-[backdrop-filter]:bg-background/60      z-50  `}
         ></div>
       )}
       {approaching && currentUserJobData && (
-          <div
-            className={`absolute  shadow-xl flex flex-col  gap-4 px-4 md:px-6 py-4 w-full transition-all ${
-              !approaching ? "" : "translate-y-0"
-            } z-50 sm:top-1/4 md:left-auto left-0 md:max-w-2xl sm:h-fit sm:max-h-82 overflow-y-auto h-full   sm:border  bg-white`}
-          >
-            <div className="flex justify-between gap-4">
-              <p className="mb-5 text-lg font-medium">
-                {" "}
-                Jobs listed
+        <div
+          className={`absolute  shadow-xl flex flex-col  gap-4 px-4 md:px-6 py-4 w-full transition-all ${
+            !approaching ? "" : "translate-y-0"
+          } z-50 sm:top-1/4 md:left-auto left-0 md:max-w-2xl sm:h-fit sm:max-h-82 overflow-y-auto h-full   sm:border  bg-white`}
+        >
+          <div className="flex justify-between gap-4">
+            <p className="mb-5 text-lg font-medium"> Jobs listed</p>
+            <svg
+              onClick={() => {
+                setApproaching(false);
+              }}
+              className="h-6 w-6 text-gray-800 pointer-events-auto transition-all duration-500 ease-in-out transform"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+                className="transition-all duration-500 ease-in-out"
+              />
+            </svg>
+          </div>
+          {currentUserJobData.length <= 0 && (
+            <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
+              <p className="text-2xl font-bold text-gray-500">
+                No Job Posted Yet
               </p>
-              <svg
-                onClick={() => {
-                  setApproaching(false);
-                }}
-                className="h-6 w-6 text-gray-800 pointer-events-auto transition-all duration-500 ease-in-out transform"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                  className="transition-all duration-500 ease-in-out"
-                />
-              </svg>
-            </div>
-            {currentUserJobData.length <= 0 && (
-              <p className="max-w-xl pt-20 text-center sm:h-full h-fit px-6 md:px-6">
-                <p className="text-2xl font-bold text-gray-500">
-                  No Job Posted Yet
-                </p>
-                <p className="mt-1 text-gray-400">
-                  Post a job first to approach candidates.
-                </p>
+              <p className="mt-1 text-gray-400">
+                Post a job first to approach candidates.
               </p>
-            )}
-            {/* {currentUserJobData.map((job) => (
+            </p>
+          )}
+          {/* {currentUserJobData.map((job) => (
               <div className="border bg-gray-50 flex flex-col gap-2 p-3 rounded-lg">
                 <p className="font-medium text-lg">{job.job_role}</p>
                 <p className="truncate line-clamp-3 text-wrap">
@@ -648,63 +644,70 @@ function UserProfileView({ userId = useParams().userId }) {
                 </button>
               </div>
             ))} */}
-          </div>
-        )}
+        </div>
+      )}
       <div
         ref={profileRef}
         style={{
           scrollbarWidth: "none",
         }}
-        className={`${
+        className={`${!currentUserDetails && "sm:mt-14 lg:mt-0"} ${
           !userId && "hidden"
-        } max-w-xl w-full flex-1 transition-all  ${
+        } sm:max-w-xl w-full flex-1 transition-all  ${
           approaching ? "overflow-y-hidden" : "overflow-y-auto"
         }  flex-grow  ${showProfileImage && "pointer-events"}`}
       >
-        
-
         <div className="flex relative  flex-wrap">
           <div
-            className={` w-full border-t  fixed sm:sticky  sm:border-x  z-20 top-0   px-4 sm:px-6 py-4 sm:py-6 gap-2 bg-white flex `}
+            className={` w-full border-t  fixed sm:sticky  sm:border-x  z-20 top-0   px-4 sm:px-6 py-4 sm:py-6 gap-2 bg-white flex justify-between items-center`}
           >
-            <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    class="size-8 shrink-0 -ml-2.5"
-                    onClick={() => {
-                      window.history.back();
-                    }}
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-            <div className="flex w-full items-center gap-4">
-              {atTop >= 100 && (
-                <UserImageInput
-                  isEditable={false}
-                  image={
-                    userDetails?.profileImage?.compressedImage ||
-                    profileImageDefault
-                  }
-                  imageHeight="40"
+            <div className="flex gap-4 items-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="size-8 shrink-0 -ml-2.5"
+                onClick={() => {
+                  window.history.back();
+                }}
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z"
+                  clip-rule="evenodd"
                 />
-              )}
-              <div className="flex flex-col -mt-1 justify-center">
-                <p className="text-xl  font-semibold">
-                  {atTop > 100 ? userDetails?.username : <p className="text-2xl py-[5px]">Profile</p>}
-                </p>
-                {/* <div className="flex gap-1 mt-0.5 items-center">
+              </svg>
+              {true && (
+                <div className="flex w-full items-center gap-4">
+                  {atTop >= 100 && (
+                    <UserImageInput
+                      isEditable={false}
+                      image={
+                        userDetails?.profileImage?.compressedImage ||
+                        profileImageDefault
+                      }
+                      imageHeight="40"
+                    />
+                  )}
+                  <div className="flex flex-col -mt-1 justify-center">
+                    <p className="text-xl  font-semibold text-wrap w-full truncate break-words max-w-40 overflow-hidden line-clamp-1"> 
+                      {atTop > 100 ? (
+                        userDetails?.username
+                      ) : (
+                        <p className="text-2xl py-[5px]">Profile</p>
+                      )}
+                    </p>
+                    {/* <div className="flex gap-1 mt-0.5 items-center">
                   <span className="h-2 w-2 rounded-full shadow-lg bg-green-500"></span>
                   <p className="text-xs text-gray-400 -mt-px">
                     Currently active
                   </p>
                 </div> */}
-              </div>
+                  </div>
+                </div>
+              )}
             </div>
+            <p onClick= {()=>{navigate("/login")}} className="h-full flex items-center bg-gray-800 border px-4 py-[5px] rounded-md font-medium sm:hidden text-white border-gray-800">Login</p>
           </div>
           <div className="flex border-t sm:border-t-0 pt-8 pb-6 mt-10 sm:mt-0 flex-grow sm:border-x px-4 md:px-6 gap-3 bg-white justify-center flex-col">
             {loading.userDetails ? (
@@ -766,7 +769,7 @@ function UserProfileView({ userId = useParams().userId }) {
                               userDetails?.personal_details?.lastname}
                         </h1>
                         <div className="flex  gap-2">
-                          <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-600">
+                          <p className="text-lg font-light sm:font-normal sm:text-xl text-gray-</span>600">
                             {userDetails?.username || "Username"}
                           </p>
                         </div>
@@ -777,9 +780,11 @@ function UserProfileView({ userId = useParams().userId }) {
                   <div className="order-3 flex flex-col gap-2">
                     <div
                       onClick={() => {
-                        navigate("/connections/" + userDetails._id);
+                        if (currentUserDetails) {
+                          navigate("/connections/" + userDetails._id);
+                        }
                       }}
-                      className="flex mt-2  order-1 text-gray-400 items-end font-medium text-sm "
+                      className="flex mt-2 order-1 text-gray-400 items-end font-medium text-sm "
                     >
                       <p>
                         {/* <span>{userDetails.location?.address} · </span> */}
@@ -843,10 +848,7 @@ function UserProfileView({ userId = useParams().userId }) {
                 } px-2 py-1`}
               >
                 Approached {approached?.status == "declined" && "declined"} for{" "}
-                <span className=" mx-1">
-                  {" "}
-                  {approached?.job?.job_role} 
-                </span>
+                <span className=" mx-1"> {approached?.job?.job_role}</span>
                 {"   "} role
                 {/* <p className="text-sm text-gray-400 truncate line-clamp-2 text-wrap">{approached?.job?.description}</p> */}
               </p>
@@ -864,7 +866,7 @@ function UserProfileView({ userId = useParams().userId }) {
                 )
               );
             })}
-            {!loading.userDetails && userDetails && (
+            {!loading.userDetails && currentUserDetails && userDetails && (
               <div className="flex gap-4 flex-wrap justify-between  items-center">
                 <div className="flex gap-4">
                   {currentUserDetails._id != userDetails._id &&
@@ -938,7 +940,7 @@ function UserProfileView({ userId = useParams().userId }) {
                     !loading.checkApproached &&
                     !applications?.some(
                       (application) => application.user._id === userDetails._id
-                    ) &&  (
+                    ) && (
                       <button
                         onClick={() => {
                           setApproaching((prev) => !prev);
@@ -1026,72 +1028,77 @@ function UserProfileView({ userId = useParams().userId }) {
             )}
           </div>
         </div>
-        <div
-          className={` sticky md:top-0 top-16   bg-white md:mb-4 z-20 transition-all ease-in-out `}
-        >
-          <div
-            style={{
-              overflowX: "auto",
-              scrollbarWidth: "none",
-            }}
-            className={`flex-grow z-20 absolute max-w-full overflow-x-auto border-b sm:border-x ${
-              atTop > 340 ? "sm:border-t" : ""
-            } w-full  sticky top-16 sm:top-0 gap-3 bg-white text-gray-800 font-medium flex`}
-          >
-            <div className="flex w-full pt-1">
-              {[
-                ...(userDetails?.account_type === "Employeer"
-                  ? [
-                      "About",
-                      "Posts",
-                      currentUserDetails.account_type != "Employeer"
-                        ? "Jobs"
-                        : null,
-                    ]
-                  : ["Home", "Posts", "Qualification"]),
-              ]
-                .filter(Boolean)
-                .map((tab, index, arr) => (
-                  <p
-                    key={tab}
-                    onClick={() => {
-                      setCurrentTab(tab);
-                      setTabIndex(index);
-                    }}
-                    className={` text-base  md:text-lg mb-1 truncate font-medium md:font-semibold cursor-pointer ${
-                      tab === currentTab ? "z-20 text-gray-800" : ""
-                    } text-center py-2`}
-                    style={{
-                      width: `${100 / arr.length}%`,
-                    }}
-                  >
-                    {tab}
-                  </p>
-                ))}
+        {!currentUserDetails &&
+          userDetails?.account_type !== "Employeer" &&
+          userDetails && (
+            <div
+              className={`sticky md:top-0 top-16 bg-white md:mb-4 z-20 transition-all ease-in-out`}
+            >
+              <div
+                style={{
+                  overflowX: "auto",
+                  scrollbarWidth: "none",
+                }}
+                className={`flex-grow z-20 absolute max-w-full overflow-x-auto border-b sm:border-x ${
+                  atTop > 340 ? "sm:border-t" : ""
+                } w-full sticky top-16 sm:top-0 gap-3 bg-white text-gray-800 font-medium flex`}
+              >
+                <div className="flex w-full pt-1">
+                  {[
+                    currentUserDetails?._id === userDetails?._id
+                      ? "Posts"
+                      : null,
+                    ...(userDetails?.account_type === "Employeer"
+                      ? ["About"]
+                      : ["Home", "Qualification"]),
+                  ]
+                    .filter(Boolean)
+                    .map((tab, index, arr) => (
+                      <p
+                        key={tab}
+                        onClick={() => {
+                          setCurrentTab(tab);
+                          setTabIndex(index);
+                        }}
+                        className={`text-base md:text-lg mb-1 truncate font-medium md:font-semibold cursor-pointer ${
+                          tab === currentTab ? "z-20 text-gray-800" : ""
+                        } text-center py-2`}
+                        style={{
+                          width: `${100 / arr.length}%`,
+                        }}
+                      >
+                        {tab}
+                      </p>
+                    ))}
+                </div>
+              </div>
+              <div
+                style={{
+                  left: `${
+                    (100 /
+                      (userDetails?.account_type === "Employeer"
+                        ? currentUserDetails
+                          ? 2
+                          : 1
+                        : currentUserDetails
+                        ? 3
+                        : 2)) *
+                    tabIndex
+                  }%`,
+                  transition: "left 0.2s ease-in-out",
+                }}
+                className={`w-1/${
+                  userDetails?.account_type === "Employeer"
+                    ? currentUserDetails
+                      ? "2"
+                      : "1"
+                    : currentUserDetails
+                    ? "3"
+                    : "2"
+                } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-gray-800 absolute`}
+              ></div>
             </div>
-          </div>
-          <div
-            style={{
-              left: `${
-                (100 /
-                  (userDetails?.account_type === "Employeer"
-                    ? currentUserDetails?.account_type === "Employeer"
-                      ? 2
-                      : 3
-                    : 3)) *
-                tabIndex
-              }%`,
-              transition: "left 0.2s ease-in-out",
-            }}
-            className={`w-1/${
-              userDetails?.account_type === "Employeer"
-                ? currentUserDetails?.account_type === "Employeer"
-                  ? "2"
-                  : "3"
-                : "3"
-            } h-[2px] md:h-1 z-30 rounded-full bottom-0 left-0 bg-gray-800 absolute`}
-          ></div>
-        </div>
+          )}
 
         <div className="">{renderTabContent()}</div>
       </div>

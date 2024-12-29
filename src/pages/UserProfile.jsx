@@ -728,38 +728,67 @@ const UserProfile = () => {
                     </div> */}
                     </div>
                   </div>
-                  <svg
-                    className="h-8 w-8 text-gray-800 pointer-events-auto transition-all duration-500 ease-in-out transform"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    onClick={() => {
-                      setsettings(!settings);
-                      if (!settings) {
-                        navigate("settings");
-                      } else {
-                        navigate("/profile");
-                      }
-                    }}
-                  >
-                    {location.pathname === "/profile/settings" ? (
+                  <div className="flex gap-3  items-center">
+                    <svg
+                      onClick={async () => {
+                        if (navigator.share) {
+                          try {
+                            await navigator.share({
+                              title: userDetails.username + ` | ${userDetails.company_details ? userDetails.company_details.company_name : userDetails.personal_details?.firstname+" "+userDetails.personal_details.lastname}`,
+                              url: "http://workler.in/user/" + userDetails._id,
+                            });
+                          } catch (error) {
+                            console.error("Error sharing:", error);
+                          }
+                        } else {
+                          copyToClipboard();
+                        }
+                      }}
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      class="size-6"
+                    >
                       <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M6 18L18 6M6 6l12 12"
-                        className="transition-all duration-500 ease-in-out"
+                        fill-rule="evenodd"
+                        d="M15.75 4.5a3 3 0 1 1 .825 2.066l-8.421 4.679a3.002 3.002 0 0 1 0 1.51l8.421 4.679a3 3 0 1 1-.729 1.31l-8.421-4.678a3 3 0 1 1 0-4.132l8.421-4.679a3 3 0 0 1-.096-.755Z"
+                        clip-rule="evenodd"
                       />
-                    ) : (
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M4 6h16M4 12h16m-7 6h7"
-                        className="transition-all duration-500 ease-in-out"
-                      />
-                    )}
-                  </svg>
+                    </svg>
+
+                    <svg
+                      className="h-8 w-8 text-gray-800 pointer-events-auto transition-all duration-500 ease-in-out transform"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      onClick={() => {
+                        setsettings(!settings);
+                        if (!settings) {
+                          navigate("settings");
+                        } else {
+                          navigate("/profile");
+                        }
+                      }}
+                    >
+                      {location.pathname === "/profile/settings" ? (
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M6 18L18 6M6 6l12 12"
+                          className="transition-all duration-500 ease-in-out"
+                        />
+                      ) : (
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4 6h16M4 12h16m-7 6h7"
+                          className="transition-all duration-500 ease-in-out"
+                        />
+                      )}
+                    </svg>
+                  </div>
                 </div>
                 <div className="flex border-t pt-8 pb-6 mt-10 sm:mt-0   flex-grow  sm:border-x  px-4 md:px-6 gap-3 bg-white justify-center flex-col">
                   <div className="w-full hidden sm:flex mb-4 bg-white justify-between ">

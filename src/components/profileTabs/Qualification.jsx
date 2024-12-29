@@ -281,7 +281,7 @@ function Qualification({
                     />
                     <div className="-mt-1">
                       <a
-                        href={currentUser._id != user?._id && data.url}
+                        href={currentUser?._id != user?._id && data.url}
                         target="_blank"
                         className="text-xl font-semibold"
                       >

@@ -117,7 +117,7 @@ function Posts({
         ) : no_post_error ? (
           no_post_error
         ) : (
-          <p className=" pt-14 h-full text-cente  px-6 md:px-6">
+          <p className=" pt-14 h-full text-center  px-6 md:px-6">
             <p className="text-2xl font-bold text-gray-500">
               No Posts Available
             </p>

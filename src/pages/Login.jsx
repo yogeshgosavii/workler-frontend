@@ -44,7 +44,12 @@ function Login({ userType = "candidate" }) {
       dispatch(loginSuccess(userData));
       localStorage.setItem('user', JSON.stringify(userData));
       setLoader(false);
-      navigate('/jobs'); // Redirect to dashboard on successful login
+      
+      
+        navigate('/jobs'); // Redirect to dashboard on successful login
+
+      
+    
     } catch (error) {
       setError("Login failed. Please check your email and password and try again.");
       setLoader(false);

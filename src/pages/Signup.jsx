@@ -155,24 +155,29 @@ function Signup() {
     return { valid: true, text: "Password is strong" };
   };
   const isFormValid = () => {
+    
     if (
       userData.username &&
       userNameAvailable &&
+      userData.location &&
       userData.email &&
-      userData.password?.length >= 6 &&
-      userData.account_type &&
-      userData.location
+      userData.password?.length >= 6
     ) {
       
       // if (!verifyPassword(userData.password.valid)){
       //   // setPasswordMessage({type:"error",text:verifyPassword(userData.password).message})
       // }
       if (userData.account_type == "Candidate") {
+        console.log(personal_details);
+
         if (
           personal_details.birthdate &&
           personal_details.firstname &&
           verifyPassword(userData.password).valid
         ) {
+          
+          console.log("helloq")
+
           return true;
         }
       } else {
@@ -335,7 +340,15 @@ function Signup() {
 
       if (response.ok) {
         // const personal = profileApi.personal_details.add(personal_details, token);
-
+         if (location.pathname.startsWith('/user/')) {
+        const userId = location.pathname.split('/')[2];
+        navigate(`/user/${userId}`);
+        return;
+      } else if (location.pathname.startsWith('/job/')) {
+        const jobId = location.pathname.split('/')[2];
+        navigate(`/job/${jobId}`);
+        return;
+      }
         navigate("/jobs");
       } else {
         const errorText = await response.text();
@@ -689,12 +702,11 @@ function Signup() {
                   className={"flex-grow"}
                   value={personal_details.firstname}
                   onChange={(e) => {
-                    if(personal_details.firstname.length<30){
                       setpersonal_details((prev) => ({
                         ...prev,
                         firstname: e.target.value,
                       }));
-                    }
+                    
                   }}
                   placeholder={"First name"}
                 />
@@ -703,18 +715,16 @@ function Signup() {
                   value={personal_details.lastname}
                   className={"flex-grow"}
                   onChange={(e) => {
-                    if(personal_details.lastname.length<30){
                       setpersonal_details((prev) => ({
                         ...prev,
                         lastname: e.target.value,
                       }));
-                    }
                    
                   }}
                   placeholder={"Last Name"}
                 />
               </div>
-              <div className="flex flex-wrap gap-6 w-full">
+              <div className="flex flex-wrap flex-col sm:flex-row gap-6 w-full">
                 <DateInput
                   type={"date"}
                   className={"flex-grow"}
@@ -734,6 +744,7 @@ function Signup() {
                   className={"flex-grow"}
                   placeholder={"Location"}
                   value={userData.location}
+                  name="location"
                   isRequired={true}
                   onChange={(e) => {
                     setuserData((prev) => ({
