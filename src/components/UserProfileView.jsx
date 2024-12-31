@@ -707,7 +707,7 @@ function UserProfileView({ userId = useParams().userId }) {
                 </div>
               )}
             </div>
-            <p onClick= {()=>{navigate("/login")}} className="h-full flex items-center bg-gray-800 border px-4 py-[5px] rounded-md font-medium sm:hidden text-white border-gray-800">Login</p>
+            {!currentUserDetails &&<p onClick= {()=>{navigate("/login")}} className="h-full flex items-center bg-gray-800 border px-4 py-[5px] rounded-md font-medium sm:hidden text-white border-gray-800">Login</p>}
           </div>
           <div className="flex border-t sm:border-t-0 pt-8 pb-6 mt-10 sm:mt-0 flex-grow sm:border-x px-4 md:px-6 gap-3 bg-white justify-center flex-col">
             {loading.userDetails ? (
@@ -1028,7 +1028,7 @@ function UserProfileView({ userId = useParams().userId }) {
             )}
           </div>
         </div>
-        {!currentUserDetails &&
+        {
           userDetails?.account_type !== "Employeer" &&
           userDetails && (
             <div
@@ -1045,12 +1045,14 @@ function UserProfileView({ userId = useParams().userId }) {
               >
                 <div className="flex w-full pt-1">
                   {[
-                    currentUserDetails?._id === userDetails?._id
-                      ? "Posts"
-                      : null,
+                    
                     ...(userDetails?.account_type === "Employeer"
-                      ? ["About"]
-                      : ["Home", "Qualification"]),
+                      ? [currentUserDetails?._id === userDetails?._id
+                        ? "Posts"
+                        : null,"About"]
+                      : ["Home",currentUserDetails?._id === userDetails?._id
+                        ? "Posts"
+                        : null,, "Qualification"]),
                   ]
                     .filter(Boolean)
                     .map((tab, index, arr) => (
