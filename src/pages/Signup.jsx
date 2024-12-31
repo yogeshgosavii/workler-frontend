@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 
 import verifiedIcon from "../assets/verified.png";
 import { Link, useNavigate } from "react-router-dom";
@@ -17,6 +17,7 @@ import UrlInput from "../components/Input/UrlInput";
 import LocationInput from "../components/Input/LocationInput";
 import NumberInput from "../components/Input/NumberInput";
 import Logo from "../assets/LogoCircle";
+import { PathHistoryContext } from "../components/PathHistoryContext";
 
 function Signup() {
   const [otpInput, setotpInput] = useState(false);
@@ -45,7 +46,6 @@ function Signup() {
   const navigate = useNavigate();
   useEffect(() => {
     const handleBackButton = () => {
-
       if (next) {
         resetFormStates();
         setNext(false); // Reset state or handle custom logic
@@ -81,6 +81,10 @@ function Signup() {
 
   const [personal_details, setpersonal_details] = useState({});
   const [company_details, setcompany_details] = useState({});
+  const { pathHistory } = useContext(PathHistoryContext);
+
+  const prevPath =
+    pathHistory.length > 1 ? pathHistory[pathHistory.length - 2] : "None";
 
   useEffect(() => {
     document.title = "Signup";
@@ -88,7 +92,6 @@ function Signup() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
 
     // Update userData state
     setuserData((prevState) => ({ ...prevState, [name]: value }));
@@ -111,7 +114,6 @@ function Signup() {
     }
   };
   const verifyPassword = (newPassword) => {
-
     // A list of common passwords (this is just a small sample, you can extend it)
     const commonPasswords = [
       "123456",
@@ -155,7 +157,6 @@ function Signup() {
     return { valid: true, text: "Password is strong" };
   };
   const isFormValid = () => {
-    
     if (
       userData.username &&
       userNameAvailable &&
@@ -163,7 +164,6 @@ function Signup() {
       userData.email &&
       userData.password?.length >= 6
     ) {
-      
       // if (!verifyPassword(userData.password.valid)){
       //   // setPasswordMessage({type:"error",text:verifyPassword(userData.password).message})
       // }
@@ -175,8 +175,7 @@ function Signup() {
           personal_details.firstname &&
           verifyPassword(userData.password).valid
         ) {
-          
-          console.log("helloq")
+          console.log("helloq");
 
           return true;
         }
@@ -340,15 +339,24 @@ function Signup() {
 
       if (response.ok) {
         // const personal = profileApi.personal_details.add(personal_details, token);
-         if (location.pathname.startsWith('/user/')) {
-        const userId = location.pathname.split('/')[2];
-        navigate(`/user/${userId}`);
-        return;
-      } else if (location.pathname.startsWith('/job/')) {
-        const jobId = location.pathname.split('/')[2];
-        navigate(`/job/${jobId}`);
-        return;
-      }
+        if (
+          pathHistory.some(
+            (path) => path.includes("/user") || path.includes("/job")
+          )
+        ) {
+          const lastPath = () => {
+            for (let i = pathHistory.length - 1; i >= 0; i--) {
+              if (
+                pathHistory[i].includes("/user") ||
+                pathHistory[i].includes("/job")
+              ) {
+                return pathHistory[i];
+              }
+            }
+            navigate(lastPath);
+            return;
+          };
+        }
         navigate("/jobs");
       } else {
         const errorText = await response.text();
@@ -372,17 +380,17 @@ function Signup() {
       }`}
     >
       <div
-        className={` flex h-full flex-col justify-between items-center sm:justify-center  w-full   ${
+        className={` flex h-full flex-col bg-white justify-between items-center sm:justify-center  w-full   ${
           next ? "hidden" : null
         }`}
       >
         <div
           id="email-form"
-          className={` w-full  sm:border px-6 sm:shadow-xl  sm:p-10 max-w-sm flex  flex-col  `}
+          className={` w-full  sm:border px-6 sm:shadow-xl bg-white   sm:p-10 mt-24 sm:mt-0 max-w-sm flex  flex-col  `}
         >
-          <div className="w-full flex justify-center  py-2 mt-5 sm:mt-0 px-6">
+          {/* <div className="w-full flex justify-center  py-2 mt-5 sm:mt-0 px-6">
             <Logo className={"size-24"} />
-          </div>
+          </div> */}
           <div className=" text-center mt-4 w-full">
             <p className="text-2xl font-semibold text-gray-800 ">
               Hello User 👋
@@ -519,7 +527,7 @@ function Signup() {
               "Next"
             )}
           </Button>
-          <p className=" hidden sm:block w-full text-center mt-10">
+          {/* <p className=" hidden sm:block w-full text-center mt-10">
             Already have an account?{" "}
             <Link
               to={"/login"}
@@ -527,7 +535,7 @@ function Signup() {
             >
               Login
             </Link>
-          </p>
+          </p> */}
         </div>
       </div>
 
@@ -702,11 +710,10 @@ function Signup() {
                   className={"flex-grow"}
                   value={personal_details.firstname}
                   onChange={(e) => {
-                      setpersonal_details((prev) => ({
-                        ...prev,
-                        firstname: e.target.value,
-                      }));
-                    
+                    setpersonal_details((prev) => ({
+                      ...prev,
+                      firstname: e.target.value,
+                    }));
                   }}
                   placeholder={"First name"}
                 />
@@ -715,11 +722,10 @@ function Signup() {
                   value={personal_details.lastname}
                   className={"flex-grow"}
                   onChange={(e) => {
-                      setpersonal_details((prev) => ({
-                        ...prev,
-                        lastname: e.target.value,
-                      }));
-                   
+                    setpersonal_details((prev) => ({
+                      ...prev,
+                      lastname: e.target.value,
+                    }));
                   }}
                   placeholder={"Last Name"}
                 />
@@ -731,7 +737,6 @@ function Signup() {
                   name={"birthdate"}
                   isRequired={true}
                   onChange={(e) => {
-                    
                     setpersonal_details((prev) => ({
                       ...prev,
                       birthdate: e.target.value,
@@ -751,7 +756,6 @@ function Signup() {
                       ...prev,
                       location: e.target.value,
                     }));
-
                   }}
                 />
               </div>
@@ -762,11 +766,12 @@ function Signup() {
                   className={"flex-grow min-w-32"}
                   value={personal_details.phone}
                   onChange={(e) => {
-                    if(e.target.value.length<=10)
-                   { setpersonal_details((prev) => ({
-                      ...prev,
-                      phone: e.target.value,
-                    }));}
+                    if (e.target.value.length <= 10) {
+                      setpersonal_details((prev) => ({
+                        ...prev,
+                        phone: e.target.value,
+                      }));
+                    }
                   }}
                   placeholder={"Phone Number"}
                 />
@@ -813,12 +818,12 @@ function Signup() {
                   className={"flex-grow"}
                   value={company_details.company_name}
                   onChange={(e) => {
-                   if(company_details.company_name.length<30){
-                    setcompany_details((prev) => ({
-                      ...prev,
-                      company_name: e.target.value,
-                    }));
-                   }
+                    if (company_details.company_name.length < 30) {
+                      setcompany_details((prev) => ({
+                        ...prev,
+                        company_name: e.target.value,
+                      }));
+                    }
                   }}
                   placeholder={"Company name"}
                 />
@@ -930,7 +935,7 @@ function Signup() {
             "Create"
           )}
         </Button>
-        <p className="mt-10 hidden sm:block w-full text-center">
+        {/* <p className="mt-10 hidden w-full text-center">
           Already have an account?{" "}
           <Link
             to={"/login"}
@@ -938,10 +943,10 @@ function Signup() {
           >
             Login
           </Link>
-        </p>
+        </p> */}
       </form>
 
-      <p className="py-5 border-t-2  sm:hidden w-full text-center">
+      <p className="py-5 border-t-2 bg-white  sm:hidden w-full text-center">
         Already have an account?{" "}
         <Link
           to={"/login"}

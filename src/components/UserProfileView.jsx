@@ -81,9 +81,13 @@ function UserProfileView({ userId = useParams().userId }) {
   // }, [selectedJob]);
 
   const [saved, setSaved] = useState(false);
+  const [prevPath, setPrevPath] = useState(null);
+
   const profileRef = useRef();
 
   useEffect(() => {
+   
+    console.log("history", prevPath);
     const fetchData = async () => {
       setLoading((prev) => ({ ...prev, userDetails: true }));
       try {
@@ -143,6 +147,12 @@ function UserProfileView({ userId = useParams().userId }) {
     //   }
     // };
     fetchJobData();
+    const handlePopState = () => {
+      setPrevPath(window.location.pathname);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
 
     if (userId) {
       fetchData();
@@ -160,6 +170,10 @@ function UserProfileView({ userId = useParams().userId }) {
       //   navigate("/not-found", { replace: true });
       // }
     }
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
   }, [userId]);
 
   useEffect(() => {
@@ -192,7 +206,7 @@ function UserProfileView({ userId = useParams().userId }) {
 
         setIsFollowing(
           followerResponse.some(
-            (follow) => follow.user?._id === currentUserDetails._id
+            (follow) => follow.user?._id === currentUserDetails?._id
           )
         );
         setFollowLoading(false);

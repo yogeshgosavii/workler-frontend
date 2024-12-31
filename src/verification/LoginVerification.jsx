@@ -11,14 +11,14 @@ function LoginVerification({ loginRequired = true, children }) {
   useEffect(() => {
     setIsLoading(false);
 
-    if (loginRequired && !isAuthenticated && location.pathname !== "/login") {
+    if (loginRequired && !isAuthenticated && (location.pathname !== "/login" && location.pathname !== "/signup")) {
       navigate("/not-found", { replace: true });
     } else if (
       !loginRequired &&
       isAuthenticated &&
       location.pathname === "/login"
     ) {
-      navigate("/", { replace: true });
+      // navigate("/", { replace: true });
     }
   }, [isAuthenticated, loginRequired, location.pathname, navigate]);
 

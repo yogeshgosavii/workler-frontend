@@ -116,7 +116,6 @@ function JobList({
 
     fetchJobs();
 
-    console.log("jibs", jobs);
   }, [query, currentPage]);
 
   // useEffect(() => {

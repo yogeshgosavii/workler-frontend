@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./App.css"; // Import Tailwind CSS
 import Header from "./Header";
 import Footer from "./Footer";
@@ -9,6 +9,7 @@ import authService from "./services/authService";
 import { useSelector } from "react-redux";
 import { getUserNotificationCount } from "./services/notificationService";
 import useJobApi from "./services/jobService";
+import { PathHistoryContext } from "./components/PathHistoryContext";
 
 const App = () => {
   const [userDetails, setUserDetails] = useState(null);
@@ -49,6 +50,16 @@ const App = () => {
     fetchUserDetails();
     fetchNotificationCount();
   }, []);
+
+  // const { pathHistory } = useContext(PathHistoryContext);
+
+  // const prevPath = pathHistory.length > 1 ? pathHistory[pathHistory.length - 2] : 'None';
+  // useEffect(() => {
+  //     console.log("prev",pathHistory)
+    
+  //  }, [location.pathname]);
+
+
 
   // Update active tab based on current location
   useEffect(() => {

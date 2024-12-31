@@ -61,7 +61,7 @@ function Header({className}) {
             </div>
           ) : (
             <div className='flex'>
-              <Link to="/login">
+              <Link className={`${(location.pathname == "/login" || location.pathname == "/signup") && "hidden sm:block"}`} to="/login">
                 <BorderedButton >Login</BorderedButton>
               </Link>
               <Link to="/signup" className="hidden sm:inline-block">

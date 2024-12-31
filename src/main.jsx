@@ -39,6 +39,7 @@ import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 import Connections from "./pages/Connections.jsx";
 import Reposts from "./pages/settings/Reposts.jsx";
+import { PathHistoryProvider } from "./components/PathHistoryContext.jsx";
 
 const router = createBrowserRouter([
   {
@@ -46,11 +47,34 @@ const router = createBrowserRouter([
     element: (
       <LoginVerification loginRequired={false}>
         {/* <PageTransition> */}
+        <PathHistoryProvider>
         <App />
+
+        </PathHistoryProvider>
         {/* </PageTransition> */}
       </LoginVerification>
     ),
     children: [
+      {
+        path: "/signup",
+        element: (
+          <LoginVerification>
+            <PageTransition>
+              <Signup />
+            </PageTransition>
+          </LoginVerification>
+        ),
+      },
+      {
+        path: "/login",
+        element: (
+          <LoginVerification >
+            <PageTransition>
+              <Login />
+            </PageTransition>
+          </LoginVerification>
+        ),
+      },
       { path: "/", element: <Home /> },
       // { path: "/jobs", element: <Jobs /> },
       { path: "/jobs/:jobQuery", element: <Jobs /> },
@@ -247,26 +271,8 @@ const router = createBrowserRouter([
   //   ),
   // },
 
-  {
-    path: "/login",
-    element: (
-      <LoginVerification loginRequired={false}>
-        <PageTransition>
-          <Login />
-        </PageTransition>
-      </LoginVerification>
-    ),
-  },
-  {
-    path: "/signup",
-    element: (
-      <LoginVerification loginRequired={false}>
-        <PageTransition>
-          <Signup />
-        </PageTransition>
-      </LoginVerification>
-    ),
-  },
+
+ 
   { path: "*", element: <NotFound /> },
 ]);
 
