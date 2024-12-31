@@ -1043,7 +1043,8 @@ function UserProfileView({ userId = useParams().userId }) {
           </div>
         </div>
         {
-          userDetails?.account_type !== "Employeer" &&
+          (((userDetails?.account_type === "Candidate") && (currentUserDetails || !currentUserDetails)) || (userDetails?.account_type === "Employeer" && currentUserDetails))
+          &&
           userDetails && (
             <div
               className={`sticky md:top-0 top-16 bg-white md:mb-4 z-20 transition-all ease-in-out`}
@@ -1061,10 +1062,10 @@ function UserProfileView({ userId = useParams().userId }) {
                   {[
                     
                     ...(userDetails?.account_type === "Employeer"
-                      ? [currentUserDetails?._id === userDetails?._id
+                      ? ["About",currentUserDetails
                         ? "Posts"
-                        : null,"About"]
-                      : ["Home",currentUserDetails?._id === userDetails?._id
+                        : null]
+                      : ["Home",currentUserDetails
                         ? "Posts"
                         : null,, "Qualification"]),
                   ]
