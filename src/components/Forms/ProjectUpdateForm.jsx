@@ -22,7 +22,7 @@ function ProjectUpdateForm({ data, setData, onClose }) {
     project_description: data.project_description || "",
     start_date: data.start_date || "",
     end_date: data.end_date || "",
-    url: data.url || "",
+    url: data.url || null,
     technologies: data.technologies || [],
   });
   const [inputValue, setInputValue] = useState("");
@@ -134,15 +134,18 @@ function ProjectUpdateForm({ data, setData, onClose }) {
 
   const handleUpdateProject = async (e) => {
     e.preventDefault();
+    console.log("updating project",formData);
     setloading(true);
     if (isFormValid()) {
       try {
         const filteredData = Object.entries(formData)
-          .filter(
-            ([key, value]) =>
-              value !== null && value !== "" && key !== "inputValue"
-          )
-          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+          .filter(([key, value]) => key !== "inputValue")
+          .reduce((acc, [key, value]) => {
+            acc[key] = value === "" ? null : value;
+            return acc;
+          }, {});
+
+          console.log("updating project",filteredData);
 
         await profileApi.projectDetails.update(data._id, filteredData);
         setData((prevData) =>

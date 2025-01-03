@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { format } from "date-fns";
 import resumeService from "../../services/resumeService";
-import imageCompression from 'browser-image-compression';  // Image compression library
-import { PDFDocument } from 'pdf-lib'; 
+import imageCompression from "browser-image-compression"; // Image compression library
+import { PDFDocument } from "pdf-lib";
 
 function Qualification({
   educationData,
@@ -92,7 +92,7 @@ function Qualification({
                     setUpdateData({ skills: data });
                     setUpdateForm({ skills: true });
                   }}
-                  className={`py-2 px-4 w-fit bg-gray-50 shadow-md cursor-pointer border rounded-md ${
+                  className={`py-2 px-4 w-fit bg-gray-50  cursor-pointer border rounded-md ${
                     index === skillData.length - 1 ? null : "border-b"
                   }`}
                 >
@@ -280,17 +280,31 @@ function Qualification({
                       }
                     />
                     <div className="-mt-1">
-                      <a
-                        href={currentUser?._id != user?._id && data.url}
-                        target="_blank"
-                        className="text-xl font-semibold"
+                      <p
+                        onClick={(e) => { 
+                          e.stopPropagation();
+                          console.log(data.url);
+                          window.open("//"+data.url, '_blank');
+                        }}
+                        className="text-xl font-semibold flex items-center gap-2"
                       >
                         {data.project_name}
-                      </a>
+                        {data.url && (
+                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 -mt-[3px] text-blue-500">
+                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+                       </svg>
+                       
+                        )}
+                      </p>
                       <p className="text-sm">{data.project_description}</p>
                       <p className="text-sm text-gray-400">
                         {formattedStartDate} - {formattedEndDate}
                       </p>
+                      <div className="flex flex-wrap gap-2 text-gray-700 mt-2 text-sm">
+                        {data.technologies.map((tech, index) => (
+                          <span className="border rounded-md bg-gray-50 px-3 py-[4px] font-medium">{tech}</span>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 );
@@ -308,84 +322,83 @@ function Qualification({
 
   const compressImage = async (imageFile) => {
     const options = {
-      maxSizeMB: 1,          // Limit file size to 1 MB
-      maxWidthOrHeight: 1024,  // Resize image dimensions
-      useWebWorker: true,     // Use a Web Worker for better performance
+      maxSizeMB: 1, // Limit file size to 1 MB
+      maxWidthOrHeight: 1024, // Resize image dimensions
+      useWebWorker: true, // Use a Web Worker for better performance
     };
-  
+
     try {
       const compressedFile = await imageCompression(imageFile, options);
-      return compressedFile;  // Return the compressed image file
+      return compressedFile; // Return the compressed image file
     } catch (error) {
       console.error("Error compressing image:", error);
-      throw new Error('Image compression failed');
+      throw new Error("Image compression failed");
     }
   };
-  
+
   // Function to compress PDF
   const compressPDF = async (file) => {
     const maxSize = 100 * 1024; // 100 KB
     let pdfBytes = await file.arrayBuffer();
     let pdfDoc = await PDFDocument.load(pdfBytes);
-  
+
     let compressedPdfBytes = await pdfDoc.save();
 
     // If file is larger than max size, keep compressing iteratively
-      console.log("compressing");
-      
-      // For iterative compression, you might remove unused resources, downsample images, etc.
-      pdfDoc = await PDFDocument.load(pdfBytes);
-      compressedPdfBytes = await pdfDoc.save();
-      // For now, we're simply trying the same compression over and over
+    console.log("compressing");
+
+    // For iterative compression, you might remove unused resources, downsample images, etc.
+    pdfDoc = await PDFDocument.load(pdfBytes);
+    compressedPdfBytes = await pdfDoc.save();
+    // For now, we're simply trying the same compression over and over
 
     console.log([compressedPdfBytes], file.name, {
-      type: 'application/pdf',
+      type: "application/pdf",
     });
-    
-  
+
     return new File([compressedPdfBytes], file.name, {
-      type: 'application/pdf',
+      type: "application/pdf",
     });
   };
-  
-  
+
   // The upload function that compresses and uploads the file
   const uploadResume = async () => {
-    setUploading(true);  // Start loading state
-    setResumeUploadError(null);  // Reset previous errors
-  
+    setUploading(true); // Start loading state
+    setResumeUploadError(null); // Reset previous errors
+
     console.log(selectedResume);
-  
+
     try {
       // Define maximum file size (in bytes)
-      const maxFileSize = 50 * 1024;  // 100 KB
-  
+      const maxFileSize = 50 * 1024; // 100 KB
+
       // Compress the file based on type (PDF or image)
       let compressedFile;
-  
-        compressedFile = await compressPDF(selectedResume);  // Compress PDF
-      
-  
+
+      compressedFile = await compressPDF(selectedResume); // Compress PDF
+
       // Check if the compressed file size is below 100 KB
       if (compressedFile.size > maxFileSize) {
-        throw new Error('File too big , select the file with size less than 50 KB');
+        throw new Error(
+          "File too big , select the file with size less than 50 KB"
+        );
       }
-  
+
       // Upload the compressed file
       const resumeResponse = await resumeService.addResume(compressedFile);
-  
+
       if (resumeResponse) {
-        setUserResumes(prev => [...prev, resumeResponse.resume]);
-        setSelectedResume(null);  // Reset selected resume
+        setUserResumes((prev) => [...prev, resumeResponse.resume]);
+        setSelectedResume(null); // Reset selected resume
       }
-  
-      setUploading(false);  // Set loading state to false
+
+      setUploading(false); // Set loading state to false
     } catch (e) {
       setUploading(false);
-      setResumeUploadError(e.message || 'An error occurred during the upload');
+      setResumeUploadError(e.message || "An error occurred during the upload");
     }
   };
-  
+
   useEffect(() => {
     const fetchUserResumes = async () => {
       try {
@@ -569,7 +582,8 @@ function Qualification({
 
         </div>
       )} */}
-      {!isEditable && skillData.length == 0 &&
+      {!isEditable &&
+        skillData.length == 0 &&
         educationData.length == 0 &&
         workExperienceData.length == 0 &&
         projectData.length == 0 && (

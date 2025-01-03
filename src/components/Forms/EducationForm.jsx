@@ -143,17 +143,22 @@ function EducationForm({ onClose, setData, data }) {
         return; // Do not update state if the value has more than 2 decimal places
       }
 
-      // value = Number(value);
+      value = Number(value);
+      if (value > 0) {
+        value = Number(value.toString().replace(/^0+/, ""));
+      }
     }
 
     if (
       (name === "percentage" ||
         name === "obtained_grades" ||
         name === "maximum_grades") &&
-      value > 100
+      value > (100)
     ) {
-      value = 100;
+      value = formData.maximum_grades || 100;
     } else if (name === "obtained_grades" && value > formData.maximum_grades) {
+      console.log("value", formData.maximum_grades,formData.obtained_grades);
+      
       value = formData.maximum_grades;
     } else if (value < 0) {
       value = 0;
@@ -246,7 +251,7 @@ function EducationForm({ onClose, setData, data }) {
                 placeholder="Obtained grades"
                 value={formData.obtained_grades}
                 max={formData.maximum_grades}
-                min="0"
+                min={0}
                 className={"w-full"}
                 isRequired={true}
                 onChange={handleInputChange}

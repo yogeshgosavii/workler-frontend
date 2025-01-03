@@ -18,7 +18,7 @@ function LoginVerification({ loginRequired = true, children }) {
       isAuthenticated &&
       location.pathname === "/login"
     ) {
-      // navigate("/", { replace: true });
+      navigate("/", { replace: true });
     }
   }, [isAuthenticated, loginRequired, location.pathname, navigate]);
 

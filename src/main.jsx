@@ -68,7 +68,7 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: (
-          <LoginVerification >
+          <LoginVerification loginRequired={false}>
             <PageTransition>
               <Login />
             </PageTransition>

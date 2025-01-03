@@ -291,7 +291,7 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
           )}
 
           {isFullTime && (
-            <div className="flex flex-wrap gap-4">
+            <div className={`flex ${!isCurrentlyWorking && "flex-col"} sm:flex-row flex-wrap gap-4`}>
               <DateInput
                 type="date"
                 name="joiningDate"
@@ -318,7 +318,7 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
                   isRequired={true}
                 />
               ) : (
-                <p className="border px-4 py-2 flex items-center text-blue-500 w-full text-sm sm:text-base">
+                <p className="border px-4 py-2 flex items-center text-blue-500 text-sm sm:text-base">
                   Present
                 </p>
               )}
@@ -369,7 +369,7 @@ function WorkExperienceForm({ onClose, initialData, setData, data }) {
               />
               <div className="flex gap-4 items-end">
                 <div className="flex flex-col w-full">
-                  <div className="flex flex-wrap gap-4 mt-2">
+                  <div className={`flex ${!isCurrentlyWorking && "flex-col"} sm:flex-row flex-wrap gap-4 mt-2`}>
                     <DateInput
                       type="date"
                       name="joiningDate"
