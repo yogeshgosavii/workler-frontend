@@ -8,7 +8,9 @@ function UserImageInput({
   image,
   imageBorder = 2,
   onClick,
+  defaultImage,
   imageClassName,
+  imageDivClassName,
   onError,
   onImageChange, // callback to handle image change
 }) {
@@ -60,19 +62,19 @@ function UserImageInput({
           isEditable ? "cursor-pointer" : ""
         } ${
           imageBorder > 1 ? `border-${imageBorder}` : "border"
-        } rounded-full flex items-center justify-center`}
+        } rounded-full flex items-center overflow-hidden justify-center ${imageDivClassName}`}
         style={{ height: `${imageHeight}px`, width: `${imageHeight}px` }}
       >
         <img
           className={`object-cover rounded-full ${imageClassName}`}
-          src={currentImage || profileImageDefault}
+          src={currentImage ||defaultImage ||  profileImageDefault}
           alt="Profile"
           onError={onError}
           style={{ height: "100%", width: "100%" }}
         />
         {isEditable && (
           <>
-            <div className="absolute inset-0 bg-black opacity-25 rounded-full"></div>
+            <div className="absolute inset-0 bg-black opacity-25 "></div>
             {/* <svg
               className="absolute text-white"
               style={{

@@ -39,13 +39,13 @@ function AddInput({ name, placeholder, value, onChange, handleAdd, handleDelete,
         </button>
       </div>
       {data.length > 0 && (
-        <div className="flex flex-wrap gap-2 mt-2">
+         <div className="flex flex-wrap gap-2 max-w-screen mt-2">
           {data.map((tech, index) => (
             <div
               key={index}
-              className="flex items-center gap-2 bg-blue-50 border border-blue-500 text-blue-500 rounded px-3 py-1"
+              className="flex items-center gap-2 bg-blue-50 border border-blue-500 text-blue-500 rounded px-3 py-1 overflow-hidden text-ellipsis"
             >
-              <span>{tech}</span>
+              <span className="overflow-hidden text-ellipsis whitespace-nowrap">{tech}</span>
               <button
                 type="button"
                 className="focus:outline-none"

@@ -4,12 +4,14 @@ import useProfileApi from "../../services/profileService";
 import TextInput from "../Input/TextInput";
 import OptionInput from "../Input/OptionInput";
 
-function SkillForm({ onClose, setSkills }) {
+function SkillForm({ onClose, setData,data }) {
   const [loading, setloading] = useState(false);
   const [skill, setSkill] = useState("");
   const [level, setLevel] = useState("");
   const [addDisabled, setAddDisabled] = useState(true);
   const profileApi = useProfileApi();
+
+  console.log(setData);
 
   useEffect(() => {
     // Check if both skill and level are not empty
@@ -26,13 +28,16 @@ function SkillForm({ onClose, setSkills }) {
     const token = localStorage.getItem("token");
     try {
       await profileApi.skills.add({ name: skill, level }, token);
+      setData([...data, { name: skill, level }]);
+
       onClose(); // Close the form after successfully adding the skill
     } catch (error) {
       console.error("Error in addSkill:", error);
     } finally {
       setloading(false);
     }
-    setSkills((prev) => [...perv, skill]);
+    console.log(skill, level);
+    
     setSkill("");
     setLevel("");
   };

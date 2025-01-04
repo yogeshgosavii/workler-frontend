@@ -92,13 +92,14 @@ function Qualification({
                     setUpdateData({ skills: data });
                     setUpdateForm({ skills: true });
                   }}
-                  className={`py-2 px-4 w-fit bg-gray-50  cursor-pointer border rounded-md ${
+                  className={`py-1 px-4 w-fit ${data.level[0] == "B"?"bg-blue-50 text-blue-500 border-blue-500":data.level[0] == "I"?"bg-amber-50 border-amber-500 text-amber-500":"bg-red-50 border-red-500 text-red-500"} flex items-center  cursor-pointer border rounded-md ${
                     index === skillData?.length - 1 ? null : "border-b"
                   }`}
                 >
                   <p className="font-medium hover:text-blue-500">{data.name}</p>
-                  <p className="text-sm text-gray-400">{data.level}</p>
+                  {/* <p className={`border-l  ${data.level[0] == "B"?" border-blue-500":data.level[0] == "I"?" border-amber-500 ":" border-red-500 "}   pl-2`}>{data.level[0]}</p> */}
                 </div>
+                
               ))}
             </div>
           ),
@@ -253,7 +254,7 @@ function Qualification({
               []
             )
           ) : (
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 overflow-hidden ">
               {projectData?.map((data, index) => {
                 const formattedStartDate = data.start_date
                   ? format(new Date(data.start_date), "MMMM yyyy")
@@ -263,51 +264,51 @@ function Qualification({
                   : "Present";
                 return (
                   <div
-                    key={index}
-                    onClick={() => {
-                      setUpdateFormType("projects");
-                      setUpdateData({ projects: data });
-                      setUpdateForm({ projects: true });
-                    }}
-                    className={`py-4 border px-4 flex gap-3 rounded-lg ${
-                      index === projectData?.length - 1 ? null : "border"
-                    }`}
+                  key={index}
+                  onClick={() => {
+                    setUpdateFormType("projects");
+                    setUpdateData({ projects: data });
+                    setUpdateForm({ projects: true });
+                  }}
+                  className={`py-4 border px-4 flex gap-3 rounded-lg ${
+                    index === projectData?.length - 1 ? null : "border"
+                  }`}
                   >
-                    <img
-                      className="h-10 w-10 rounded-md border"
-                      src={
-                        "https://avatars.githubusercontent.com/u/43775498?v=4"
+                  <img
+                    className="h-10 w-10 rounded-md"
+                    src={
+                    data.logo?.originalImage || "https://avatars.githubusercontent.com/u/43775498?v=4"
+                    }
+                  />
+                  <div className="-mt-1 flex-1">
+                    <p
+                    onClick={(e) => { 
+                      if(data.url){
+                      e.stopPropagation();
+                      console.log(data.url);
+                      window.open("//"+data.url, '_blank');
                       }
-                    />
-                    <div className="-mt-1">
-                      <p
-                        onClick={(e) => { 
-                          if(data.url){
-                            e.stopPropagation();
-                            console.log(data.url);
-                            window.open("//"+data.url, '_blank');
-                          }
-                        }}
-                        className="text-xl font-semibold flex items-center gap-2"
-                      >
-                        {data.project_name}
-                        {data.url && (
-                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 -mt-px text-blue-500">
-                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
-                       </svg>
-                       
-                        )}
-                      </p>
-                      <p className="text-sm">{data.project_description}</p>
-                      <p className="text-sm text-gray-400">
-                        {formattedStartDate} - {formattedEndDate}
-                      </p>
-                      <div className="flex flex-wrap gap-2 text-gray-700 mt-2 text-sm">
-                        {data.technologies.map((tech, index) => (
-                          <span className="border rounded-md bg-gray-50 px-3 py-[4px] font-medium">{tech}</span>
-                        ))}
-                      </div>
+                    }}
+                    className="text-xl font-semibold flex items-center gap-2"
+                    >
+                    {data.project_name}
+                    {data.url && (
+                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 -mt-px text-blue-500">
+                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
+                     </svg>
+                     
+                    )}
+                    </p>
+                    <p className="text-sm">{data.project_description}</p>
+                    <p className="text-sm text-gray-400">
+                    {formattedStartDate} - {formattedEndDate}
+                    </p>
+                    <div className="flex flex-wrap gap-2 text-gray-700 mt-2 text-sm  overflow-hidden text-ellipsis max-w-screen">
+                    {data.technologies.map((tech, index) => (
+                      <span key={index} className="border rounded-md bg-gray-50 px-3 py-[4px] font-medium overflow-hidden text-ellipsis whitespace-nowrap max-w-full">{tech}</span>
+                    ))}
                     </div>
+                  </div>
                   </div>
                 );
               })}

@@ -6,6 +6,8 @@ import AddInput from "../Input/AddInput";
 import DateInput from "../Input/DateInput";
 import TextAreaInput from "../Input/TextAreaInput";
 import TextInput from "../Input/TextInput";
+import UserImageInput from "../Input/UserImageInput";
+import imageCompression from "browser-image-compression";
 
 function ProjectUpdateForm({ data, setData, onClose }) {
   const [loading, setloading] = useState(false);
@@ -15,6 +17,7 @@ function ProjectUpdateForm({ data, setData, onClose }) {
     start_date: data.start_date || "",
     end_date: data.end_date || "",
     url: data.url || "",
+    logo: data.logo || null,
     technologies: data.technologies || [],
   });
   const [formData, setFormData] = useState({
@@ -23,6 +26,7 @@ function ProjectUpdateForm({ data, setData, onClose }) {
     start_date: data.start_date || "",
     end_date: data.end_date || "",
     url: data.url || null,
+    logo: data.logo || null,
     technologies: data.technologies || [],
   });
   const [inputValue, setInputValue] = useState("");
@@ -132,12 +136,26 @@ function ProjectUpdateForm({ data, setData, onClose }) {
     );
   };
 
+  const handleImageChange = async (newImage) => {
+    setFormData((prev) => ({ ...prev, logo: newImage }));
+  };
+
   const handleUpdateProject = async (e) => {
     e.preventDefault();
-    console.log("updating project",formData);
+    console.log("updating project", formData);
+    const token = localStorage.getItem("token");
+
     setloading(true);
     if (isFormValid()) {
       try {
+        const formDataToSubmit = new FormData();
+        Object.keys(formData).forEach((key) => {
+          if (key !== "logo") {
+            // Skip the profile image since it's already handled
+            formDataToSubmit.append(key, formData[key]);
+          }
+        });
+
         const filteredData = Object.entries(formData)
           .filter(([key, value]) => key !== "inputValue")
           .reduce((acc, [key, value]) => {
@@ -145,13 +163,34 @@ function ProjectUpdateForm({ data, setData, onClose }) {
             return acc;
           }, {});
 
-          console.log("updating project",filteredData);
+        console.log("updating project", filteredData);
 
-        await profileApi.projectDetails.update(data._id, filteredData);
+        if (formData.logo) {
+          const file = formData.logo;
+
+          // Compression options: set max size to 150KB
+          const options = {
+            maxSizeMB: 0.05, // Max size in MB (150KB = 0.15MB)
+            maxWidthOrHeight: 1024, // Max width or height
+            useWebWorker: true, // Use web worker for faster compression
+          };
+
+          try {
+            // Compress the image
+            const compressedImage = await imageCompression(file, options);
+
+            // Append the compressed image to the form data
+            formDataToSubmit.append("files", compressedImage);
+          } catch (error) {
+            console.error("Error during image compression:", error);
+          }
+        }
+
+        const projectData = await profileApi.projectDetails.update(data._id,
+          formData.logo ? formDataToSubmit : filteredData,
+        );
         setData((prevData) =>
-          prevData.map((item) =>
-            item._id === data._id ? { ...filteredData, _id: data._id } : item
-          )
+          prevData.map((item) => (item._id === data._id ? filteredData : item))
         );
         onClose();
       } catch (error) {
@@ -173,7 +212,7 @@ function ProjectUpdateForm({ data, setData, onClose }) {
           fill="currentColor"
           class="size-8 shrink-0 -ml-2.5"
           onClick={() => {
-           onClose()
+            onClose();
           }}
         >
           <path
@@ -188,6 +227,28 @@ function ProjectUpdateForm({ data, setData, onClose }) {
             Update the project details to what you originally wanted it to be
           </p>
         </div>
+      </div>
+
+      <div className="flex flex-col items-center mb-4">
+        <UserImageInput
+          name={"logo"}
+          imageHeight={120}
+          imageDivClassName={"rounded-xl"}
+          imageClassName={"rounded-xl"}
+          className={"justify-self-center"}
+          image={
+            formData.logo?.originalImage ||
+            formData.logo ||
+            "https://avatars.githubusercontent.com/u/43775498?v=4"
+          }
+          onImageChange={handleImageChange}
+        />
+        <p
+          onClick={() => {setFormData((prev) => ({ ...prev, logo: null }));}}
+          className="font-semibold mt-5 text-red-500 text-lg"
+        >
+          Remove Logo
+        </p>
       </div>
 
       <div className="flex-1 flex flex-col gap-6">

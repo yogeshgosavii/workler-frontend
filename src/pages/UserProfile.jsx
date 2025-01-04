@@ -586,6 +586,7 @@ const UserProfile = () => {
                 onClick={handleClose}
                 className="fixed inset-0 z-40  flex justify-center items-center  w-full top-0  bg-background/95 left-10  backdrop-blur supports-[backdrop-filter]:bg-background/60    "
               ></div>
+              
               <div
                 className="fixed z-50 w-full border  h-full shadow-2xl top-0 right-0  sm:max-w-lg mx-auto"
                 onClick={(e) => e.stopPropagation()}

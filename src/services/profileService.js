@@ -24,10 +24,16 @@ const createApiMethods = (endpoint) => {
   return {
     add: async (data) => {
       const token = getToken();
+      const isFormData = data instanceof FormData;
       const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/`, {
         method: 'POST',
-        headers: setAuthHeaders(token),
-        body: JSON.stringify(data),
+        headers: isFormData
+        ? { Authorization: `Bearer ${getToken()}` }
+        : {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+      body: isFormData ? data : JSON.stringify(data),
       });
       return response;
     },
@@ -43,10 +49,17 @@ const createApiMethods = (endpoint) => {
 
     update: async (id, data) => {
       const token = getToken();
+      const isFormData = data instanceof FormData;
       const response = await makeApiRequest(`${apiBaseUrl}/${endpoint}/${id}`, {
         method: 'PUT',
         headers: setAuthHeaders(token),
-        body: JSON.stringify(data),
+        headers: isFormData
+        ? { Authorization: `Bearer ${getToken()}` }
+        : {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+      body: isFormData ? data : JSON.stringify(data),
       });
       return response;
     },
