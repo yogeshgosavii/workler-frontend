@@ -93,7 +93,7 @@ function Qualification({
                     setUpdateForm({ skills: true });
                   }}
                   className={`py-2 px-4 w-fit bg-gray-50  cursor-pointer border rounded-md ${
-                    index === skillData.length - 1 ? null : "border-b"
+                    index === skillData?.length - 1 ? null : "border-b"
                   }`}
                 >
                   <p className="font-medium hover:text-blue-500">{data.name}</p>
@@ -141,7 +141,7 @@ function Qualification({
                       setUpdateForm({ education: true });
                     }}
                     className={`py-4 ${
-                      index === educationData.length - 1 ? null : "border-b"
+                      index === educationData?.length - 1 ? null : "border-b"
                     }`}
                   >
                     <p className="text-xl font-semibold">
@@ -162,7 +162,7 @@ function Qualification({
                       setUpdateForm({ education: true });
                     }}
                     className={`py-4 ${
-                      index === educationData.length - 1 ? null : "border-b"
+                      index === educationData?.length - 1 ? null : "border-b"
                     }`}
                   >
                     <p className="text-xl font-semibold">
@@ -222,7 +222,7 @@ function Qualification({
                     setUpdateForm({ workExperience: true });
                   }}
                   className={`py-4 ${
-                    index === workExperienceData.length - 1 ? null : ""
+                    index === workExperienceData?.length - 1 ? null : ""
                   }`}
                 >
                   <p className="text-xl font-semibold">{data.companyName}</p>
@@ -270,7 +270,7 @@ function Qualification({
                       setUpdateForm({ projects: true });
                     }}
                     className={`py-4 border px-4 flex gap-3 rounded-lg ${
-                      index === projectData.length - 1 ? null : "border"
+                      index === projectData?.length - 1 ? null : "border"
                     }`}
                   >
                     <img
@@ -282,15 +282,17 @@ function Qualification({
                     <div className="-mt-1">
                       <p
                         onClick={(e) => { 
-                          e.stopPropagation();
-                          console.log(data.url);
-                          window.open("//"+data.url, '_blank');
+                          if(data.url){
+                            e.stopPropagation();
+                            console.log(data.url);
+                            window.open("//"+data.url, '_blank');
+                          }
                         }}
                         className="text-xl font-semibold flex items-center gap-2"
                       >
                         {data.project_name}
                         {data.url && (
-                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 -mt-[3px] text-blue-500">
+                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 -mt-px text-blue-500">
                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
                        </svg>
                        
@@ -583,10 +585,10 @@ function Qualification({
         </div>
       )} */}
       {!isEditable &&
-        skillData.length == 0 &&
-        educationData.length == 0 &&
-        workExperienceData.length == 0 &&
-        projectData.length == 0 && (
+        skillData?.length == 0 &&
+        educationData?.length == 0 &&
+        workExperienceData?.length == 0 &&
+        projectData?.length == 0 && (
           <p className="max-w-xl pt-14 text-center sm:h-full h-fit px-6 md:px-6">
             <p className="text-2xl font-bold text-gray-500">
               No Qualifications Added Yet
