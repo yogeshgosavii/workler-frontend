@@ -375,7 +375,7 @@ function Signup() {
 
   return (
     <div
-      className={`flex flex-col h-svh  items-center w-full justify-center   text-gray-800 overflow-y-hidden ${
+      className={`flex flex-col h-dvh  items-center w-full justify-center   text-gray-800 overflow-y-hidden ${
         !userNameAvailable || userData.username == "" ? "overflow-hidden" : ""
       }`}
     >

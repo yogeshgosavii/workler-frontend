@@ -64,7 +64,7 @@ function Login({ userType = "candidate" }) {
   };
 
   return (
-    <div className="h-svh flex flex-col bg-white text-gray-700 justify-between">
+    <div className="h-dvh flex flex-col bg-white text-gray-700 justify-between">
       <div className="flex-1 flex flex-col w-full items-center sm:justify-center text-gray-800">
         <div className="bg-white flex sm:max-w-sm w-full flex-row mt-0.5 sm:border sm:shadow-xl">
           <div className="w-full px-6 pt-6 sm:p-10 duration-200">
