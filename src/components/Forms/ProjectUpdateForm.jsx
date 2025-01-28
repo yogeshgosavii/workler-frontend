@@ -236,19 +236,22 @@ function ProjectUpdateForm({ data, setData, onClose }) {
           imageDivClassName={"rounded-xl"}
           imageClassName={"rounded-xl"}
           className={"justify-self-center"}
+          defaultImage={`https://api.dicebear.com/9.x/initials/svg?seed=${formData.project_name}`}
           image={
             formData.logo?.originalImage ||
-            formData.logo ||
-            "https://avatars.githubusercontent.com/u/43775498?v=4"
+            formData.logo 
           }
           onImageChange={handleImageChange}
         />
-        <p
-          onClick={() => {setFormData((prev) => ({ ...prev, logo: null }));}}
+      {( formData.logo?.originalImage ||
+            formData.logo ) &&  <p
+          onClick={() => {
+            console.log("Hello")
+            setFormData((prev) => ({ ...prev, logo: null }));}}
           className="font-semibold mt-5 text-red-500 text-lg"
         >
           Remove Logo
-        </p>
+        </p>}
       </div>
 
       <div className="flex-1 flex flex-col gap-6">

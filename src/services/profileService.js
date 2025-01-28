@@ -6,7 +6,7 @@ import { useMemo } from 'react';
 const apiBaseUrl = "https://workler-backend.vercel.app/api/profile";
 
 const makeApiRequest = async (url, options) => {
-  try {
+  try {  
     const response = await fetch(url, options);
     if (!response.ok) {
       throw new Error(`Error: ${response.statusText}`);

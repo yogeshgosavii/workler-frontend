@@ -163,7 +163,7 @@ function ProjectForm({ onClose, setData }) {
           image={
             formData.logo?.originalImage ||
             formData.logo ||
-            "https://avatars.githubusercontent.com/u/43775498?v=4"
+            `https://api.dicebear.com/9.x/initials/svg?seed=${formData.project_name}`
           }
           onImageChange={handleImageChange}
         />

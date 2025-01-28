@@ -277,7 +277,7 @@ function Qualification({
                   <img
                     className="h-10 w-10 rounded-md"
                     src={
-                    data.logo?.originalImage || "https://avatars.githubusercontent.com/u/43775498?v=4"
+                    data.logo?.originalImage || `https://api.dicebear.com/9.x/initials/svg?seed=${data.project_name}`
                     }
                   />
                   <div className="-mt-1 flex-1">
