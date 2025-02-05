@@ -177,7 +177,7 @@ function UserProfileView({ userId = useParams().userId }) {
           userDetails._id
         );
 
-        const followerResponse = await followService.getFollowers(userId);
+        const followerResponse = await followService.getFollowers(userDetails._id);
 
         console.log("follow", followerResponse);
 
@@ -546,7 +546,7 @@ function UserProfileView({ userId = useParams().userId }) {
     setFollowLoading(true);
     const followResponse = await followService.createFollow({
       user: currentUserDetails._id,
-      following: userId,
+      following: userDetails._id,
     });
     setIsFollowing(true);
     setFollowers((prev) => [...prev, followResponse]);
@@ -557,7 +557,7 @@ function UserProfileView({ userId = useParams().userId }) {
     setLoading(true);
     const unfollowResponse = await followService.unfollow(
       currentUserDetails._id,
-      userId
+      userDetails._id
     );
     setIsFollowing(false);
     setFollowers(
@@ -646,7 +646,7 @@ function UserProfileView({ userId = useParams().userId }) {
           scrollbarWidth: "none",
         }}
         className={`${!currentUserDetails && "sm:mt-14 lg:mt-0"} ${
-          !userId && "hidden"
+          !userDetails?._id && "hidden"
         } sm:max-w-xl w-full flex-1 transition-all  ${
           approaching ? "overflow-y-hidden" : "overflow-y-auto"
         }  flex-grow  ${showProfileImage && "pointer-events"}`}
