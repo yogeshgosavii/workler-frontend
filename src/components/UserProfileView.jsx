@@ -86,14 +86,13 @@ function UserProfileView({ userId = useParams().userId }) {
   const profileRef = useRef();
 
   useEffect(() => {
-   
     console.log("history", prevPath);
+  
     const fetchData = async () => {
       setLoading((prev) => ({ ...prev, userDetails: true }));
       try {
         const response = await authService.fetchUserDetailsById(userId);
         console.log(response);
-
         setUserDetails(response);
       } catch (error) {
         console.error("Failed to fetch user details", error);
@@ -101,24 +100,43 @@ function UserProfileView({ userId = useParams().userId }) {
         setLoading((prev) => ({ ...prev, userDetails: false }));
       }
     };
-
+  
+    const handlePopState = () => {
+      setPrevPath(window.location.pathname);
+    };
+  
+    window.addEventListener("popstate", handlePopState);
+  
+    if (userId) {
+      fetchData();
+    }
+  
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [userId]);
+  
+  // Fetch posts and jobs **after** userDetails is set
+  useEffect(() => {
+    if (!userDetails?._id) return; // Ensure userDetails exists before running
+  
     const fetchPostData = async () => {
+      setLoading((prev) => ({ ...prev, posts: true }));
       try {
-        const response = await getPostByUserId(userId);
+        const response = await getPostByUserId(userDetails._id);
         setpostData(response);
       } catch (error) {
-        console.error("Failed to fetch user details", error);
+        console.error("Failed to fetch posts", error);
       } finally {
         setLoading((prev) => ({ ...prev, posts: false }));
       }
     };
-
+  
     const fetchJobData = async () => {
       setLoading((prev) => ({ ...prev, jobData: true }));
       try {
-        const response = await jobService.job.getByUserIds(userId);
+        const response = await jobService.job.getByUserIds(userDetails._id);
         console.log("job", response);
-
         setcurrentUserJobData(response);
       } catch (error) {
         console.error("Failed to fetch job details", error);
@@ -126,55 +144,17 @@ function UserProfileView({ userId = useParams().userId }) {
         setLoading((prev) => ({ ...prev, jobData: false }));
       }
     };
-
-    // const fetchFollowers = async () => {
-    //   setLoading((prev) => ({ ...prev, followersData: true }));
-    //   try {
-    //     const response = await followService.getFollowers(userDetails?._id);
-    //     console.log(response);
-
-    //     // setFollowers(response);
-    //     setIsFollowing(
-    //       response.some((follow) => follow.user._id === currentUserDetails._id)
-    //     );
-    //     setFollowLoading(false);
-    //   } catch (error) {
-    //     console.error("Failed to fetch follow details", error);
-    //   } finally {
-    //     setLoading((prev) => ({ ...prev, followersData: false }));
-    //     setFollowLoading(false);
-
-    //   }
-    // };
-    fetchJobData();
-    const handlePopState = () => {
-      setPrevPath(window.location.pathname);
-    };
-
-    window.addEventListener('popstate', handlePopState);
-
-
-    if (userId) {
-      fetchData();
-      fetchPostData();
-      // fetchFollowers();
-
-      if (
-        currentUserDetails?.accountType == "Candidate" &&
-        userDetails?.accountType == "Employeer"
-      ) {
-        fetchJobData();
-      }
-    } else {
-      // if (!loading.userDetails) {
-      //   navigate("/not-found", { replace: true });
-      // }
-    }
+  
+    fetchPostData();
     
-    return () => {
-      window.removeEventListener('popstate', handlePopState);
-    };
-  }, [userId]);
+    if (
+      currentUserDetails?.accountType === "Candidate" &&
+      userDetails?.accountType === "Employeer"
+    ) {
+      fetchJobData();
+    }
+  }, [userDetails]); // Only runs when userDetails changes
+  
 
   useEffect(() => {
     if (userDetails) {
@@ -233,7 +213,7 @@ function UserProfileView({ userId = useParams().userId }) {
       setLoading((prev) => ({ ...prev, qualification: true }));
       try {
         const qualificationData =
-          await profileService.qualification.getQualificationById(userId);
+          await profileService.qualification.getQualificationById(userDetails._id);
         setQualification(qualificationData);
 
         qualificationData.workExperience.map((item) => {
@@ -264,7 +244,7 @@ function UserProfileView({ userId = useParams().userId }) {
     const fetchUserJobsPosts = async () => {
       setLoading((prev) => ({ ...prev, jobPost: true }));
       try {
-        const jobData = await jobService.job.getByUserIds(userId);
+        const jobData = await jobService.job.getByUserIds(userDetails._id);
         setJobData(jobData);
       } catch (error) {
         console.error("Failed to fetch qualification data", error);
@@ -294,7 +274,7 @@ function UserProfileView({ userId = useParams().userId }) {
       setLoading((prev) => ({ ...prev, checkApproached: true }));
       try {
         const response = await approachService.checkApproach({
-          userId: userId,
+          userId: userDetails._id,
           employeerId: currentUserDetails._id,
         });
         setApproached(response.data[0]);
