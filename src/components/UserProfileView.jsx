@@ -219,19 +219,22 @@ function UserProfileView({ userId = useParams().userId }) {
         qualificationData.workExperience.map((item) => {
           if (item.joiningDate && !item.leavingDate) {
             setWorksAt(item);
+            console.log('[qal]',item)
           }
         });
+        const currentDate = new Date();
         const latestEducationData = qualificationData.education.reduce(
           (closest, item) => {
             const itemDate = new Date(item.end_month);
             const closestDate = new Date(closest.end_month);
-
+        
             return Math.abs(itemDate - currentDate) <
               Math.abs(closestDate - currentDate)
               ? item
               : closest;
           }
         );
+        
 
         setLatestEducation(latestEducationData);
       } catch (error) {
@@ -815,7 +818,7 @@ function UserProfileView({ userId = useParams().userId }) {
                         <p className=" text-wrap truncate">
                           {worksAt && (
                             <span>
-                              Works at {worksAt}{" "}
+                              Works at {worksAt.companyName}{" "}
                               <span className="font-extrabold "></span>
                             </span>
                           )}{" "}

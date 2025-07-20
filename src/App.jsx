@@ -11,6 +11,8 @@ import { getUserNotificationCount } from "./services/notificationService";
 import useJobApi from "./services/jobService";
 import { PathHistoryContext } from "./components/PathHistoryContext";
 import { logout } from "./features/auth/authSlice";
+import { jwtDecode } from "jwt-decode";
+
 
 const App = () => {
   const [userDetails, setUserDetails] = useState(null);
@@ -54,6 +56,29 @@ const App = () => {
         console.error("Error fetching notification count:", error);
       }
     };
+
+    const checkTokenExpiration = () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          const now = Date.now() / 1000; // Current time in seconds
+
+          if (decoded.exp < now) {
+            dispatch(logout());
+            localStorage.removeItem("token");
+            navigate("/login");
+          }
+        } catch (err) {
+          console.error("Invalid token:", err);
+          dispatch(logout());
+          localStorage.removeItem("token");
+          navigate("/login");
+        }
+      }
+    };
+
+    checkTokenExpiration();
 
     fetchUserDetails();
     fetchNotificationCount();
